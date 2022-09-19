@@ -76,6 +76,22 @@
             </span>
           </div>
         </div>
+        <!-- 县区 -->
+        <div class="search-item">
+          <div class="search-item-label">县区:</div>
+          <div class="search-item-content">
+            <span
+              class="search-item-province ellipsis pointer"
+              :class="queryCondition.region === item.value && 'active'"
+              v-for="item in regionOpt"
+              @click="handleSelectAdress('region', item)"
+              :key="item.key"
+              :title="item.label"
+            >
+              {{ item.label }}
+            </span>
+          </div>
+        </div>
         <!-- 表格 -->
         <div>
           <a-spin :spinning="loading">
@@ -102,6 +118,7 @@ let provinceOptFrist = {
   key: Tools.getUuid(),
 }
 let cityOptFrist = { label: "全省", value: "", key: Tools.getUuid() }
+let regionOptFrist = { label: "全市", value: "", key: Tools.getUuid() }
 export default {
   name: "suspensionRightBlock",
   components: {
@@ -110,11 +127,13 @@ export default {
   data() {
     return {
       currentProvince: '',
+      currentRegion:'',
       toggle: true,
       // menus: ["海文花园", "广东省", "深圳市"],
       assetTypeListOpt: [], // 请求资产类型
       provinceOpt: [{ ...provinceOptFrist }], // 省份
       cityOpt: [{ ...cityOptFrist }],
+      regionOpt:[{...regionOptFrist}],
       loading: false,
       // 表格数据
       table: {
@@ -128,6 +147,7 @@ export default {
         city: "",
         organId: "",
         organName: "",
+        region:''
       },
       assetTypes: [],
       // 路由查询参数
@@ -197,6 +217,11 @@ export default {
         value: data.subKey
       }
       await this.handleSelectAdress('city',defaultCity)
+      let defaultRegion = {
+        label:  this.codeToLabel('city',data.subKey,true),
+        value: data.subKey
+      }
+      await this.handleSelectAdress('region',defaultRegion,true)
       console.log('responseData', data)
     },
     query() {
@@ -303,6 +328,23 @@ export default {
         this.queryCondition.city = value
         if ( label === '全省' ){
           address = this.currentProvince
+        }else{
+          // address = this.currentProvince
+          this.currentRegion=label
+          await this.queryCityAndAreaList(value, type)
+        }
+        payload._periphery = address
+        this.$emit('search', payload)
+      }
+      if(type=='region'){
+        let address = label
+        let flag = this.queryCondition.region === value
+        if (flag) {
+          return
+        }
+        this.queryCondition.region = value
+        if ( label === '全市' ){
+          address = this.currentRegion
         }
         payload._periphery = address
         this.$emit('search', payload)
@@ -386,6 +428,11 @@ export default {
             if (type === "province") {
               this.cityOpt = result
               this.cityOpt.unshift({ ...cityOptFrist })
+            }
+            if(type=='city'){
+             this.regionOpt = result
+              this.regionOpt.unshift({ ...regionOptFrist })
+            
             }
           }
           resolve()

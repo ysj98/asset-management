@@ -159,14 +159,9 @@
               placeholder="权属备注"
               :style="allStyle"
             />
-            <ProvinceCityDistrict
-          class="city"
-          ref="ProvinceCityDistrict"
-          v-model="provinces"
-        ></ProvinceCityDistrict>
         <a-input
               :maxLength="30"
-              v-model="queryCondition.detailAddress"
+              v-model="queryCondition.seatingPosition"
               placeholder="请输入地址"
               :style="allStyle"
             />
@@ -258,7 +253,7 @@ const queryCondition = {
   ownershipRemark: "",
   pageNum: 1,
   pageSize: 10,
-  detailAddress:'',
+  seatingPosition:'',
   supportMaterial: ''
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
@@ -495,7 +490,6 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        ...this.provinces,
         flag: "0"
       };
       data.ownershipStatuss = data.ownershipStatuss.join(',')
@@ -686,7 +680,7 @@ export default {
       this.queryCondition.assetTypes = ['']
       this.queryCondition.objectTypes = ['']
       this.queryCondition.shipType = "";
-      this.queryCondition.detailAddress = "";
+      this.queryCondition.seatingPosition = "";
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {

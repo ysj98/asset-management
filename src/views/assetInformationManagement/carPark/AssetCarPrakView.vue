@@ -100,6 +100,9 @@
             />
             <!-- <a-input placeholder="详细地址" v-model="address" :maxLength="20"/> -->
           </a-col>
+          <a-col :span="4">
+            <a-input placeholder="请输入地址" v-model="address"/>
+          </a-col>
         </a-row>
         <!-- <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4">
@@ -341,6 +344,7 @@ const requiredColumn = [
         ownershipUse: '',
         useType: [],           // 用途
         useTypeOptions: [],    // 用途
+        address:'',          //详细地址
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
@@ -657,7 +661,7 @@ const requiredColumn = [
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, },
           provinceCityDistrictValue: { province, city, district: region }, 
-          assetName, status, current, categoryId,sourceModes, label
+          assetName, status, current, categoryId,sourceModes, label,address
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -666,7 +670,7 @@ const requiredColumn = [
           projectIdList, 
           pageSize: pageLength,
           province, city, region, 
-          assetName, 
+          assetName, address,
           pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           statusList: status.includes('all') ? [] : status, 
