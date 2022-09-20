@@ -92,6 +92,10 @@
             </span>
           </div>
         </div>
+        <!-- 详细地址 -->
+        <div>
+          <a-input v-model="queryCondition.address" class="searchwidth"></a-input><a-button @click="searchDetail" type='primary'>查询</a-button>
+        </div>
         <!-- 表格 -->
         <div>
           <a-spin :spinning="loading">
@@ -147,7 +151,8 @@ export default {
         city: "",
         organId: "",
         organName: "",
-        region:''
+        region:'',
+        address:''
       },
       assetTypes: [],
       // 路由查询参数
@@ -199,6 +204,15 @@ export default {
         )
       }
       return res && res.label
+    },
+    searchDetail(){
+      let payload={
+        ...this.queryCondition,
+        assetTypes: this.assetTypes.join(",")
+      }
+      payload._periphery=this.queryCondition.address
+      // this.$emit('search',payload)
+      this.query()
     },
     // 获取默认位置
     async getDefaultLocation(organId){
@@ -487,6 +501,9 @@ export default {
     &.active {
       color: #0084ff;
     }
+  }
+  .searchwidth{
+    width: 85%;
   }
   .search-item {
     display: grid;

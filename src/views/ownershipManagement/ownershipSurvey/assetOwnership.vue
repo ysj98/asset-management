@@ -434,7 +434,7 @@ export default {
     }
   },
   created() {
-    this.platformDictFn("AMS_KIND_OF_RIGHT");
+    // this.platformDictFn("AMS_KIND_OF_RIGHT");
     this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
     this.platformDictFn("asset_type");
     handleTableScrollHeight(this.tableScrollOptions, 530)
@@ -609,6 +609,7 @@ export default {
       this.queryCondition.assetTypes = ['']
       this.getObjectKeyValueByOrganIdFn();
       this.ownerShipUserSelect();
+      this.organDictFn('AMS_KIND_OF_RIGHT',value)
       this.searchQuery();
       this.getListFn()
     },
@@ -681,6 +682,20 @@ export default {
       this.queryCondition.objectTypes = ['']
       this.queryCondition.shipType = "";
       this.queryCondition.seatingPosition = "";
+    },
+    // 机构字典获取数据
+    organDictFn (code,organId) {
+      this.$api.assets.organDict({code: code, organId:organId}).then(res => {
+        console.log(res)
+        if (res.data.code == 0) {
+          let data = res.data.data
+          let arr = data.map(item => ({ label: item.name, ...item }));
+          this.kindOfRightsOpt = [
+              ...utils.deepClone(kindOfRightsOpt),
+              ...arr
+            ];
+        }
+      })
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {

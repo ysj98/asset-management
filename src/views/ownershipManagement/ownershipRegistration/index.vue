@@ -5,7 +5,7 @@
   <div class="ownershipRegistration">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}" style=" position: relative">
       <div slot="headerBtns">
-        <SG-Button icon="plus" type="primary"  @click="newChangeSheetFn">新建登记单</SG-Button>
+        <SG-Button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_NEW" @click="newChangeSheetFn">新建登记单</SG-Button>
       </div>
       <div slot="headerForm">
       </div>
