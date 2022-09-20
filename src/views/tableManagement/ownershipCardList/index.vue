@@ -19,6 +19,12 @@
         <a-select v-model="queryObj.status" :style="allStyle" placeholder="请选择权属状态" :options="$addTitle(statusOptions)"/>
         <a-select v-model="queryObj.ownerFlag" :style="allStyle" placeholder="请选择权证归属" :options="$addTitle(ownerFlagOptions)"/>
         <a-input v-model.trim="queryObj.warrantNbr" :style="allStyle" placeholder="请输入权证号"/>
+        <ProvinceCityDistrict
+          class="city"
+          ref="ProvinceCityDistrict"
+          v-model="provinces"
+        ></ProvinceCityDistrict>
+        <a-input v-model.trim="queryObj.address" :style="allStyle" placeholder="请输入地址"/>
       </div>
     </SG-SearchContainer>
     <!--数据概览信息-->
@@ -60,6 +66,7 @@
   import NoDataTip from 'src/components/noDataTips'
   import {ASSET_MANAGEMENT} from '@/config/config.power'
   import OverviewNumber from 'src/views/common/OverviewNumber'
+  import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
   import OrganProject from 'src/views/common/OrganProjectBuilding'
   import { exportDataAsExcel, queryPlatformDict } from 'src/views/common/commonQueryApi'
   import CardDetails from 'src/views/ownershipManagement/authorityCardManagement/cardDetails'
@@ -98,7 +105,7 @@
   ]
   export default {
     name: 'index',
-    components: { NoDataTip, OrganProject, CardDetails, OverviewNumber, TableHeaderSettings },
+    components: { NoDataTip, OrganProject, CardDetails, OverviewNumber, TableHeaderSettings,ProvinceCityDistrict },
     data () {
       return {
         funType: 7,
@@ -114,6 +121,7 @@
           warrantNbr: '', // 查询条件-权证号
           kindOfRight: '', // 查询条件-权属类型
           obligeeId: '', // 查询条件-权属人
+          address:''
         },
         organProjectValue: {}, // 查询条件-组织机构及项目值
         overviewNumSpinning: false, // 查询视图面积概览数据loading
@@ -142,6 +150,11 @@
           dataSource: [],
           columns: []
         },
+        provinces: {
+        province: undefined,
+        city: undefined,
+        district: undefined
+      },
       }
     },
     created () {
@@ -241,7 +254,9 @@
         const {queryObj, organProjectValue: {organId, projectId}} = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        let form = {pageSize: pageLength, pageNum: pageNo, ...queryObj, organId, projectIdList: projectId || []}
+        let form = {pageSize: pageLength, pageNum: pageNo, ...queryObj, organId, projectIdList: projectId || [],city:this.provinces.city,
+        region:this.provinces.region,
+        province:this.provinces.province,}
         this.$api.tableManage.queryWarrantList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data
@@ -312,6 +327,29 @@
     background: #fff;
   }
 }
+.city {
+    float: right;
+    margin-right: 8px;
+    /deep/.ant-col-8 {width: 180px;}
+    /deep/.province_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.city_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    /deep/.district_style {
+      width: 170px;
+      flex: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 </style>
 
 <style lang='less'>

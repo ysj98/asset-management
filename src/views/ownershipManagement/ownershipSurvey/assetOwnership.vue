@@ -159,14 +159,9 @@
               placeholder="权属备注"
               :style="allStyle"
             />
-            <ProvinceCityDistrict
-          class="city"
-          ref="ProvinceCityDistrict"
-          v-model="provinces"
-        ></ProvinceCityDistrict>
         <a-input
               :maxLength="30"
-              v-model="queryCondition.detailAddress"
+              v-model="queryCondition.seatingPosition"
               placeholder="请输入地址"
               :style="allStyle"
             />
@@ -258,7 +253,7 @@ const queryCondition = {
   ownershipRemark: "",
   pageNum: 1,
   pageSize: 10,
-  detailAddress:'',
+  seatingPosition:'',
   supportMaterial: ''
 };
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
@@ -439,7 +434,7 @@ export default {
     }
   },
   created() {
-    this.platformDictFn("AMS_KIND_OF_RIGHT");
+    // this.platformDictFn("AMS_KIND_OF_RIGHT");
     this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
     this.platformDictFn("asset_type");
     handleTableScrollHeight(this.tableScrollOptions, 530)
@@ -495,7 +490,6 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        ...this.provinces,
         flag: "0"
       };
       data.ownershipStatuss = data.ownershipStatuss.join(',')
@@ -615,6 +609,7 @@ export default {
       this.queryCondition.assetTypes = ['']
       this.getObjectKeyValueByOrganIdFn();
       this.ownerShipUserSelect();
+      this.organDictFn('AMS_KIND_OF_RIGHT',value)
       this.searchQuery();
       this.getListFn()
     },
@@ -686,7 +681,21 @@ export default {
       this.queryCondition.assetTypes = ['']
       this.queryCondition.objectTypes = ['']
       this.queryCondition.shipType = "";
-      this.queryCondition.detailAddress = "";
+      this.queryCondition.seatingPosition = "";
+    },
+    // 机构字典获取数据
+    organDictFn (code,organId) {
+      this.$api.assets.organDict({code: code, organId:organId}).then(res => {
+        console.log(res)
+        if (res.data.code == 0) {
+          let data = res.data.data
+          let arr = data.map(item => ({ label: item.name, ...item }));
+          this.kindOfRightsOpt = [
+              ...utils.deepClone(kindOfRightsOpt),
+              ...arr
+            ];
+        }
+      })
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then(res => {
