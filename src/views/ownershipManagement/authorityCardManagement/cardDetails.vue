@@ -1,14 +1,16 @@
 
 <template>
-  <SG-Modal
-    class="assetBundlePopover"
+  <SuperModal
+    class="assetBundlePopSG-Modalover"
     width="1000px"
-    v-model="show"
+    :visible="show"
+    @change="show = $event"
     :noPadding="true"
     title="权证详情"
     :footer="null"
+    :use-modal="useModal"
   >
-  <div class="newCard">
+  <div :class="{newCard: true, openDirectly: openDirectly }">
     <div class="newCard-nav">
       <span class="section-title blue">基础信息</span>
       <a-row class="playground-row">
@@ -58,7 +60,7 @@
       </div>
     </div>
   </div>
-  </SG-Modal>
+  </SuperModal>
 </template>
 
 <script>
@@ -67,6 +69,7 @@ import configBase from "@/config/config.base";
 import {utils} from '@/utils/utils'
 import {columns, mortgageInformation} from './beat'
 import warantAnnex from './warrantAnnex'
+import SuperModal from './SuperModal.vue'
 const conditionalJudgment = [undefined, null, '']
 const titleDeed = [
   { text: '权证号', value: 'warrantNbr' },
@@ -142,11 +145,12 @@ const landDeed = [
   { text: '交接日期', value: 'handoverDate' }
 ]
 export default {
-  components: {SGUploadFilePlus},
+  components: {SGUploadFilePlus, SuperModal},
   props: {},
   mixins: [warantAnnex],
   data () {
     return {
+      openDirectly: false,
       configBase,
       conditionalJudgment,
       basicDate: [],
@@ -184,6 +188,9 @@ export default {
     }
   },
   computed: {
+    useModal() {
+      return this.$route && this.$route.path !== '/authorityCardInfo'
+    }
   },
   watch: {
     'kindOfRight' (val) {
@@ -266,9 +273,14 @@ export default {
     }
   },
   created () {
+    // 权证详情弹框可以从权证管理页面点击详情打开，也可以按照下面的方式直接路由访问打开
+    if (this.$route && this.$route.path === '/authorityCardInfo') {
+      const { warrantId } = this.$route.query
+      this.openDirectly = true
+      this.query({ warrantId})      
+    }
   },
-  mounted () {
-  }
+  mounted () {}
 }
 </script>
 <style lang="less" scoped>
@@ -293,6 +305,15 @@ export default {
       margin-bottom: 70px;
     }
   }
+}
+.openDirectly {
+  position: fixed;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  background-color: white;
 }
 // ::v-deep .sg-uploadFile.show>.preview {
 //   overflow: auto;

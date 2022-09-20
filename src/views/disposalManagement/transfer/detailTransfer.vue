@@ -1,6 +1,6 @@
 <template>
-  <div class="detail-transfer">
-    <float-anchor style="min-width: 200px" :anchorList="anchorList" />
+  <div :class="{'detail-transfer': true, 'mobile': isMobileStatus}">
+    <float-anchor style="min-width: 200px" :anchorList="anchorList" v-if="!isMobileStatus" />
     <div>
       <SG-Title title="基本信息" id="baseInfo" />
       <a-row>
@@ -298,6 +298,7 @@ export default {
   },
   data() {
     return {
+      isMobileStatus: false,
       anchorList: [
         { title: "基本信息", id: "baseInfo" },
         { title: "资产明细", id: "assetDetail" },
@@ -664,6 +665,10 @@ export default {
     };
   },
   methods: {
+    isMobile() {
+      let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return flag;
+    },
     btnMoreLease(row) {
       this.modalList.lease.dataSource = row.historicLeaseResps;
       this.doOpenPop("lease", row.propertyName || "");
@@ -860,6 +865,15 @@ export default {
   },
   mounted() {
     this.initData();
+    if (this.isMobile()) {
+      this.isMobileStatus = true
+      this.fromType = 'detail'
+      this.$route.meta.noShowProBreadNav = true
+      const docEl = window.document.documentElement
+      if (docEl.querySelector('head')) {
+        docEl.querySelector('head').querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width,initial-scale=1')
+      }
+    }
   },
   beforeRouteEnter(to, from, next) {
     to.meta.noShowProBreadNav = from.path === "/approve";
@@ -921,5 +935,25 @@ p {
 /deep/ .track-step .right .detail-item .title {
   font-weight: normal;
   font-size: 15px;
+}
+.mobile{
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  padding: 0px;
+  margin: 0px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+ >div{
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0px !important;
+  margin: 0px !important;
+ }
+/deep/ .ant-col-18 {
+  width:90%
+}
 }
 </style>

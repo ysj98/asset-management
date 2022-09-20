@@ -44,6 +44,19 @@
     <div class="step-footer-operation" v-if="setType === 'new'">
       <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :showAloneCancel="true" @aloneCancel="aloneCancel" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="confirmArea" @cancel="handleBackOrReset"></tabFormFooter>
     </div>
+    <SG-Modal
+      width="500px"
+      v-model="modelStatus"
+      title="确认登记"
+      confirmText="确定"
+      @ok="onConfirm"
+      @cancel="modelStatus=false"
+    >
+      <div>
+        <p class="modalTips">{{ tips }}</p>
+        <p class="modalContent">权证的面积不一致，确定登记吗？</p>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
@@ -63,6 +76,8 @@ export default {
   props: {},
   data () {
     return {
+      modelStatus: false, // 确认登记模态框
+      tips: '',
       registerOrderId: '',      // 登记单id
       assetType: '',
       showSave: true,              // 上一步展示
@@ -137,34 +152,57 @@ export default {
   mounted () {
   },
   methods: {
+    onConfirm() {
+      this.handleSubmit()
+    },
+    // 资产登记校验权证号
+    async getApproveConfig(){
+      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        serviceType: 1009,
+        organId: this.organId,
+      })
+      if (code === "0"){
+        const {isValid} = data
+        if( isValid === 1){
+          return true
+        }else {
+          return false
+        }
+      } else {
+        return false
+      }
+    },
     confirmArea () {
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
         let tableData = this.$refs.basicRef.tableData
         if (tableData.length === 0) {
-        this.$message.info('请导入资产明细')
-        return true
-      }
-      let array = []
-          tableData.map(item => {
-            if (item.ownershipStatusName==='有证' && Number(item.area) !== Number(item.buildArea)) {
-              array.push(item.assetName)
-            }
-          })
-          if (array.length) {
-            let tips = array.join('、') + '与权证的面积不一致，确定登记吗？'
-            this.$SG_Message.confirmDelete({
-              content: tips,
-              confirmText: '确定',
-              onConfirm: () => {
-                this.handleSubmit()
-              },
-              onCancel: () => {
-                return
-              }
-            })
-          } else {
-            this.handleSubmit()
+          this.$message.info('请导入资产明细')
+          return true
+        }
+        let array = []
+        // area 建筑面积  buildArea 权证面积 这里比较建筑面积和权证面积是否相等（权属情况为有证），如果不等则提示
+        tableData.map(item => {
+          if (item.ownershipStatusName==='有证' && Number(item.area) !== Number(item.buildArea)) {
+            array.push(item.assetName)
           }
+        })
+        // 有不相等的情况，且相关配置页面已经开启了权证号校验
+        if (array.length && this.getApproveConfig()) {
+          this.tips = array.join('、')
+          this.modelStatus = true
+          // this.$SG_Message.confirmDelete({
+          //   content: tips,
+          //   confirmText: '确定',
+          //   onConfirm: () => {
+          //     this.handleSubmit()
+          //   },
+          //   onCancel: () => {
+          //     return
+          //   }
+          // })
+        } else {
+          this.handleSubmit()
+        }
       } else {
         this.handleSubmit()
       }
@@ -253,5 +291,13 @@ export default {
   .newEditSingle-nav {
     margin: 28px 20px;
   }
+}
+.modalTips{
+  height: 150px;
+  overflow-y: auto;
+}
+.modalContent{
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 </style>

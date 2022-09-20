@@ -447,6 +447,14 @@ let proRouter = [{
     }
   },
   {
+    path: '/authorityCardInfo',
+    name: '权证详情',
+    component: () => import('@/views/ownershipManagement/authorityCardManagement/cardDetails.vue'),
+    meta: {
+      keepAlive: false
+    }
+  },
+  {
     path: '/assetEntry',
     name: '资产入账',
     component: () => import('@/views/financialManagement/assetEntry/index.vue'),
