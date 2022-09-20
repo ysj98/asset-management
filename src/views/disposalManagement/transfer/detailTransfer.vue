@@ -868,7 +868,10 @@ export default {
     if (this.isMobile()) {
       this.isMobileStatus = true
       this.fromType = 'detail'
+      // 关闭导航栏
       this.$route.meta.noShowProBreadNav = true
+      // 关闭侧边菜单栏
+      this.$store.commit('dev/updateMenuStatus', false)
       const docEl = window.document.documentElement
       if (docEl.querySelector('head')) {
         docEl.querySelector('head').querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width,initial-scale=1')
