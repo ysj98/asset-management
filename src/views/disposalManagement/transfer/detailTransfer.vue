@@ -936,6 +936,7 @@ p {
   font-weight: normal;
   font-size: 15px;
 }
+//移动端样式
 .mobile{
   position: fixed;
   z-index: 99;
@@ -951,9 +952,22 @@ p {
   height: 100% !important;
   padding: 0px !important;
   margin: 0px !important;
+  
  }
 /deep/ .ant-col-18 {
   width:90%
+}
+/deep/.ant-col-10{
+    float: none;
+  }
+  .block-title {
+  line-height: 40px;
+  text-align: center;
+  height: 40px;
+  flex-basis: 110px;
+  font-weight: bold;
+  font-size: 16px;
+  background-color: #f2f2f2;
 }
 }
 </style>
