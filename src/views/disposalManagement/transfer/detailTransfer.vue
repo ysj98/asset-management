@@ -813,7 +813,7 @@ export default {
       const req = {
         busType: 1007,
         busId: this.applyId,
-        organId: this.organId,
+        // organId: this.organId,
       };
       this.$api.approve
         .queryApprovalRecordByBus(req)
@@ -845,9 +845,13 @@ export default {
         });
     },
     async initData() {
+      if(!this.$route.query.organId){
+         this.$route.meta.noShowProBreadNav = true
+         this.$route.query.fromType='detail'
+      }
       this.fromType = this.$route.query.fromType;
       this.applyId = this.$route.query.applyId;
-      this.organId = this.$route.query.organId;
+      // this.organId = this.$route.query.organId;
       const data = await getDetail({ applyId: this.applyId });
       this.getTableAssetDetail(data.assetDetails);
       this.getTableEvaluate(data.valueInfos);
