@@ -845,12 +845,14 @@ export default {
         });
     },
     async initData() {
-      if(!this.$route.query.organId){
-         this.$route.meta.noShowProBreadNav = true
-         this.$route.query.fromType='detail'
+      const { query: { instId }, path } = this.$route
+      if (instId) {
+        this.$route.meta.noShowProBreadNav = true
+      }else{
+        this.$route.meta.noShowProBreadNav = false
       }
-      this.fromType = this.$route.query.fromType;
       this.applyId = this.$route.query.applyId;
+      this.fromType = this.$route.query.fromType;
       // this.organId = this.$route.query.organId;
       const data = await getDetail({ applyId: this.applyId });
       this.getTableAssetDetail(data.assetDetails);
