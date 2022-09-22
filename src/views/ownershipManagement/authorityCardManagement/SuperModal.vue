@@ -3,7 +3,7 @@
     <SG-Modal v-if="useModal" v-bind="$attrs" v-on="$listeners">
       <slot></slot>
     </SG-Modal>
-    <slot></slot>
+    <slot v-else></slot>
   </div>
 </template>
 

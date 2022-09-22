@@ -19,12 +19,7 @@
         <a-select v-model="queryObj.status" :style="allStyle" placeholder="请选择权属状态" :options="$addTitle(statusOptions)"/>
         <a-select v-model="queryObj.ownerFlag" :style="allStyle" placeholder="请选择权证归属" :options="$addTitle(ownerFlagOptions)"/>
         <a-input v-model.trim="queryObj.warrantNbr" :style="allStyle" placeholder="请输入权证号"/>
-        <ProvinceCityDistrict
-          class="city"
-          ref="ProvinceCityDistrict"
-          v-model="provinces"
-        ></ProvinceCityDistrict>
-        <a-input v-model.trim="queryObj.address" :style="allStyle" placeholder="请输入地址"/>
+        <a-input v-model.trim="queryObj.seatingPosition" :style="allStyle" placeholder="请输入地址"/>
       </div>
     </SG-SearchContainer>
     <!--数据概览信息-->
@@ -121,7 +116,7 @@
           warrantNbr: '', // 查询条件-权证号
           kindOfRight: '', // 查询条件-权属类型
           obligeeId: '', // 查询条件-权属人
-          address:''
+          seatingPosition:''
         },
         organProjectValue: {}, // 查询条件-组织机构及项目值
         overviewNumSpinning: false, // 查询视图面积概览数据loading
@@ -254,9 +249,7 @@
         const {queryObj, organProjectValue: {organId, projectId}} = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
-        let form = {pageSize: pageLength, pageNum: pageNo, ...queryObj, organId, projectIdList: projectId || [],city:this.provinces.city,
-        region:this.provinces.region,
-        province:this.provinces.province,}
+        let form = {pageSize: pageLength, pageNum: pageNo, ...queryObj, organId, projectIdList: projectId || [],}
         this.$api.tableManage.queryWarrantList(form).then(r => {
           this.tableObj.loading = false
           let res = r.data

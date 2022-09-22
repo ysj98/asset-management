@@ -79,7 +79,7 @@
           ref="ProvinceCityDistrict"
           v-model="provinces"
         ></ProvinceCityDistrict>
-        <a-input-search v-model="queryCondition.detailAddress" placeholder="请输入地址" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="searchQuery" />
+        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="searchQuery" />
           <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
         </div>
       </div>
@@ -213,7 +213,7 @@ export default {
         ...this.queryCondition,
         city:this.provinces.city,
         region:this.provinces.region,
-        province:this.provinces.province,
+        province:this.provinces.district,
         communityId: this.queryCondition.communityId.join(","),
       };
       this.table.dataSource = []
