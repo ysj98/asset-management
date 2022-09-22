@@ -54,7 +54,7 @@
     >
       <div>
         <p class="modalTips">{{ tips }}</p>
-        <p class="modalContent">权证的面积不一致，确定登记吗？</p>
+        <p class="modalContent">以上资产建筑面积与权证面积不一致，确定登记吗？</p>
       </div>
     </SG-Modal>
   </div>
@@ -153,9 +153,10 @@ export default {
   },
   methods: {
     onConfirm() {
+      this.modelStatus = false
       this.handleSubmit()
     },
-    // 资产登记校验权证号
+    // 资产登记是否校验权证面积
     async getApproveConfig(){
       let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
         serviceType: 1009,
@@ -180,7 +181,7 @@ export default {
           return true
         }
         let array = []
-        // area 建筑面积  buildArea 权证面积 这里比较建筑面积和权证面积是否相等（权属情况为有证），如果不等则提示
+        // area 建筑面积  buildArea 权证面积 这里比较建筑面积和权证面积是否相等（权属情况为有证，有证则填了权证号），如果不等则提示
         tableData.map(item => {
           if (item.ownershipStatusName==='有证' && Number(item.area) !== Number(item.buildArea)) {
             array.push(item.assetName)
@@ -216,7 +217,6 @@ export default {
         let filepaths = this.$refs.newInformation.getFilepaths()
         if (!data) {return}
         this.assetType = data.assetType
-        console.log(this.assetType, 'assetTypeassetTypeassetType')
         if (this.$refs.basicRef.save()) { return }
         let basicData = this.$refs.basicRef.basicData.map(ele=>{
           delete ele.pasitionString

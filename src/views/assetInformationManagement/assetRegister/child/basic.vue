@@ -9,12 +9,15 @@
     <!--数据总览-->
     <overview-number :numList="numList"/>
     <div class="button-box">
-      <div class="buytton-nav" v-show="setType === 'new' && !registerOrderId">
-        <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
-        <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
-        <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
+      <div v-show="setType === 'new' && !registerOrderId">
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW_ONE" weaken @click="$refs['addAsset'].modelStatus = true">单条资产登记</SG-Button>
+        <div class="buttonRight">
+          <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
+          <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
+          <SG-Button type="primary" weaken @click="emptyFn">清空列表</SG-Button>
+        </div>
       </div>
-      <div class="buytton-nav" v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId">
+      <div class="buttonRight" v-show="setType === 'edit' && registerOrderId || setType === 'new' && registerOrderId">
         <SG-Button type="primary" weaken @click="handleAddAsset">添加资产导入</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="downFn">批量导出</SG-Button>
         <SG-Button class="ml20" type="primary" weaken @click="batchUpdate">批量更新</SG-Button>
@@ -68,6 +71,7 @@
     />
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <input ref="batchUpload" @change="batchUploadFn($event.target.files, $event)" type="file" style="display:none">
+    <add-asset ref="addAsset" :organId="organId"></add-asset>
   </div>
 </template>
 
@@ -90,6 +94,8 @@ import AssetImportModal from "@/views/assetInformationManagement/assetRegister/c
 import bridge from './center'
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
+import addAsset from './addAsset.vue'
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 
 let getUuid = (() => {
   let uuid = 1
@@ -109,7 +115,7 @@ const numListEq = [
   {title: '债务(元)', key: 'depreciationAmount', value: 0, bgColor: '#DD81E6'}
 ]
 export default {
-  components: {OverviewNumber, noDataTips, basicDownload, AssetImportModal},
+  components: {OverviewNumber, noDataTips, basicDownload, AssetImportModal, addAsset},
   props: {
     organId: {
       type: [String, Number],
@@ -126,6 +132,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       propertyRightUnit: '',
       loading: false,
       equipmentVerificationList,
@@ -187,9 +194,6 @@ export default {
     this.getMangementRight()
   },
   methods: {
-    inputUnit (val, row) {
-      
-    },
     getMangementRight() {
       this.$api.assets.platformDict({ code: "ASSET_MANAGEMENT_RIGHT" }).then(res =>{
         if(res.data.code === '0'){
@@ -961,7 +965,7 @@ export default {
     overflow: hidden;
     margin-bottom: 10px;
     margin-top: 20px;
-    .buytton-nav {
+    .buttonRight {
       float: right;
       .choice {
         margin: 0 10px;

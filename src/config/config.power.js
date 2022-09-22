@@ -167,6 +167,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_REGISTER_REVERSE_AUDIT: 'zcgl_asset_register_reverse_audit',
   // 资产登记-新增登记单
   ASSET_REGISTER_NEW: 'zcgl_asset_register_new',
+  // 资产登记-单条资产登记
+  ASSET_REGISTER_NEW_ONE: 'zcgl_asset_register_new_one',
   // 资产登记-删除
   ASSET_REGISTER_DELETE: 'zcgl_asset_register_delete',
   // 资产登记-登记基础信息

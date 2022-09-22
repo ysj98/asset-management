@@ -28,6 +28,8 @@ export const columnsData = [
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+  { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
+  { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
  
@@ -181,7 +183,9 @@ export const landData = [
   { title: '质押', dataIndex: 'pledgeName', width: 100 },
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
-  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 300 },
+  { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
+  { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
@@ -287,7 +291,9 @@ export const yard = [
   { title: '质押', dataIndex: 'pledgeName', width: 100 },
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
-  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 300 },
+  { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
+  { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
@@ -308,6 +314,8 @@ export const equipment = [
   { title: '来源方式', dataIndex: 'sourceModeName', width: 150 },
   { title: '债权金额(元)', dataIndex: 'creditorAmount', width: 100 },
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 150 },
+  { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
+  { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
