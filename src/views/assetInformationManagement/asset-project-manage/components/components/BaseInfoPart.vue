@@ -361,7 +361,7 @@
       businessUnit: '',
       organName: '', // 管理机构
       organKey: '', // 管理机构
-      takeOver: '', // 是否接管，否 0，是 1
+      takeOver: '1', // 是否接管，否 0，是 1
       receiver: '', // 接管人
       trusteeshipArea: '', //托管面积
       actualReceiveArea: '', //实际接收面积

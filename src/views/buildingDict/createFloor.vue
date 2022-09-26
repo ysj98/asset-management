@@ -309,7 +309,7 @@ export default {
           }
           // 编辑楼栋
           if (this.type === 'edit') {
-            data.organId = this.organId
+            data.organId = this.objectData.organId
             data.floorId = this.objectData.positionId
             data.upPositionId = this.objectData.upPositionId
             this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {

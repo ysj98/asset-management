@@ -180,7 +180,7 @@ export default {
         crateDateE: '',            // 结束创建日期
         registerOrderName: ''      // 登记单名称/编码
       },
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      defaultValue: [moment([moment().year(), '0', '1']), moment(new Date())], // 查询起始时间默认为今年1月1号
       count: '',
       assetTypeData: [
         {
