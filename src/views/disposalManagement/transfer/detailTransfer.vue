@@ -1,6 +1,10 @@
 <template>
-  <div :class="{'detail-transfer': true, 'mobile': isMobileStatus}">
-    <float-anchor style="min-width: 200px" :anchorList="anchorList" v-if="!isMobileStatus" />
+  <div :class="{ 'detail-transfer': true, mobile: isMobileStatus }">
+    <float-anchor
+      style="min-width: 200px"
+      :anchorList="anchorList"
+      v-if="!isMobileStatus"
+    />
     <div>
       <SG-Title title="基本信息" id="baseInfo" />
       <a-row>
@@ -49,7 +53,10 @@
             <template #action="text, record">
               <a
                 @click="btnMoreLease(record)"
-                v-if="(record.historicLeaseResps && record.historicLeaseResps.length > 1)"
+                v-if="
+                  record.historicLeaseResps &&
+                  record.historicLeaseResps.length > 1
+                "
               >
                 明细
               </a>
@@ -666,7 +673,10 @@ export default {
   },
   methods: {
     isMobile() {
-      let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      let flag =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
       return flag;
     },
     btnMoreLease(row) {
@@ -722,9 +732,9 @@ export default {
           "div",
           {
             class: "table-content-item",
-            attrs:{
-              title: ele[keyStr]
-            }
+            attrs: {
+              title: ele[keyStr],
+            },
           },
           [ele[keyStr]]
         )
@@ -762,7 +772,9 @@ export default {
               const childRes =
                 ele.historicLeaseResps && ele.historicLeaseResps.length > 1
                   ? {}
-                  : ele.historicLeaseResps ?  { ...ele.historicLeaseResps[0] } : {};
+                  : ele.historicLeaseResps
+                  ? { ...ele.historicLeaseResps[0] }
+                  : {};
 
               return {
                 _key: Math.random(),
@@ -845,13 +857,27 @@ export default {
         });
     },
     async initData() {
-      const { query: { instId }, path } = this.$route
+      const {
+        query: { instId },
+        path,
+      } = this.$route;
       if (instId) {
-        this.$route.meta.noShowProBreadNav = true
-      }else{
-        this.$route.meta.noShowProBreadNav = false
+        this.$route.meta.noShowProBreadNav = true;
+        const req = {
+          serviceOrderId: instId,
+        };
+        const {
+          data: { code, message, data },
+        } = await this.$api.approve.getApprByServiceOrderId(req);
+        if (code === "0") {
+          this.applyId = data.busId;
+        } else {
+          this.$message.error(message);
+        }
+      } else {
+        this.$route.meta.noShowProBreadNav = false;
+        this.applyId = this.$route.query.applyId;
       }
-      this.applyId = this.$route.query.applyId;
       this.fromType = this.$route.query.fromType;
       // this.organId = this.$route.query.organId;
       const data = await getDetail({ applyId: this.applyId });
@@ -872,15 +898,18 @@ export default {
   mounted() {
     this.initData();
     if (this.isMobile()) {
-      this.isMobileStatus = true
-      this.fromType = 'detail'
+      this.isMobileStatus = true;
+      this.fromType = "detail";
       // 关闭导航栏
-      this.$route.meta.noShowProBreadNav = true
+      this.$route.meta.noShowProBreadNav = true;
       // 关闭侧边菜单栏
-      this.$store.commit('dev/updateMenuStatus', false)
-      const docEl = window.document.documentElement
-      if (docEl.querySelector('head')) {
-        docEl.querySelector('head').querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width,initial-scale=1')
+      this.$store.commit("dev/updateMenuStatus", false);
+      const docEl = window.document.documentElement;
+      if (docEl.querySelector("head")) {
+        docEl
+          .querySelector("head")
+          .querySelector('meta[name="viewport"]')
+          .setAttribute("content", "width=device-width,initial-scale=1");
       }
     }
   },
@@ -930,7 +959,7 @@ export default {
 
 .table-content-item {
   white-space: nowrap;
-  text-overflow:ellipsis;
+  text-overflow: ellipsis;
   overflow: hidden;
   height: 40px;
   padding: 0 20px;
@@ -946,7 +975,7 @@ p {
   font-size: 15px;
 }
 //移动端样式
-.mobile{
+.mobile {
   position: fixed;
   z-index: 99;
   top: 0;
@@ -956,27 +985,26 @@ p {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
- >div{
-  width: 100% !important;
-  height: 100% !important;
-  padding: 0px !important;
-  margin: 0px !important;
-  
- }
-/deep/ .ant-col-18 {
-  width:90%
-}
-/deep/.ant-col-10{
+  > div {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0px !important;
+    margin: 0px !important;
+  }
+  /deep/ .ant-col-18 {
+    width: 90%;
+  }
+  /deep/.ant-col-10 {
     float: none;
   }
   .block-title {
-  line-height: 40px;
-  text-align: center;
-  height: 40px;
-  flex-basis: 110px;
-  font-weight: bold;
-  font-size: 16px;
-  background-color: #f2f2f2;
-}
+    line-height: 40px;
+    text-align: center;
+    height: 40px;
+    flex-basis: 110px;
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #f2f2f2;
+  }
 }
 </style>
