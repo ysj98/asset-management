@@ -21,16 +21,15 @@
         <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
         <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
           <div v-if="files.length > 0">
-            <!-- <div v-for="(item, index) in files" :key="index"> -->
               <div class="umImg">
-                <SGUploadFilePlus
-                  :baseImgURL="configBase.hostImg1"
+                <upload-file
                   v-model="files"
-                  type="all"
                   :show="true"
+                  type="all"
+                  :max='5'
+                  :maxSize="20480"
                 />
               </div>
-            <!-- </div> -->
           </div>
         </a-col>
       </a-row>
@@ -147,7 +146,6 @@ const landDeed = [
 export default {
   components: {SGUploadFilePlus, SuperModal},
   props: {},
-  mixins: [warantAnnex],
   data () {
     return {
       openDirectly: false,

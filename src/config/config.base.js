@@ -10,7 +10,7 @@ let conf = {
   uhomecp: 'http://pic.uhomecp.com' // 线上
 }
 let configs = {
-  hostImg: conf.local,
+  hostImg: 'https://betapic.uhomecp.com/', // 默认此处写在beta资源url，方便调试
   hostImg1: conf.local,
   hostPrime: '', //  开发与生产环境切换
   CookieDomain: '',

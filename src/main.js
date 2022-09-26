@@ -30,6 +30,9 @@ import Directive from './utils/directive'
 
 import importf from './utils/file'
 
+import UploadFile from './components/UploadFile/index.vue'
+Vue.component('UploadFile', UploadFile)
+
 Vue.mixin(mixins)
 Vue.use(Antd)
 Vue.use(SG_UI)
