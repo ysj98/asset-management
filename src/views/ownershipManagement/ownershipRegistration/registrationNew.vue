@@ -141,7 +141,7 @@
           <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
                 <label slot="label">上&nbsp;传&nbsp;附&nbsp;件：</label>
-                <SG-UploadFile
+                <UploadFile
                   v-model="newEditSingleData.files"
                   type="all"
                 />

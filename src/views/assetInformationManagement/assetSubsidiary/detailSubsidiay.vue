@@ -230,7 +230,7 @@
               <span v-if="filepaths.length === 0" >{{'-'}}</span>
             </div>
             <div class="label-value" v-if="filepaths.length !== 0">
-              <SG-UploadFile :show="true" type="all" :maxSize="5120" v-model="filepaths" />
+              <UploadFile :show="true" type="all" :maxSize="5120" v-model="filepaths" />
             </div>
           </div>
          </div>

@@ -19,7 +19,7 @@
         <!--<div style="color: #49505E; margin-left: 38px">-->
           <!--<div v-for="item in detailData['attachmentList']" :key="item.attachmentPath" style="color: #49505E">{{ item.oldAttachmentName || '&#45;&#45;'}}</div>-->
         <!--</div>-->
-        <SG-UploadFile type="all" show v-model="attachmentList"/>
+        <UploadFile type="all" show v-model="attachmentList"/>
       </div>
     </div>
   </div>

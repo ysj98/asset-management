@@ -19,8 +19,8 @@
         <div  style="margin-top: 8px;display: flex">
           <span style="color: #282D5B; float: left; padding-right: 10px;flex-basis: 40px;flex-shrink: 0">图片:</span>
           <div style="width: 100%;" v-if="imageAttachment.length">
-            <SG-UploadFile show v-model="oldImgAttachment"/>
-            <SG-UploadFile 
+            <UploadFile show v-model="oldImgAttachment"/>
+            <UploadFile 
               v-model="newImgAttachment" 
               :baseImgURL="configBase.hostImg1"
               :customDownload="(value)=>{
@@ -33,8 +33,8 @@
         <div style="margin-top: 8px; display: flex">
           <span style="color: #282D5B; float: left; padding-right: 10px;flex-basis: 40px">附件:</span>
           <div v-if="otherAttachment.length">
-            <SG-UploadFile show v-model="oldOtherAttachment" type="file"/>
-            <SG-UploadFile 
+            <UploadFile show v-model="oldOtherAttachment" type="file"/>
+            <UploadFile
               v-model="newOtherAttachment" 
               :baseImgURL="configBase.hostImg1"
               :customDownload="(value)=>{

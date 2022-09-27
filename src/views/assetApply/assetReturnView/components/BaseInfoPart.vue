@@ -79,7 +79,7 @@
           :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
-          <SG-UploadFile
+          <UploadFile
             type="all"
             v-model="returnAttachment"
             :maxSize="5120"
@@ -230,7 +230,7 @@
           :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
-          <SG-UploadFile
+          <UploadFile
             type="all"
             v-model="receiveAttachment"
             :maxSize="5120"

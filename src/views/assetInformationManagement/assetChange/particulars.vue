@@ -48,7 +48,7 @@
             附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 件：
             <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
-              <SG-UploadFile v-model="files" type="all" :show="true" />
+              <UploadFile v-model="files" type="all" :show="true" />
             </div>
           </a-col>
         </a-row>

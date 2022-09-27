@@ -1,5 +1,5 @@
 <template>
-  <SG-UploadFile
+  <UploadFile
     :baseImgURL="configBase.hostImg1"
     v-model="value"
     type="all"

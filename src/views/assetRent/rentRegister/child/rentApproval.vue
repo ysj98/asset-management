@@ -65,8 +65,8 @@
     <a-row class="a_row">
       <a-col :span="22" :offset="2">
         <div>
-          附件：<SG-UploadFile type="all" v-model="uploadList" :maxSize="10240" class="mt20">
-            </SG-UploadFile>
+          附件：<UploadFile type="all" v-model="uploadList" :maxSize="10240" class="mt20">
+            </UploadFile>
         </div>
       </a-col>
     </a-row>

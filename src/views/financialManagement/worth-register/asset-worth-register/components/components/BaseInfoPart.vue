@@ -137,7 +137,7 @@
           :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
-          <SGUploadFilePlus
+          <UploadFile
             :baseImgURL="configBase.hostImg1"
             :max="5"
             :maxSize="153600"

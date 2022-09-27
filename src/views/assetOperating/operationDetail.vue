@@ -9,7 +9,7 @@
       />
       <div style="margin-top: 10px; display: flex; align-items: baseline">
         <span style="margin-right: 10px">附件:</span>
-        <SG-UploadFile
+        <UploadFile
           v-if="attachment.length"
           style="width: 600px"
           v-model="attachment"

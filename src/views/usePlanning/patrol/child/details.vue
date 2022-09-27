@@ -35,14 +35,14 @@
             巡查现场图片：
             <span v-if="attachmentList.length === 0">无</span>
             <div class="umImg" v-if="attachmentList.length > 0">
-              <SG-UploadFile v-model="attachmentList" type="all" :show="true" />
+              <UploadFile v-model="attachmentList" type="all" :show="true" />
             </div>
           </a-col>
           <a-col class="playground-col" :span="24">
             整改后图片：
             <span v-if="rectifyAttachmentList.length === 0">无</span>
             <div class="umImg" v-if="rectifyAttachmentList.length > 0">
-              <SG-UploadFile v-model="rectifyAttachmentList" type="all" :show="true" />
+              <UploadFile v-model="rectifyAttachmentList" type="all" :show="true" />
             </div>
           </a-col>
         </a-row>

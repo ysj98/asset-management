@@ -90,7 +90,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :show="true"
                     v-model="formInfo.parkingImg"
                   />
@@ -100,7 +100,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :show="true"
                     v-model="formInfo.parkingDoc"
                   />

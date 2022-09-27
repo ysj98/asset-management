@@ -40,7 +40,7 @@
           <a-col class="playground-col" :span="24">处理建议：{{particularsData.handleTip || '--'}}</a-col>
           <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">图片： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
-              <SG-UploadFile
+              <UploadFile
                 v-model="files"
                 type="all"
                 :show="true"

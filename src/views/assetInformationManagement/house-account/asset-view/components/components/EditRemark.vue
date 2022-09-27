@@ -22,10 +22,10 @@
      <div class="content">
        <a-textarea placeholder="请输入备注内容" showCount :maxlength="200" :rows="5" v-model="remark"></a-textarea>
        <div class="files">
-        <!-- <SG-UploadFile type="all" v-model="uploadList" :maxSize="51200">
+        <!-- <UploadFile type="all" v-model="uploadList" :maxSize="51200">
           <div slot="tips">上传的文件最多为5个，文件大小最多为50M</div>
-        </SG-UploadFile> -->
-        <SGUploadFilePlus
+        </UploadFile> -->
+        <UploadFile
                 :baseImgURL="configBase.hostImg1"
                 :customUpload="customUpload"
                 :customDownload="customDownload"
@@ -35,7 +35,7 @@
                 :isMultiple="false"
               >
               <div slot="tips">上传的文件最多为5个，文件大小最多为50M</div>
-              </SGUploadFilePlus>
+              </UploadFile>
        </div>
      </div>
       </a-spin>

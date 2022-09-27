@@ -8,7 +8,7 @@
         <span style="color: #282D5B">{{title}}:</span>
         <span style="margin-left: 9px; color: #49505E" v-if="title !== '附件'">{{judgingCondition.includes(infoData[key]) ? '无' : infoData[key]}}</span>
         <div v-else >
-        <SGUploadFilePlus
+        <UploadFile
         :show="true"
         :customDownload="customDownload"
         :baseImgURL="configBase.hostImg1"
@@ -16,7 +16,7 @@
         type="all"
         :maxSize="51200"
         >
-        </SGUploadFilePlus>
+        </UploadFile>
         </div>
       </a-col>
     </a-row>

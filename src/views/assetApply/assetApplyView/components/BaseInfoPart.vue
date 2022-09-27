@@ -192,7 +192,7 @@
           :label-col="type == 'approval' || type == 'detail' ? {} : {span: 2}"
           :wrapper-col="type == 'approval' || type == 'detail' ? {} : {span: 21}"
         >
-          <SG-UploadFile
+          <UploadFile
             type="all"
             v-model="attachment"
             :maxSize="5120"

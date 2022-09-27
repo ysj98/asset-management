@@ -178,13 +178,13 @@
             <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
                 <label slot="label">巡查现场图片：</label>
-                <SG-UploadFile v-model="newEditSingleData.agoFiles" type="all" />
+                <UploadFile v-model="newEditSingleData.agoFiles" type="all" />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
                 <label slot="label">整改后照片：</label>
-                <SG-UploadFile v-model="newEditSingleData.afterFiles" type="all" />
+                <UploadFile v-model="newEditSingleData.afterFiles" type="all" />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="24">

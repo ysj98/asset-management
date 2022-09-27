@@ -55,8 +55,8 @@
         <a-row>
           <a-col :span="24">
             <a-form-item label="图片" :label-col="{span: 2}" :wrapper-col="{span: 22}">
-              <!-- <SG-UploadFile  v-model="attachmentList"/> -->
-              <SG-UploadFile
+              <!-- <UploadFile  v-model="attachmentList"/> -->
+              <UploadFile
                 :baseImgURL="configBase.hostImg1"
                 v-model="imgFiles"
                 :max="5"
@@ -74,8 +74,8 @@
         <a-row>
           <a-col :span="24">
             <a-form-item label="附件" :label-col="{span: 2}" :wrapper-col="{span: 22}">
-              <!-- <SG-UploadFile type="file" v-model="attachmentList"/> -->
-              <SG-UploadFile
+              <!-- <UploadFile type="file" v-model="attachmentList"/> -->
+              <UploadFile
                 :baseImgURL="configBase.hostImg1"
                 v-model="attachmentList"
                 type="all"

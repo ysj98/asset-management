@@ -73,7 +73,7 @@
             </a-col>
             <a-col class="playground-col" :span="24">
             <a-form-item v-bind="formItemTextarea" label="上传图片：">
-              <SG-UploadFile
+              <UploadFile
                 type="all"
                 v-model="newCardData.files"
                 :maxSize="20480"
@@ -92,7 +92,7 @@
                 "
               >
                 <span slot="tips">(注：上传的附件最多为 5 个,且图片大小小于20M)</span>
-              </SG-UploadFile>
+              </UploadFile>
             </a-form-item>
           </a-col>
           </a-form>

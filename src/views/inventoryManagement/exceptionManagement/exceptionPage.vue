@@ -58,7 +58,7 @@
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
-              <SG-UploadFile
+              <UploadFile
                 type="all"
                 :show="!editable"
                 v-model="detail.attachment"/>
@@ -163,7 +163,7 @@
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name">图片<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
-              <SG-UploadFile
+              <UploadFile
                 type="all"
                 :show="true"
                 v-model="exceptionInfo.attachment"/>

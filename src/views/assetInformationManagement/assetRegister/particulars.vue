@@ -26,7 +26,7 @@
         <div style="display: flex;">
           <span style="margin-right: 10px;">图片：</span>
           <div style="display: flex">
-            <SG-UploadFile
+            <UploadFile
               :baseImgURL="configBase.hostImg1"
               v-model="imgFiles"
               :max="5"
@@ -42,7 +42,7 @@
         <div style="display: flex;">
           <span style="margin-right: 10px;margin-top: 10px;">附件：</span>
           <div style="display: flex">
-            <SG-UploadFile
+            <UploadFile
               :baseImgURL="configBase.hostImg1"
               v-model="filepaths"
               :max="5"

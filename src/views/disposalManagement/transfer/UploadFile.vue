@@ -1,5 +1,5 @@
 <template>
-  <SGUploadFilePlus
+  <UploadFile
     :max="5"
     :maxSize="10240"
     :files="value"
@@ -19,7 +19,7 @@
     accept="image/png, image/jpg, image/jpeg,application/pdf,application/msword,application/vnd.ms-powerpoint,application/vnd.ms-excel"
   >
     <!-- <span slot="tips">(注：上传的附件最多为 5 个,且文件大小小于10M)</span> -->
-  </SGUploadFilePlus>
+  </UploadFile>
 </template>
 
 <script>

@@ -225,11 +225,11 @@
         <a-col :span="24">
           <a-form-item :colon="false" v-bind="formItemTextarea">
             <label slot="label">附&emsp;&emsp;件：</label>
-            <SG-UploadFile type="all" v-model="uploadList" :maxSize="10240" >
+            <UploadFile type="all" v-model="uploadList" :maxSize="10240" >
               <div slot="tips">
                 上传的文件最多为 5 个，单文件大小最大为 10M，支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。
               </div>
-            </SG-UploadFile>
+            </UploadFile>
           </a-form-item>
         </a-col>
       </a-row>

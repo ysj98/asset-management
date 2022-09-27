@@ -173,7 +173,7 @@ export default {
               title: "附件",
               key: "attachment",
               render(_h, data, resValue) {
-                return _h("SG-UploadFile", {
+                return _h("UploadFile", {
                   props: {
                     type: "all",
                     files: resValue,

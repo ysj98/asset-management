@@ -17,7 +17,7 @@
             <span v-if="key && key !== 'attachment'" style="color: #49505E">{{detailData[key] || '无'}}</span>
             <span v-if="key === 'attachment' && detailData[key] && detailData[key].length <= 0">无</span>
             <div style="display: inline-block;" v-if="key === 'attachment' && detailData[key] && detailData[key].length > 0">
-              <SG-UploadFile
+              <UploadFile
                 type="all"
                 :show="true"
                 v-model="detailData[key]"/>

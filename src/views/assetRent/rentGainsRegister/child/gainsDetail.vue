@@ -71,7 +71,7 @@
       <a-col :span="21" :offset="3">
         <div>附件：</div>
         <div v-if="uploadList.length === 0" class="mt20">无</div>
-        <SG-UploadFile type="all" v-model="uploadList" :show="true" class="mt20" />
+        <UploadFile type="all" v-model="uploadList" :show="true" class="mt20" />
       </a-col>
     </a-row>
   </SG-Modal>

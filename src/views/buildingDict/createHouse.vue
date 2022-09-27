@@ -292,7 +292,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="平面图" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     :max="1"
@@ -302,7 +302,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     v-model="housePic"
                     :customDownload="customDownload"
                     :customUpload="customUpload"
@@ -313,7 +313,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :max="5"
                     :maxSize="51200"
                     :customDownload="customDownload"

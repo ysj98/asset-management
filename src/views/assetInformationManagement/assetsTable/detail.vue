@@ -49,7 +49,7 @@
                 </div>
                 <div class="l-model-item-line">
                     <span class="lable">附件：</span>
-                    <SG-UploadFile
+                    <UploadFile
                             v-model="files"
                             :show="true"
                     />

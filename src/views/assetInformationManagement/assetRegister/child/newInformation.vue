@@ -89,7 +89,7 @@
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">图&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;片：</label>
               <div style="display: flex">
-                <SG-UploadFile
+                <UploadFile
                   :baseImgURL="configBase.hostImg1"
                   v-model="imgFiles"
                   :max="5"
@@ -108,7 +108,7 @@
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
               <div style="display: flex">  
-              <SG-UploadFile
+              <UploadFile
                 :baseImgURL="configBase.hostImg1"
                 v-model="filepaths"
                 type="all"

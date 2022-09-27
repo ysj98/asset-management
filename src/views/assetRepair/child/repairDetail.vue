@@ -69,7 +69,7 @@
       <a-col :span="22" :offset="2">
         <div>
           附件：
-          <SG-UploadFile
+          <UploadFile
             type="all"
             v-model="uploadList"
             :show="true"

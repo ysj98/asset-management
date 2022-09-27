@@ -91,7 +91,7 @@
       <a-row>
         <a-col :span="24">
           <a-form-item label="附件" :label-col="{span: 2}" :wrapper-col="{span: 14}">
-            <SG-UploadFile type="all" v-model="attachmentList"/>
+            <UploadFile type="all" v-model="attachmentList"/>
           </a-form-item>
         </a-col>
       </a-row>

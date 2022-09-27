@@ -144,7 +144,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                       :customDownload="customDownload"
                       :customUpload="customUpload"
                       v-model="formInfo.otherImg"
@@ -215,14 +215,14 @@
                           />
                           <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
 <!--                                v-model="formInfo.areaArray[index].areaOtherImg"-->
-                            <SG-UploadFile
+                            <UploadFile
                                 :customDownload="customDownload"
                                 :customUpload="customUpload"
                                 :max="1"
                                 v-model="formInfo.areaArray[index].areaOtherImg"
                             >
                               <span slot="tips"></span>
-                            </SG-UploadFile>
+                            </UploadFile>
                           </div>
                           <span v-else-if="com.dataIndex === 'operation'"
                             @click="handleTableDelete(index)"

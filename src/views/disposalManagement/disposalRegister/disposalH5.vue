@@ -23,7 +23,7 @@
           <a-col class="playground-col" :span="24">备注：{{particularsData.remark || '--'}}</a-col>
           <a-col class="playground-col" :class="{'files-style': files.length > 0}" :span="24">附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
-              <!-- <SG-UploadFile
+              <!-- <UploadFile
                 v-model="files"
                 type="all"
                 :show="true"

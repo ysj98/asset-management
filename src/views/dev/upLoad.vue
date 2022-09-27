@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-card title="文件上传">
-      <SG-UploadFile
+      <UploadFile
         v-model="files"
       />
     </a-card>

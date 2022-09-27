@@ -52,7 +52,7 @@
                 </a-col>
                 <a-col :span="24">
                   <a-form-item label="图片" v-bind="formItemLayout2">
-                    <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
+                    <UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1"/>
                   </a-form-item>
                 </a-col>
             </a-row>    

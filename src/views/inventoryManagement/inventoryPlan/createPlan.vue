@@ -328,7 +328,7 @@
               ><span>：</span>
             </div>
             <a-form-item class="label-value">
-              <SG-UploadFile :show="!editable" type="all" :maxSize="5120" v-model="filepaths" />
+              <UploadFile :show="!editable" type="all" :maxSize="5120" v-model="filepaths" />
             </a-form-item>
           </div>
         </div>

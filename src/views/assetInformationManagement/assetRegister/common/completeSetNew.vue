@@ -153,7 +153,7 @@
             <a-col :span="24">
                 <a-form-item :colon="false" v-bind="formItemTextarea">
                   <label slot="label">上传附件：</label>
-                  <SG-UploadFile
+                  <UploadFile
                     v-model="subData.files"
                     type="all"
                   />

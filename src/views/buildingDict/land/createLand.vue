@@ -598,7 +598,7 @@
               </a-col> -->
               <a-col :span="24">
                 <a-form-item label="围墙图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="encloseWallPic"
@@ -617,7 +617,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="用地红线图" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="redMap"
@@ -627,7 +627,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="现状图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="nowPic"
@@ -637,7 +637,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     v-model="blankPic"
                     :customDownload="customDownload"
                     :customUpload="customUpload"
@@ -646,7 +646,7 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
+                  <UploadFile
                     :max="5"
                     :maxSize="51200"
                     :customDownload="customDownload"

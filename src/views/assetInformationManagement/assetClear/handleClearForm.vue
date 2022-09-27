@@ -115,7 +115,7 @@
           <div class="edit-box-content-item total-width">
             <div class="label-name-box"><span class="label-name" :class="{'label-space-between': editable}">附件<i></i></span><span>：</span></div>
             <a-form-item class="label-value">
-              <SGUploadFilePlus
+              <UploadFile
                 :baseImgURL="configBase.hostImg1"
                 v-model="detail.attachment"
                 :show="!editable"
@@ -129,7 +129,7 @@
                   return customUpload(value,$api.ownership.uploadAnnex)
                 }"
                 />
-              <!-- <SG-UploadFile
+              <!-- <UploadFile
                 type="all"
                 :show="!editable"
                 v-model="detail.attachment"/> -->

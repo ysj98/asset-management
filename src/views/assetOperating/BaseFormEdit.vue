@@ -82,7 +82,7 @@
             label="附件"
             v-bind="formItemLayoutTwo"
           >
-            <SGUploadFilePlus
+            <UploadFile
               :baseImgURL="configBase.hostImg1"
               type="all"
               v-model="attachmentList"

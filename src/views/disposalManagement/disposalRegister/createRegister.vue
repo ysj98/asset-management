@@ -156,7 +156,7 @@
             <a-col class="playground-col" :span="24">
               <a-form-item v-bind="formItemTextarea" :colon="false">
                 <label slot="label">上传附件：</label>
-                <SG-UploadFile
+                <UploadFile
                   v-model="newCardData.files"
                   type="all"
                 />

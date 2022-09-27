@@ -61,7 +61,7 @@
       <div class="edit-box-content">
         <p>附件：<span v-if="attachmentList.length<=0">无</span></p>
         <!--  -->
-        <SGUploadFilePlus
+        <UploadFile
           v-if="attachmentList && attachmentList.length > 0"
           :baseImgURL="configBase.hostImg1"
           type="all"
@@ -70,7 +70,7 @@
           :maxSize="80"
           >
           <span slot="tips">(注：上传的附件最多为 10 个,且文件大小小于80M)</span>
-        </SGUploadFilePlus>
+        </UploadFile>
       </div>
     </div>
     <SG-Title title="资产信息"/>

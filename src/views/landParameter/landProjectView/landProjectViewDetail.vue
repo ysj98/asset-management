@@ -57,7 +57,7 @@
         <div class="edit-box-content-item total-width" v-show="detail.attachment.length > 0">
           <span class="label-name">附件：</span>
           <span class="label-value">
-            <SG-UploadFile
+            <UploadFile
               type="all"
               :show="true"
               v-model="detail.attachment"/>

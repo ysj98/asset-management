@@ -15,7 +15,7 @@
       </a-row>
       <div style="display: flex;margin-top: 10px;" class="playground-row">
         <label slot="label" style="padding-top: 5px;">图&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;片：</label>
-        <SG-UploadFile
+        <UploadFile
           :baseImgURL="configBase.hostImg1"
           @update="(value)=>{
             handleChangeFile(value,1,'img')
@@ -40,7 +40,7 @@
       </div>
       <div style="display: flex;margin-top: 10px;" class="playground-row">
         <label slot="label" style="padding-top: 5px;">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
-        <SG-UploadFile
+        <UploadFile
           :baseImgURL="configBase.hostImg1"
           @update="(value)=>{
             handleChangeFile(value,1)

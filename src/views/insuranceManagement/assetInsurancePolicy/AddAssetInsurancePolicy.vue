@@ -132,7 +132,7 @@
           </a-col>
           <a-col :span="24">
             <!-- 附件最多十个，最大80兆 -->
-            <SGUploadFilePlus
+            <UploadFile
               :baseImgURL="configBase.hostImg1"
               type="all"
               v-model="attachmentList"
@@ -148,7 +148,7 @@
                 return customUpload(value, $api.ownership.uploadAnnex);
               }">
               <span slot="tips">(注：上传的附件最多为 10 个,且文件大小小于80M)</span>
-            </SGUploadFilePlus>
+            </UploadFile>
           </a-col>
         </a-row>
       </div>

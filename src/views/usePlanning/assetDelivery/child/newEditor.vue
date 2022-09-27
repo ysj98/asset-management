@@ -120,7 +120,7 @@
           <a-col class="playground-col" :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
               <label slot="label">上传附件：</label>
-              <SG-UploadFile v-model="newEditSingleData.files" type="all" />
+              <UploadFile v-model="newEditSingleData.files" type="all" />
             </a-form-item>
           </a-col>
         </a-form>

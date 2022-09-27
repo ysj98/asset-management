@@ -81,7 +81,7 @@
       :show="!modalEditFlag"
     >
       <div>
-        <SG-UploadFile
+        <UploadFile
           :baseImgURL="configBase.hostImg1"
           v-model="currentRowAttachmentList"
           :show="!isSet"

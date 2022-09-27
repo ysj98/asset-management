@@ -12,7 +12,7 @@
       </a-row>
       <div v-if="type === 'getRegisterOrder'" style="margin: 0px 0 0 40px">
         <span style="color: #282D5B; float: left">附件:</span>
-        <SG-UploadFile show v-if="files.length" v-model="files"/>
+        <UploadFile show v-if="files.length" v-model="files"/>
         <span v-else style="margin-left: 9px; color: #49505E">--</span>
       </div>
       <a-row class="playground-row" v-if="type === 'getBasicCom'">
