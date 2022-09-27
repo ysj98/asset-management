@@ -212,8 +212,8 @@ export default {
       let data = {
         ...this.queryCondition,
         city:this.provinces.city,
-        region:this.provinces.region,
-        province:this.provinces.district,
+        region:this.provinces.district,
+        province:this.provinces.province,
         communityId: this.queryCondition.communityId.join(","),
       };
       this.table.dataSource = []
