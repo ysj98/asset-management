@@ -523,8 +523,8 @@ export default {
       let data = {
         ...this.queryCondition,
         city: this.provinces.city,
-        region: this.provinces.region,
-        province: this.provinces.district,
+        region: this.provinces.district,
+        province: this.provinces.province,
         flag: "0",
       };
       data.ownershipStatuss = data.ownershipStatuss.join(",");
@@ -556,6 +556,7 @@ export default {
       });
     },
     queryOwnershipCardTableTotal(form) {
+      console.log(form,'aaaaaaaa')
       this.$api.basics
         .statistics(form)
         .then(({ data: { code, message, data } }) => {
@@ -574,8 +575,8 @@ export default {
       let data = {
         ...this.queryCondition,
         city: this.provinces.city,
-        region: this.provinces.region,
-        province: this.provinces.district,
+        region: this.provinces.district,
+        province: this.provinces.province,
         flag: "0",
       };
       data.ownershipStatuss = data.ownershipStatuss.join(",");

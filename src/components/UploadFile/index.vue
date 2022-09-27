@@ -114,7 +114,7 @@ export default {
     // 最大上传尺寸 kb
     maxSize: {
       type: Number,
-      default: 10240,
+      default: 51200,
     },
     // 图片基础地质，用于拼接展示图片
     baseImgURL: String,
