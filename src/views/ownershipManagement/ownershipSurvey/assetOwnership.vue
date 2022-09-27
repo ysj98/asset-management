@@ -522,6 +522,9 @@ export default {
       this.table.loading = true;
       let data = {
         ...this.queryCondition,
+        city: this.provinces.city,
+        region: this.provinces.region,
+        province: this.provinces.district,
         flag: "0",
       };
       data.ownershipStatuss = data.ownershipStatuss.join(",");
@@ -950,11 +953,11 @@ export default {
 }
 </style>
 
-<style lang="less">
+<style lang="less" >
 .content-active-box {
   position: relative;
   .search-content {
-    height: 170px !important;
+    height: 200px !important;
   }
 }
 </style>
