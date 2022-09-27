@@ -1,6 +1,6 @@
 <!-- 以全局导入，组件无需再次引入
 <UploadFile
-  v-model="newCardData.files"
+  v-model="files"
   type="all"
   :max='5'
   :maxSize="20480"
@@ -14,13 +14,12 @@
         <SG-Button @click="$refs.file.click()" :disabled="lists.length >= max && max !== 0" ref="btn" icon="upload">上传</SG-Button>
         <input @input="handleUpload" ref="file" type="file" :accept="uploadFileType" :multiple="max >= 0 && isMultiple" />
       </div>
-      <div class="tips">
-        注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}，文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize / 1024} M。` }}
-        <!-- 支持文件格式包括{{ uploadFileType }} -->
-      </div>
       <!-- 提示语自定义 -->
       <div class="tips">
-        <slot name="tips"></slot>
+        <slot name="tips">
+          注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}，文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize / 1024} M。` }}
+          <!-- 支持文件格式包括{{ uploadFileType }} -->
+        </slot>
       </div>
       <div class="total" v-show="lists.length > 5">
         共
@@ -88,7 +87,7 @@ export default {
     // 文件上传类型，可以是图片和文件 image/file/all
     type: {
       type: String,
-      default: 'image',
+      default: 'all',
     },
     // 自定义上传文件类型 doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。
     accept: String,
@@ -314,6 +313,7 @@ export default {
           if (res.errorLists) this.errorLists.push(...res.errorLists)
         })
         .catch(error => {
+          console.log(error)
           this.$SG_Message.error('上传失败')
         })
     },
