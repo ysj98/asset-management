@@ -71,7 +71,7 @@
     />
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <input ref="batchUpload" @change="batchUploadFn($event.target.files, $event)" type="file" style="display:none">
-    <add-asset ref="addAsset" :organId="organId" @submitAsset="submitAsset"></add-asset>
+    <add-asset ref="addAsset" v-if="modelStatus" :organId="organId" :projectId="projectId" :sourceType="sourceType" @submitAsset="submitAsset"></add-asset>
   </div>
 </template>
 
@@ -132,6 +132,7 @@ export default {
   },
   data () {
     return {
+      modelStatus: false,
       ASSET_MANAGEMENT,
       propertyRightUnit: '',
       loading: false,
@@ -197,10 +198,8 @@ export default {
     // 打开单条资产新增弹框
     openAddAsset() {
       if (this.isProjectId()) { return}
-      this.$refs['addAsset'].modelStatus = true
-      this.$refs['addAsset'].projectId = this.projectId
+      this.modelStatus = true
       this.handleInitDefaultSourceType(this.projectId)
-      this.$refs['addAsset'].params.sourceType = this.sourceType + ''
     },
     submitAsset(detail) {
       console.log(detail)

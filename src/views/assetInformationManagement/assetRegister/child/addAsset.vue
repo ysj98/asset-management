@@ -1,6 +1,6 @@
 <template>
-  <div class="addAsset" v-if="modelStatus">
-    <SG-Modal width="650px" v-model="modelStatus" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
+  <div class="addAsset">
+    <SG-Modal width="650px" v-model="show" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
       <a-form :form="form">
         <span class="section-title blue">基本信息</span>
         <div class="playground-row">
@@ -42,7 +42,8 @@
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">资产编码：</label>
                 <a-tooltip placement="topLeft" :title="params.assetCode" arrow-point-at-center>
-                  <a-input placeholder="请输入资产编码" disabled :style="allWidth" :max="100" v-decorator="['assetCode', { rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产编码(不超过100字符)' }], initialValue: params.assetCode }]" />
+                  <!-- <span v-if="assetCodeDisabled" class="assetCodeBtn">{{ params.assetCode || '资产编码' }}</span> -->
+                  <a-input v-if="assetCodeDisabled" disabled placeholder="请输入资产编码" :style="allWidth" :max="100" v-decorator="['assetCode', { rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产编码(不超过100字符)' }], initialValue: params.assetCode }]" />
                 </a-tooltip>
               </a-form-item>
             </a-col>
@@ -108,7 +109,7 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">建筑面积(㎡)：</label>
-                <a-input-number :min="0" :max="99999.9999" :step="0.0001" :style="allWidth" disabled v-model="builtArea" />
+                <a-input-number :min="0" :max="99999.9999" :step="0.0001" :style="allWidth" disabled v-model="params.area" />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
@@ -146,9 +147,9 @@
                   :style="allWidth"
                   placeholder="请选择来源方式"
                   v-decorator="[
-                    'sourceType',
+                    'sourceMode',
                     {
-                      initialValue: params.sourceType,
+                      initialValue: params.sourceMode,
                     },
                   ]"
                   :allowClear="false"
@@ -277,13 +278,13 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">债券金额(元)：</label>
-                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入债券金额" :style="allWidth" v-decorator="['creditorAmount', { rules: [{ required: false, max: 30, whitespace: true, message: '请输入债券金额' }], initialValue: params.creditorAmount }]" />
+                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入债券金额" :style="allWidth" v-decorator="['creditorAmount', { rules: [{ required: false, message: '请输入债券金额' }], initialValue: params.creditorAmount }]" />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">债务金额(元)：</label>
-                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入债务金额" :style="allWidth" v-decorator="['debtAmount', { rules: [{ required: false, max: 30, whitespace: true, message: '请输入债务金额' }], initialValue: params.debtAmount }]" />
+                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入债务金额" :style="allWidth" v-decorator="['debtAmount', { rules: [{ required: false, message: '请输入债务金额' }], initialValue: params.debtAmount }]" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -404,6 +405,7 @@ const params = {
   assetName: '', // 资产名称
   assetCode: '', // 资产编码
   buildId: '', // 楼栋id
+  area: 0, // 建筑面积 需根据选择的楼栋已经房屋自动带出来展示；---只读，不可修改 选择楼栋时为buildArea 选择房间为area
   buildName: '', // 楼栋名称
   houseNumber: '', // 房间id
   houseName: '', // 房间名称
@@ -415,7 +417,7 @@ const params = {
   decorationSituation: '', // 装修情况
   originalValue: '', // 资产原值
   marketValue: '', // 市场价值
-  sourceType: '', // 来源方式
+  sourceMode: '', // 来源方式 原来的值为sourceType
   kindOfRight: '',
   kindOfRightName: '', // 权属类型
   ownershipStatus: '',
@@ -440,18 +442,26 @@ export default {
       type: [String, Number],
       default: '',
     },
+    // 资产项目id
+    projectId: {
+      type: [String, Number],
+      default: '',
+    },
+    sourceType: {
+      type: [String, Number],
+      default: '',
+    },
   },
   data() {
     return {
+      show: true,
+      assetCodeDisabled: true,
       form: this.$form.createForm(this),
-      modelStatus: false,
-      projectId: '', // 资产项目id
       searchName: '',
       positionNameData: [], // 楼栋列表
       houseList: [], // 房间列表
       assetSourceOptions: [], // 来源方式列表
       ownershipData: [], // 权属类型列表
-      builtArea: 0, // 建筑面积 需根据选择的房间自动带出来展示；---只读，不可修改
       buildAddress: '', //坐落位置 需根据选择的房间自动带出来展示；---只读，不可修改
       assetTypeData: [{ name: '房屋', value: '1' }], // 资产类型
       ownershipStatusList: [
@@ -476,7 +486,15 @@ export default {
     }
   },
   watch: {
-    projectId() {},
+    show(val) {
+      if (!val) this.$parent.modelStatus = false
+    },
+    sourceType: {
+      handler(val) {
+        if (val) this.params.sourceMode = val + ''
+      },
+      immediate: true,
+    },
   },
   computed: {
     assetTitle() {
@@ -484,7 +502,6 @@ export default {
     },
   },
   mounted() {
-    this.getCodingRulesByCode() // 获取资产登记单规则
     // this.platformDictFn() // 获取资产类型
     this.debounceMothed() // 获取楼栋列表
     this.getAssetSourceOptions() // 获取资产来源下拉列表
@@ -541,9 +558,6 @@ export default {
     // 选择楼栋
     handlePositionId(value) {
       this.params.buildId = value
-      this.params.objectType = this.positionNameData.filter(item => {
-        return item.value === value
-      })[0].type
       // 获取房间列表
       this.queryHouseByPage()
       //查询建筑面积和坐落位置字段
@@ -577,7 +591,7 @@ export default {
               return {
                 name: item.placeName,
                 value: item.placeId,
-                type: item.buildType
+                type: item.buildType,
               }
             })
           }
@@ -595,9 +609,8 @@ export default {
               let result = res.data.data || []
               this.positionNameData = result.map(item => {
                 return {
-                  value: item.positionId,
-                  label: item.aliasName,
-                  type: item.buildType
+                  value: item.objectId,
+                  name: item.aliasName,
                 }
               })
             }
@@ -623,14 +636,18 @@ export default {
     },
     assetTypeChange() {},
     houseChange(value) {
-      this.params.objectType = this.houseList.filter(item => {
+      let result = this.houseList.filter(item => {
         return item.value === value
-      })[0].type
+      })[0]
+      this.params.objectType = result.type
+      this.params.area = result.area
       // 获取资产编码
       this.getAssetCode()
     },
     // 查询房间列表
     queryHouseByPage() {
+      this.params.houseNumber = ''
+      this.houseList = []
       const queryData = {
         pageNo: 1,
         pageLength: 10000,
@@ -643,7 +660,8 @@ export default {
             return {
               name: item.houseName,
               value: item.houseId,
-              type: item.houseType
+              type: item.houseType,
+              area: item.area,
             }
           })
         }
@@ -656,27 +674,14 @@ export default {
       }
       this.$api.building.queryBuildDetail(data).then(res => {
         if (res.data.code === '0') {
-          const { builtArea, buildAddress, province, city, region, address } = res.data.data
-          this.builtArea = builtArea // 展示
+          const { builtArea, buildAddress, province, city, region, address, buildType } = res.data.data
           this.buildAddress = buildAddress // 展示
           this.params.province = province
           this.params.city = city
           this.params.region = region
           this.params.address = address
-        } else {
-          this.$message.error(res.data.message)
-        }
-      })
-    },
-    // 查询编码规则
-    getCodingRulesByCode() {
-      let obj = {
-        organId: this.organId,
-        code: 'register_order_name',
-      }
-      this.$api.publicCode.getCodingRulesByCode(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          this.form.setFieldsValue({ registerOrderName: res.data.data.value })
+          this.params.objectType = buildType
+          this.params.area = builtArea // 展示
         } else {
           this.$message.error(res.data.message)
         }
@@ -686,7 +691,7 @@ export default {
     onConfirm() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.modelStatus = false
+          this.$parent.modelStatus = false
           let obj = _.cloneDeep(values)
           for (const key in this.params) {
             if (!Object.hasOwnProperty.call(obj, key)) {
@@ -695,6 +700,7 @@ export default {
           }
           // type 1楼栋 2房屋
           obj.type = obj.houseNumber ? '2' : '1'
+          obj.objectId = obj.houseNumber ? obj.houseNumber : obj.buildId
           this.$emit('submitAsset', _.cloneDeep([].concat(obj)))
         } else {
           this.$message.error('请按照规则填写信息')
@@ -702,7 +708,7 @@ export default {
       })
     },
     onCancel() {
-      this.modelStatus = false
+      this.$parent.modelStatus = false
     },
     assetTypeFn() {},
     // 平台字典获取资产类型
@@ -728,5 +734,17 @@ export default {
 <style lang="less" scoped>
 .playground-row {
   margin: 28px 20px 0 20px;
+}
+.assetCodeBtn {
+  width: 160px;
+  height: 32px;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 12px;
+  line-height: 1.5;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
 }
 </style>
