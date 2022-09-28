@@ -5,7 +5,7 @@
   <div class="assetRegister">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <a-button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW" @click="newChangeSheetFn">新建登记单</a-button>
+        <a-button type="primary" @click="newChangeSheetFn">新建登记单</a-button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-input-search v-model="queryCondition.registerOrderName" placeholder="登记单名称/编号" maxlength="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />

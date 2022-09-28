@@ -347,6 +347,10 @@ export function correlationExpenseTotal (data) {
 export function deleteBase (data) {
   return axiosPost(assets.assetRegister.deleteBase, data)
 }
+// 资产登记-获取资产编码
+export function getAssetCode (data) {
+  return axiosGet(assets.assetRegister.getAssetCode, data)
+}
 
 // 资产出库
 // 资产出库-分页列表

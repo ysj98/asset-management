@@ -286,6 +286,8 @@ export const assets = {
     baseImport: "/ams/registerOrder/importBaseInfoData",
     // 资产登记-删除基础信息
     deleteBase: "/ams/registerOrder/deleteBase",
+    // 资产登记-获取资产编码
+    getAssetCode: "/ams/registerOrder/getAssetCode",
   },
   // 资产出库
   assetClear: {

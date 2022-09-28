@@ -10,7 +10,7 @@
     <overview-number :numList="numList"/>
     <div class="button-box">
       <div v-show="setType === 'new' && !registerOrderId">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW_ONE" weaken @click="$refs['addAsset'].modelStatus = true">单条资产登记</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW_ONE" weaken @click="openAddAsset">单条资产登记</SG-Button>
         <div class="buttonRight">
           <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
           <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
@@ -71,7 +71,7 @@
     />
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display:none">
     <input ref="batchUpload" @change="batchUploadFn($event.target.files, $event)" type="file" style="display:none">
-    <add-asset ref="addAsset" :organId="organId"></add-asset>
+    <add-asset ref="addAsset" :organId="organId" @submitAsset="submitAsset"></add-asset>
   </div>
 </template>
 
@@ -194,6 +194,24 @@ export default {
     this.getMangementRight()
   },
   methods: {
+    // 打开单条资产新增弹框
+    openAddAsset() {
+      if (this.isProjectId()) { return}
+      this.$refs['addAsset'].modelStatus = true
+      this.$refs['addAsset'].projectId = this.projectId
+      this.handleInitDefaultSourceType(this.projectId)
+      this.$refs['addAsset'].params.sourceType = this.sourceType + ''
+    },
+    submitAsset(detail) {
+      console.log(detail)
+      this.$parent.confirmArea(detail)
+    },
+    isProjectId () {
+      if (!this.projectId) {
+        this.$message.info('请先选择资产项目')
+        return true
+      }
+    },
     getMangementRight() {
       this.$api.assets.platformDict({ code: "ASSET_MANAGEMENT_RIGHT" }).then(res =>{
         if(res.data.code === '0'){

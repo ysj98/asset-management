@@ -173,8 +173,12 @@ export default {
         return false
       }
     },
-    confirmArea () {
+    confirmArea (detail) {
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
+        if (detail) {
+          this.handleSubmit(detail)
+          return
+        }
         let tableData = this.$refs.basicRef.tableData
         if (tableData.length === 0) {
           this.$message.info('请导入资产明细')
@@ -209,28 +213,37 @@ export default {
       }
     },
     // 上一步
-    handleSubmit () {
+    handleSubmit (detail) {
       // 保存(基本信息的单个保存全部放在这里)
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
+        if (detail) {
+          this.$refs.newInformation.newEditSingleData.assetType = '1'
+        }
+        setTimeout(() => {
         this.$refs.newInformation.save()
         let data = this.$refs.newInformation.saveValues
         let filepaths = this.$refs.newInformation.getFilepaths()
         if (!data) {return}
         this.assetType = data.assetType
-        if (this.$refs.basicRef.save()) { return }
-        let basicData = this.$refs.basicRef.basicData.map(ele=>{
-          delete ele.pasitionString
-          return {
-            ...ele
-          }
-        })
-        let ASSET_TYPE_LIST = handleAssetTypeField(data.assetType,'list')
+        let basicData = []
+        if (!detail) {
+          if ( this.$refs.basicRef.save()) { return }
+          basicData = this.$refs.basicRef.basicData.map(ele=>{
+            delete ele.pasitionString
+            return {
+              ...ele
+            }
+          })
+        } else {
+          basicData = detail
+        }
+        let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
         console.log(ASSET_TYPE_LIST, '存储数据==================')
         let obj = {
           registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
           registerOrderName: data.registerOrderName,    // 登记单名称
           projectId: data.projectId,                    // 资产项目Id
-          assetType: data.assetType,                    // 资产类型Id
+          assetType: this.assetType,                    // 资产类型Id
           remark: data.remark,                          // 备注
           organId: this.organId,                          // 组织机构id
           [ASSET_TYPE_LIST]: basicData,
@@ -242,6 +255,10 @@ export default {
           if (Number(res.data.code) === 0) {
             this.DE_Loding(loadingName).then(() => {
               this.$SG_Message.success('提交成功')
+              if (detail) {
+                this.$router.push({path: '/assetRegister', query: {refresh: true}})
+                return
+              }
               this.registerOrderId = res.data.data
               this.showSave = false
               this.rightButtonDisabled = false                     // 成功了才可以下一步
@@ -257,6 +274,7 @@ export default {
           }
         })
         this.$refs.basicRef.setDetail(obj)
+        }, 100);
       }  else if (this.activeStepIndex === 4) {
         // 点击完成
         this.$router.push({path: '/assetRegister', query: {refresh: true}})
