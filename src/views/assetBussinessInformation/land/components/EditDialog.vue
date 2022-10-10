@@ -82,7 +82,7 @@
   </div>
 </template>
 <script>
-import {appendOperation, editColumns} from "../dict";
+import { editColumns } from "../dict";
 import {insertAssetAttrConfig, updateAssetAttrConfig} from "../../../../api/attrConfig";
 
 export default {

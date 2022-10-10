@@ -12,7 +12,7 @@
     <div class="fileBox" v-if="!show">
       <div class="btn">
         <SG-Button @click="$refs.file.click()" :disabled="lists.length >= max && max !== 0" ref="btn" icon="upload">上传</SG-Button>
-        <input @input="handleUpload" ref="file" type="file" :accept="uploadFileType" :multiple="max >= 0 && isMultiple" />
+        <input @input="handleUpload" ref="file" type="file" :accept="uploadFileType" :multiple="max >= 0" />
       </div>
       <!-- 提示语自定义 -->
       <div class="tips">
@@ -47,7 +47,7 @@
     <!-- 弹窗展示上传状态 -->
     <SG-Modal v-model="showUploadStatus" title="上传中" :footer="null" :width="908" :maskClosable="false" wrapClassName="sg-uploadFile-showUpload">
       <div class="itemBox">
-        <PreviewItem v-for="(item, index) in uploadLists" :key="index" :item="item" :loading="!item.completeStatus" noOperation />
+        <PreviewItem v-for="(item, index) in uploadLists" :hostImg="hostImg" :key="index" :item="item" :loading="!item.completeStatus" noOperation />
       </div>
     </SG-Modal>
     <!-- 弹窗展示上传失败文件 -->
@@ -71,14 +71,11 @@ export default {
     prop: 'files',
     event: 'input',
   },
+
   components: {
     PreviewItem,
   },
   props: {
-    isMultiple: {
-      type: Boolean,
-      default: true,
-    },
     // 是否显示设为封面按钮
     showCover: {
       type: Boolean,
@@ -116,8 +113,6 @@ export default {
       type: Number,
       default: 51200,
     },
-    // 图片基础地质，用于拼接展示图片
-    baseImgURL: String,
     errorTips: {
       type: String,
       default: '以下文件上传失败，请重新检查后再上传。',
@@ -148,7 +143,7 @@ export default {
   computed: {
     // 图片基础地址
     hostImg() {
-      return this.baseImgURL || configs.hostImg
+      return configs.hostImg
     },
     // 上传文件可选择类型
     uploadFileType() {
@@ -426,6 +421,8 @@ export default {
           index,
         })
         .view(index)
+      const saveDom = document.querySelector('.segi-toolbar-right').querySelector('.save')
+      if (saveDom) saveDom.remove()
     },
     // 下载文件
     handleDownload(index) {
