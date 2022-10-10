@@ -227,16 +227,16 @@ export default {
       }
       await this.handleSelectAdress('province',defaultProvince,true)
       let defaultCity = {
-        label:  this.codeToLabel('city',data.subKey,true),
+        label:  this.codeToLabel('city',data.subKey),
         value: data.subKey
       }
-      await this.handleSelectAdress('city',defaultCity)
-      let defaultRegion = {
-        label:  this.codeToLabel('city',data.subKey,true),
-        value: data.subKey
-      }
-      await this.handleSelectAdress('region',defaultRegion,true)
-      console.log('responseData', data)
+      await this.handleSelectAdress('city',defaultCity,true)
+      // let defaultRegion = {
+      //   label:  this.codeToLabel('city',data.subKey,true),
+      //   value: data.subKey
+      // }
+      // await this.handleSelectAdress('region',defaultRegion,true)
+      // console.log('responseData', data)
     },
     query() {
       let data = {
@@ -334,6 +334,7 @@ export default {
         }
       }
       if (type === "city") {
+        this.queryCondition.region=''
         let address = label
         let flag = this.queryCondition.city === value
         if (flag) {
