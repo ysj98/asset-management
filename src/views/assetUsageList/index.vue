@@ -14,7 +14,7 @@
         <a-radio-group v-model="queryCondition.type" @change="typeChange">
           <a-radio v-for="(item, index) in typeList" :value="item.value" :key="index">{{item.name}}</a-radio>
         </a-radio-group>
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
       </div>
       <div slot="contentForm" style="margin-top: 15px">
         <div class="dbl">
@@ -28,6 +28,7 @@
           :style="allStyle"
           :options="$addTitle(projectOptions)"
           placeholder="请选择资产项目"
+          :showSearch='true'
           :filterOption="filterOption"
         ></a-select>
         <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="全部分类" v-model="queryCondition.objectType">

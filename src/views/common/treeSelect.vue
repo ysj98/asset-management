@@ -13,9 +13,12 @@
       :loadData="onLoadData"
       v-model="organId"
       :disabled="disabled"
+      :searchValue="searchvalueBusinessType"
       :treeCheckable="treeCheckable"
       :treeDefaultExpandAll="treeDefaultExpandAll"
-      @change="changeTree">
+      tree-node-filter-prop='title'
+      @change="changeTree"
+      @search='searchOrgan'>
     </a-tree-select>
     <div class="default-organ-name" v-show="showDefaultOrganName">{{defaultOrganName}}</div>
   </div>
@@ -97,7 +100,8 @@ export default {
       showDefaultOrganName: false,
       organId: '',
       treeData: [],
-      maxTagCount: -1
+      maxTagCount: -1,
+      searchvalueBusinessType:''
     }
   },
   computed: {
@@ -123,7 +127,7 @@ export default {
   methods: {
     // 第一次进来获取组织机构
     initDepartment ( organTopId,organTopName ) {
-      this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: this.typeFilter}).then(res => {
+      this.$api.assets.queryAsynOrganByUserId({parentOrganId: '', typeFilter: this.typeFilter,}).then(res => {
         if (Number(res.data.code) === 0) {
           let resultData = res.data.data
           // TODO: 过滤同一 一级机构, 这种通过 外部 ref 调用内部方法 传参 区分过滤 的写法 不太优雅,有时间优化一下
@@ -134,6 +138,7 @@ export default {
             }]
           }
           this.treeData = this.mapTreeNodes(resultData)
+          console.log(this.treeData)
           if (this.default) {
             this.organId = this.treeData[0].organId
             this.organName = this.treeData[0].name
@@ -167,6 +172,7 @@ export default {
                let children = this.mapTreeNodes(r.data.data)
                this.setTree(node.value, this.treeData, children)
                this.treeData = [...this.treeData]
+               console.log(this.treeData)
              }
            })
          }
@@ -197,13 +203,28 @@ export default {
       }
     },
     mapTreeNodes (nodeList) {
-      return nodeList.map(v => {
-        const { organId, name } = v
-        v.title = name
+      function deep (nodeList) {  
+        let resultData = []
+        nodeList.forEach(v => {
+        const { organId, name,organName ,children} = v
+        v.title = organName||name
         v.key = organId
         v.value = v.organId
-        return {...v}
+        v.children = Array.isArray(children) && children.length > 0 ? deep(children) : []
+        resultData.push({
+          ...v
+        })
       })
+       return resultData
+      }
+      return deep(nodeList)
+      // return nodeList.map(v => {
+      //   const { organId, name,organName } = v
+      //   v.title = organName||name
+      //   v.key = organId
+      //   v.value = v.organId
+      //   return {...v}
+      // })
     },
     // 选择树
     changeTree (value, label, extra) {
@@ -217,6 +238,33 @@ export default {
         this.organName = label
         this.organId = value
       }
+    },
+    //转换查询
+    searchOrgan(value){
+      if (this.showSearch && value.length>0) {
+        this.organId=''
+        this.keywordOrgan(value)
+      } else {
+        this.initDepartment()
+      }
+    },
+    //关键字查询组织机构
+    keywordOrgan(value){
+      console.log('要查关键字了')
+      this.searchvalueBusinessType=value
+      this.$api.assets.queryAsynOrganByKey({keywords:value}).then(res => {
+        if (Number(res.data.code) === 0) {
+          let resultData = res.data.data
+          this.treeData = []
+          this.treeData = this.mapTreeNodes(resultData)
+          console.log(this.treeData)
+          if (this.default) {
+            this.organId = this.treeData[0].organId
+            this.organName = this.treeData[0].name
+            this.$emit('changeTree', this.organId, this.organName)
+          }
+        }
+      })
     }
   },
   created () {
