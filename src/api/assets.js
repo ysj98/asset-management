@@ -27,7 +27,9 @@ import asset from '../store/modules/asset';
 export function queryAsynOrganByUserId (data) {
   return axiosPost(assets.project.queryAsynOrganByUserId, data)
 }
-
+export function queryAsynOrganByKey (data) {
+  return axiosPost(assets.project.queryAsynOrganByKey, data)
+}
 // 机构字典
 export function organDict (data) {
   return axiosGet(assets.project.organDict, data)

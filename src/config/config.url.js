@@ -116,6 +116,8 @@ export const assets = {
     // 异步组织机构树 组织机构管理 POST
     queryAsynOrganByUserId:
       "/basic-data-api/rest-api/v1/organApi/queryAsynOrganByUserId",
+    queryAsynOrganByKey:
+      "/basic-data-api/rest-api/v1/organApi/queryTreeByKey",
     // --------项目下拉-------
     getObjectKeyValueByOrganId: "/ams/project/getObjectKeyValueByOrganId",
     // 机构字典
