@@ -16,6 +16,7 @@
       :searchValue="searchvalueBusinessType"
       :treeCheckable="treeCheckable"
       :treeDefaultExpandAll="treeDefaultExpandAll"
+      tree-node-filter-prop='title'
       @change="changeTree"
       @search='searchOrgan'>
     </a-tree-select>
