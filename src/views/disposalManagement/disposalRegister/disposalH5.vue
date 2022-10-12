@@ -165,9 +165,9 @@ export default {
       window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg + url)
     },
     async init(){
-        console.log('this.$route',this.$route)
-        const { query: { instId }, path } = this.$route
-        let obj = this.$route.query
+        const { query: { instId, organId, disposeRegisterOrderId}, path } = this.$route
+        // 嵌入bpm
+        let busId = ''
         if (instId){
           // 嵌套在 bpm 中时，关闭 面包屑
           this.$route.meta.noShowProBreadNav = true
@@ -176,28 +176,23 @@ export default {
           }
           const {data:{code,message,data}} = await this.$api.approve.getApprByServiceOrderId(req)
           if (code === '0'){
-            console.log('data',data)
-            // 合并数据 query 和 接口 data
-            Object.assign(obj,data)
             // 返回的数据 busId 代表 入库单id
-            obj.id = data.busId
-            obj.relatedOrganId = obj.organId
+            busId = data.busId
           }else {
             this.$message.error(message)
           }
         }else {
           this.$route.meta.noShowProBreadNav = false
         }
-        const {id, relatedOrganId,} = obj
-        this.storeId = id
-        if (id){
+        this.storeId = busId || disposeRegisterOrderId
+        if (this.storeId){
           this.query()
           this.getRegisterDetailListPage()
           this.getreceivecostPlanList()
-          if (relatedOrganId){
+          if (organId){
             // 资产处置 1006 硬编码
             // 详情页面也需要展示审批轨迹
-            const req = {busType: 1006,busId:id,organId: relatedOrganId}
+            const req = {busType: 1006,busId:this.storeId,organId}
             this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
               if (code==='0'){
                 // 旧数据不存在审批单，但是 code 为“0”
@@ -229,8 +224,8 @@ export default {
         }
       },
     queryApprovalRecordByBus(){
-      const { relatedOrganId, disposeRegisterOrderId } = this.detailData
-      const req = {busType: 1006,busId:disposeRegisterOrderId,organId: relatedOrganId}
+      const { organId, disposeRegisterOrderId } = this.detailData
+      const req = {busType: 1006,busId:disposeRegisterOrderId,organId}
       this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
         if (code==='0'){
           if (message === '审批单不存在'){
@@ -365,6 +360,10 @@ export default {
           this.loading = false
         }
       })
+    },
+    isMobile() {
+      let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      return flag
     }
   },
   created () {
@@ -374,6 +373,11 @@ export default {
     this.init()
   },
   mounted () {
+    this.detailData = this.$route.query;
+    if (this.isMobile()) {
+      // 关闭导航栏
+      this.$route.meta.noShowProBreadNav = true
+    }
   },
   beforeRouteEnter(to, from, next){
     console.log(to.path)
