@@ -292,12 +292,12 @@ export default {
       control:true,
       idArr: [],
       numList: [
-        {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057'},
-        {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
-        {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
-        {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
-        {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474'},
-        {title: '房屋产权', key: 'houseWarrantCount', value: 0, bgColor: 'gray'}
+        {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057',info:'权证数量'},
+        {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288',info:'权证面积(㎡)'},
+        {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF',info:'不动产权证'},
+        {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6',info:'土地使用权证'},
+        {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474',info:'使用权证'},
+        {title: '房屋产权', key: 'houseWarrantCount', value: 0, bgColor: 'gray',info:'房屋产权'}
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       ownerTypeData: [], // 权属形式
       key: 0, // 更新Modal包裹的子组件
@@ -678,11 +678,15 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.numList[0].value = data.totalWarrantCount
-          this.numList[1].value = data.buildArea
-          this.numList[2].value = data.assetWarrantCount
-          this.numList[3].value = data.landWarrantCount
-          this.numList[4].value = data.useWarrantCount
-          this.numList[5].value = data.houseWarrantCount
+          this.numList[1].value = data.buildArea+'(㎡)'
+          this.numList[2].value = data.assetWarrantArea+'(㎡)'
+          this.numList[2].title = this.numList[2].info+'('+data.assetWarrantCount+')'
+          this.numList[3].value = data.landWarrantArea+'(㎡)'
+          this.numList[3].title = this.numList[3].info+'('+data.landWarrantCount+')'
+          this.numList[4].value = data.useWarrantArea+'(㎡)'
+          this.numList[4].title = this.numList[4].info+'('+data.useWarrantCount+')'
+          this.numList[5].value = data.houseWarrantArea+'(㎡)'
+          this.numList[5].title = this.numList[5].info+'('+data.houseWarrantCount+')'
           //this.loading = false
         } else {
           this.$message.error(res.data.message)
