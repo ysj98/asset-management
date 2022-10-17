@@ -4,7 +4,7 @@
     <!--查询条件部分-->
     <a-row :gutter="8" class="search_style">
       <a-col :span="9">
-        <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
+        <organ-project v-model="organProjectValue" :isShowBuilding="false" :showSearch='true' mode="multiple"/>
       </a-col>
       <a-col :span="3">
         <a-select

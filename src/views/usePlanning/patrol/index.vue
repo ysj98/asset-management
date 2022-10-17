@@ -15,6 +15,7 @@
             placeholder="请选择组织机构"
             :allowClear="false"
             :style="assetTypeList"
+            :showSearch='true'
           ></treeSelect>
           <a-select
             :style="assetTypeList"
