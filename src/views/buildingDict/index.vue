@@ -20,6 +20,7 @@
           placeholder='请选择组织机构'
           :allowClear="false"
           :style="allWidth"
+          :showSearch='true'
         ></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">

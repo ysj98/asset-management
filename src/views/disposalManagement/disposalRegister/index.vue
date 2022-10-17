@@ -12,7 +12,7 @@
         </SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;" :showSearch='true'></treeSelect>
         <a-input-search v-model="queryCondition.disposeName" placeholder="资产处置名称" maxlength="30" style="width: 140px; margin-right: 10px;" @search="onSearch" />
       </div>
       <div slot="contentForm" class="search-content-box">

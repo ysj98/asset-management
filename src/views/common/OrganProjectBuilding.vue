@@ -16,7 +16,8 @@
         <tree-select 
           :multiple="multiple"
           :allowClear="false" 
-          @changeTree="changeTree" 
+          @changeTree="changeTree"
+          :showSearch='showSearch'
           class="organ_style"/>
       </a-col>
       <a-col :span="isShowBuilding ? 8 : 12">

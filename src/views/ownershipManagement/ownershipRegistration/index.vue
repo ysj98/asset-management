@@ -13,7 +13,7 @@
         <div class="search-from-box" >
           <a-checkbox :style="checkboxAllStyle" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
           <div class="box" style="positon:absolute">
-            <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+            <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           </div>
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
