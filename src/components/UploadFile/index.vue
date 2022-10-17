@@ -7,7 +7,7 @@
 />
 -->
 <template>
-  <div class="sg-uploadFile" :class="{ show: show }">
+  <div class="uploadFile" :class="{ show: show }">
     <!-- 上传部分 -->
     <div class="fileBox" v-if="!show">
       <div class="btn">
@@ -31,7 +31,7 @@
     <div class="preview" v-if="lists.length > 0">
       <div class="previewWrap" :style="wrapStyle">
         <template v-for="index in previewLen">
-          <PreviewItem v-if="fileLists[index - 1]" :hostImg="hostImg" :key="index - 1" :showCover="showCover" :item="fileLists[index - 1]" :imageIndex="imagesListIndex[index - 1]" :reverseIndex="fileLists.length - index + 1" @delete="handleDelete(index - 1)" @preview="handlePreview" @cover="handleCover(index - 1)" @download="handleDownload(index - 1)" />
+          <PreviewItem v-if="fileLists[index - 1]" :previewUrl="fileLists[index - 1].previewUrl" :hostImg="hostImg" :key="index - 1" :showCover="showCover" :item="fileLists[index - 1]" :imageIndex="imagesListIndex[index - 1]" :reverseIndex="fileLists.length - index + 1" @delete="handleDelete(index - 1)" @preview="handlePreview" @cover="handleCover(index - 1)" @download="handleDownload(index - 1)" />
           <div v-if="!fileLists[index - 1] && fileLists.length > 5" class="item nodata" :key="index - 1"></div>
         </template>
       </div>
@@ -45,13 +45,13 @@
     </div>
     <div class="notData" v-if="lists.length === 0 && showNotdata">暂无</div>
     <!-- 弹窗展示上传状态 -->
-    <SG-Modal v-model="showUploadStatus" title="上传中" :footer="null" :width="908" :maskClosable="false" wrapClassName="sg-uploadFile-showUpload">
+    <SG-Modal v-model="showUploadStatus" title="上传中" :footer="null" :width="908" :maskClosable="false" wrapClassName="uploadFile-showUpload">
       <div class="itemBox">
         <PreviewItem v-for="(item, index) in uploadLists" :hostImg="hostImg" :key="index" :item="item" :loading="!item.completeStatus" noOperation />
       </div>
     </SG-Modal>
     <!-- 弹窗展示上传失败文件 -->
-    <SG-Modal v-model="showErrorStatus" title="上传失败" :footer="null" :width="908" :maskClosable="false" wrapClassName="sg-uploadFile-showUpload error">
+    <SG-Modal v-model="showErrorStatus" title="上传失败" :footer="null" :width="908" :maskClosable="false" wrapClassName="uploadFile-showUpload error">
       <div class="itemBox">
         <div class="errorTips">{{ errorTips }}</div>
         <PreviewItem v-for="(item, index) in errorLists" :key="index" :item="item" :loading="false" noOperation />
@@ -71,7 +71,6 @@ export default {
     prop: 'files',
     event: 'input',
   },
-
   components: {
     PreviewItem,
   },

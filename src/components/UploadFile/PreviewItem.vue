@@ -1,9 +1,11 @@
 <template>
   <div class="item">
     <!-- 内容 -->
-    <div class="ItemBox" :class="Ext">
+    <div class="ItemBox" :class="Ext" @mouseover="previewBtn = !previewBtn" @mouseout="previewBtn = !previewBtn">
       <a-spin v-if="loading"><a-icon slot="indicator" type="loading" style="font-size: 24px" spin /></a-spin>
-      <img v-if="!loading && !errorStatus && !noOperation && !isFile" :src="FileURL" @load="handleLoad" @error="handleError" @click="$emit('preview', imageIndex)" :style="imgAutoStyle" />
+      <img v-if="!loading && !errorStatus && !noOperation && !isFile" :src="FileURL" @load="handleLoad" @error="handleError" :style="imgAutoStyle" />
+      <!-- 预览按钮 如果是图片，只通过hover的方式去控制预览按钮；如果是文件，判断有无在线预览的地址，同时通过hover去控制 -->
+      <div class="previewBtn" v-show="(previewBtn && !isFile) || (previewBtn && previewUrl)" @click="toPreview">预览</div>
     </div>
     <!-- 标题 -->
     <div class="ItemTitle">
@@ -51,11 +53,15 @@ export default {
     },
     hostImg: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
+    previewUrl: {
+      type: String,
+    },
   },
   data() {
     return {
+      previewBtn: false,
       errorStatus: false,
       imgAutoStyle: {
         width: 'auto',
@@ -82,6 +88,13 @@ export default {
     },
   },
   methods: {
+    toPreview() {
+      if (!this.isFile) {
+        this.$emit('preview', this.imageIndex)
+      } else {
+        alert('文件预览，正在开发')
+      }
+    },
     // 图片加载失败
     handleError() {
       this.errorStatus = true
@@ -97,3 +110,21 @@ export default {
   },
 }
 </script>
+<style lang="less" scoped>
+.previewBtn {
+  cursor: pointer;
+  position: absolute;
+  top: 15%;
+  left: 24%;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: #cfcece;
+  opacity: 0.8;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+}
+</style>
