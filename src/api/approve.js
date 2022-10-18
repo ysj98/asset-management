@@ -13,7 +13,7 @@ export function uniformSubmit (data) {
     return axiosPost(approve.uniformSubmit, data,true)
 }
 export function getFile(data) {
-    return axiosGet(approve.downloadFile, data, true, false, {
-      responseType: "blob",
+    return axiosGet(approve.downloadFile, data, false, {
+      responseType: "arraybuffer",
     });
   }

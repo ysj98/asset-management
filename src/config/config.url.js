@@ -1769,3 +1769,9 @@ export const projectManager = {
   // 模板导出
   downExport: '/ams/project/downExport'
 }
+
+export const debt = {
+  //债务登记-分页列表
+  getDebtPage:'/ams/debt/getDebtPage',
+
+}

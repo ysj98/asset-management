@@ -17,6 +17,7 @@
     "core-js": "^2.6.5",
     "cropperjs": "^1.5.12",
     "echarts": "^4.5.0",
+    "file-saver": "^2.0.5",
     "js-cookie": "^2.2.0",
     "leaflet": "^1.7.1",
     "leaflet-rastercoords": "^1.0.4",

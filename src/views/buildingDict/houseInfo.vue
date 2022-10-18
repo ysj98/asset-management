@@ -255,6 +255,11 @@ let columns = [
     width: "15%"
   },
   {
+    title: "机构名称",
+    dataIndex: "organName",
+    width: 200
+  },
+  {
     title: "房间名称",
     dataIndex: "houseName",
     width: 300,

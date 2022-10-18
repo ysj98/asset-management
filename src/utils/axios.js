@@ -9,6 +9,7 @@ import qs from 'qs'
 import store from './../store'
 import SG_UI from 'segi-ant'
 import {uuid} from './utils'
+import { saveAs } from 'file-saver';
 import localStore from '@/utils/localStore'
 // 引入配置文件
 import baseConfig from '@/config/config.base'
@@ -69,6 +70,21 @@ axiosX.interceptors.response.use(
     //   SG_Message.error()
     // }
     // 成功则直接返回数据
+      // 附件下载
+      console.log(response)
+  if (
+    response &&
+    response.status == 200 &&
+    response.headers &&
+    response.headers["content-disposition"] &&
+    response.headers["content-disposition"].startsWith("attachment;")
+) {
+    let blob = new Blob([response.data]);
+    const fileName = decodeURIComponent(
+      response.headers["content-disposition"].split(";")[1].split("filename=")[1]
+    );
+    saveAs(blob, fileName);
+}
     return response
   },
   error => {
@@ -100,6 +116,7 @@ axiosX.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
 
 /**
  * @param {string}  method   请求方法

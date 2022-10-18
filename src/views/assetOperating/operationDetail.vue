@@ -52,7 +52,7 @@
     <!--审批轨迹-->
     <div>
       <SG-Title title="审批轨迹" />
-      <SG-TrackStep
+      <step
         v-stepstyleplus
         v-if="stepList.length"
         :stepList="stepList"
@@ -89,6 +89,8 @@
 <script>
 import FormFooter from "@/components/FormFooter";
 import Information from "@/components/Information";
+import Step from "./step.vue";
+
 import {
   baseColumns,
   flatTableDataSource,
@@ -107,6 +109,7 @@ export default {
   components: {
     Information,
     FormFooter,
+    Step
   },
   mixins: [uploadAndDownLoadFIle],
   data() {
@@ -308,9 +311,14 @@ export default {
                       title: ele.operOpinion,
                       desc: "",
                       isDone: false,
-                      fileID:ele.files.length>0?JSON.parse(ele.files)[0].id:'',
-                      fileName:ele.files.length>0?JSON.parse(ele.files)[0].name:'',
-                      operation: ele.files.length>0?[{buttonName:JSON.parse(ele.files)[0].name,funcName:'getFile'}]:[],
+                      operation: ele.files.length>0?JSON.parse(ele.files).map(ele=>{
+                        return{
+                          buttonName:ele.name,
+                          funcName:'getFile',
+                          fileID:ele.id,
+                          fileName:ele.name
+                        }
+                      }):[],
                     };
                    
                   }
@@ -335,23 +343,7 @@ export default {
     //审批流程获取文件
     getFile(item){
       console.log(item)
-       this.$api.approve.getFile({fileId:item.fileID}).then((res) => {
-          let filename = item.fileName  //下载后文件名
-        // 创建 a 标签
-        let elink = document.createElement('a');
-        document.body.appendChild(elink);
-        elink.style.display = 'none'; // 隐藏起来
-        elink.download = filename
-        // 如果后端没有返回，可以自己设置下载文件的名称 elink.download = 'XXX文件.pdf'; 
-        let blob = new Blob([res.data]);
-        // 兼容webkix浏览器，处理webkit浏览器中herf自动添加blob前缀，默认在浏览器打开而不是下载
-        const URL = window.URL || window.webkitURL
-        elink.href = URL.createObjectURL(blob) // 通过createObjectURL方法转换成对象url
-          
-        elink.click();
-        document.body.removeChild(elink);
-        URL.revokeObjectURL(elink.href); // 释放URL 对象
-      });
+       this.$api.approve.getFile({fileId:item.fileID});
     },
     async init() {
       const obj = await this.initCurrentEnvironmentQuery();

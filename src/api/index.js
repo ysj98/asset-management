@@ -49,6 +49,7 @@ import * as assetInsurance from './assetInsurance'
 import * as houseStatusConfig from './houseStatusConfig'
 import * as projectManager from './projectManager'
 import * as assetUsageList from './assetUsageList'
+import * as debt from './debt'
 const API = {
   auth,
   global,
@@ -86,7 +87,8 @@ const API = {
   assetInsurance,
   houseStatusConfig,
   projectManager,
-  assetUsageList
+  assetUsageList,
+  debt
 }
 export default {
   install (Vue) {

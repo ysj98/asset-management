@@ -1481,5 +1481,10 @@ let proRouter = [{
     name: '明细表',
     component: () => import('@/views/assetUsageList/scheduleOf.vue'),
   },
+  {
+    path: '/debt',
+    name: '资产抵押登记',
+    component: () => import('@/views/assetDebtRegistration/index.vue'),
+  },
 ]
 export default proRouter

@@ -47,6 +47,11 @@ export const columns = [
     width: 120
   },
   {
+    title: "机构名称",
+    dataIndex: "organName",
+    width: 200
+  },
+  {
     title: "土地名称",
     dataIndex: "blankName",
     ellipsis: true,
