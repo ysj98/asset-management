@@ -1612,6 +1612,8 @@ export const approve = {
   queryApprovalRecordByBus:'/ams/approval/queryApprovalRecordByBus',
   // 统一审批接口
   uniformSubmit:'/ams/approval/uniformSubmit',
+  //审批文件
+  downloadFile:'/eip-portal/system/file/v1/downloadFile',
 }
 
 export const transfer = {
