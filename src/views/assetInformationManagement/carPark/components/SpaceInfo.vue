@@ -5,7 +5,7 @@
     <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, span} in spaceInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <span style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || ''}}</span>
         <a-icon v-if="key==='address'" type="environment" style="color: #e4393c; cursor: pointer" @click="handleModalOpen('location')"/>
       </a-col>
     </a-row>

@@ -45,9 +45,9 @@ export default {
     generateAColChildren(data) {
       const _h = this.$createElement;
       const resValue = this.data ? this.data[data.key] : data.value;
-      // 如果 值为空或者undefined 就显示 --
+      // 如果 值为空或者undefined 就显示 ''
       const children = [undefined, "", null].includes(resValue)
-        ? "--"
+        ? ""
         : (data.render && data.render(_h, data, resValue,this.BasicInfoList)) ||
           _h(
             "span",

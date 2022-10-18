@@ -7,15 +7,15 @@
         <a-row v-if="Object.keys(item.details).length && item.title !== '接管信息'">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
             <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
-            <span style="color: #49505E">{{detailData[key] || '无'}}</span>
+            <span style="color: #49505E">{{detailData[key] || ''}}</span>
           </a-col>
         </a-row>
         <!-- 散列信息 -->
         <a-row v-if="Object.keys(item.details).length && item.title === '接管信息'">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
             <span style="margin-right: 4px; color: #282D5B">{{name}}{{name ? ':':''}}</span>
-            <span v-if="key && key !== 'attachment'" style="color: #49505E">{{detailData[key] || '无'}}</span>
-            <span v-if="key === 'attachment' && detailData[key] && detailData[key].length <= 0">无</span>
+            <span v-if="key && key !== 'attachment'" style="color: #49505E">{{detailData[key] || ''}}</span>
+            <span v-if="key === 'attachment' && detailData[key] && detailData[key].length <= 0"></span>
             <div style="display: inline-block;" v-if="key === 'attachment' && detailData[key] && detailData[key].length > 0">
               <UploadFile
                 type="all"

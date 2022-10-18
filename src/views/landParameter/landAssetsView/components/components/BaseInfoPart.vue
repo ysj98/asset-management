@@ -9,7 +9,7 @@
         <a @click="goDetail" v-if="key === 'assetName'">
           {{infoData[key]}}
         </a>
-        <span v-else style="margin-left: 9px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <span v-else style="margin-left: 9px; color: #49505E">{{infoData[key] || ''}}</span>
       </a-col>
     </a-row>
     <!--空间位置-->
@@ -17,11 +17,11 @@
     <a-row class="title_div" style="margin-top: 6px; margin-bottom: 15px">
       <a-col v-for="{title, key, type, span} in spaceInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282D5B">{{title}}:</span>
-        <span v-if="type === 'text'" style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || '无'}}</span>
+        <span v-if="type === 'text'" style="margin:0 15px 0 4px; color: #49505E">{{infoData[key] || ''}}</span>
         <div class="img-icon" v-else-if="type === 'img' && infoData[key] && infoData[key].length">
           <img v-for="(url, index) in infoData[key]" :src="getUrl(url)" @click="openBigImg(infoData[key], index)" alt="" :key="index">
         </div>
-        <span v-else>无</span>
+        <span v-else></span>
       </a-col>
     </a-row>
     <!--资产使用方向-->

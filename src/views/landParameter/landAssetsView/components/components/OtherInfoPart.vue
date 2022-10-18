@@ -8,7 +8,7 @@
         <a-row v-if="Object.keys(item.details).length">
           <a-col :span="8" v-for="(name, key) in item.details" :key="key">
             <span style="margin-right: 4px; color: #282D5B">{{name}}:</span>
-            <span style="color: #49505E">{{detailData[key] || '无'}}</span>
+            <span style="color: #49505E">{{detailData[key] || ''}}</span>
           </a-col>
         </a-row>
         <!--列表部分-->

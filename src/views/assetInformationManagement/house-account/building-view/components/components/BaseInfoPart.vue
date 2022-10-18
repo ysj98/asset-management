@@ -15,7 +15,7 @@
               <span style="margin-left:4px;" v-if="key==='buildName'">
                 <a @click="goDetail">{{baseInfoData[key]}}</a>
               </span>
-              <span v-else style="margin-left:4px; color: #49505E">{{(baseInfoData[key] !== '' && baseInfoData[key] !== null) ? baseInfoData[key] : '无'}}</span>
+              <span v-else style="margin-left:4px; color: #49505E">{{(baseInfoData[key] !== '' && baseInfoData[key] !== null) ? baseInfoData[key] : ''}}</span>
             </div>
           </div>
         </a-col>
