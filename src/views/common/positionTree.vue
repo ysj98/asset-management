@@ -72,6 +72,14 @@ export default {
       type: Number,
       default: 0,
     },
+    pageNo:{
+      type: Number,
+      default: 1,
+    },
+    pageLength:{
+      type: String,
+      default: '10',
+    },
     organId: {
       type: [String, Number],
       default: ''
@@ -245,7 +253,9 @@ export default {
         organId:this.organId,
         isCurrent:this.isCurrent,
         upPositionId: '-1',
-        positionType: '1'
+        positionType: '1',
+        pageNo:this,pageNo,
+        pageLength:this.pageLength
       }
       return this.$api.building.positionSelectAsyn(data).then(res => {
         if (res.data.code === '0') {
@@ -263,6 +273,7 @@ export default {
             return {...item}
           })
           this.$emit('init',{gData:this.gData})
+          this.$emit('changePage',result.paginator.totalCount)
           this.copyGdata = utils.deepClone(this.gData)
           // this.expandedKeys = [topItem.key]
           this.treeUuid = getUuid()

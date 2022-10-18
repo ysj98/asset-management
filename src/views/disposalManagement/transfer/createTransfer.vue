@@ -440,7 +440,7 @@
 import "./addAndEdit.less";
 import Information from "@/components/Information";
 import SelectAssetModal from "@/views/disposalManagement/transfer/SelectAssetModal";
-import UploadFile from "@/views/disposalManagement/transfer/UploadFile";
+// import UploadFile from "@/views/disposalManagement/transfer/UploadFile";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import {
   getDetail,
@@ -458,7 +458,6 @@ export default {
     WarrantTable,
     LeaseTable,
     UsageTable,
-    UploadFile,
     SelectAssetModal,
     Information,
   },

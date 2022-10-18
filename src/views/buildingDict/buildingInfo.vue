@@ -51,11 +51,28 @@
           ref="positionTree"
           :isCurrent="isCurrent"
           :organId="organId"
+          :pageNo="pageNo"
+          :pageLength="pageLength"
           :selectedKeysDefault.sync="selectedKeysDefault"
           :expandedKeysDefault.sync="expandedKeysDefault"
           @handleSelect="checkTreeChange"
           @init="init"
+          @changePage="changePage"
         />
+      </div>
+      <div class="page">
+        <a-button @click="nextPage(1)">上页</a-button>
+        <span class="span">{{ pageNo }}/{{ totalPage }}</span>
+        <a-button @click="nextPage(1)">下页</a-button>
+        <a-select
+          default-value="10"
+          class="select"
+          @change="handleChange"
+        >
+          <a-select-option value="10"> 10 </a-select-option>
+          <a-select-option value="20"> 20 </a-select-option>
+          <a-select-option value="50"> 50 </a-select-option>
+        </a-select>
       </div>
     </div>
     <!-- 新增内容部分 -->
@@ -122,16 +139,16 @@ export default {
     createFloor,
     createUnit,
     eportAndDownFile,
-    downErrorFile
+    downErrorFile,
   },
   props: {
     organId: {
-      default: ""
+      default: "",
     },
     isCurrent: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
@@ -144,7 +161,10 @@ export default {
       createType: "", // unit新建单元，build新建楼栋，floor新建楼层
       activeItem: {},
       childNodeType: "", // 0可新建楼栋, 1单元， 2楼层
-      upErrorInfo: ""
+      upErrorInfo: "",
+      pageNo: 1,
+      totalPage: 1,
+      pageLength: 10,
     };
   },
   watch: {
@@ -155,7 +175,7 @@ export default {
     },
     isCurrent() {
       this.resetInit();
-    }
+    },
   },
   computed: {
     showCreateBuild() {
@@ -199,23 +219,40 @@ export default {
           this.activeType === "1") &&
         this.$power.has(ASSET_MANAGEMENT.ASSET_FLOOR_ADD)
       );
-    }
+    },
   },
   methods: {
     /*
      * 外部跳转至此 初始化
      * //TODO: 需要测试在 portal 中的情景
      * */
-    init({gData}) {
+    init({ gData }) {
       const { buildingId } = this.$route.query;
       if (buildingId) {
-        const arr = gData[0].children
-        const resObj = arr.filter(ele => {
+        const arr = gData[0].children;
+        const resObj = arr.filter((ele) => {
           return String(ele.buildingId) === String(buildingId);
         })[0];
         this.expandedKeysDefault.push(String(resObj.key));
         this.selectedKeysDefault = [String(buildingId)];
         this.checkTreeChange(resObj);
+      }
+    },
+    changePage(total) {
+      this.totalPage = Math.ceil(total / pageLength);
+    },
+    handleChange(value){
+      this.pageLength=value
+      this.pageNo=1
+      this.$refs.positionTree.positionSelectAsyn()
+    },
+    nextPage(val){
+      if (val===1 && this.pageNo>1) {
+        this.pageNo-=1
+        this.$refs.positionTree.positionSelectAsyn()
+      } else if(val===1 && this.totalPage!=this.pageNo) {
+        this.pageNo+=1
+        this.$refs.positionTree.positionSelectAsyn()
       }
     },
     /**
@@ -249,7 +286,7 @@ export default {
     },
     // 点击树节点改变
     checkTreeChange(item) {
-      console.log('item',item)
+      console.log("item", item);
       this.activeType = String(item.subPositionType);
       this.pageType = this.activeType === "-2" ? "" : "edit";
       this.createType = "";
@@ -258,7 +295,7 @@ export default {
       if (this.activeType === "0") {
         this.$api.building
           .queryBellowPositionType({ positionId: item.positionId })
-          .then(res => {
+          .then((res) => {
             if (res.data.code === "0") {
               this.childNodeType = res.data.data;
             }
@@ -272,7 +309,7 @@ export default {
     downModeFile() {
       let loadingName = this.SG_Loding("下载中...");
       this.$api.building.buildingDownLoadExcel().then(
-        res => {
+        (res) => {
           this.$SG_Message.destroy(loadingName);
           let blob = new Blob([res.data]);
           let a = document.createElement("a");
@@ -298,7 +335,7 @@ export default {
       fileData.append("file", file);
       let loadingName = this.SG_Loding("导入中...");
       this.$api.building.buildImportExcel(this.organId, fileData).then(
-        res => {
+        (res) => {
           if (res.data.code === "0") {
             this.DE_Loding(loadingName).then(() => {
               this.$SG_Message.success("导入成功！");
@@ -313,7 +350,7 @@ export default {
           }
         },
         () => {
-          this.DE_Loding(loadingName).then(res => {
+          this.DE_Loding(loadingName).then((res) => {
             this.$SG_Message.error("导入失败！");
           });
         }
@@ -331,10 +368,10 @@ export default {
       utils.AdjustHeight(elem);
     },
     // 防抖函数
-    debounceMothed: debounce(function() {
+    debounceMothed: debounce(function () {
       this.computedHeight();
-    }, 200)
-  }
+    }, 200),
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -351,7 +388,7 @@ export default {
     height: 100%;
     border-right: 1px solid rgba(238, 242, 245, 1);
     .tree-content {
-      height: calc(~"100% - 69px");
+      height: calc(~"100% - 110px");
       overflow: auto;
     }
     .tree-btn {
@@ -390,6 +427,17 @@ export default {
     height: 154px;
     background-image: url("../../assets/image/undertake/init_no.png");
     background-size: 100% 100%;
+  }
+}
+.page {
+  position: fixed;
+  .span {
+    padding: 0 10px;
+  }
+  .select{
+    width: 60px;
+    top: 1px;
+    margin-left: 10px;
   }
 }
 </style>
