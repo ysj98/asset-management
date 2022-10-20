@@ -766,9 +766,11 @@ export default {
       })
     },
     async initData() {
+      // 支持两种方式打开详情页面
+      // /asset-management/#/transfer/detail?applyId=120&organId=1000279
+      // /asset-management/#/transfer/detail?instId=
       const {
         query: { instId },
-        path,
       } = this.$route
       if (instId) {
         this.$route.meta.noShowProBreadNav = true

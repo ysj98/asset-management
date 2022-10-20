@@ -135,6 +135,10 @@ export function uploadAnnex (data) {
 export function downLoadAnnex (data) {
   return axiosGet(ownership.authorityCardManagement.downLoadAnnex, data, false, {responseType: 'blob'})
 }
+// 文件预览
+export function reviewFile (data) {
+  return axiosGet(ownership.authorityCardManagement.reviewFile, data)
+}
 // 打记标签接口
 export function updateWarrantTag (data) {
   return axiosPost(ownership.authorityCardManagement.updateWarrantTag, data)

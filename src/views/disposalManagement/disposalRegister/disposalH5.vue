@@ -130,6 +130,7 @@ export default {
   props: {},
   data () {
     return {
+      organId: '',
       storeId: '',
       path: '',
       apprId: '',
@@ -168,6 +169,7 @@ export default {
         const { query: { instId, organId, disposeRegisterOrderId}, path } = this.$route
         // 嵌入bpm
         let busId = ''
+        let relatedOrganId = ''
         if (instId){
           // 嵌套在 bpm 中时，关闭 面包屑
           this.$route.meta.noShowProBreadNav = true
@@ -178,6 +180,7 @@ export default {
           if (code === '0'){
             // 返回的数据 busId 代表 入库单id
             busId = data.busId
+            relatedOrganId = data.organId
           }else {
             this.$message.error(message)
           }
@@ -185,14 +188,15 @@ export default {
           this.$route.meta.noShowProBreadNav = false
         }
         this.storeId = busId || disposeRegisterOrderId
+        this.organId = relatedOrganId || organId
         if (this.storeId){
           this.query()
           this.getRegisterDetailListPage()
           this.getreceivecostPlanList()
-          if (organId){
+          if (this.organId){
             // 资产处置 1006 硬编码
             // 详情页面也需要展示审批轨迹
-            const req = {busType: 1006,busId:this.storeId,organId}
+            const req = {busType: 1006,busId:this.storeId,organId: this.organId}
             this.$api.approve.queryApprovalRecordByBus(req).then(({data:{code,message,data}})=>{
               if (code==='0'){
                 // 旧数据不存在审批单，但是 code 为“0”

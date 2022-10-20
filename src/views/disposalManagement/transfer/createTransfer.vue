@@ -440,8 +440,6 @@
 import "./addAndEdit.less";
 import Information from "@/components/Information";
 import SelectAssetModal from "@/views/disposalManagement/transfer/SelectAssetModal";
-// import UploadFile from "@/views/disposalManagement/transfer/UploadFile";
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import {
   getDetail,
   getObjectKeyValueByOrganIdFn,
@@ -453,7 +451,6 @@ import LeaseTable from "@/views/disposalManagement/transfer/LeaseTable";
 import WarrantTable from "@/views/disposalManagement/transfer/WarrantTable";
 export default {
   name: "createTransfer",
-  mixins: [uploadAndDownLoadFIle],
   components: {
     WarrantTable,
     LeaseTable,
