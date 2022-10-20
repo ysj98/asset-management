@@ -5,11 +5,12 @@
   <div>
     <SG-SearchContainer background="white">
         <div slot="headBtns">
-        <SG-Button icon="plus" type="primary" style="margin-right: 8px"  >新建</SG-Button>
+        <SG-Button icon="plus" type="primary" style="margin-right: 8px" @click="creatDebt" >新建</SG-Button>
         <SG-Button
           icon="export"
           :loading="exportBtnLoading"
           style="margin-right: 8px"
+          @click="downloadFn"
         >导出</SG-Button>
       </div>
       <div slot="headRight" class="search-content-box">
@@ -33,15 +34,15 @@
         :scroll="{y: 510}"
       >
         <template slot="operation" slot-scope="text, record">
-          <a class="operation-btn" @click="operationFun(record)">编辑</a>
-          <a class="operation-btn" @click="operationFun(record)">删除</a>
+          <a class="operation-btn" @click="editDebt(record)">编辑</a>
+          <a class="operation-btn" @click="deleteDebt(record)">删除</a>
           <a class="operation-btn" @click="operationFun(record)">详情</a>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
-      :pageLength="queryCondition.pageLength"
+      :pageLength="queryCondition.pageSize"
       :totalCount="paginator.totalCount"
       location="absolute"
       v-model="queryCondition.pageNum"
@@ -175,12 +176,35 @@ export default {
     handlePageChange (page) {
       console.log(page, 'pagepagepage')
       this.queryCondition.pageNum = page.pageNo
-      this.queryCondition.pageLength = page.pageLength
+      this.queryCondition.pageSize = page.pageLength
       this.queryList()
     },
     // 操作回调
     operationFun (record) {
       this.$router.push({path: '/ownershipChangeLog/detail', query: {warrantNbr: record.warrantNbr, kindOfRightName: record.kindOfRightName, logId: record.logId}})
+    },
+    creatDebt(){
+      this.$router.push({path: '/debt/creatDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'add'} })
+    },
+    editDebt(record){
+      this.$router.push({path: '/debt/creatDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'edit',debtId:record.debtId} })
+    },
+    deleteDebt(record){
+      let _this = this;
+      this.$confirm({
+        title: "提示",
+        content: "确认要删除该条记录吗？",
+        onOk() {
+          _this.$api.debt.deleteDebt({debtId:record.debtId}).then((res)=>{
+             if (res.data.code === '0') {
+                _this.$message.success('删除成功')
+                _this.queryList()
+        } else {
+          _this.$message.error(res.data.message)
+        }
+          })
+        },
+      });
     },
     // 点击查询
     queryClick () {
@@ -191,6 +215,24 @@ export default {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       )
+    },
+    //导出
+    downloadFn () {
+      let obj = {
+        ...this.queryCondition
+      }
+      delete obj.pageNum
+      delete obj.pageSize
+      this.$api.debt.exportDebt(obj).then(res => {
+        let blob = new Blob([res.data])
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = '资产抵押登记.xls'
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      })
     },
     // 查询列表
     queryList () {

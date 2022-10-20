@@ -1773,5 +1773,14 @@ export const projectManager = {
 export const debt = {
   //债务登记-分页列表
   getDebtPage:'/ams/debt/getDebtPage',
-
+  //新增
+  submitDebt:'/ams/debt/submitDebt',
+  //详情
+  getDebtInfo:'/ams/debt/getDebtInfo',
+  //资产明细
+  getDebtInfoDetailLis:'/ams/debt/getDebtInfoDetailList',
+  //删除
+  deleteDebt:'/ams/debt/deleteDebt',
+  //导出
+  exportDebt:'/ams/debt/exportDebt'
 }
