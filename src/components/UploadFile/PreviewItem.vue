@@ -4,8 +4,7 @@
     <div class="ItemBox" :class="Ext" @mouseover="previewBtn = !previewBtn" @mouseout="previewBtn = !previewBtn">
       <a-spin v-if="loading"><a-icon slot="indicator" type="loading" style="font-size: 24px" spin /></a-spin>
       <img v-if="!loading && !errorStatus && !noOperation && !isFile" :src="FileURL" @load="handleLoad" @error="handleError" :style="imgAutoStyle" />
-      <!-- 预览按钮 如果是图片，只通过hover的方式去控制预览按钮；如果是文件，判断有无在线预览的地址，同时通过hover去控制 -->
-      <div class="previewBtn" v-show="(previewBtn && !isFile) || (previewBtn && previewUrl)" @click="toPreview">预览</div>
+      <div class="previewBtn" v-show="previewBtn" @click="toPreview">预览</div>
     </div>
     <!-- 标题 -->
     <div class="ItemTitle">
@@ -28,6 +27,7 @@
 </template>
 
 <script>
+import * as apiOwnership from '@/api/ownership'
 export default {
   props: {
     // 是否显示设为封面按钮
@@ -81,6 +81,10 @@ export default {
     Ext() {
       return this.item.url && this.item.url.split('.').pop().toLocaleLowerCase()
     },
+    // 判断文件是否支持预览
+    isPre() {
+      // 'doc, docx, xls, xlsx, ppt, pptx,  jpg, jpeg, bmp, png, pdf'
+    },
     // 判断是否是文件类型
     isFile() {
       const Dict = ['txt', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt', 'pptx', 'zip', 'rar', 'gz', '7z', 'acd']
@@ -92,7 +96,19 @@ export default {
       if (!this.isFile) {
         this.$emit('preview', this.imageIndex)
       } else {
-        alert('文件预览，正在开发')
+        let loadingName = this.SG_Loding('打开文件中...')
+        apiOwnership.reviewFile({ fileId: this.item.url }).then(
+          res => {
+            this.DE_Loding(loadingName).then(() => {
+              console.log('🚀 ~ file: PreviewItem.vue ~ line 98 ~ toPreview ~ res', res)
+            })
+          },
+          () => {
+            this.DE_Loding(loadingName).then(() => {
+              this.$SG_Message.error('打开文件失败！')
+            })
+          }
+        )
       }
     },
     // 图片加载失败
