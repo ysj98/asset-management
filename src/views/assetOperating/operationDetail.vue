@@ -52,11 +52,12 @@
     <!--审批轨迹-->
     <div>
       <SG-Title title="审批轨迹" />
-      <SG-TrackStep
+      <step
         v-stepstyleplus
         v-if="stepList.length"
         :stepList="stepList"
         style="margin-left: 45px"
+        @getFile="getFile"
       />
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
     </div>
@@ -88,6 +89,8 @@
 <script>
 import FormFooter from "@/components/FormFooter";
 import Information from "@/components/Information";
+import Step from "./step.vue";
+
 import {
   baseColumns,
   flatTableDataSource,
@@ -97,7 +100,7 @@ import {
 } from "@/views/assetOperating/share";
 import moment from "moment";
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
-
+import { handleDownloadFile } from "@/utils/utils.js";
 export default {
   /*
    * 详情页面
@@ -106,6 +109,7 @@ export default {
   components: {
     Information,
     FormFooter,
+    Step
   },
   mixins: [uploadAndDownLoadFIle],
   data() {
@@ -299,6 +303,7 @@ export default {
                 this.apprId = data.amsApprovalResDto.apprId;
                 this.stepList = (data.approvalRecordResDtos || []).map(
                   (ele) => {
+                    //  console.log(JSON.parse(ele.files))
                     return {
                       date: ele.operDateStr
                         ? moment(ele.operDateStr)
@@ -306,8 +311,16 @@ export default {
                       title: ele.operOpinion,
                       desc: "",
                       isDone: false,
-                      operation: [],
+                      operation: ele.files.length>0?JSON.parse(ele.files).map(ele=>{
+                        return{
+                          buttonName:ele.name,
+                          funcName:'getFile',
+                          fileID:ele.id,
+                          fileName:ele.name
+                        }
+                      }):[],
                     };
+                   
                   }
                 );
                 this.stepList.length && (this.stepList[0].isDone = true);
@@ -326,6 +339,11 @@ export default {
           }
         );
       });
+    },
+    //审批流程获取文件
+    getFile(item){
+      console.log(item)
+       this.$api.approve.getFile({fileId:item.fileID});
     },
     async init() {
       const obj = await this.initCurrentEnvironmentQuery();
