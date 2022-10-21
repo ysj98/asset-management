@@ -30,7 +30,7 @@
     <div class="particulars-nav">
       <span class="section-title blue">资产明细</span>
       <div class="particulars-obj">
-        <div class="particulars-t">交付资产数量：{{assetChangeCount || '0'}}个<span v-if="!isSelectedEquipment">，合计交付面积：{{deliveryArea || '0'}}㎡</span></div>
+        <!-- <div class="particulars-t">交付资产数量：{{assetChangeCount || '0'}}个<span v-if="!isSelectedEquipment">，合计交付面积：{{deliveryArea || '0'}}㎡</span></div> -->
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"
@@ -38,7 +38,11 @@
             :dataSource="tableData"
             class="custom-table td-pd10"
             :pagination="false"
-          ></a-table>
+          >
+          <template slot="num" slot-scope="text, record,index">
+              {{index+1}}
+            </template>
+          </a-table>
           <SG-FooterPagination
             :pageLength="queryCondition.pageSize"
             :totalCount="queryCondition.count"
@@ -94,7 +98,7 @@ const columns = [
     scopedSlots: { customRender: "amount" },
   },
   {
-    title: "金额",
+    title: "金额(元)",
     dataIndex: "amount",
     align: "center",
     width: "15%",
@@ -102,18 +106,13 @@ const columns = [
   },
 ]
 const basicData = [
-  { name: '交付单编号', key: 'deliveryId'},
-  { name: '交付单名称', key: 'deliveryName'},
-  { name: '状态', key: 'approvalStatusName'},
-  { name: '所属组织机构', key: 'organName'},
-  { name: '资产项目', key: 'projectName'},
-  { name: '资产类型', key: 'assetTypeName'},
-  { name: '交付类型', key: 'deliveryTypeName'},
-  { name: '交付单位', key: 'deliveryCompany'},
-  { name: '交付日期', key: 'deliveryDate'},
-  { name: '结束日期', key: 'endDate'},
-  { name: '创建人', key: 'createByName'},
-  { name: '创建日期', key: 'createTime'},
+  { name: '组织机构名称', key: 'organName'},
+  { name: '所属项目', key: 'projectName'},
+  { name: '债务类型', key: 'debtTypeName'},
+  { name: '有效期', key: 'dateStr'},
+  { name: '债权人', key: 'creditor'},
+  { name: '债权人电话', key: 'creditorTel'},
+  { name: '创建时间', key: 'createTime'},
   { name: '备注', key: 'remark'}
 ]
 export default {
@@ -122,7 +121,7 @@ export default {
   data() {
     return {
       spinning: false,
-      deliveryId: '',           // 交付单id
+      debtId: '',           // 交付单id
       basicData,
       basicObj: {},             // 基本信息
       assetChangeCount: '',     // 资产数量
@@ -159,7 +158,7 @@ export default {
   methods: {
     // 查询基本信息
     query() {
-      this.$api.delivery.getDeliveryById({deliveryId: this.deliveryId}).then((res) => {
+      this.$api.debt.getDebtInfo({debtId: this.$route.query.debtId}).then((res) => {
         if (Number(res.data.code) === 0) {
           this.basicObj = res.data.data
         } else {
@@ -168,14 +167,14 @@ export default {
       });
     },
     // 查资产明细
-    getDeliveryDetailListPage () {
+    getDebtDetailPage () {
       this.loading = true
       let obj = {
-        deliveryId: this.deliveryId,                  // 交付id
+        debtId: this.debtId,                  // 交付id
         pageNum: this.queryCondition.pageNum,
         pageSize: this.queryCondition.pageSize
       }
-      this.$api.delivery.getDeliveryDetailListPage(obj).then((res) => {
+      this.$api.debt.getDebtDetailPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           this.checkedData = []
@@ -193,7 +192,7 @@ export default {
     },
     // 查汇总信息
     getDeliveryDetailListStatistics () {
-      this.$api.delivery.getDeliveryDetailListStatistics({deliveryId: this.deliveryId}).then((res) => {
+      this.$api.delivery.getDeliveryDetailListStatistics({debtId: this.debtId}).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.assetChangeCount = data.assetChangeCount    // 数量
@@ -206,7 +205,7 @@ export default {
     // 附件查询
     attachment () {
       let obj = {
-        objectId: this.deliveryId,       // 交付id
+        objectId: this.debtId,       // 交付id
         objectType: '18'      // 类型：交付信息18
       }
       this.$api.basics.attachment(obj).then((res) => {
@@ -231,18 +230,17 @@ export default {
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo
       this.queryCondition.pageSize = data.pageLength
-      this.getDeliveryDetailListPage()
+      this.getDebtDetailPage()
     },
   },
   created() {},
   mounted() {
-    this.particularsData = JSON.parse(this.$route.query.record)
-    this.deliveryId = this.particularsData[0].deliveryId
+    this.debtId = this.$route.query.debtId
     this.spinning = true
     Promise.all([
       this.query(),
-      this.getDeliveryDetailListPage(),
-      this.getDeliveryDetailListStatistics(),
+      this.getDebtDetailPage(),
+    //   this.getDeliveryDetailListStatistics(),
       this.attachment(),
     ]).then((res) => {
       this.spinning = false

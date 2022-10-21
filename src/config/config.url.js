@@ -1784,5 +1784,7 @@ export const debt = {
   //删除
   deleteDebt:'/ams/debt/deleteDebt',
   //导出
-  exportDebt:'/ams/debt/exportDebt'
+  exportDebt:'/ams/debt/exportDebt',
+  //明细分页列表
+  getDebtDetailPage:'/ams/debt/getDebtDetailPage'
 }
