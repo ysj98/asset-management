@@ -766,9 +766,11 @@ export default {
       })
     },
     async initData() {
+      // 支持两种方式打开详情页面
+      // /asset-management/#/transfer/detail?applyId=120&organId=1000279&fromType=detail
+      // /asset-management/#/transfer/detail?instId=1583291911515570176
       const {
         query: { instId },
-        path,
       } = this.$route
       if (instId) {
         this.$route.meta.noShowProBreadNav = true
@@ -787,7 +789,8 @@ export default {
         this.$route.meta.noShowProBreadNav = false
         this.applyId = this.$route.query.applyId
       }
-      this.fromType = this.$route.query.fromType
+      // 移动端打开详情页不会带上fromType=detail 参数
+      this.fromType = this.$route.query.fromType || 'detail'
       // this.organId = this.$route.query.organId;
       const data = await getDetail({ applyId: this.applyId })
       this.getTableAssetDetail(data.assetDetails)
@@ -808,7 +811,6 @@ export default {
     this.initData()
     if (this.isMobile()) {
       this.isMobileStatus = true
-      this.fromType = 'detail'
       // 修改body样式
       document.querySelector('body').style = 'min-width: auto !important;'
       // 关闭导航栏
