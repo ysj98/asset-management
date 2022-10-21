@@ -80,10 +80,11 @@
     <!--审批轨迹-->
     <div class="countingTaskDetail-nav">
       <SG-Title title="审批轨迹" />
-      <SG-TrackStep
+      <step
         v-stepstyleplus
         v-if="stepList.length"
         :stepList="stepList"
+         @getFile="getFile"
         style="margin-left: 45px"
       />
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
@@ -121,11 +122,12 @@
 import FormFooter from "@/components/FormFooter";
 import noDataTips from "@/components/noDataTips"
 import {utils} from '@/utils/utils.js'
+import Step from '@/components/step'
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 import {h5Columns, h5Receiving, conditionalJudgment} from './beat.js'
 import moment from "moment";
 export default {
-  components: {noDataTips, FormFooter},
+  components: {noDataTips, FormFooter,Step},
   mixins:[uploadAndDownLoadFIle],
   props: {},
   data () {
@@ -240,10 +242,21 @@ export default {
             this.apprId = data.amsApprovalResDto.apprId
             this.stepList = (data.approvalRecordResDtos || []).map(ele=>{
               return {
-                date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
-                title: ele.operOpinion,
-                desc: "", isDone: false, operation: [],
-              }
+                      date: ele.operDateStr
+                        ? moment(ele.operDateStr)
+                        : moment(),
+                      title: ele.operOpinion,
+                      desc: "",
+                      isDone: false,
+                      operation: ele.files&&ele.files.length>0?JSON.parse(ele.files).map(ele=>{
+                        return{
+                          buttonName:ele.name,
+                          funcName:'getFile',
+                          fileID:ele.id,
+                          fileName:ele.name
+                        }
+                      }):[],
+                    };
             })
             this.stepList.length && (this.stepList[0].isDone = true)
             if (this.detailData.type === 'approval'){
@@ -255,6 +268,11 @@ export default {
           this.$message.error(message)
         }
       })
+    },
+    //审批流程获取文件
+    getFile(item){
+      console.log(item)
+       this.$api.approve.getFile({fileId:item.fileID});
     },
     // 按钮操作
     handleBtn(operResult) {
