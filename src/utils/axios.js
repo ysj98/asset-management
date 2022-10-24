@@ -72,19 +72,19 @@ axiosX.interceptors.response.use(
     // 成功则直接返回数据
       // 附件下载
       console.log(response)
-  if (
-    response &&
-    response.status == 200 &&
-    response.headers &&
-    response.headers["content-disposition"] &&
-    response.headers["content-disposition"].startsWith("attachment;")
-) {
-    let blob = new Blob([response.data]);
-    const fileName = decodeURIComponent(
-      response.headers["content-disposition"].split(";")[1].split("filename=")[1]
-    );
-    saveAs(blob, fileName);
-}
+//   if (
+//     response &&
+//     response.status == 200 &&
+//     response.headers &&
+//     response.headers["content-disposition"] &&
+//     response.headers["content-disposition"].startsWith("attachment;")
+// ) {
+//     let blob = new Blob([response.data]);
+//     const fileName = decodeURIComponent(
+//       response.headers["content-disposition"].split(";")[1].split("filename=")[1]
+//     );
+//     saveAs(blob, fileName);
+// }
     return response
   },
   error => {

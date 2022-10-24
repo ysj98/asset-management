@@ -1492,8 +1492,13 @@ let proRouter = [{
     component: () => import('@/views/assetDebtRegistration/creatDebt.vue'),
   },
   {
+    path: '/debt/editDebt',
+    name: '编辑资产抵押登记',
+    component: () => import('@/views/assetDebtRegistration/creatDebt.vue'),
+  },
+  {
     path: '/debt/detailDebt',
-    name: '新增资产抵押登记',
+    name: '资产抵押登记详情',
     component: () => import('@/views/assetDebtRegistration/detailDebt.vue'),
   },
 ]

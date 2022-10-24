@@ -601,6 +601,9 @@ export default {
             attachmentList: files,
             detailList: assetDetailList, // 资产明细
           };
+          if(this.setType){
+              obj.debtId=this.debtId
+          }
           console.log(obj)
           let loadingName = this.SG_Loding("保存中...");
           this.$api.debt.submitDebt(obj).then((res) => {

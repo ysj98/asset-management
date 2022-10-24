@@ -343,7 +343,20 @@ export default {
     //审批流程获取文件
     getFile(item){
       console.log(item)
-       this.$api.approve.getFile({fileId:item.fileID});
+       this.$api.approve.getFile({fileId:item.fileID}).then(res => {
+        let blob = new Blob([res.data])
+        console.log(blob)
+        const fileName = decodeURIComponent(
+             res.headers["content-disposition"].split(";")[1].split("filename=")[1]
+        );
+        let a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = fileName
+        a.style.display = 'none'
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      });
     },
     async init() {
       const obj = await this.initCurrentEnvironmentQuery();
