@@ -9,7 +9,6 @@ import qs from 'qs'
 import store from './../store'
 import SG_UI from 'segi-ant'
 import {uuid} from './utils'
-import { saveAs } from 'file-saver';
 import localStore from '@/utils/localStore'
 // 引入配置文件
 import baseConfig from '@/config/config.base'
