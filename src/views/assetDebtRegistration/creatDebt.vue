@@ -164,13 +164,13 @@
                 placeholder="请输入抵押额"
                 :style="allWidth"
                 :max="30"
+                :disabled="true"
                 v-decorator="[
                   'amount',
                   {
                     rules: [
                       {
                         required: false,
-                        max: 30,
                         whitespace: true,
                         message: '请输入抵押额',
                       },
@@ -250,12 +250,10 @@
               {{index+1}}
             </template>
             <template slot="amount" slot-scope="text, record">
-              <a-input-number
+              <a-input
                 size="small"
-                :min="0"
-                :step="1.0"
-                :precision="2"
                 v-model="record.amount"
+                @change="checkAmount"
               />
             </template>
             <template slot="operation" slot-scope="text, record,index">
@@ -359,7 +357,7 @@ const newDebt = {
   creditorTel: "",
   debtId:'',
   creditorAddr: "",
-  amount: "",
+  amount: undefined,
   debtType: undefined, // 资产类型
   projectId: undefined, // 资产项目
   debtDate: [], // 交付日期
@@ -438,7 +436,7 @@ export default {
       Promise.all([
         this.editFn(),
         this.getDeliveryDetailList(), // 获取明细
-        this.getDeliveryDetailListStatistics(), // 获取汇总
+        // this.getDeliveryDetailListStatistics(), // 获取汇总
         this.attachment(), // 获取附件
       ]).then((res) => {});
     }
@@ -522,8 +520,8 @@ export default {
     // 附件查询
     attachment() {
       let obj = {
-        objectId: this.deliveryId, // 交付id
-        objectType: "18", // 类型：交付信息18
+        objectId: this.debtId, // 交付id
+        objectType: "32", // 类型：交付信息18
       };
       this.$api.basics.attachment(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -546,11 +544,19 @@ export default {
     // 提交
     save() {
       this.form.validateFields((err, values) => {
+          console.log(err, 'err11111')
         if (!err) {
             console.log(values)
           if (this.tableData.length === 0) {
             this.$message.info("请选择资产明细");
             return;
+          }
+          let match =/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
+          if(values.creditorTel&&values.creditorTel.length!=0){
+              if(!values.creditorTel.match(match)){
+                  this.$message.info("请填写正确的手机号码");
+            return;
+              }
           }
           let assetDetailList = this.tableData.map((item) => {
             return {
@@ -584,11 +590,11 @@ export default {
             debtType: values.debtType, // 资产类型
             projectId: values.projectId, // 资产项目Id
             dateStart:
-              values.debtDate === undefined
+              values.debtDate.length==0
                 ? ""
                 : `${values.debtDate[0].format("YYYY-MM-DD")}`, // 交付日期
             dateEnd:
-              values.debtDate === undefined
+              values.debtDate.length==0
                 ? ""
                 : `${values.debtDate[1].format("YYYY-MM-DD")}`, // 截止日期
             remark: values.remark, // 备注
@@ -753,9 +759,19 @@ export default {
     },
     // 资产类型监听
     assetTypeFn (value) {
-      this.tableData = []
-      this.checkedData = []
+    //   this.tableData = []
+    //   this.checkedData = []
     },
+    checkAmount(){
+        console.log(this.form)
+        let count = 0
+        this.tableData.forEach(ele=>{
+            if(ele.amount){
+                count+=Number(ele.amount) 
+            }
+        })
+        this.form.setFieldsValue({'amount':String(count)})
+    }
   },
 };
 </script>

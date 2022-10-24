@@ -36,7 +36,7 @@
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" @click="editDebt(record)">编辑</a>
           <a class="operation-btn" @click="deleteDebt(record)">删除</a>
-          <a class="operation-btn" @click="operationFun(record)">详情</a>
+          <a class="operation-btn" @click="detailDebt(record)">详情</a>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
@@ -188,6 +188,9 @@ export default {
     },
     editDebt(record){
       this.$router.push({path: '/debt/creatDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'edit',debtId:record.debtId} })
+    },
+    detailDebt(record){
+      this.$router.push({path: '/debt/detailDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'detail',debtId:record.debtId} })
     },
     deleteDebt(record){
       let _this = this;

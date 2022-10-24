@@ -25,6 +25,9 @@ export function getDebtInfoDetailLis(data) {
 export function deleteDebt(data) {
     return axiosPost(debt.deleteDebt, data, true, false, {});
 }
+export function getDebtDetailPage(data) {
+    return axiosPost(debt.getDebtDetailPage, data, true, false, {});
+}
 export function exportDebt(data) {
     return axiosPost(debt.exportDebt, data, false, false, {responseType: 'blob'});
 }
