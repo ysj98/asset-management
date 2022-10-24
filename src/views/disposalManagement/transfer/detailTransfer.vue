@@ -150,7 +150,7 @@
         <a-col :offset="2" :span="18">
           <!--审批轨迹-->
           <div>
-            <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
+            <step v-stepstyleplus v-if="stepList.length" :stepList="stepList" @getFile="getFile" style="margin-left: 45px" />
             <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
           </div>
         </a-col>
@@ -216,6 +216,7 @@ import UsageTable from '@/views/disposalManagement/transfer/UsageTable'
 import FormFooter from '@/components/FormFooter'
 import ShowFile from '@/views/disposalManagement/transfer/ShowFile'
 import Information from '@/components/Information'
+import Step from '@/components/step'
 import moment from 'moment'
 import { getDetail } from './share'
 
@@ -232,6 +233,7 @@ export default {
     UsageTable,
     LeaseTable,
     FloatAnchor,
+    Step
   },
   data() {
     return {
@@ -614,6 +616,11 @@ export default {
         this.modalList[modal].title = title
       }
     },
+    //审批流程获取文件
+    getFile(item){
+      console.log(item)
+       this.$api.approve.getFile({fileId:item.fileID});
+    },
     // 按钮操作
     handleBtn(operResult) {
       if (operResult === 0) {
@@ -748,12 +755,21 @@ export default {
             this.apprId = data.amsApprovalResDto.apprId
             this.stepList = (data.approvalRecordResDtos || []).map(ele => {
               return {
-                date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
-                title: ele.operOpinion,
-                desc: '',
-                isDone: false,
-                operation: [],
-              }
+                      date: ele.operDateStr
+                        ? moment(ele.operDateStr)
+                        : moment(),
+                      title: ele.operOpinion,
+                      desc: "",
+                      isDone: false,
+                      operation: ele.files&&ele.files.length>0?JSON.parse(ele.files).map(ele=>{
+                        return{
+                          buttonName:ele.name,
+                          funcName:'getFile',
+                          fileID:ele.id,
+                          fileName:ele.name
+                        }
+                      }):[],
+                    };
             })
             this.stepList.length && (this.stepList[0].isDone = true)
             if (this.fromType === 'approve') {
@@ -767,8 +783,8 @@ export default {
     },
     async initData() {
       // 支持两种方式打开详情页面
-      // /asset-management/#/transfer/detail?applyId=120&organId=1000279
-      // /asset-management/#/transfer/detail?instId=
+      // /asset-management/#/transfer/detail?applyId=120&organId=1000279&fromType=detail
+      // /asset-management/#/transfer/detail?instId=1583291911515570176
       const {
         query: { instId },
       } = this.$route
@@ -789,7 +805,8 @@ export default {
         this.$route.meta.noShowProBreadNav = false
         this.applyId = this.$route.query.applyId
       }
-      this.fromType = this.$route.query.fromType
+      // 移动端打开详情页不会带上fromType=detail 参数
+      this.fromType = this.$route.query.fromType || 'detail'
       // this.organId = this.$route.query.organId;
       const data = await getDetail({ applyId: this.applyId })
       this.getTableAssetDetail(data.assetDetails)
@@ -810,7 +827,6 @@ export default {
     this.initData()
     if (this.isMobile()) {
       this.isMobileStatus = true
-      this.fromType = 'detail'
       // 修改body样式
       document.querySelector('body').style = 'min-width: auto !important;'
       // 关闭导航栏
