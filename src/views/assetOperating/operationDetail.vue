@@ -343,7 +343,7 @@ export default {
     //审批流程获取文件
     getFile(item){
       console.log(item)
-      this.$api.approve.getFile({fileId:item.fileID}).then(res => {
+       this.$api.approve.getFile({fileId:item.fileID}).then(res => {
         let blob = new Blob([res.data])
         console.log(blob)
         const fileName = decodeURIComponent(

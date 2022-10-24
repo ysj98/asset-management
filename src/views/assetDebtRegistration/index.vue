@@ -227,10 +227,10 @@ export default {
       delete obj.pageNum
       delete obj.pageSize
       this.$api.debt.exportDebt(obj).then(res => {
-        let blob = new Blob([res.data])
+         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
-        a.download = '资产抵押登记.xls'
+        a.download = '资产抵押记录.xls'
         a.style.display = 'none'
         document.body.appendChild(a)
         a.click()
