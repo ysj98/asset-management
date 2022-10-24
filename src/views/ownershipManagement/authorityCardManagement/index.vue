@@ -59,6 +59,18 @@
           >
             <a-select-option :title="item.name" v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
+          <a-select
+            optionFilterProp="children"
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="审批转态"
+            :tokenSeparators="[',']"
+            @select="approvalStatusFn"
+            v-model="queryCondition.approvalStatusList"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusListData" :key="index" :value="item.value">{{item.name}}</a-select-option>
+          </a-select>
           <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
           <a-input :style="allStyle" v-model="queryCondition.seatingPosition" placeholder="坐落位置" maxlength="30"  />
           <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部附件状态" v-model="queryCondition.attachmentStatus">
@@ -230,6 +242,32 @@ const statusData = [
     value: '1'
   }
 ]
+const approvalStatusListData = [
+  {
+    name: '全部审批状态',
+    value: ''
+  },
+  {
+    name: '草稿',
+    value: '0'
+  },
+  {
+    name: '已审批',
+    value: '1'
+  },
+  {
+    name: '待审批',
+    value: '2'
+  },
+  {
+    name: '已驳回',
+    value: '3'
+  },
+  {
+    name: '已取消',
+    value: '4'
+  }
+]
 const attachmentStatus = [
   {
     name: '全部附件状态',
@@ -249,6 +287,7 @@ const queryCondition =  {
     kindOfRights: '',   // 权证类型(多选)
     obligeeId: '',      // 权属人
     status: ['1'],         // 权证状态
+    approvalStatusList: [''], // 审批状态
     attachmentStatus: '', // 附加状态
     warrantNbr: '',     // 权证号
     ownerTypeList: [],  // 权属形式
@@ -285,6 +324,7 @@ export default {
       kindOfRightsData: [],
       operationData: [...operationData],
       statusData: [...statusData],
+      approvalStatusListData: [...approvalStatusListData],
       attachmentStatus: [...attachmentStatus],
       queryCondition: {...queryCondition},
       count: '',
@@ -553,6 +593,12 @@ export default {
         this.queryCondition.status = this.handleMultipleSelectValue(value, this.queryCondition.status, this.statusData)
       })
     },
+    // 审批状态发生变化
+    approvalStatusFn (value) {
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatusList = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatusList, this.approvalStatusListData)
+      })
+    },
     // 权证标签
     warrantTagFn (value) {
       this.$nextTick(function () {
@@ -614,6 +660,7 @@ export default {
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        approvalStatusList: this.queryCondition.approvalStatusList.length > 0 ? this.queryCondition.approvalStatusList.join(',') : '',         // 审批状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
         uploadAttachment: this.queryCondition.attachmentStatus,
@@ -671,6 +718,7 @@ export default {
         obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
+        approvalStatusList: this.queryCondition.approvalStatusList.length > 0 ? this.queryCondition.approvalStatusList.join(',') : '',         // 审批状态
         warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : '',    // 权证号
         uploadAttachment: this.queryCondition.attachmentStatus
       }

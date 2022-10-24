@@ -32,7 +32,7 @@
       <!-- 参数值 -->
       <template #value="text, record, index">
         <component
-          v-if="record.isValid"
+          v-if="record.isValid && !hiddenValue.includes(record.serviceType)"
           :ref="record.serviceType"
           :is="serviceTypeAll[record.serviceType].component"
           @sendData="handleSendData(record, $event)"
@@ -49,7 +49,9 @@
 <script>
 import {clone} from "lodash";
 
-const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008]; // 1009
+const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008,1015,1016]; 
+// 不显示参数列
+const hiddenValue = []
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
@@ -78,6 +80,7 @@ export default {
   },
   data() {
     return {
+      hiddenValue,
       serviceTypeAll: serviceTypeAll,
       columns,
       tData: [],

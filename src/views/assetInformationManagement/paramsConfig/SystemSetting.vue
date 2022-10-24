@@ -48,7 +48,8 @@
 <script>
 // 显示在当前tab的 approveServiceType
 const approveServiceType = [1001, 1009, 1010,1011,1012,1013,1014];
-const hiddenValue = [1010]
+// 不显示参数列
+const hiddenValue = [1010,1011,1012,1013,1014]
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
