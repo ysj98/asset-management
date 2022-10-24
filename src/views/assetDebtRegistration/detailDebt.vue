@@ -206,7 +206,7 @@ export default {
     attachment () {
       let obj = {
         objectId: this.debtId,       // 交付id
-        objectType: '18'      // 类型：交付信息18
+        objectType: '32'      // 类型：交付信息18
       }
       this.$api.basics.attachment(obj).then((res) => {
         if (Number(res.data.code) === 0) {

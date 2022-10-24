@@ -520,8 +520,8 @@ export default {
     // 附件查询
     attachment() {
       let obj = {
-        objectId: this.deliveryId, // 交付id
-        objectType: "18", // 类型：交付信息18
+        objectId: this.debtId, // 交付id
+        objectType: "32", // 类型：交付信息18
       };
       this.$api.basics.attachment(obj).then((res) => {
         if (Number(res.data.code) === 0) {
