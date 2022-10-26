@@ -169,7 +169,7 @@ export default {
     // 组织机构树
     changeTree (value, label) {
       this.organName = label
-      this.queryCondition.organId = 1300
+      this.queryCondition.organId = value
       this.queryClick()
     },
     // 页码发生变化
