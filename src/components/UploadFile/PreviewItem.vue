@@ -100,10 +100,10 @@ export default {
         // 如果是其他支持预览的文件
       } else if (this.isPreview) {
         let loadingName = this.SG_Loding('打开文件中...')
-        apiOwnership.reviewFile({ fileId: this.item.url }).then(
+        apiOwnership.reviewFile({ attachmentPath: this.item.url }).then(
           res => {
             this.DE_Loding(loadingName).then(() => {
-              const attachmentUrl = res.data.data.attachmentUrl
+              const attachmentUrl = this.hostImg + res.data.data.previewAttachmentPath
               window.open(attachmentUrl)
             })
           },

@@ -833,7 +833,7 @@ export const ownership = {
     // 权证管理附件下载
     downLoadAnnex: "/ams/attachment/downLoadAnnex2Path",
     // 文件预览
-    reviewFile: "/uhomecp-lease/admin/attachment/reviewFile",
+    reviewFile: "/ams/attachment/preview",
     // 打记标签接口
     updateWarrantTag: "/ams/ownerShipUser/warrant/updateWarrantTag",
   },
