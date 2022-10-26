@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- 右边表格 -->
-    <div class="right-wrapper">
+    <div class="right-wrapper" style="width: calc(100% - 265px);">
       <div class="top">
         <div style="display: flex; align-items: center">
           <a-icon

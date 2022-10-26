@@ -2,6 +2,7 @@ import ProvinceCity from "./components/ProvinceCity";
 import SelectApproval from "@/views/assetInformationManagement/paramsConfig/components/SelectApproval";
 import SelectSwitch from "./components/SelectSwitch";
 import SelectSwitchTwo from "./components/SelectSwitchTwo";
+import tip from "./components/tip.vue"
 /*
 * 每个组件中 都要有 sendData 方法
 * */
@@ -53,7 +54,7 @@ export const serviceTypeAll = {
   },
   1009: {
     serviceTypeText: "资产登记校验权证号",
-    component: SelectSwitch,
+    component: tip,
     needValidate: false,
   },
   1010: {
