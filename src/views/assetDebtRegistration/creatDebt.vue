@@ -464,7 +464,7 @@ export default {
               remark: "", // 备注
             };
             for (var key in o) {
-              if (["debtType", "deliveryType"].includes(key)) {
+              if (["debtType", "deliveryType","amount"].includes(key)) {
                 o[key] = String(obj[key]);
               } else if (["dateStart", "dateEnd"].includes(key)) {
                 o[key] = obj[key] ? moment(obj[key], "YYYY-MM-DD") : undefined;
