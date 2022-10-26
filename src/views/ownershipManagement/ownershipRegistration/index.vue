@@ -24,7 +24,7 @@
           <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部登记类型" :tokenSeparators="[',']"  @select="changeTypeDataFn" v-model="queryCondition.registerTypeList">
             <a-select-option :title="item.name" v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
+          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部审批状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <div class="box box-right" :style="dateWidth">
@@ -49,11 +49,9 @@
         :pagination="false"
         >
         <template slot="operation" slot-scope="text, record">
-          <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
+          <!-- <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFn($event, record)"></OperationPopover> -->
           <div class="tab-opt">
-            <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_EDIT">编辑</span>
-            <span @click="operationFn(record, 'delete')" v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3" v-power="ASSET_MANAGEMENT.ASSET_OWNERR_DELETE">删除</span>
+            <span v-for="(item, index) in record.operationDataBtn" :key="index" @click="operationFn(item.editType, record)">{{item.text}}</span>
           </div>
         </template>
       </a-table>
@@ -71,6 +69,7 @@
 </template>
 
 <script>
+import OperationPopover from '@/components/OperationPopover'
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import moment from 'moment'
@@ -130,10 +129,6 @@ const columns = [
     scopedSlots: { customRender: 'operation' },
   }
 ]
-const operationData = [
-  {iconType: 'form', text: '修改', editType: 'edit'},
-  {iconType: 'delete', text: '删除', editType: 'delete'}
-]
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -173,7 +168,7 @@ const queryCondition =  {
     flag: false     // 备注：仅当前机构下资产清理单 0 否 1 是
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips, OverviewNumber},
+  components: {OperationPopover, SearchContainer, TreeSelect, segiIcon, noDataTips, OverviewNumber},
   props: {},
   data () {
     return {
@@ -198,7 +193,6 @@ export default {
       organName: '',
       organId: '',
       tableData: [],
-      operationData: [...operationData],
       approvalStatusData: [...approvalStatusData],
       queryCondition: {...queryCondition},
       count: '',
@@ -222,10 +216,11 @@ export default {
   computed: {
   },
   methods: {
-    operationFn (record, type) {
+    operationFn (type, record) {
       if (type === 'particulars') {
-        let recordData = JSON.stringify([record])
-        this.$router.push({path: '/ownershipRegistration/registrationParticulars', query: { record: recordData }})
+        this.$router.push({path: '/ownershipRegistration/registrationParticulars', query: { registerId: record.registerId, type }})
+      } else if (type === 'approval') {
+        this.$router.push({path: '/ownershipRegistration/registrationParticulars', query: { registerId: record.registerId, type }})
       } else if (type === 'edit') {
         let recordData = JSON.stringify([{value: this.queryCondition.organId, name: this.organName}])
         let enitData = JSON.stringify([record])
@@ -412,6 +407,7 @@ export default {
             data.forEach((item, index) => {
               item.key = index
               item.serial = index + 1 + ((this.queryCondition.pageNum - 1) * this.queryCondition.pageSize)
+              item.operationDataBtn = this.createOperationBtn(item.approvalStatus) // 操作按钮
             })
             this.tableData = data
             this.count = res.data.data.count
@@ -426,6 +422,26 @@ export default {
         }
       })
       this.shipTotal(utils.deepClone(obj))
+    },
+     // 生成操作按钮
+     createOperationBtn (type) {
+      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
+      let arr = []
+      // 草稿 已驳回
+      if (['0', '3'].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_OWNERR_EDIT)) {
+          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_OWNERR_DELETE)) {
+          arr.push({iconType: 'delete', text: '注销', editType: 'delete'})
+        }
+      }
+      // 待审批
+      if (['2'].includes(String(type))) {
+        arr.push({iconType: 'edit', text: '审批', editType: 'approval'})
+      }
+      arr.push({iconType: 'file-text', text: '详情', editType: 'particulars'})
+      return arr
     },
     // 统计
     shipTotal (obj) {

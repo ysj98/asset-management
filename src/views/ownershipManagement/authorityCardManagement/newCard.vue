@@ -14,8 +14,6 @@
     v-model="show"
     :noPadding="true"
     :title="newData === 'new' ? '权证新增' : '权证编辑'"
-    @ok="statusFn"
-    @cancel="handleCancel"
   >
   <div class="newCard">
     <div class="newCard-nav">
@@ -243,11 +241,17 @@
       <div class="add-information" @click="newMortgageInformation"><a-icon type="plus" class="item-tab-icon"/>添加抵押信息</div>
     </div>
   </div>
+  <template slot="footer">
+    <div>
+      <SG-Button type="primary" @click="statusFn('save')">提交</SG-Button>
+      <SG-Button style="margin-left: 10px" type="primary" @click="statusFn('draft')">保存草稿</SG-Button>
+      <SG-Button @click="handleCancel">取消</SG-Button>
+    </div>
+  </template>
   </SG-Modal>
 </template>
 
 <script>
-import SGUploadFilePlus from "@/components/SGUploadFilePlus";
 import TreeSelect from "src/views/common/treeSelect";
 // import Cephalosome from '@/components/Cephalosome'
 import configBase from "@/config/config.base";
@@ -259,7 +263,7 @@ import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {TreeSelect, SGUploadFilePlus},
+  components: {TreeSelect},
   props: {
     queryType: {
       type: [String, Number],
@@ -404,7 +408,7 @@ export default {
       this.typeJudgment = val
     },
     // 提交
-    statusFn () {
+    statusFn (type) {
       this.form.validateFields((err, values) => {
         if (!err) {
           let amsOwnershipWarrantObligeeList = []
@@ -494,7 +498,6 @@ export default {
           }
           let obj = {
             warrantId: this.warrantId,                                                                                // 权证id
-            rightType:  conditionalJudgment.includes(values.rightTypeName) ? '' : values.rightTypeName,               // 权利类型
             warrantNbr: conditionalJudgment.includes(values.warrantNbr) ? '' : values.warrantNbr,                     // 权证号
             ownerType: conditionalJudgment.includes(values.ownerType) ? '' : values.ownerType,                        // 权属形式
             kindOfRight: conditionalJudgment.includes(values.kindOfRight) ? '' : values.kindOfRight,                  // 权证类型
@@ -516,7 +519,6 @@ export default {
             houseProveLife: conditionalJudgment.includes(values.houseProveLife) ? '' : values.houseProveLife,          // 房产证使用年限(产权证所有)
             houseStartDate: conditionalJudgment.includes(values.houseStartDate) ? '' : `${values.houseStartDate.format('YYYY-MM-DD')}`,          // 房产证起始日期(产权证所有)
             houseEndDate: conditionalJudgment.includes(values.houseEndDate) ? '' : `${values.houseEndDate.format('YYYY-MM-DD')}`,          // 房产证截止日期(产权证所有)
-
             rigisterDate: conditionalJudgment.includes(values.rigisterDate) ? '' : `${values.rigisterDate.format('YYYY-MM-DD')}`,                // 登记日期
             organId: this.organId,                                                 // 组织机构
             remark: conditionalJudgment.includes(values.remark) ? '' : values.remark,                            // 备注
@@ -541,15 +543,14 @@ export default {
             landCategory: conditionalJudgment.includes(values.landCategory) ? '' : values.landCategory,           // 地类(用途)
             getPrice: conditionalJudgment.includes(values.getPrice) ? '' : values.getPrice,                       // 取得价格
             useCategory: conditionalJudgment.includes(values.useCategory) ? '' : values.useCategory,              // 使用权类型
-            useArea: conditionalJudgment.includes(values.useArea) ? '' : values.useArea,                          // 使用权面积
             exclusiveArea: conditionalJudgment.includes(values.exclusiveArea) ? '' : values.exclusiveArea,        // 独用面积
             terminationData: conditionalJudgment.includes(values.terminationData) ? '' : `${values.terminationData.format('YYYY-MM-DD')}`,  // 终止日期
             tenantId: conditionalJudgment.includes(values.tenantId) ? '' : values.tenantId,                       // 承租人id
             amsAttachmentList: files,                        // 附件
             amsOwnershipWarrantObligeeList: amsOwnershipWarrantObligeeList,
             amsOwnershipWarrantMortgageList: amsOwnershipWarrantMortgageList,
-            rightType: !isNaN(Number(values.rightTypeName)) ? values.rightTypeName : (values.rightTypeName == '国有建设用地使用权' ? 3 : (values.rightTypeName == '房屋所有权' ? 2 : 1))
-
+            rightType: !isNaN(Number(values.rightTypeName)) ? values.rightTypeName : (values.rightTypeName == '国有建设用地使用权' ? 3 : (values.rightTypeName == '房屋所有权' ? 2 : 1)), // 权利类型
+            saveType: type === 'draft' ? 0 : 1
           }
           let loadingName = this.SG_Loding('保存中...')
           this.$api.ownership.warrantSaveOrUpdate(obj).then(res => {

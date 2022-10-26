@@ -11,8 +11,6 @@
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_ACM_NEW" :disabled="control" @click="delBatch">批量注销权证</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_ACM_SETTING" icon="setting" @click="changeListSettingsModal(true)" style="margin: 0 10px">列表设置</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.zcgl_asset_acm_custom_labels" :disabled="control" @click="tagsFn" style="margin: 0 10px">权证标签</SG-Button>
-        <!-- <SG-Button icon="plus" type="primary" @click="operationFn('record', 'particulars')">详情测试</SG-Button> -->
-        <!-- <SG-Button icon="plus" type="primary" @click="newChangeSheetFn">新建权证</SG-Button> -->
       </div>
       <div slot="headerForm">
       </div>
@@ -52,7 +50,7 @@
             :maxTagCount="1"
             :style="allStyle"
             mode="multiple"
-            placeholder="全部状态"
+            placeholder="全部审批状态"
             :tokenSeparators="[',']"
             @select="statusFn"
             v-model="queryCondition.status"
@@ -145,11 +143,9 @@
           <span>{{record.handoverDate || '--'}}</span>
         </template>
         <template slot="operation" slot-scope="text, record">
-          <!-- <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover> -->
+          <!-- <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFn($event, record)"></OperationPopover> -->
           <div class="tab-opt">
-            <span @click="operationFn(record, 'particulars')">详情</span>
-            <span @click="operationFn(record, 'edit')" v-show="+record.status === 1" v-power="ASSET_MANAGEMENT.ASSET_ACM_EDIT">编辑</span>
-            <span @click="operationFn(record, 'logout')" v-show="+record.status === 1" v-power="ASSET_MANAGEMENT.ASSET_ACM_DELETE">注销</span>
+            <span v-for="(item, index) in record.operationDataBtn" :key="index" @click="operationFn(item.editType, record)">{{item.text}}</span>
           </div>
         </template>
       </a-table>
@@ -178,6 +174,7 @@
 </template>
 
 <script>
+import OperationPopover from '@/components/OperationPopover'
 import TableHeaderSettings from "@/components/TableHeaderSettings";
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
@@ -224,10 +221,6 @@ const requiredColumn = [
     scopedSlots: { customRender: 'operation' },
   }
 ]
-const operationData = [
-  {iconType: 'form', text: '修改', editType: 'edit'},
-  {iconType: 'delete', text: '删除', editType: 'delete'}
-]
 const statusData = [
   {
     name: '全部权证状态',
@@ -244,7 +237,7 @@ const statusData = [
 ]
 const approvalStatusListData = [
   {
-    name: '全部审批状态',
+    name: '全部状态',
     value: ''
   },
   {
@@ -298,7 +291,7 @@ const queryCondition =  {
     warrantTags: ['']
   }
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, TableHeaderSettings, commonLabelComponent},
+  components: {OperationPopover, SearchContainer, TreeSelect, segiIcon, NewCard, CardDetails, noDataTips, BatchImport, OverviewNumber, TableHeaderSettings, commonLabelComponent},
   props: {},
   data () {
     return {
@@ -322,7 +315,6 @@ export default {
       organId: '',
       tableData: [],
       kindOfRightsData: [],
-      operationData: [...operationData],
       statusData: [...statusData],
       approvalStatusListData: [...approvalStatusListData],
       attachmentStatus: [...attachmentStatus],
@@ -479,18 +471,22 @@ export default {
       })
     },
     // 操作
-    operationFn (val, type) {
+    operationFn (type, record) {
       if (type === 'particulars') {
-        this.$refs.cardDetails.initData({warrantNbr: val.warrantNbr})
-        this.$refs.cardDetails.query({ warrantId: val.warrantId})
-        // this.$refs.cardDetails.show = true
+        this.$refs.cardDetails.initData({warrantNbr: record.warrantNbr})
+        this.$refs.cardDetails.query({ warrantId: record.warrantId})
+        this.$refs.cardDetails.type = 'particulars'
+      } else if (type === 'approval') {
+        this.$refs.cardDetails.initData({warrantNbr: record.warrantNbr})
+        this.$refs.cardDetails.query({ warrantId: record.warrantId})
+        this.$refs.cardDetails.type = 'approval'
       } else if (type === 'edit') {
         this.newShow = true
         this.$nextTick(() => {
           this.$refs.newCard.show = true
-          this.$refs.newCard.newFn('edit', val.organId, val.organName)
+          this.$refs.newCard.newFn('edit', record.organId, record.organName)
           this.$refs.newCard.selectFn()
-          this.$refs.newCard.query( {warrantId: val.warrantId, warrantNbr: val.warrantNbr})
+          this.$refs.newCard.query( {warrantId: record.warrantId, warrantNbr: record.warrantNbr})
         })
       } else if (type === 'logout') {
         let _this = this
@@ -499,7 +495,7 @@ export default {
           content: '确认要注销该权证吗？',
           onOk() {
           let obj = {
-            warrantId: val.warrantId
+            warrantId: record.warrantId
           }
           _this.$api.ownership.warrantDelete(obj).then(res => {
             if (Number(res.data.code) === 0) {
@@ -660,7 +656,7 @@ export default {
         obligeeId: this.queryCondition.obligeeId,       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        approvalStatusList: this.queryCondition.approvalStatusList.length > 0 ? this.queryCondition.approvalStatusList.join(',') : '',         // 审批状态
+        approvalStatusList: this.queryCondition.approvalStatusList[0] ? this.queryCondition.approvalStatusList : [],    // 审批状态
         warrantNbr: this.queryCondition.warrantNbr,     // 权证号
         seatingPosition: this.queryCondition.seatingPosition, // 坐落位置
         uploadAttachment: this.queryCondition.attachmentStatus,
@@ -683,6 +679,7 @@ export default {
             data.forEach((item, index) => {
               item.key = index
               item.lotNoEstateUnitCode = `${item.houseNo || '--'}/${item.lotNo || '--'}/${item.estateUnitCode || '--'}`
+              item.operationDataBtn = this.createOperationBtn(item.approvalStatus) // 操作按钮
             })
             data.forEach(item => {
               if (Number(item.uploadAttachment) === 1) {
@@ -704,6 +701,26 @@ export default {
         }
       })
     },
+     // 生成操作按钮
+    createOperationBtn (type) {
+      // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
+      let arr = []
+      // 草稿 已驳回
+      if (['0', '3'].includes(String(type))) {
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_ACM_EDIT)) {
+          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
+        }
+        if (this.$power.has(ASSET_MANAGEMENT.ASSET_ACM_DELETE)) {
+          arr.push({iconType: 'delete', text: '注销', editType: 'logout'})
+        }
+      }
+      // 待审批
+      if (['2'].includes(String(type))) {
+        arr.push({iconType: 'edit', text: '审批', editType: 'approval'})
+      }
+      arr.push({iconType: 'file-text', text: '详情', editType: 'particulars'})
+      return arr
+    },
     // 点击查询按钮
     queryHandler () {
       this.queryCondition.pageNum = 1
@@ -718,7 +735,7 @@ export default {
         obligeeId: this.queryCondition.obligeeId ? this.queryCondition.obligeeId : '',       // 权属人
         ownerTypeList: this.queryCondition.ownerTypeList.length === 0 ? [] : this.queryCondition.ownerTypeList, // 权属形式
         status: this.queryCondition.status.length > 0 ? this.queryCondition.status.join(',') : '',         // 权证状态
-        approvalStatusList: this.queryCondition.approvalStatusList.length > 0 ? this.queryCondition.approvalStatusList.join(',') : '',         // 审批状态
+        approvalStatusList: this.queryCondition.approvalStatusList[0] ? this.queryCondition.approvalStatusList : [],    // 审批状态
         warrantNbr: this.queryCondition.warrantNbr ? this.queryCondition.warrantNbr : '',    // 权证号
         uploadAttachment: this.queryCondition.attachmentStatus
       }

@@ -155,7 +155,7 @@
           <div class="buytton-nav">
             <SG-Button v-if="+changeType !== 3" class="buytton-nav-r" type="primary" weaken @click="batchExport">批量导出</SG-Button>
             <SG-Button v-if="+changeType !== 3"  class="buytton-nav-r" type="primary" weaken @click="bulkImport ">批量导入</SG-Button>
-            <SG-Button class="buytton-nav-r" type="primary" weaken @click="newFn">新增权证</SG-Button>
+            <SG-Button class="buytton-nav-r" type="primary" weaken @click="newFn" v-if="showNewFn">新增权证</SG-Button>
             <SG-Button type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
           </div>
         </div>
@@ -231,6 +231,7 @@ export default {
   props: {},
   data () {
     return {
+      showNewFn: true, // 新增权证按钮
       fileType: ['xls', 'xlsx'],
       warrantNbrData: [],
       registerId: '',
@@ -299,6 +300,19 @@ export default {
     }
   },
   methods: {
+    // 当开启了【权属登记审批】，权属登记的“新增权证”按钮隐藏不展示
+    async getApproveConfig(){
+      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        serviceType: 1015,
+        organId: this.organId,
+      })
+      if (code === "0"){
+        const {isValid} = data
+        if( isValid === 1){
+          this.showNewFn = false
+        }
+      }
+    },
     // 确定拿到数据
     status (val, data) {
       this.checkedData = [...val]
@@ -726,6 +740,8 @@ export default {
   },
   mounted () {
     this.getObjectKeyValueByOrganIdFn()
+    this.getApproveConfig()
+    console.log('--------------------')
     // 登记类型
     this.platformDictFn()
     if (this.setType === 'edit') {

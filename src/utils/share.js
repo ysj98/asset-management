@@ -37,7 +37,6 @@ export function getTableHeaders({ funType }) {
     apiGlobal.assetRolListV2(req).then(
       ({ data: { code, message, data } }) => {
         if (code === "0") {
-          console.log(data);
           resolve(data);
         } else {
           $message.error(message);
