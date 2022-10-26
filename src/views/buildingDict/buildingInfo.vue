@@ -164,7 +164,7 @@ export default {
       upErrorInfo: "",
       pageNo: 1,
       totalPage: 1,
-      pageLength: 10,
+      pageLength: '10',
     };
   },
   watch: {
@@ -239,10 +239,10 @@ export default {
       }
     },
     changePage(total) {
-      this.totalPage = Math.ceil(total / pageLength);
+      this.totalPage = Math.ceil(total / this.pageLength);
     },
     handleChange(value){
-      this.pageLength=value
+      this.pageLength=String(value)
       this.pageNo=1
       this.$refs.positionTree.positionSelectAsyn()
     },

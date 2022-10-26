@@ -254,7 +254,7 @@ export default {
         isCurrent:this.isCurrent,
         upPositionId: '-1',
         positionType: '1',
-        pageNo:this,pageNo,
+        pageNo:this.pageNo,
         pageLength:this.pageLength
       }
       return this.$api.building.positionSelectAsyn(data).then(res => {
