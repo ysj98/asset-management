@@ -213,18 +213,19 @@ export default {
     onChange (e) {
       this.searchValueInput = e.target.value
       let value = this.searchValueInput
-      if (!value || !value.trim()) {
-        this.resetLoad()
-        this.treeUuid = getUuid()
-        return
-      }
-      this.gData = this.upCreateTree()
-      Object.assign(this, {
-        expandedKeys: [topItem.key],
-        // searchValue: value,
-        autoExpandParent: true
-      })
-      this.treeUuid = getUuid()
+      this.positionSelectAsyn(value)
+      // if (!value || !value.trim()) {
+      //   this.resetLoad()
+      //   this.treeUuid = getUuid()
+      //   return
+      // }
+      // this.gData = this.upCreateTree()
+      // Object.assign(this, {
+      //   expandedKeys: [topItem.key],
+      //   // searchValue: value,
+      //   autoExpandParent: true
+      // })
+      // this.treeUuid = getUuid()
     },
     // 重新加载
     resetLoad () {
@@ -247,17 +248,20 @@ export default {
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
     },
     // 一级机构id 请求楼栋
-    positionSelectAsyn () {
-      this.emptyTreeData()
+    positionSelectAsyn (positionName='') {
+      if(positionName==''){
+        this.emptyTreeData()
+      }
+
       let data = {
         organId:this.organId,
         isCurrent:this.isCurrent,
         upPositionId: '-1',
         positionType: '1',
         pageNo:this.pageNo,
-        pageLength:this.pageLength
+        pageLength:this.pageLength,
+        positionName:positionName
       }
-      console.log(data,'SHUJU')
       return this.$api.building.positionSelectAsyn(data).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
