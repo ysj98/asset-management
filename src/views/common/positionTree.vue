@@ -257,6 +257,7 @@ export default {
         pageNo:this.pageNo,
         pageLength:this.pageLength
       }
+      console.log(data,'SHUJU')
       return this.$api.building.positionSelectAsyn(data).then(res => {
         if (res.data.code === '0') {
           let result = res.data.data || []
@@ -273,7 +274,7 @@ export default {
             return {...item}
           })
           this.$emit('init',{gData:this.gData})
-          this.$emit('changePage',result.paginator.totalCount)
+          this.$emit('changePage',res.data.paginator.totalCount)
           this.copyGdata = utils.deepClone(this.gData)
           // this.expandedKeys = [topItem.key]
           this.treeUuid = getUuid()

@@ -63,7 +63,7 @@
       <div class="page">
         <a-button @click="nextPage(1)">上页</a-button>
         <span class="span">{{ pageNo }}/{{ totalPage }}</span>
-        <a-button @click="nextPage(1)">下页</a-button>
+        <a-button @click="nextPage(2)">下页</a-button>
         <a-select
           default-value="10"
           class="select"
@@ -239,21 +239,26 @@ export default {
       }
     },
     changePage(total) {
+      console.log(total,'11111223123')
       this.totalPage = Math.ceil(total / this.pageLength);
     },
     handleChange(value){
       this.pageLength=String(value)
       this.pageNo=1
-      this.$refs.positionTree.positionSelectAsyn()
+      console.log('yunxing',value)
+      setTimeout(() => {
+        this.$refs.positionTree.positionSelectAsyn()
+      }, 0)
     },
     nextPage(val){
       if (val===1 && this.pageNo>1) {
         this.pageNo-=1
-        this.$refs.positionTree.positionSelectAsyn()
-      } else if(val===1 && this.totalPage!=this.pageNo) {
+      } else if(val===2 && this.totalPage!=this.pageNo) {
         this.pageNo+=1
-        this.$refs.positionTree.positionSelectAsyn()
       }
+       setTimeout(() => {
+        this.$refs.positionTree.positionSelectAsyn()
+      }, 0)
     },
     /**
      * createBuild 带出来的所属机构ID
