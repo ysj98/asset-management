@@ -23,7 +23,7 @@
             <span v-if="files.length === 0">无</span>
             <div v-if="files.length > 0">
               <div class="umImg">
-                <upload-file v-model="files" :show="true" type="all" :max="5" :maxSize="20480" />
+                <upload-file v-model="files" :show="true" type="all"/>
               </div>
             </div>
           </a-col>

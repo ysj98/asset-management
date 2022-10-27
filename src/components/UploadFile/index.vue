@@ -90,7 +90,7 @@ export default {
     // 最大上传数量
     max: {
       type: [Number, String],
-      default: 5,
+      default: 10,
     },
     // 默认文件列表
     files: {
@@ -122,7 +122,7 @@ export default {
       // 文件类型
       fileExt: ['doc', 'docx', 'ppt', 'pptx', 'txt', 'pdf', 'xls', 'xlsx', 'acd', 'zip', 'rar', 'gz', '7z'],
       // 图片类型
-      imageExt: ['jpg', 'gif', 'png', 'jpeg'],
+      imageExt: ['jpg', 'gif', 'png', 'jpeg', 'bmp'],
       // 图片列表
       lists: [],
       // 弹窗展示上传状态

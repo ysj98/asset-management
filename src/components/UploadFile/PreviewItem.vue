@@ -83,7 +83,7 @@ export default {
     },
     // 判断文件是否支持预览
     isPreview() {
-      const Dict = ['txt', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt', 'pptx', 'jpg', 'jpeg', 'png']
+      const Dict = ['txt', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'bmp']
       return Dict.includes(this.Ext)
     },
     // 判断是否是文件类型

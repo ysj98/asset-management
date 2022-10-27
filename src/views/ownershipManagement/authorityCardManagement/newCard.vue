@@ -161,8 +161,6 @@
               <upload-file
                 v-model="newCardData.files"
                 type="all"
-                :max='5'
-                :maxSize="20480"
               />
             </a-form-item>
           </a-col>
