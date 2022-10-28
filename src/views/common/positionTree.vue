@@ -217,6 +217,7 @@ export default {
     onChange (e) {
       this.searchValueInput = e.target.value
       let value = this.searchValueInput
+      this.$emit('searchTag',value)
       this.positionSelectAsyn(value)
       // if (!value || !value.trim()) {
       //   this.resetLoad()
