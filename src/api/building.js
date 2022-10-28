@@ -110,7 +110,7 @@ export function queryBellowPositionType (data) {
 }
 // 下载房屋模板
 export function downLoadExcel (data) {
-  return axiosGet(building.downLoadExcel, {}, false, {
+  return axiosGet(building.downLoadExcel, data, false, {
     responseType: 'blob'
   })
 }
