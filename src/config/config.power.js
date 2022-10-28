@@ -213,7 +213,7 @@ export const ASSET_MANAGEMENT = {
   ASSET_OWNERR_AUDIT: 'zcgl_asset_ownerr_audit',
   // 权属登记-反审核
   ASSET_OWNERR_REVERSE_AUDIT: 'zcgl_asset_ownerr_reverse_audit',
-  // 权属登记-删除
+  // 权属登记-注销
   ASSET_OWNERR_DELETE: 'zcgl_asset_ownerr_delete',
 
   /**

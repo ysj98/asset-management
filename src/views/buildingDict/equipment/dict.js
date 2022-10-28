@@ -30,7 +30,7 @@ export const queryCondition = {
   equipmentId: undefined, // 设备设施分类Id
   pageLength: 10,
   isCurrent: 0,
-  isRegister: '' // 是否登记资产
+  assetRegister: '' // 是否登记资产
 };
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
@@ -111,7 +111,7 @@ export const columns = [
   },
   {
     title: "是否登记资产",
-    dataIndex: "isRegisterName",
+    dataIndex: "assetRegisterName",
     width: 120
   },
   {

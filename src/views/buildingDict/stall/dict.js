@@ -31,7 +31,7 @@ export const queryCondition = {
   pageNo: 1,
   pageLength: 10,
   isOnlyCurrent: '',
-  isRegister: '' // 获取资产登记
+  amsAsset: '' // 获取资产登记
 };
 // 车位用途
 export const parkingUsageOption = [
@@ -127,7 +127,7 @@ export const columns = [
   },
   {
     title: "是否登记资产",
-    dataIndex: "isRegisterName",
+    dataIndex: "amsAssetName",
     width: 120
   },
   {

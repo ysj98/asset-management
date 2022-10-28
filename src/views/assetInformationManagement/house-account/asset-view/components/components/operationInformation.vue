@@ -8,12 +8,12 @@
       <a-col :span="8">
         <span style="margin-right: 4px; color: #282D5B">转运营面积:</span>
         <span style="color: #49505E">{{
-          transferOperationArea ? transferOperationArea + "㎡" : "无"
+          transferOperationArea ? transferOperationArea + "㎡" : ""
         }}</span>
       </a-col>
       <a-col :span="8">
         <span style="margin-right: 4px; color: #282D5B">转运营时间:</span>
-        <span style="color: #49505E">{{ transferOperationTime || "无" }}</span>
+        <span style="color: #49505E">{{ transferOperationTime || "" }}</span>
       </a-col>
     </a-row>
     <a-table

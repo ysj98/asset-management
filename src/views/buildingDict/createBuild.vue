@@ -997,17 +997,20 @@ export default {
       }
     },
     transformProvince (val) {
+      if (!val) return
       let value = val
       let arr = this.provinceOpt.filter(item => String(item.value) === String(value))
       return arr[0].label
     },
     transformCity () {
       let value = this.city
+      if (!value) return
       let arr = this.cityOpt.filter(item => String(item.value) === String(value))
       return arr[0].label
     },
     transformArea () {
       let value = this.region
+      if (!value) return
       let arr = this.regionOpt.filter(item => String(item.value) === String(value))
       return arr[0].label
     },
