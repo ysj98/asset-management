@@ -58,6 +58,7 @@
           @handleSelect="checkTreeChange"
           @init="init"
           @changePage="changePage"
+          @searchTag='searchTagFun'
         />
       </div>
       <div class="page">
@@ -165,6 +166,7 @@ export default {
       pageNo: 1,
       totalPage: 1,
       pageLength: '10',
+      searchTag:''
     };
   },
   watch: {
@@ -250,6 +252,9 @@ export default {
         this.$refs.positionTree.positionSelectAsyn()
       }, 0)
     },
+    searchTagFun(val){
+      this.searchTag=val
+    },
     nextPage(val){
       if (val===1 && this.pageNo>1) {
         this.pageNo-=1
@@ -257,7 +262,7 @@ export default {
         this.pageNo+=1
       }
        setTimeout(() => {
-        this.$refs.positionTree.positionSelectAsyn()
+        this.$refs.positionTree.positionSelectAsyn(this.searchTag)
       }, 0)
     },
     /**
