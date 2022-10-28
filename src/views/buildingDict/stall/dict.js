@@ -30,7 +30,8 @@ export const queryCondition = {
   placeId: '', // 车场Id
   pageNo: 1,
   pageLength: 10,
-  isOnlyCurrent: ''
+  isOnlyCurrent: '',
+  isRegister: '' // 获取资产登记
 };
 // 车位用途
 export const parkingUsageOption = [
@@ -57,6 +58,11 @@ export const communityIdOpt = [
 export const parkTypeOpt = [
   { label: "全部车场", value: "" },
 ]
+export const registerList = [
+  { label: "是否登记资产", value: "" },
+  { label: "是", value: "1" },
+  { label: "否", value: "0" }
+];
 export const carStatusOpt = [
   { label: "全部状态", value: "" },
 ]
@@ -117,6 +123,11 @@ export const columns = [
   {
     title: "公摊面积(㎡)",
     dataIndex: "shareArea",
+    width: 120
+  },
+  {
+    title: "是否登记资产",
+    dataIndex: "isRegisterName",
     width: 120
   },
   {

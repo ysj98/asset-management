@@ -29,7 +29,8 @@ export const queryCondition = {
   communityId: '', //运营项目
   equipmentId: undefined, // 设备设施分类Id
   pageLength: 10,
-  isCurrent: 0
+  isCurrent: 0,
+  isRegister: '' // 是否登记资产
 };
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
@@ -37,6 +38,11 @@ export const communityIdOpt = [
 export const parkTypeOpt = [
   { label: "全部车场类型", value: "" },
 ]
+export const registerList = [
+  { label: "是否登记资产", value: "" },
+  { label: "是", value: "1" },
+  { label: "否", value: "0" }
+];
 export const columns = [
   {
     title: "设备设施ID",
@@ -101,6 +107,11 @@ export const columns = [
   {
     title: "报废日期",
     dataIndex: "expDate",
+    width: 120
+  },
+  {
+    title: "是否登记资产",
+    dataIndex: "isRegisterName",
     width: 120
   },
   {

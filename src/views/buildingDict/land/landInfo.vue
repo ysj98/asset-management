@@ -67,6 +67,16 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
+          <!-- 是否登记资产 -->
+          <a-select
+            placeholder="是否登记资产"
+            v-model="queryCondition.isRegister"
+            :style="allWidth"
+            :options="$addTitle(registerList)"
+            :allowClear="false"
+            :filterOption="filterOption"
+            notFoundContent="没有查询到数据"
+          />
           <!-- 资产名称或编码 -->
           <a-input
             :maxLength="30"
@@ -146,6 +156,7 @@ import {
   communityIdOpt,
   landTypeOpt,
   landuseOpt,
+  registerList
 } from "./dict.js";
 import landDataImport from './landDataImport.vue'
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
@@ -171,6 +182,7 @@ export default {
       communityIdOpt: utils.deepClone(communityIdOpt),
       landTypeOpt: utils.deepClone(landTypeOpt),
       landuseOpt: utils.deepClone(landuseOpt),
+      registerList: utils.deepClone(registerList),
       table: {
         columns,
         dataSource: [],

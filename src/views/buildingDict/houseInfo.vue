@@ -132,6 +132,16 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
+          <!-- 是否登记资产 -->
+          <a-select
+            placeholder="是否登记资产"
+            v-model="queryCondition.isRegister"
+            :style="allWidth"
+            :options="$addTitle(registerList)"
+            :allowClear="false"
+            :filterOption="filterOption"
+            notFoundContent="没有查询到数据"
+          />
         </div>
         <div class="two-row-box">
           <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
@@ -194,7 +204,6 @@
 <script>
 import SearchContainer from "@/views/common/SearchContainer";
 import segiIcon from "@/components/segiIcon.vue";
-import topOrganByUser from "@/views/common/topOrganByUser";
 import { utils, debounce, getFormat } from "@/utils/utils";
 import OperationPopover from "@/components/OperationPopover";
 import houseExport from "./child/houseExport.vue";
@@ -231,6 +240,7 @@ let queryCondition = {
   resType: "", // 房间用途
   status: "", // 房间状态
   isCurrent: 0,
+  isRegister: '' // 是否登记资产
 };
 const statusMap = {
   "1": "有效",
@@ -247,59 +257,69 @@ const statusOpt = [
   { label: "有效", value: "1" },
   { label: "无效", value: "0" }
 ];
+const registerList = [
+  { label: "是否登记资产", value: "" },
+  { label: "是", value: "1" },
+  { label: "否", value: "0" }
+];
 // 表格数据
 let columns = [
   {
     title: "房间ID",
     dataIndex: "houseId",
-    width: "15%"
+    width: 100
   },
   {
-    title: "机构名称",
+    title: "所属组织机构",
     dataIndex: "organName",
-    width: 200
+    width: '15%'
   },
   {
     title: "房间名称",
     dataIndex: "houseName",
-    width: 300,
+    width: '18%',
     scopedSlots: { customRender: "houseName" }
   },
   {
     title: "房间类型",
     dataIndex: "houseTypeName",
-    width: "15%"
+    width: 120
   },
   {
     title: "建筑面积(㎡)",
     dataIndex: "area",
-    width: 150
+    width: 100
   },
   {
     title: "使用面积(㎡)",
     dataIndex: "useArea",
-    width: 150
+    width: 100
   },
   {
     title: "套内面积(㎡)",
     dataIndex: "innerArea",
-    width: 150
+    width: 100
   },
   {
     title: "分摊面积(㎡)",
     dataIndex: "shareArea",
-    width: 150
+    width: 100
   },
   {
     title: "房间状态",
     dataIndex: "statusName",
-    width: "10%"
+    width: 100
+  },
+  {
+    title: "是否登记资产",
+    dataIndex: "isRegisterName",
+    width: 120
   },
   {
     title: "操作",
     dataIndex: "operation",
     scopedSlots: { customRender: "operation" },
-    width: "124px"
+    width: 80
   }
 ];
 // 操作按钮
@@ -319,7 +339,6 @@ export default {
   components: {
     SearchContainer,
     segiIcon,
-    topOrganByUser,
     OperationPopover,
     houseExport,
     eportAndDownFile,
@@ -348,6 +367,7 @@ export default {
       houseTypeOpt: utils.deepClone(houseTypeOpt),
       resTypeOpt: utils.deepClone(resTypeOpt),
       statusOpt: utils.deepClone(statusOpt),
+      registerList: utils.deepClone(registerList),
       table: {
         columns,
         dataSource: [],
@@ -384,6 +404,7 @@ export default {
       this.queryCondition.houseType = query.houseType;
       this.queryCondition.resType = query.resType;
       this.queryCondition.status = query.status;
+      this.queryCondition.isRegister = query.isRegister;
       this.organName = query.organName;
       this.searchBuildName = query.searchBuildName;
       console.log("取=>", this.searchBuildName);
@@ -581,6 +602,7 @@ export default {
       this.queryCondition.houseType = "";
       this.queryCondition.resType = "";
       this.queryCondition.status = "";
+      this.queryCondition.isRegister = "";
       this.queryCondition.isCurrent = false
     },
     // organId改变

@@ -51,6 +51,16 @@
             menu-code="PARKING_PLACE_RESOURCE_TYPE"
             v-model="queryCondition.typeId"
           />
+           <!-- 是否登记资产 -->
+           <a-select
+            placeholder="是否登记资产"
+            v-model="queryCondition.amsAsset"
+            :style="allWidth"
+            :options="$addTitle(registerList)"
+            :allowClear="false"
+            :filterOption="filterOption"
+            notFoundContent="没有查询到数据"
+          />
           <!-- 资产名称或编码 -->
           <a-input
             :maxLength="30"
@@ -109,6 +119,7 @@ import {
   queryCondition,
   communityIdOpt,
   parkTypeOpt,
+  registerList
 } from "./dict.js";
 import {tablePageList} from './mock'
 import {parkApiList} from "../../../api/building";
@@ -132,6 +143,7 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       communityIdOpt: utils.deepClone(communityIdOpt),
       parkTypeOpt: utils.deepClone(parkTypeOpt),
+      registerList: utils.deepClone(registerList),
       table: {
         columns,
         dataSource: [],

@@ -29,7 +29,8 @@ export const queryCondition = {
   pageNum: 1,
   address:'',          //详细地址
   pageSize: 10,
-  isCurrent: 0
+  isCurrent: 0,
+  isRegister: '' // 是否登记资产
 };
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
@@ -40,6 +41,11 @@ export const landTypeOpt = [
 export const landuseOpt = [
   { label: "全部土地用途", value: "" },
 ]
+export const registerList = [
+  { label: "是否登记资产", value: "" },
+  { label: "是", value: "1" },
+  { label: "否", value: "0" }
+];
 export const columns = [
   {
     title: "土地ID",
@@ -47,7 +53,7 @@ export const columns = [
     width: 120
   },
   {
-    title: "机构名称",
+    title: "所属组织机构",
     dataIndex: "organName",
     width: 200
   },
@@ -129,6 +135,11 @@ export const columns = [
   {
     title: "其他土地面积(㎡)",
     dataIndex: "otherArea",
+    width: 120
+  },
+  {
+    title: "是否登记资产",
+    dataIndex: "isRegisterName",
     width: 120
   },
   {

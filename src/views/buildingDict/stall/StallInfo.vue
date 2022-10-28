@@ -160,7 +160,8 @@ import {
   communityIdOpt,
   parkTypeOpt,
   carTypeOptions,
-  carTypeMenu, parkAreaOpt,carStatusOpt
+  carTypeMenu, parkAreaOpt,carStatusOpt,
+  registerList
 } from "./dict.js";
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
@@ -193,6 +194,7 @@ export default {
       communityIdOpt: utils.deepClone(communityIdOpt),
       parkTypeOpt: utils.deepClone(parkTypeOpt), // 车场
       parkAreaOpt: utils.deepClone(parkAreaOpt), // 区域
+      registerList: utils.deepClone(registerList), // 是否登记资产
       table: {
         columns,
         dataSource: [],

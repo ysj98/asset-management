@@ -5,6 +5,9 @@
  -->
 <template>
   <div class="building-tree">
+    <p style="margin-top: 5px;margin-left: 10px;">
+      <a-icon type="info-circle" theme="twoTone"/>：<a-icon type="check-circle" />  为已登记的资产
+    </p>
     <div class="tree-search" v-if="searchAble">
       <a-input placeholder="请输入建筑物进行查询" v-model="searchValueInput" @input="onChange">
         <a-icon slot="suffix" style="cursor: pointer;" type="search" @click="onChange"/>
@@ -26,6 +29,7 @@
             <!-- 标题及搜索 -->
             <span style="color: #1890ff" class="tree-node-title" v-if="scope.title.indexOf(searchValueInput) > -1 && searchValueInput">{{scope.title}}</span>
             <span class="tree-node-title" v-else>{{scope.title}}</span>
+            <a-icon v-show="scope.isRegister == '1'" type="check-circle" style="position: relative;left: 20px;"/>
           </div>
         </template>
       </a-tree>
@@ -354,7 +358,7 @@ export default {
   position: relative;
 }
 .tree-search{
- padding: 16px 21px 10px 21px;
+ padding: 5px 21px 10px 21px;
 }
 .tree-main{
   padding-left: 13px;

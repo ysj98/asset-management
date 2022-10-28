@@ -48,6 +48,16 @@
                 :filterOption="filterOption"
                 notFoundContent="没有查询到数据"
             />
+            <!-- 是否登记资产 -->
+            <a-select
+              placeholder="是否登记资产"
+              v-model="queryCondition.isRegister"
+              :style="allWidth"
+              :options="$addTitle(registerList)"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
             <a-input
                 :maxLength="30"
                 placeholder="设备设施名称/编码"
@@ -112,6 +122,7 @@ import {
   queryCondition,
   communityIdOpt,
   parkTypeOpt, timeStampToFormatDate,
+  registerList
 } from "./dict.js";
 import {tablePageList} from './mock'
 import DictSelect from "../../common/DictSelect";
@@ -141,6 +152,7 @@ export default {
       queryCondition: utils.deepClone(queryCondition),
       communityIdOpt: utils.deepClone(communityIdOpt),
       parkTypeOpt: utils.deepClone(parkTypeOpt),
+      registerList: utils.deepClone(registerList),
       table: {
         columns,
         dataSource: [],

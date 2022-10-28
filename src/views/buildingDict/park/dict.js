@@ -27,7 +27,8 @@ export const queryCondition = {
   nameOrCode: '', //
   pageNo: 1,
   pageLength: 10,
-  onlyCurrentNode: 0
+  onlyCurrentNode: 0,
+  amsAsset: '' // 是否登记资产
 };
 export const communityIdOpt = [
   { label: "全部运营项目", value: "" },
@@ -35,6 +36,11 @@ export const communityIdOpt = [
 export const parkTypeOpt = [
   { label: "全部车场类型", value: "" },
 ]
+export const registerList = [
+  { label: "是否登记资产", value: "" },
+  { label: "是", value: "1" },
+  { label: "否", value: "0" }
+];
 export const columns = [
   {
     title: "车场ID",
@@ -81,6 +87,11 @@ export const columns = [
   //   dataIndex: "approvalDate",
   //   width: 120
   // },
+  {
+    title: "是否登记资产",
+    dataIndex: "amsAssetName",
+    width: 120
+  },
   {
     title: "操作",
     dataIndex: "operation",
