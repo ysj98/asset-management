@@ -274,7 +274,7 @@
     <!-- 选择资产 -->
     <AssetBundlePopover
       judgmentType="delivery"
-      :changeType="true"
+      :changeType="false"
       :organId="organId"
       queryType="1"
       ref="assetBundlePopover"

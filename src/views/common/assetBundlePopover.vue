@@ -238,26 +238,23 @@ export default {
       if (this.selecData.projectId !== projectId) {
         this.selecData.projectId = projectId
         flag = true
-         console.log(1)
       }
       // 资产类型变化
+      console.log(this.selecData)
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
         flag = true
         this.selecData.assetType = assetType
         this.assetTypeDisabled = true
         this.assetTypeFn()
-        console.log(2)
       }
       // 是否第一次加载
       if (this.firstCall) {
         flag = true
         this.firstCall = false
-        console.log(3)
       }
       // 是否发起请求
       if (flag) {
         this.query()
-        console.log(4)
       }
       // if (this.selecData.projectId !== projectId) {
       //   this.selecData.projectId = projectId
