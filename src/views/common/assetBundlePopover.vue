@@ -220,6 +220,8 @@ export default {
     // 外面删除了后剩下给回来的数据
     redactCheckedDataFn (redactChecked, projectId, assetType, overallData) {
       // overallData 给回来的数据合并在去重
+      this.loading=false
+      console.log(redactChecked,projectId,assetType,overallData)
       if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
         let hash = {}
@@ -236,6 +238,7 @@ export default {
       if (this.selecData.projectId !== projectId) {
         this.selecData.projectId = projectId
         flag = true
+         console.log(1)
       }
       // 资产类型变化
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
@@ -243,15 +246,18 @@ export default {
         this.selecData.assetType = assetType
         this.assetTypeDisabled = true
         this.assetTypeFn()
+        console.log(2)
       }
       // 是否第一次加载
       if (this.firstCall) {
         flag = true
         this.firstCall = false
+        console.log(3)
       }
       // 是否发起请求
       if (flag) {
         this.query()
+        console.log(4)
       }
       // if (this.selecData.projectId !== projectId) {
       //   this.selecData.projectId = projectId
@@ -359,6 +365,7 @@ export default {
         pageNum: this.selecData.pageNum
       }
       if (this.changeType && !obj.assetType) {
+        this.loading=false
         return
       }
       this.$api.assets.assetListPage(obj).then(res => {

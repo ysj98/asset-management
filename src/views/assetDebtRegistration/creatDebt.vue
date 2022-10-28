@@ -161,7 +161,7 @@
             <a-form-item :colon="false" v-bind="formItemLayout">
               <label slot="label">抵押额（元）：</label>
               <a-input
-                placeholder="请输入抵押额"
+                placeholder=""
                 :style="allWidth"
                 :max="30"
                 :disabled="true"
@@ -172,7 +172,7 @@
                       {
                         required: false,
                         whitespace: true,
-                        message: '请输入抵押额',
+                        message: '',
                       },
                     ],
                     initialValue: newDebt.amount,
@@ -236,7 +236,7 @@
           :class="{ 'table-border': tableData.length != 0 }"
         >
           <a-table
-            :scroll="{ y: 450 }"
+            :scroll="{ y: 700 }"
             :row-selection="{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange,
@@ -798,5 +798,8 @@ export default {
       }
     }
   }
+}
+/deep/.ant-table-scroll{
+  overflow: hidden;
 }
 </style>

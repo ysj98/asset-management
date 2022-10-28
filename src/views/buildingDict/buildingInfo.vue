@@ -239,7 +239,7 @@ export default {
       }
     },
     changePage(total) {
-      console.log(total,'11111223123')
+      // console.log(total,'11111223123')
       this.totalPage = Math.ceil(total / this.pageLength);
     },
     handleChange(value){

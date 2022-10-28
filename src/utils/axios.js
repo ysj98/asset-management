@@ -70,7 +70,6 @@ axiosX.interceptors.response.use(
     // }
     // 成功则直接返回数据
       // 附件下载
-      console.log(response)
     return response
   },
   error => {
