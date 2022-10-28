@@ -386,7 +386,7 @@ export default [
       { title: '资产交付管理', path: '/assetDelivery' },
       { title: '资产交付记录', path: '/assetDeliveryRecord' },
       { title: '巡查记录', path: '/patrolRecord' },
-      { title: '资产抵押登记', path: '/debt' },
+      { title: '资产债务登记', path: '/debt' },
     ]
   },
   {

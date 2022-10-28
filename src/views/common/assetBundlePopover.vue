@@ -220,6 +220,8 @@ export default {
     // 外面删除了后剩下给回来的数据
     redactCheckedDataFn (redactChecked, projectId, assetType, overallData) {
       // overallData 给回来的数据合并在去重
+      this.loading=false
+      console.log(redactChecked,projectId,assetType,overallData)
       if (overallData && overallData.length !== 0) {
         let arrData = [...this.overallData, ...overallData]
         let hash = {}
@@ -238,6 +240,7 @@ export default {
         flag = true
       }
       // 资产类型变化
+      console.log(this.selecData)
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
         flag = true
         this.selecData.assetType = assetType
@@ -359,6 +362,7 @@ export default {
         pageNum: this.selecData.pageNum
       }
       if (this.changeType && !obj.assetType) {
+        this.loading=false
         return
       }
       this.$api.assets.assetListPage(obj).then(res => {

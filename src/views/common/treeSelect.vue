@@ -101,7 +101,7 @@ export default {
       organId: '',
       treeData: [],
       maxTagCount: -1,
-      searchvalueBusinessType:''
+      searchvalueBusinessType:'',
     }
   },
   computed: {
@@ -138,7 +138,7 @@ export default {
             }]
           }
           this.treeData = this.mapTreeNodes(resultData)
-          console.log(this.treeData)
+          // console.log(this.treeData)
           if (this.default) {
             this.organId = this.treeData[0].organId
             this.organName = this.treeData[0].name
@@ -228,6 +228,8 @@ export default {
     },
     // 选择树
     changeTree (value, label, extra) {
+      console.log(value,label)
+      console.log(this.treeData)
       this.showDefaultOrganName = false
       if (!this.multiple) { // 单选
         this.$emit('changeTree', value, label[0])
@@ -241,11 +243,11 @@ export default {
     },
     //转换查询
     searchOrgan(value){
+      console.log(value)
       if (this.showSearch && value.length>0) {
         this.organId=''
         this.keywordOrgan(value)
-      } else {
-        this.initDepartment()
+        console.log('查关键字')
       }
     },
     //关键字查询组织机构
@@ -257,12 +259,12 @@ export default {
           let resultData = res.data.data
           this.treeData = []
           this.treeData = this.mapTreeNodes(resultData)
-          console.log(this.treeData)
-          if (this.default) {
-            this.organId = this.treeData[0].organId
-            this.organName = this.treeData[0].name
-            this.$emit('changeTree', this.organId, this.organName)
-          }
+          // console.log(this.treeData)
+          // if (this.default) {
+          //   this.organId = this.treeData[0].organId
+          //   this.organName = this.treeData[0].name
+          //   this.$emit('changeTree', this.organId, this.organName)
+          // }
         }
       })
     }
