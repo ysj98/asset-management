@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-07-10 10:02:56
- * @Description: 土地信息
+ * @Description: 车位信息
 -->
 <template>
   <div class="landInfo-page pb70">
@@ -93,6 +93,16 @@
                 :options="$addTitle(parkAreaOpt)"
                 :default-active-first-option="false"
                 v-model="queryCondition.parkingAreaId"
+            />
+            <!-- 是否登记资产 -->
+            <a-select
+              placeholder="是否登记资产"
+              v-model="queryCondition.amsAsset"
+              :style="allWidth"
+              :options="$addTitle(registerList)"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
             />
           </div>
         </div>
