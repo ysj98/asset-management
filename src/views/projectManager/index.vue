@@ -29,7 +29,7 @@
         >批量导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <tree-select @changeTree="changeTree" style="width: 180px; text-align: left;" class="mr10"/>
+        <tree-select @changeTree="changeTree" style="width: 180px; text-align: left;" class="mr10" :showSearch='true'/>
       </div>
       <div slot="contentForm">
         <a-row :gutter="8">

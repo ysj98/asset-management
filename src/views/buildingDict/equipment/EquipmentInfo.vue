@@ -27,7 +27,7 @@
               仅当前机构下设备
             </a-checkbox>
             <!-- 公司 -->
-            <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth"></treeSelect>
+            <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth" :showSearch='true'></treeSelect>
             <equipment-select-tree
                 style="margin-right: 10px;"
                 :allowClear="true"

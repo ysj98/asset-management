@@ -21,6 +21,7 @@
                 v-model="queryCondition.organId"
                 :allowClear="false"
                 :style="allWidth"
+                :showSearch='true'
               @change="handleTreeChange"
             ></treeSelect>
             <dict-select

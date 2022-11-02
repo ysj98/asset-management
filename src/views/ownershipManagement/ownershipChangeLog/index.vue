@@ -6,7 +6,7 @@
     <SG-SearchContainer background="white">
       <div slot="headRight" class="search-content-box">
         <a-input placeholder="请输入权证号码" :style="allStyle" v-model="warrantNbr"  />
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
         <a-input placeholder="请输入操作人名称" :style="allStyle" v-model="createByName"  />
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>

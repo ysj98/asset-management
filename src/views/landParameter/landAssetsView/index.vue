@@ -12,7 +12,7 @@
         <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;" :showSearch='true'></treeSelect>
         <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="allQuery" />
         <a-input-search v-model="queryCondition.landCategory" placeholder="权属用途" maxlength="20" style="width: 140px; margin-right: 10px;" @search="allQuery"/>
       </div>

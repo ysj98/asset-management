@@ -13,7 +13,7 @@
         >导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <tree-select @changeTree="changeTree" style="width: 240px"/>
+        <tree-select @changeTree="changeTree" style="width: 240px" :showSearch='true'/>
         <a-input placeholder="入库单名称或编号" @pressEnter="queryTableData" v-model.trim="storeName" style="width: 240px; margin: 0 10px"/>
       </div>
       <div slot="contentForm">

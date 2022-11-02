@@ -24,6 +24,7 @@
             placeholder="请选择组织机构"
             :allowClear="false"
             :style="allStyle"
+            :showSearch='true'
           ></treeSelect>
           <!-- 资产项目 -->
           <a-select
