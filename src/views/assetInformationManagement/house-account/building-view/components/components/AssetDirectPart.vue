@@ -14,6 +14,7 @@
             <a-select v-model="unitId" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择" :options="$addTitle(unitOptions)"/>
           </a-col>
         </a-row>
+        <!-- 楼栋列表 -->
         <div class="building_style" v-if="buildingList.length">
           <div class="floor_style" v-for="floor in buildingList" :key="floor.floorName">
             <div class="floor_num">{{floor.floorName}}</div>
@@ -25,8 +26,9 @@
                 :style="handleStyle(room.areaInfo, room.totalArea)"
                 @mousemove="handleMouseMove($event, true, room.roomId, room.roomNo)"
                 @mouseout="handleMouseMove($event, false)"
+                @click="goDetail({id:room.roomId})"
               >
-                <a @click="goDetail({id:room.roomId})">{{room.roomNo}}</a>
+                {{room.roomName}}
               </div>
             </div>
           </div>
@@ -92,10 +94,19 @@
       handleStyle (areaInfo, totalArea) {
         const { bgColorObj, maxTotalArea } = this
         let colorArr = Object.keys(areaInfo).filter(n => areaInfo[n])
+        // 如果只有一种面积，则显示对应的面积颜色 bgColorObj
         let bagColor = colorArr.length === 1 ? bgColorObj[colorArr[0]] : ''
-        let fontColor = colorArr.length === 1 ? '#fff' : '#687485'
-        let width = Math.floor(Number(totalArea || 0) * 100000 / maxTotalArea) / 1000
-        return `background-color: ${bagColor}; width: ${width}%; color: ${fontColor}`
+        let fontColor = colorArr.length === 1 ? '#fff' : '#000000'
+        let width = 0
+        if (Number(totalArea) < 100) {
+          width = 50
+        } else if (100 <= Number(totalArea) < 500) {
+          width = 70
+        } else if (500 <= Number(totalArea)) {
+          width = 100
+        }
+        // let width = Math.floor(Number(totalArea || 0) * 100000 / maxTotalArea) / 1000
+        return `background-color: ${bagColor}; width: ${width}px; color: ${fontColor};${colorArr.length !== 1? 'border: 1px solid #E5E9F2;' : ''}`
       },
 
       // 计算每层所有房间面积之和中的最大值，作为所有房间宽度百分比的基数
@@ -172,7 +183,14 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             this.buildingList = res.data
-            return this.calcMaxTotalArea(res.data)
+            this.buildingList.forEach(item => {
+              if (Array.isArray(item.roomList) && item.roomList.length > 0) {
+                item.roomList.forEach(room => {
+                  room.roomName = room.roomNo.split('_')[room.roomNo.split('_').length - 1]
+                })
+              }
+            })
+            // return this.calcMaxTotalArea(res.data)
           }
           throw res.message || '查询楼层信息出错'
         }).catch(err => {
@@ -216,35 +234,27 @@
       border: 1px solid #E5E9F2;
       border-bottom: none;
       .floor_style {
-        height: 60px;
         border-bottom: 1px solid #E5E9F2;
+        display:flex;
         .floor_num {
-          width: 80px;
-          float: left;
+          align-self: center;
+          width: 8%;
           height: 100%;
+          line-height:100%;
           color: #49505E;
           font-weight: bold;
-          padding-top: 22px;
           text-align: center;
-          border-right: 1px solid #E5E9F2;
         }
         .floor_rooms {
-          height: 100%;
-          margin-left: 81px;
-          white-space: nowrap;
-          overflow-x: auto; // 房间设置了min-width，防止楼栋过多情况
-          overflow-y: hidden;
-          /*设置横向滚动样式*/
-          &::-webkit-scrollbar {
-            height:5px;
-          }
+          border-left: 1px solid #E5E9F2;
+          width: 92%;
           .room_style {
-            height: 100%;
-            /*color: #fff;*/
+            height: 60px;
+            line-height:60px;
             min-width: 10px;
-            cursor: default;
+            cursor: pointer;
             overflow: hidden;
-            padding-top: 22px;
+            font-weight: bold;
             text-align: center;
             display: inline-block;
             border-right: 1px solid #E5E9F2;

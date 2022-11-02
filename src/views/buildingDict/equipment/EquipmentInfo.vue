@@ -51,7 +51,7 @@
             <!-- 是否登记资产 -->
             <a-select
               placeholder="是否登记资产"
-              v-model="queryCondition.isRegister"
+              v-model="queryCondition.assetRegister"
               :style="allWidth"
               :options="$addTitle(registerList)"
               :allowClear="false"

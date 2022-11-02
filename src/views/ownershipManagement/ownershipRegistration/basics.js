@@ -45,19 +45,19 @@ export const register = [{
   title: '原权证号',
   dataIndex: 'oldWarrantNbr',
   align: 'center',
-  width: '10%',
+  width: '15%',
   scopedSlots: { customRender: 'oldWarrantNbr' }
 }, {
   title: '新权证号',
   dataIndex: 'warrantNbr',
   align: 'center',
   scopedSlots: { customRender: 'warrantNbr' },
-  width: '25%'
+  width: '15%'
 }, {
   title: '操作',
   dataIndex: 'operation',
   align: 'center',
-  width: '11%',
+  width: '7%',
   scopedSlots: { customRender: 'operation' }
 }]
 
@@ -73,7 +73,7 @@ export const cancellation = [{
 }, {
   title: '资产类型',
   dataIndex: 'assetTypeName',
-  width: '10%'
+  width: '8%'
 }, {
   title: '资产项目名称',
   dataIndex: 'projectName',
@@ -107,6 +107,6 @@ export const cancellation = [{
   title: '操作',
   dataIndex: 'operation',
   align: 'center',
-  width: '10%',
+  width: '8%',
   scopedSlots: { customRender: 'operation' }
 }]
