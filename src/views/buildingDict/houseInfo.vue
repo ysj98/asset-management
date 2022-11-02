@@ -42,6 +42,7 @@
             placeholder='请选择组织机构'
             :allowClear="false"
             :style="allWidth"
+            :showSearch='true'
           >
           </treeSelect>
           <!-- 楼栋 -->

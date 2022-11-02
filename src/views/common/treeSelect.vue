@@ -243,6 +243,7 @@ export default {
     },
     //转换查询
     searchOrgan(value){
+      this.searchvalueBusinessType=value
       console.log(value)
       if (this.showSearch && value.length>0) {
         this.organId=''
@@ -276,6 +277,12 @@ export default {
     this.maxTagCount = this.multiple ? 1 : -1
     this.organId = this.value
     this.initDepartment()
+    this.$nextTick(()=>{
+    document.addEventListener("click",(event)=>{
+      event.stopPropagation();
+      this.searchvalueBusinessType = ""
+    })
+  })
   }
 }
 </script>
