@@ -22,6 +22,10 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress()
 console.log('IP', localhost)
+// const target = 'http://192.168.1.11:10060'
+//const target = 'http://beta.uhomecp.com/'
+// const target = `http://${localhost}:8089`
+// const t = 'http://192.168.2.36:8081'
 //const target = 'http://192.168.1.7:8088'
 const target = 'http://beta.uhomecp.com/'
 // const target = 'http://192.168.1.11:10060'
@@ -33,7 +37,7 @@ const proxyURL = [
   '/basic-data-batch-api',
   '/uhomecp-app/',
   '/common-api',
-  '/car-parking',
+  '/car-parking', 
   '/uis/',
   '/ams/',
   '/charging-api/',

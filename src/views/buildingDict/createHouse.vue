@@ -395,10 +395,10 @@ export default {
     }
   },
   mounted() {
-    this.queryNodesByRootCode("20");
-    this.queryNodesByRootCode("60");
     this.type = this.$route.query.type;
     this.organId = this.$route.query.organId || ""
+    this.queryNodesByRootCode("20");
+    this.queryNodesByRootCode("60");
     // 如果是新增
     if (this.type === "create") {
       this.defaultOrganName = this.$route.query.selectedOrganName
@@ -556,6 +556,8 @@ export default {
         houseNumber: data.houseNumber || undefined,
         landArea: data.landArea || undefined
       });
+      this.queryNodesByRootCode("20");
+      this.queryNodesByRootCode("60");
       // 处理平面图
       if (data.planeFigurePath) {
         this.planeFigurePath = [{ url: data.planeFigurePath, name: "" }];
@@ -598,7 +600,9 @@ export default {
       this.form.setFieldsValue({
         buildId: undefined,
         unitId: undefined,
-        floorId: undefined
+        floorId: undefined,
+        houseCategory: undefined,
+        resType: undefined
       });
       this.buildOpt = [];
       this.unitOpt = [];
@@ -606,6 +610,8 @@ export default {
       if (!organId) {
         return;
       }
+      this.queryNodesByRootCode("20");
+      this.queryNodesByRootCode("60");
       this.queryBuildList(organId);
     },
     queryBuildDetails (buildId) {
@@ -726,7 +732,8 @@ export default {
        * 60  房间用途
        */
       let data = {
-        categoryCode: code
+        categoryCode: code,
+        organId: this.organId
       };
       return this.$api.basics.queryNodesByRootCode(data).then(res => {
         if (res.data.code === "0") {
@@ -751,7 +758,7 @@ export default {
     },
     // 根据业态Id 获取下面的子节点 请求房间类型
     queryChildNodesById(typeId) {
-      let data = { typeId };
+      let data = { typeId, organId: this.organId };
       this.$api.basics.queryChildNodesById(data).then(res => {
         if (res.data.code === "0") {
           let result = res.data.data || [];

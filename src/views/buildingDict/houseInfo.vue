@@ -432,8 +432,6 @@ export default {
     this.query();
   },
   mounted() {
-    this.queryNodesByRootCode("20");
-    this.queryNodesByRootCode("60");
   },
   methods: {
     // 房间收拾搜索
@@ -615,8 +613,12 @@ export default {
       }
       this.organName = organName;
       this.selectedOrganName = organName || ''
+      this.queryCondition.houseCategory = ''
+      this.queryCondition.resType = ''
       if (organId) {
         this.queryCondition.organId = organId
+        this.queryNodesByRootCode("20");
+        this.queryNodesByRootCode("60");
         this.watchOrganChange(organId);
         this.searchQuery();
       }
@@ -746,7 +748,8 @@ export default {
        * 60  房间用途
        */
       let data = {
-        categoryCode: code
+        categoryCode: code,
+        organId: this.queryCondition.organId
       };
       this.$api.basics.queryNodesByRootCode(data).then(res => {
         if (res.data.code === "0") {
@@ -774,7 +777,7 @@ export default {
     },
     // 根据业态Id 获取下面的子节点 请求房间类型
     queryChildNodesById(typeId) {
-      let data = { typeId };
+      let data = { typeId, organId: this.queryCondition.organId };
       this.$api.basics.queryChildNodesById(data).then(res => {
         if (res.data.code === "0") {
           let result = res.data.data || [];
@@ -807,6 +810,7 @@ export default {
       console.log("批量更新", file);
       let fileData = new FormData();
       fileData.append("acctHouseCodeFile", file);
+      fileData.append("organId", this.queryCondition.organId);
       let loadingName = this.SG_Loding("导入中...");
       this.$api.building.acctHouseCodeImport(fileData).then(
         res => {

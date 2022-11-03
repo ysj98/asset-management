@@ -505,9 +505,6 @@ export default {
       this.queryBuildDetail(this.$route.query.positionId)
     }
     this.queryProvinceList()
-    this.queryNodesByRootCode('30')
-    this.queryNodesByRootCode('60')
-    this.queryNodesByRootCode('20')
     this.platformDictFn()
     this.init()
     this.handleBtn()
@@ -575,8 +572,12 @@ export default {
         await this.queryCommunityListByOrganId(organTopId, organTopName)
         this.form.resetFields(['communityId'])
       }
-      this.form.setFieldsValue({addressNo: ''})
-      this.getLandTheNo()
+      this.form.setFieldsValue({buildType: ''})
+      this.form.setFieldsValue({useType: ''})
+      this.form.setFieldsValue({buildHouseType: ''})
+      this.queryNodesByRootCode('30')
+      this.queryNodesByRootCode('60')
+      this.queryNodesByRootCode('20')
     },
     async init () {
       this.resetAll()
@@ -813,6 +814,9 @@ export default {
         }
       )
       this.organIdMain = data.organId
+      this.queryNodesByRootCode('30')
+      this.queryNodesByRootCode('60')
+      this.queryNodesByRootCode('20')
       this.$refs.organTopRef.initDepartment(organTopId, organTopName)
       this.getLandTheNo()
       // console.log('dfsdfsdf')
@@ -873,7 +877,8 @@ export default {
        * 60  楼栋用途
       */
       let data = {
-        categoryCode: code
+        categoryCode: code,
+        organId: this.organIdMain
       }
       this.$api.basics.queryNodesByRootCode(data).then(res => {
         if (res.data.code === '0') {
