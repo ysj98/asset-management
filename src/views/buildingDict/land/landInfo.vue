@@ -22,7 +22,7 @@
           <SG-Button v-if="landImportButton" @click="showLandDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
         </div>
 
-        <div style="overflow: visible">
+        <div style="overflow: visible"  class="search-from-box">
           <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
             仅当前机构下土地
           </a-checkbox>
@@ -89,20 +89,20 @@
           ref="ProvinceCityDistrict"
           v-model="provinces"
         ></ProvinceCityDistrict>
-        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="searchQuery" />
-          <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
+        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;margin-top:10px" @search="searchQuery" />
+          <SG-Button @click="searchQuery" class="mr10 mt10" type="primary">查询</SG-Button>
         </div>
       </div>
       <!-- 表格部分 -->
       <div class="table-layout-fixed">
         <a-table
-          class="custom-table td-pd10"
+          class="custom-table td-pd10 tb-height"
           :loading="table.loading"
           :pagination="false"
           :columns="table.columns"
           :dataSource="table.dataSource"
           :locale="{emptyText: '暂无数据'}"
-          :scroll="{x: 1200}"
+          :scroll="{x: 1200,y:570}"
         >
           <template slot="matchingName" slot-scope="text, record">
             <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
@@ -517,6 +517,7 @@ export default {
 .city {
     float: left;
     margin-right: 8px;
+    margin-top: 10px;
     /deep/.ant-col-8 {width: 180px;}
     /deep/.province_style {
       width: 170px;
@@ -536,6 +537,9 @@ export default {
       display: inline-block;
       vertical-align: middle;
     }
+  }
+  .tb-height{
+    height: 570px;
   }
 </style>
 

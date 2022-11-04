@@ -22,7 +22,7 @@
         <a-form :form="form" @submit="handleSubmit">
           <a-col class="playground-col" :span="12">
             <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">组织机构：</label>
+              <label slot="label">所属机构：</label>
               <treeSelect
                 :allowClear="false"
                 :style="allWidth"

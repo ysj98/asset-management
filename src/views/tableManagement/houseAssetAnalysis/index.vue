@@ -27,9 +27,9 @@
     <div style="padding: 0 45px 35px;">
       <SG-Button type="primary" @click="searchDetail">查看明细</SG-Button>
       <!--汇总分析图表部分-->
-      <chart-part :queryInfo="queryInfo"/>
+      <chart-part :queryInfo="queryInfo" :titleList='titleList'/>
       <!--查询列表部分-->
-      <list-part :queryInfo="queryInfo"/>
+      <list-part :queryInfo="queryInfo" :titleList='titleList'/>
     </div>
     <asset-detail ref="assetDetail" :queryInfo="queryInfo"></asset-detail>
   </div>
@@ -53,6 +53,7 @@
         provinceCityDistrict: {}, // 查询条件-省市区
         organProjectValue: {}, // 查询条件-组织机构及项目值
         objectTypeOptions: [{ title: '全部分类', key: '' }], // 查询条件-资产分类选项
+        titleList:[]
       }
     },
 
@@ -68,6 +69,7 @@
         handler: function (obj) {
           this.queryData()
           obj.organId && this.queryObjectTypeByOrganId(obj.organId)
+          obj.organId && this.getTitle(obj.organId)
         },
         deep: true
       }
@@ -82,7 +84,16 @@
         this.objectType = value[value.length - 1] === 'all' ? ['all'] : value.filter(m => m !== 'all')
         this.queryData()
       },
-
+      //获取自定义表头
+      getTitle(val){
+        this.$api.houseStatusConfig.querySettingByOrganId({organId: val}).then(res=>{
+          console.log(res)
+          if (res.data.code == 0) {
+            this.titleList=res.data.data
+          }
+          }
+        )
+      },
       // 查询数据
       queryData () {
         const {

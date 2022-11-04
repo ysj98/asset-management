@@ -39,10 +39,11 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
-          <a-form-item label="来源渠道" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-input
-              :disabled="!isEdit" placeholder="请输入来源渠道"
-              v-decorator="['souceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
+          <a-form-item label="是否接管" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-select
+              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择是否接管' : ''"
+              :options="$addTitle(takeOverOptions)" @change="getTakeOver"
+              v-decorator="['takeOver', {initialValue: '1', rules: [{required: true, message: '请选择是否接管'}]}]"
             />
           </a-form-item>
         </a-col>
@@ -56,11 +57,10 @@
           </a-form-item>
         </a-col>
         <a-col :span="colSpan">
-          <a-form-item label="是否接管" :label-col="labelCol" :wrapper-col="wrapperCol">
-            <a-select
-              :disabled="!isEdit" style="width: 100%;" :placeholder="isEdit ? '请选择是否接管' : ''"
-              :options="$addTitle(takeOverOptions)" @change="getTakeOver"
-              v-decorator="['takeOver', {initialValue: '1', rules: [{required: true, message: '请选择是否接管'}]}]"
+          <a-form-item label="来源渠道" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <a-input
+              :disabled="!isEdit" placeholder="请输入来源渠道"
+              v-decorator="['souceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
             />
           </a-form-item>
         </a-col>

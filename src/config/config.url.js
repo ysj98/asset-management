@@ -1160,7 +1160,7 @@ export const tableManage = {
   // 权属证件一览表
   queryWarrantList: "/ams/statistics/ownership/warrant",
   // 权属证件一览表（导出）
-  exportOwnershipCardList: "/ams/statistics/ownership/warrant/export",
+  exportOwnershipCardList: "/ams/exportDynamicColumn/exportWarrant",
   // 权证数量统计表
   queryWarrantStatistics: "/ams/statistics/warrant/number",
   // 权证数量统计表（导出）

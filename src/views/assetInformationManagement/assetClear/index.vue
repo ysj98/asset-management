@@ -72,13 +72,16 @@
           :options="$addTitle(approvalStatusData)"
           @select="changeStatus"
         ></a-select>
-        <segi-range-picker
+        <div class="box">
+          <SG-DatePicker :allowClear="false" label="录入时间" style="width: 150px;"  pickerType="RangePicker" :defaultValue="[moment(queryCondition.beginDate, 'YYYY-MM-DD'), moment(queryCondition.endDate, 'YYYY-MM-DD')]" v-model="registerDate" format="YYYY-MM-DD"></SG-DatePicker>
+        </div>
+        <!-- <segi-range-picker
           label="录入时间"
           style="margin-right: 10px;"
           :defaultValue="[moment(queryCondition.beginDate, 'YYYY-MM-DD'), moment(queryCondition.endDate, 'YYYY-MM-DD')]"
           :canSelectToday="true"
           @dateChange="onDateChange"
-        ></segi-range-picker>
+        ></segi-range-picker> -->
       </div>
     </SG-SearchContainer>
     <!--数据概览信息-->
@@ -261,6 +264,7 @@ export default {
       },
       showNoDataTips: false,
       overviewNumSpinning: false,
+      registerDate:[],
       numList: [
         { title: "全部", key: "total", value: 0, fontColor: "#324057" },
         { title: "草稿", key: "draftTotal", value: 0, bgColor: "#5b8ff9" },
@@ -302,8 +306,8 @@ export default {
         multiApprovalStatus: this.queryCondition.approvalStatus.join(","),
         cleanupTypes: this.queryCondition.cleanupType.join(","),
         currentOrganId: this.queryCondition.onlyCurrentOrgan ? "1" : "0",
-        startCreateDate: this.queryCondition.beginDate,
-        endCreateDate: this.queryCondition.endDate,
+        startCreateDate: moment(this.registerDate[0]).format('YYYY-MM-DD'),
+        endCreateDate: moment(this.registerDate[1]).format('YYYY-MM-DD'),
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength
       };
@@ -612,4 +616,9 @@ export default {
 .custom-table {
   padding-bottom: 50px;
 }
+.box {
+    display: inline-block;
+    // vertical-align: middle;
+    margin-right: 10px;
+  }
 </style>

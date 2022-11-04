@@ -556,7 +556,9 @@
           this.$message.error(error || '查询统计出错')
           console.log(error, 'getAssetValueCount')
         }
-        if (type === 'export') { return form }
+        if (type === 'export') {     
+          console.log(form)
+          return form }
         this.tableObj.loading = true
         this.$api.tableManage.getAssetValue(form).then(r => { // 列表
           this.tableObj.loading = false
@@ -600,8 +602,9 @@
       },
 
       // 导出
-      handleExport () {
-        let data= this.queryTableData({type: 'export'})
+      async handleExport () {
+        let data=  await this.queryTableData({type: 'export'})
+        console.log(data)
         exportDataAsExcel(data, this.$api.tableManage.exportAssetValue, '资产价值统计表.xls', this)
       },
 

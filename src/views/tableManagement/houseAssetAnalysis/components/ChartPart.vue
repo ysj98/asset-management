@@ -31,7 +31,7 @@
   import {math as $math} from '@/utils/math'
   export default {
     name: 'ChartPart',
-    props: ['queryInfo'],
+    props: ['queryInfo','titleList'],
     data () {
       return {
         getFormat,
@@ -48,7 +48,8 @@
           direct_statistics: null,
           asset_statistics: null,
           ownership_statistics: null
-        }// 图表实例，用于重绘
+        },// 图表实例，用于重绘
+        usedArr:[]
       }
     },
 
@@ -99,12 +100,21 @@
               ...arr, { useTypeName: '其他', area: Number(area.toFixed(2)), percentage: Number(percentage.toFixed(2)) }
             ] : arr
             let usedArr = ((usedList || []).filter(v => Number(v.area))).length ? usedList : []
+            // this.usedArr=usedArr
             // list.forEach(item => {
             //   item.area = Number(getFormat(item.area))
             // })
+            this.titleList.forEach(item=>{
+              usedArr.forEach(ele=>{
+                if(ele.usedName==item.statusName){
+                  ele.usedName=item.alias
+                }
+              })
+            })
             return this.$nextTick(function () {
               this.renderPieChart('type_statistics', 'useTypeName', list)
               this.renderPieChart('direct_statistics', 'usedName', usedArr)
+              console.log(usedArr)
               this.renderPieChart('ownership_statistics', 'useTypeName', ownershipAreaList || [])
               this.renderRectChart(assetValue)
             })
@@ -117,7 +127,16 @@
           console.log(err)
         })
       },
-
+      //获取自定义表头
+      getTitle(){
+       this.titleList.forEach(item=>{
+              this.usedArr.forEach(ele=>{
+                if(ele.usedName==item.statusName){
+                  ele.usedName=item.alias
+                }
+              })
+            })
+      },
       // 绘制饼状图
       renderPieChart (containerId, key, list = []) {
         let pieInstance = this.chartInstance[containerId]

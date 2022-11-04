@@ -71,7 +71,7 @@ import {math} from '@/utils/math'
 export default {
     name: 'ListPart',
     components: { EditTableHeader },
-    props: ['queryInfo'],
+    props: ['queryInfo','titleList'],
     data () {
       return {
         // scroll:{x: 1500, y: 600},
@@ -90,9 +90,9 @@ export default {
         columnsPC: [{ title: '省份', dataIndex: 'provinceName', width: 80 }, { title: '城市', dataIndex: 'cityName', width: 80 }], // 省份城市字段跟随地区展示
         columnsFixed: [
           { title: '资产数量', dataIndex: 'assetNum', width: 100 },
-          { title: '资产面积(㎡)', dataIndex: 'area', scopedSlots: { customRender: 'area' }, width: 150 }, { title: '运营(㎡)', dataIndex: 'transferOperationArea', scopedSlots: { customRender: 'transferOperationArea' }, width: 150 },
-          { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' }, width: 150 }, { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' }, width: 150 },
-          { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' }, width: 150 }, { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' }, width: 150 },
+          { title: '资产面积(㎡)', dataIndex: 'area', scopedSlots: { customRender: 'area' }, width: 150 }, { title: '运营(㎡)', dataIndex: 'transferOperationArea', scopedSlots: { customRender: 'transferOperationArea' }, width: 150,code:'1001' },
+          { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' }, width: 150,code:'1003' }, { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' }, width: 150 ,code:'1002'},
+          { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' }, width: 150 ,code:'1004'}, { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' }, width: 150,code:'1005' },
           { title: '资产原值', dataIndex: 'originalValue', scopedSlots: { customRender: 'originalValue' }, width: 150 }, { title: '首次评估原值', dataIndex: 'firstOriginalValue', scopedSlots: { customRender: 'firstOriginalValue' }, width: 150},
           { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' }, width: 150 },{ title: '',  scopedSlots: { customRender: 'detail' }, width: 100,align: 'center' },
         ], // Table 列头固定部分
@@ -176,9 +176,11 @@ export default {
               return getMutipSort(sortFnArr)(a, b)
             })
             this.handleColumns()
+            this.getTitle()
             return Object.assign(this.paginationObj, {
               totalCount: count, pageNo, pageLength
             })
+
           }
           throw res.message
         }).catch(err => {
@@ -186,7 +188,17 @@ export default {
           this.$message.error(err || '查询列表接口出错')
         })
       },
-
+      //获取自定义表头
+      getTitle(){
+        console.log(this.titleList)
+       this.titleList.forEach(item=>{
+              this.columns.forEach(ele=>{
+                if(ele.code==item.code){
+                  ele.title=item.alias+'(㎡)'
+                }
+              })
+            })
+      },
       // 打开列表列头编辑Modal
       openModal () {
         this.key = Date.now()
