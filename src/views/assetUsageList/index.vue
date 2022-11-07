@@ -243,7 +243,34 @@ export default {
       this.projectFn()
       this.getListFn()
       this.allQuery()
+      this.getTitle()
+      console.log(this.columns)
     },
+     //获取自定义表头
+      getTitle(val){
+        this.$api.houseStatusConfig.querySettingByOrganId({organId: val}).then(res=>{
+          console.log(res.data.data)
+          if (res.data.code == 0) {
+            let titleList=res.data.data
+            this.columns.forEach(ele=>{
+              if(ele.titleTag){
+                ele.children.forEach(item=>{
+                  if (item.titleTag) {
+                   item.children.forEach(e=>{
+                     titleList.forEach(t=>{
+                       if(t.code==e.code){
+                         e.title=t.alias+'(㎡)'
+                       }
+                     })
+                   })
+                  }
+                })
+              }
+            })
+          }
+          }
+        )
+      },
     // 搜索
     allQuery (str) {
       this.queryCondition.pageNum = 1

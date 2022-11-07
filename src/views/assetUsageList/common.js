@@ -140,6 +140,7 @@ export const assetsColumns = [
   { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
   {
     title: '资产使用',
+    titleTag:true,
     children: 
     [
       { title: '建筑面积(㎡)',dataIndex: 'area', width: 120, scopedSlots: { customRender: 'area' }},
@@ -155,14 +156,15 @@ export const assetsColumns = [
       },
       {
         title: '资产面积(㎡)',
+        titleTag:true,
         children: 
         [
           { title: '资产面积总计(㎡)', dataIndex: 'assetAreaTotal', width: 120 },
-          { title: '经营面积(㎡)', dataIndex: 'managerArea', width: 120, scopedSlots: { customRender: 'managerArea' } },
-          { title: '自用面积(㎡)', dataIndex: 'selfUserArea', width: 120, scopedSlots: { customRender: 'selfUserArea' }},
-          { title: '占用面积(㎡)', dataIndex: 'occupationArea', width: 120, scopedSlots: { customRender: 'occupationArea' }},
-          { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 120 },
-          { title: '其他面积(㎡)', dataIndex: 'otherArea', width: 120 }
+          { title: '经营面积(㎡)', dataIndex: 'managerArea', width: 120, scopedSlots: { customRender: 'managerArea' },code:'1001' },
+          { title: '自用面积(㎡)', dataIndex: 'selfUserArea', width: 120, scopedSlots: { customRender: 'selfUserArea' },code:'1003'},
+          { title: '占用面积(㎡)', dataIndex: 'occupationArea', width: 120, scopedSlots: { customRender: 'occupationArea' },code:'1004'},
+          { title: '闲置面积(㎡)', dataIndex: 'idleArea', width: 120 ,code:'1002'},
+          { title: '其他面积(㎡)', dataIndex: 'otherArea', width: 120 ,code:'1005'}
         ]
       },
       { title: '选用情况', dataIndex: 'leaseStatusFmt', width: 100, scopedSlots: { customRender: 'leaseStatusFmt' }}

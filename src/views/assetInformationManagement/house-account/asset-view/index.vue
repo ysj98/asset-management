@@ -479,6 +479,7 @@ const requiredColumn = [
           this.queryCategoryOptions(val.organId)
           this.getSourceOptions(val.organId)
           this.organDict('OWNERSHIP_USE',val.organId)
+          this.queryNodesByRootCode(val.organId)
           if(val.organId.split(',').length === 1){
             this.configOrganId = val.organId
             this.getAssetLabel(val.organId)
@@ -1011,9 +1012,10 @@ const requiredColumn = [
         type && this.$message.info('暂不支持该操作')
       },
       // 楼栋用途
-      queryNodesByRootCode () {
+      queryNodesByRootCode (val) {
         let data = {
-          categoryCode: '60'
+          categoryCode: '60',
+          organId:val
         }
         this.$api.basics.queryNodesByRootCode(data).then(res => {
           if (res.data.code === '0') {

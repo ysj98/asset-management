@@ -50,9 +50,8 @@
           <a-col :span="8">
             <a-form-model-item label="运营项目" prop="communityId">
               <a-select
-                  :disabled="routeQuery.type === 'edit'"
                   :style="allWidth"
-                  :placeholder=" routeQuery.type === 'edit' ? '无' : '请选择'"
+                  placeholder="请选择"
                   showSearch
                   option-filter-prop="children"
                   :options="$addTitle(communityIdOpt)"
@@ -140,12 +139,12 @@
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
-                      <a-input :disabled="true" :maxLength="100" @input="getLL" v-model="formInfo.placeAddr" :style="allWidth2" placeholder="详细地址"/>
+                      <a-input :disabled="true" :maxLength="100"  v-model="formInfo.placeAddr"  placeholder="详细地址"/>
                     </div>
                   </a-form-model-item>
                 </a-col>
                 <a-col v-bind="formSpan">
-                  <a-form-model-item label="经纬度" v-bind="formItemLayout">
+                  <a-form-model-item label="经纬度" >
                     <a-input :style="allWidth" v-model="lngAndlat">
                       <a-icon type="plus" @click="showSelectMap" class="pointer" slot="suffix"/>
                     </a-input>
@@ -407,6 +406,7 @@ export default {
     bussType: "parkDir",
     allWidth: "width:100%",
     visibleShow: false,
+    lngAndlat:'',
     formInfo: { // 表单
       organId: undefined, // 组织机构ID
       communityId: undefined, // 项目Id
