@@ -142,7 +142,7 @@ export default {
   computed: {
     // 图片基础地址
     hostImg() {
-      return configs.hostImg
+      return configs.hostImg1
     },
     // 上传文件可选择类型
     uploadFileType() {
@@ -413,7 +413,7 @@ export default {
           list: this.imagesList.map(el => {
             let resUrl = this.hostImg + el.url
             if (el.fileSources === 0) {
-              resUrl = configs.hostImg + el.url
+              resUrl =  this.hostImg + el.url
             }
             return resUrl
           }),
