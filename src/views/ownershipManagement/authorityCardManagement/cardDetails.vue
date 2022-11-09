@@ -23,7 +23,7 @@
             <span v-if="files.length === 0">无</span>
             <div v-if="files.length > 0">
               <div class="umImg">
-                <upload-file v-model="files" :show="true" type="all"/>
+                <upload-file v-model="files" :show="true" type="all" />
               </div>
             </div>
           </a-col>
@@ -186,6 +186,12 @@ export default {
       apprId: "",
     };
   },
+  provide() {
+            return {
+                    preview: this.handlePower('AUTHORITY_MANA_PREVIEW'),
+                    download: this.handlePower('AUTHORITY_MANA_DOWNLOAD')
+            };
+},
   computed: {
     useModal() {
       return this.$route && this.$route.path !== "/authorityCardInfo";
@@ -250,6 +256,19 @@ export default {
     },
     initData({ warrantNbr }) {
       this.warrantNbr = warrantNbr;
+    },
+    // 权限函数处理
+    handlePower(val) {
+      let permissionStr = window.sessionStorage.getItem('b083aa5461ace946');
+      if (typeof permissionStr === 'string' && permissionStr.length > 0) {
+        let permissions = JSON.parse(permissionStr);
+        for (let i = 0; i < permissions.length; i++) {
+           if (permissions[i].popeCode === val) {
+            return true
+          }
+        }
+        return false
+          }
     },
     // 详情查询
     query({ warrantId, warrantNbr, organId }) {

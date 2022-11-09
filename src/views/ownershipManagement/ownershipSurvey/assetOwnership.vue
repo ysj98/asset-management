@@ -5,7 +5,7 @@
  -->
 <template>
   <div>
-    <div class="pb70 content-active-box">
+    <div class=" content-active-box">
       <SearchContainer
         v-model="toggle"
         :contentStyle="{ paddingTop: toggle ? '16px' : 0 }"
@@ -201,7 +201,7 @@
       <overview-number :numList="numList" />
       <div>
         <a-table
-          class="custom-scroll custom-total td-pd10"
+          class="custom-scroll custom-total td-pd10 "
           :loading="table.loading"
           :pagination="false"
           :scroll="tableScrollOptions"
@@ -466,7 +466,7 @@ export default {
           bgColor: "gray",
         },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      tableScrollOptions: { x: "100%", y: 300 },
+      tableScrollOptions: { x: "100%", y: 500 },
       assetClassifyData: [{ label: "全部资产分类", value: "" }],
       assetTypeOptions: [],
       ASSET_MANAGEMENT,
@@ -496,7 +496,7 @@ export default {
   },
   watch: {
     toggle(val) {
-      this.tableScrollOptions.y = val ? 190 : 360;
+      this.tableScrollOptions.y = val ? 340 : 540;
     },
   },
   computed: {
@@ -512,8 +512,8 @@ export default {
     // this.platformDictFn("AMS_KIND_OF_RIGHT");
     this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
     this.platformDictFn("asset_type");
-    handleTableScrollHeight(this.tableScrollOptions, 530);
-    this.tableScrollOptions.y = 190;
+    handleTableScrollHeight(this.tableScrollOptions, 540);
+    this.tableScrollOptions.y = 340;
   },
   mounted() {
     handleTableHeaderScrollHeight(this.$refs.table.$el);
@@ -953,6 +953,7 @@ export default {
     vertical-align: middle;
   }
 }
+
 </style>
 
 <style lang="less" >
