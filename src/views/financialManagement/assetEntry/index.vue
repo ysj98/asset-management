@@ -12,7 +12,7 @@
         <!-- 暂时不用 -->
         <!-- <SG-Button type="primary" style="margin-right: 8px" @click="listSet">列表设置</SG-Button> -->
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           <a-input-search placeholder="卡片名称/编码" :style="allStyle" :value="cardName" @change="cardNameChange" @search="queryClick" />
         </div>
       </div>

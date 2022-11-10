@@ -26,7 +26,7 @@
         >批量导入</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <tree-select @changeTree="changeTree" style="width: 180px"/>
+        <tree-select @changeTree="changeTree" style="width: 180px" :showSearch='true'/>
         <a-input placeholder="请输入登记名称" @pressEnter="queryTableData" v-model.trim="registerName" style="width: 180px; margin: 0 10px"/>
       </div>
       <div slot="contentForm">

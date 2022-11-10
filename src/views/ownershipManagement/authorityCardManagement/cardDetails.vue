@@ -264,10 +264,10 @@ export default {
         let permissions = JSON.parse(permissionStr);
         for (let i = 0; i < permissions.length; i++) {
            if (permissions[i].popeCode === val) {
-            return true
+            return false
           }
         }
-        return false
+        return true
           }
     },
     // 详情查询

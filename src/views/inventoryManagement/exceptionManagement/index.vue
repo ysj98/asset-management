@@ -12,7 +12,7 @@
           v-power="ASSET_MANAGEMENT.EXCEPTION_MANAGE_EXPORT"
         >导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           <a-input-search placeholder="资产名称/编码" :style="allStyle" :value="assetName" @change="assetNameChange" @search="queryClick" />
         </div>
       </div>
