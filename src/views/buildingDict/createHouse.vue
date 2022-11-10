@@ -182,7 +182,6 @@
                     :style="allWidth"
                     placeholder="请选择建筑形态"
                     showSearch
-                    @change="watchHouseCategory"
                     optionFilterProp="children"
                     :options="$addTitle(houseCategoryOpt)"
                     :allowClear="false"
@@ -395,10 +394,11 @@ export default {
     }
   },
   mounted() {
-    this.queryNodesByRootCode("20");
-    this.queryNodesByRootCode("60");
     this.type = this.$route.query.type;
     this.organId = this.$route.query.organId || ""
+    this.queryNodesByRootCode("20");
+    this.queryNodesByRootCode("30");
+    this.queryNodesByRootCode("60");
     // 如果是新增
     if (this.type === "create") {
       this.defaultOrganName = this.$route.query.selectedOrganName
@@ -590,7 +590,6 @@ export default {
       } else {
         this.queryAddFloorOptions(data.buildId, "0"); // 楼栋请求楼层
       }
-      this.queryChildNodesById(data.houseCategoryId); // 请求房间类型
     },
     // 监听一级物业改变
     changeTree(organId) {
@@ -598,7 +597,9 @@ export default {
       this.form.setFieldsValue({
         buildId: undefined,
         unitId: undefined,
-        floorId: undefined
+        floorId: undefined,
+        houseCategory: undefined,
+        resType: undefined
       });
       this.buildOpt = [];
       this.unitOpt = [];
@@ -606,6 +607,9 @@ export default {
       if (!organId) {
         return;
       }
+      this.queryNodesByRootCode("20");
+      this.queryNodesByRootCode("30");
+      this.queryNodesByRootCode("60");
       this.queryBuildList(organId);
     },
     queryBuildDetails (buildId) {
@@ -617,7 +621,6 @@ export default {
         this.loading = false
         if (res.data.code === '0') {
           this.form.setFieldsValue({houseCategory: res.data.data.buildHouseType || undefined})
-          this.watchHouseCategory(res.data.data.buildHouseType)
         } else {
           this.$message.error(res.data.message)
         }
@@ -656,21 +659,6 @@ export default {
       }
       // 请求楼层
       this.queryAddFloorOptions(unitId, "1");
-    },
-    // 监听建筑形态变化
-    watchHouseCategory(typeCode) {
-      console.log("建筑形态变化=>", typeCode);
-      this.form.setFieldsValue({
-        houseType: undefined
-      });
-      this.houseTypeOpt = [];
-      if (!typeCode) {
-        return;
-      }
-      let typeId = this.houseCategoryOpt.filter(
-        item => typeCode === item.typeCode
-      );
-      this.queryChildNodesById(typeId[0].typeId);
     },
     // 请求单元
     getOptions(type, value = "") {
@@ -722,11 +710,16 @@ export default {
     /* 根据根节点业态code获取下面的业态类型 */
     queryNodesByRootCode(code) {
       /**
+       * 10  项目业态
        * 20  建筑形态
+       * 30  房间类型
+       * 40  生命周期
+       * 50  房间状态
        * 60  房间用途
        */
       let data = {
-        categoryCode: code
+        categoryCode: code,
+        organId: this.organId
       };
       return this.$api.basics.queryNodesByRootCode(data).then(res => {
         if (res.data.code === "0") {
@@ -742,27 +735,14 @@ export default {
           if (code === "20") {
             this.houseCategoryOpt = [...resultArr];
           }
+          // 房间类型
+          if (code === "30") {
+            this.houseTypeOpt = [...resultArr];
+          }
           // 房间用途
           if (code === "60") {
             this.resTypeOpt = [...resultArr];
           }
-        }
-      });
-    },
-    // 根据业态Id 获取下面的子节点 请求房间类型
-    queryChildNodesById(typeId) {
-      let data = { typeId };
-      this.$api.basics.queryChildNodesById(data).then(res => {
-        if (res.data.code === "0") {
-          let result = res.data.data || [];
-          let resultArr = result.map(item => {
-            return {
-              label: item.typeName,
-              value: item.typeCode,
-              ...item
-            };
-          });
-          this.houseTypeOpt = [...resultArr];
         }
       });
     },

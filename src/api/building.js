@@ -154,7 +154,7 @@ export function updateCheckPlanStatus (data) {
 }
 // 下载楼栋模板
 export function buildingDownLoadExcel (data) {
-  return axiosGet(building.buildingDownLoadExcel, {}, false, {
+  return axiosGet(building.buildingDownLoadExcel, data, false, {
     responseType: 'blob'
   })
 }

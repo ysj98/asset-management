@@ -318,7 +318,7 @@ export default {
     // 下载模板文件
     downModeFile() {
       let loadingName = this.SG_Loding("下载中...");
-      this.$api.building.buildingDownLoadExcel().then(
+      this.$api.building.buildingDownLoadExcel({organId: this.organId}).then(
         (res) => {
           this.$SG_Message.destroy(loadingName);
           let blob = new Blob([res.data]);
