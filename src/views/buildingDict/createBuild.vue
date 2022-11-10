@@ -873,9 +873,13 @@ export default {
     /* 根据根节点业态code获取下面的业态类型 */
     queryNodesByRootCode (code) {
       /**
-       * 30  楼栋类型
-       * 60  楼栋用途
-      */
+       * 10  项目业态
+       * 20  建筑形态
+       * 30  房间类型
+       * 40  生命周期
+       * 50  房间状态
+       * 60  房间用途
+       */
       let data = {
         categoryCode: code,
         organId: this.organIdMain

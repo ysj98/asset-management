@@ -282,9 +282,14 @@ let columns = [
     scopedSlots: { customRender: "houseName" }
   },
   {
+    title: "建筑形态",
+    dataIndex: "houseCategoryName",
+    width: 90
+  },
+  {
     title: "房间类型",
     dataIndex: "houseTypeName",
-    width: 120
+    width: 90
   },
   {
     title: "建筑面积(㎡)",
