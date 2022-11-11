@@ -92,7 +92,6 @@
             optionFilterProp="children"
             :style="allWidth"
             :options="$addTitle(houseCategoryOpt)"
-            @change="watchHouseCategory"
             :allowClear="false"
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
@@ -430,10 +429,10 @@ export default {
       this.getOptions("getHouseByUnitId", this.queryCondition.unitId);
     }
     // 房间类型
-    if (this.queryCondition.houseCategory) {
-      let typeId = this.queryCondition.houseCategory.split(",")[1];
-      this.queryChildNodesById(typeId);
-    }
+    // if (this.queryCondition.houseCategory) {
+      // let typeId = this.queryCondition.houseCategory.split(",")[1];
+      // this.queryChildNodesById(typeId);
+    // }
     this.query();
   },
   mounted() {
@@ -623,6 +622,7 @@ export default {
       if (organId) {
         this.queryCondition.organId = organId
         this.queryNodesByRootCode("20");
+        this.queryNodesByRootCode("30");
         this.queryNodesByRootCode("60");
         this.watchOrganChange(organId);
         this.searchQuery();
@@ -667,17 +667,6 @@ export default {
         return;
       }
       this.queryBuildList(organId);
-    },
-    // 监听建筑形态变化
-    watchHouseCategory(value) {
-      console.log("建筑形态变化=>", value);
-      this.queryCondition.houseType = "";
-      this.houseTypeOpt = utils.deepClone(houseTypeOpt);
-      if (!value) {
-        return;
-      }
-      let typeId = value.split(",")[1];
-      this.queryChildNodesById(typeId);
     },
     // 请求楼栋列表默认20条
     queryBuildList(organId, buildName) {
@@ -749,7 +738,11 @@ export default {
     /* 根据根节点业态code获取下面的业态类型 */
     queryNodesByRootCode(code) {
       /**
+       * 10  项目业态
        * 20  建筑形态
+       * 30  房间类型
+       * 40  生命周期
+       * 50  房间状态
        * 60  房间用途
        */
       let data = {
@@ -774,26 +767,13 @@ export default {
             ];
           }
           // 房间用途
+          if (code === "30") {
+            this.houseTypeOpt = [...utils.deepClone(houseTypeOpt), ...resultArr];
+          }
+          // 房间用途
           if (code === "60") {
             this.resTypeOpt = [...utils.deepClone(resTypeOpt), ...resultArr];
           }
-        }
-      });
-    },
-    // 根据业态Id 获取下面的子节点 请求房间类型
-    queryChildNodesById(typeId) {
-      let data = { typeId, organId: this.queryCondition.organId };
-      this.$api.basics.queryChildNodesById(data).then(res => {
-        if (res.data.code === "0") {
-          let result = res.data.data || [];
-          let resultArr = result.map(item => {
-            return {
-              label: item.typeName,
-              value: item.typeCode + "," + item.typeId,
-              ...item
-            };
-          });
-          this.houseTypeOpt = [...utils.deepClone(houseTypeOpt), ...resultArr];
         }
       });
     },
