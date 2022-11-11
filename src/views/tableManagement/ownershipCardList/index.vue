@@ -130,11 +130,12 @@
         ],
         exportBtnLoading: false, // 导出按钮loading
         numList: [
-          {title: '权证数量', key: 'total', value: 0, bgColor: '#4BD288'},
-          {title: '土地面积', key: 'landAreaCount', value: 0, bgColor: '#808080'},
-          {title: '建筑面积(㎡)', key: 'buildArea', value: 0, bgColor: '#1890FF'},
-          {title: '产权证', key: 'cqzTotal', value: 0, bgColor: '#DD81E6'},
-          {title: '使用权证', key: 'syqzTotal', value: 0, bgColor: '#FD7474'},
+          {title: '权证数量', key: 'assetCount', value: 0, fontColor: '#324057',info:'权证数量'},
+        {title: '权证面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288',info:'权证面积(㎡)'},
+        {title: '不动产权证', key: 'transferOperationArea', value: 0, bgColor: '#1890FF',info:'不动产权证'},
+        {title: '土地使用权证', key: 'idleArea', value: 0, bgColor: '#DD81E6',info:'土地使用权证'},
+        {title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474',info:'使用权证'},
+        {title: '房屋产权', key: 'houseWarrantCount', value: 0, bgColor: 'gray',info:'房屋产权'}
         ], // 概览数据，title 标题，value 数值，color 背景色
         paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
         tableObj: {
@@ -186,22 +187,47 @@
         })
       },
       // 查询统计数据
-      queryStatisticsInfo (form) {
-        this.overviewNumSpinning = true
-        this.$api.tableManage.queryOwnershipCardSumInfo(form).then(r => {
-          this.overviewNumSpinning = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            return res.data ? this.numList = this.numList.map(m => {
-              return { ...m, value: res.data[m.key] || 0 }
-            }) : false
-          }
-          throw res.message
-        }).catch(err => {
-          this.overviewNumSpinning = false
-          this.$message.error(err || '查询统计出错')
-        })
-      },
+      // queryStatisticsInfo (form) {
+      //   this.overviewNumSpinning = true
+      //   this.$api.tableManage.queryOwnershipCardSumInfo(form).then(r => {
+      //     this.overviewNumSpinning = false
+      //     let res = r.data
+      //     if (res && String(res.code) === '0') {
+      //       return res.data ? this.numList = this.numList.map(m => {
+      //         return { ...m, value: res.data[m.key] || 0 }
+      //       }) : false
+      //     }
+      //     throw res.message
+      //   }).catch(err => {
+      //     this.overviewNumSpinning = false
+      //     this.$message.error(err || '查询统计出错')
+      //   })
+      // },
+      warrantTotal (form) {
+      //this.loading = true
+      this.$api.ownership.warrantTotal(form).then(res => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data
+          this.numList[0].value = data.totalWarrantCount
+          this.numList[1].value = data.buildArea+'(㎡)'
+          this.numList[2].value = data.assetWarrantArea+'(㎡)'
+          this.numList[2].title = this.numList[2].info+'('+data.assetWarrantCount+')'
+          this.numList[3].value = data.landWarrantArea+'(㎡)'
+          this.numList[3].title = this.numList[3].info+'('+data.landWarrantCount+')'
+          this.numList[4].value = data.useWarrantArea+'(㎡)'
+          this.numList[4].title = this.numList[4].info+'('+data.useWarrantCount+')'
+          this.numList[5].value = data.houseWarrantArea+'(㎡)'
+          this.numList[5].title = this.numList[5].info+'('+data.houseWarrantCount+')'
+          //this.loading = false
+        } else {
+          this.$message.error(res.data.message)
+          this.numList.forEach(item => {
+            item.value = 0
+          })
+          //this.loading = false
+        }
+      })
+    },
 
       // 查看权证详情
       viewDetail (record) {
@@ -272,7 +298,7 @@
           this.tableObj.loading = false
           this.$message.error(err || '查询接口出错')
         })
-        if (!searchType) { this.queryStatisticsInfo(form) }
+        if (!searchType) { this.warrantTotal(form) }
       }
     },
 
