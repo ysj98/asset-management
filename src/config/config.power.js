@@ -706,4 +706,8 @@ export const ASSET_MANAGEMENT = {
   INSURANCE_INSURANCE_POLICY_CREATE: 'insurance_insurance_policy_create', // 资产保险单新增
   INSURANCE_INSURANCE_POLICY_EDIT: 'insurance_insurance_policy_edit', // 资产保险单编辑
   INSURANCE_INSURANCE_POLICY_DELETE: 'insurance_insurance_policy_delete', // 资产保险单删除
+
+  //权证详情预览和下载权限
+  AUTHORITY_MANA_PREVIEW:'AUTHORITY_MANA_PREVIEW',
+  AUTHORITY_MANA_DOWNLOAD:'AUTHORITY_MANA_DOWNLOAD'
 }

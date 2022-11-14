@@ -4,7 +4,7 @@
     <div class="ItemBox" :class="Ext" @mouseover="previewBtn = !previewBtn" @mouseout="previewBtn = !previewBtn">
       <a-spin v-if="loading"><a-icon slot="indicator" type="loading" style="font-size: 24px" spin /></a-spin>
       <img v-if="!loading && !errorStatus && !noOperation && !isFile" :src="FileURL" @load="handleLoad" @error="handleError" :style="imgAutoStyle" />
-      <div class="previewBtn" v-show="previewBtn && isPreview" @click="toPreview" :hidden="preview">预览</div>
+      <div class="previewBtn" v-show="previewBtn && isPreview" @click="toPreview" :hidden="!preview">预览</div>
     </div>
     <!-- 标题 -->
     <div class="ItemTitle">
@@ -14,7 +14,7 @@
         </template>
         <div class="text">{{ item.name }}</div>
       </a-tooltip>
-      <div class="download" v-if="isFile && !noOperation" @click="$emit('download')" :hidden="download"><a-icon type="cloud-download" /></div>
+      <div class="download" v-if="isFile && !noOperation" @click="$emit('download')" :hidden="!download"><a-icon type="cloud-download" /></div>
     </div>
     <!-- 索引 -->
     <div class="ItemIndex">{{ reverseIndex }}</div>

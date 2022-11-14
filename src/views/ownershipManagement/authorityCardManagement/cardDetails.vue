@@ -29,13 +29,13 @@
           </a-col>
         </a-row>
       </div>
-      <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3'">
+      <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3'|| this.kindOfRight === '5' || this.kindOfRight === '6'">
         <span class="section-title blue">权属人</span>
         <div class="tab-nav table-border">
           <a-table :columns="columns" :dataSource="amsOwnershipWarrantObligeeList" class="custom-table td-pd10" :pagination="false"></a-table>
         </div>
       </div>
-      <div class="newCard-nav" v-if="this.kindOfRight === '1'">
+      <div class="newCard-nav" v-if="this.kindOfRight === '1'|| this.kindOfRight === '5' || this.kindOfRight === '6'">
         <span class="section-title blue">抵押信息</span>
         <div class="tab-nav table-border">
           <a-table :columns="mortgageInformation" :dataSource="amsOwnershipWarrantMortgageList" class="custom-table td-pd10" :pagination="false"></a-table>
@@ -60,6 +60,7 @@
 </template>
 
 <script>
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import FormFooter from "@/components/FormFooter";
 import configBase from "@/config/config.base";
 import { utils } from "@/utils/utils";
@@ -188,8 +189,8 @@ export default {
   },
   provide() {
             return {
-                    preview: this.handlePower('AUTHORITY_MANA_PREVIEW'),
-                    download: this.handlePower('AUTHORITY_MANA_DOWNLOAD')
+                    preview: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_PREVIEW),
+                    download:this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_DOWNLOAD)
             };
 },
   computed: {
@@ -199,12 +200,12 @@ export default {
   },
   watch: {
     kindOfRight(val) {
-      if (val === "1" || val === "3" || val === "4") {
+      if (val === "1" || val === "3" || val === "4"|| val === "5" || val === "6") {
         let arr = utils.deepClone(columns);
         this.columns = arr.splice(0, arr.length - 1);
         let opt = utils.deepClone(mortgageInformation);
         this.mortgageInformation = opt.splice(0, opt.length - 1);
-        if (val === "1") {
+        if (val === "1"|| val === "3" || val === "4") {
           this.basicDate = titleDeed;
         } else if (val === "3") {
           this.basicDate = landDeed;
@@ -258,18 +259,18 @@ export default {
       this.warrantNbr = warrantNbr;
     },
     // 权限函数处理
-    handlePower(val) {
-      let permissionStr = window.sessionStorage.getItem('b083aa5461ace946');
-      if (typeof permissionStr === 'string' && permissionStr.length > 0) {
-        let permissions = JSON.parse(permissionStr);
-        for (let i = 0; i < permissions.length; i++) {
-           if (permissions[i].popeCode === val) {
-            return false     //有此权限，返回false展示预览/下载   hidden属性为false
-          }
-        }
-        return true
-          }
-    },
+    // handlePower(val) {
+    //   let permissionStr = window.sessionStorage.getItem('b083aa5461ace946');
+    //   if (typeof permissionStr === 'string' && permissionStr.length > 0) {
+    //     let permissions = JSON.parse(permissionStr);
+    //     for (let i = 0; i < permissions.length; i++) {
+    //        if (permissions[i].popeCode === val) {
+    //         return false     //有此权限，返回false展示预览/下载   hidden属性为false
+    //       }
+    //     }
+    //     return true
+    //       }
+    // },
     // 详情查询
     query({ warrantId, warrantNbr, organId }) {
       if (!warrantId && !warrantNbr && !organId) {
