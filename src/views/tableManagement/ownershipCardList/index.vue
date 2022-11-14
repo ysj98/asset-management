@@ -72,7 +72,7 @@
   const totalKeyArr = ['buildArea',"exclusiveBuildArea", "apportionArea", "landArea"]
   const detailColumns = [
     { title: '权证号', key: 'warrantNbr', scopedSlots: { customRender: 'warrantNbr' }, width: 200, fixed:"left" },
-    { title: '所属机构', dataIndex: 'organName', width: 200 },
+    // { title: '所属机构', dataIndex: 'organName', width: 200 },
     { title: '资产项目', dataIndex: 'projectName', width: 150 },
     { title: '权属类型', dataIndex: 'kindOfRightName', width: 150 },
     { title: '房屋所有权人', dataIndex: 'houseOwner', width: 150 },

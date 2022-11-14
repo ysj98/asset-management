@@ -264,7 +264,7 @@ export default {
         let permissions = JSON.parse(permissionStr);
         for (let i = 0; i < permissions.length; i++) {
            if (permissions[i].popeCode === val) {
-            return false
+            return false     //有此权限，返回false展示预览/下载   hidden属性为false
           }
         }
         return true
