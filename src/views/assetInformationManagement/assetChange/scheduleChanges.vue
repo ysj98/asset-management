@@ -248,7 +248,7 @@ export default {
           value: ''
         }
       ],
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      defaultValue: [],
       alterationDate: []
     }
   },
@@ -443,7 +443,7 @@ export default {
     eliminateFn () {
       let organId = this.queryCondition.organId
       this.alterationDate = []
-      this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
+      this.defaultValue = []
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
       this.query()

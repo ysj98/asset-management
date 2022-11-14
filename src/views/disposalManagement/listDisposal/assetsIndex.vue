@@ -359,7 +359,7 @@ export default {
       ],
       disposeModeData: [],
       certificateStatusData:[{name: '全部办证状态', value: ''}, {name:'已办证',value:'1'},{ name:'未办证',value:'0'}],
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      defaultValue: [],
       alterationDate: [],
       exportBtnLoading: false, // 导出按钮loading
       numList: [
@@ -632,7 +632,8 @@ export default {
     eliminateFn () {
       let organId = this.queryCondition.organId
       this.alterationDate = []
-      this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
+      // this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
+       this.defaultValue =[]
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
       this.query()

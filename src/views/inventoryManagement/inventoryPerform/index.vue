@@ -160,7 +160,8 @@ export default {
       ASSET_MANAGEMENT,
       queryCondition: {...queryCondition},
       checkStatusData,
-      defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
+      // defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
+      defaultValue:[],
       table: {
         columns,
         dataSource: [],

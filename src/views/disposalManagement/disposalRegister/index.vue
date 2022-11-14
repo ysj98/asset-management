@@ -277,7 +277,7 @@ export default {
         loading: false,
         totalCount: 0
       },
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      defaultValue: [],
       alterationDate: []
     }
   },
@@ -379,8 +379,9 @@ export default {
     // 重置查询条件
     restQuery() {
       this.queryCondition = utils.deepClone(queryCondition)
-      this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      // this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       this.alterationDate = []
+      this.defaultValue =[]
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;

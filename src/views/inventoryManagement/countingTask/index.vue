@@ -163,7 +163,7 @@ export default {
 			],
       queryCondition: {...queryCondition},
       taskStatusData,
-      defaultValue: [moment(getNMonthsAgoFirst(2)), moment(getNowMonthDate())],
+      defaultValue: [],
       table: {
         columns,
         dataSource: [],

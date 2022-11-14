@@ -203,7 +203,7 @@ export default {
         }
       ],
       disposeModeData: [],
-      alterationDate: [moment(getMonthsAgoDate(12), 'YYYY-MM-DD'), moment(getCurrentDate(), 'YYYY-MM-DD')],
+      alterationDate: [],
       exportBtnLoading: false, // 导出按钮loading
       numList: [
         {title: '资产数量(个)', key: 'assetCount', value: 0, fontColor: '#324057'},
@@ -323,7 +323,8 @@ export default {
     // 清空
     eliminateFn () {
       let organId = this.queryCondition.organId
-      this.alterationDate = [moment(getMonthsAgoDate(12), 'YYYY-MM-DD'), moment(getCurrentDate(), 'YYYY-MM-DD')]
+      // this.alterationDate = [moment(getMonthsAgoDate(12), 'YYYY-MM-DD'), moment(getCurrentDate(), 'YYYY-MM-DD')]
+      this.alterationDate = []
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
       this.query()

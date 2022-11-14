@@ -167,8 +167,8 @@
         </a-form>
       </a-row>
     </div>
-    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4'">
-      <span class="section-title blue">{{this.typeJudgment === '1' || this.typeJudgment === '4' ? '权属人' : '土地使用权人'}}</span>
+    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6'">
+      <span class="section-title blue">{{this.typeJudgment === '1' || this.typeJudgment === '4' || this.typeJudgment === '5' || this.typeJudgment === '6'? '权属人' : '土地使用权人'}}</span>
       <div class="tab-nav table-border">
         <a-table
           :columns="columns"
@@ -202,7 +202,7 @@
       </div>
       <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>添加权属人</div>
     </div>
-    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '4'">
+    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6'">
       <span class="section-title blue">抵押信息</span>
       <div class="tab-nav table-border">
         <a-table
@@ -337,7 +337,7 @@ export default {
       if (this.newData === 'new') {
         if (this.typeJudgment) {
           let arr = []
-          if (this.typeJudgment === '1') {
+          if (this.typeJudgment === '1'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
             arr = this.titleDeed
           } else if (this.typeJudgment === '2') {
             arr = this.accessCard
@@ -371,7 +371,7 @@ export default {
           this.amsOwnershipWarrantMortgageList = []
         }
       } else {
-        if (this.typeJudgment === '1') {
+        if (this.typeJudgment === '1'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
           this.beat = this.titleDeed
         } else if (this.typeJudgment === '2') {
           this.beat = this.accessCard
@@ -411,7 +411,7 @@ export default {
         if (!err) {
           let amsOwnershipWarrantObligeeList = []
           let amsOwnershipWarrantMortgageList = []
-          if (this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4') {
+          if (this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
             if (this.amsOwnershipWarrantObligeeList.length === 0) {
               this.$message.info('请选择权属人')
               return
@@ -441,7 +441,7 @@ export default {
               }
             }
           }
-          if (this.typeJudgment === '1' || this.typeJudgment === '4') {
+          if (this.typeJudgment === '1' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
             // 抵押信息
             if (this.amsOwnershipWarrantMortgageList.length > 0) {
               for (let i = 0; i < this.amsOwnershipWarrantMortgageList.length; i++) {
@@ -834,7 +834,7 @@ export default {
               propertyRightUnit: data.amsOwnershipWarrant.propertyRightUnit,    // 实际产权单位
               safekeepUnit: data.amsOwnershipWarrant.safekeepUnit,    // 实际保管单位
             })
-            if (this.typeJudgment === '1' || this.typeJudgment === '4') {
+            if (this.typeJudgment === '1' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
               this.form.setFieldsValue({
                 lotNo: data.amsOwnershipWarrant.lotNo,
                 estateUnitCode: data.amsOwnershipWarrant.estateUnitCode,
