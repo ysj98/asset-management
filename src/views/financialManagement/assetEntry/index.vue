@@ -582,7 +582,7 @@
           if (Number(res.data.code) === 0) {
             let data = res.data.data
             return this.numList = this.numList.map(m => {
-              return { ...m, value: data[m.key]=='0.0000'?'--':data[m.key] }
+              return { ...m, value: Number(data[m.key])==0?'--':data[m.key] }
             })
           } else {
             this.$message.error(res.data.message)
