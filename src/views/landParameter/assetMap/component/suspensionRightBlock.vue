@@ -131,6 +131,7 @@ export default {
   data() {
     return {
       currentProvince: '',
+      currentCity: '',
       currentRegion:'',
       toggle: true,
       // menus: ["海文花园", "广东省", "深圳市"],
@@ -149,9 +150,9 @@ export default {
       queryCondition: {
         province: "",
         city: "",
+        region:'',
         organId: "",
         organName: "",
-        region:'',
         address:''
       },
       assetTypes: [],
@@ -344,8 +345,8 @@ export default {
         if ( label === '全省' ){
           address = this.currentProvince
         }else{
-          // address = this.currentProvince
-          this.currentRegion=label
+          this.currentCity = label
+          address = this.currentProvince + address
           await this.queryCityAndAreaList(value, type)
         }
         payload._periphery = address
@@ -359,9 +360,10 @@ export default {
         }
         this.queryCondition.region = value
         if ( label === '全市' ){
-          address = this.currentRegion
+          payload._periphery = this.currentProvince + this.currentCity
+        } else {
+          payload._periphery = this.currentProvince + this.currentCity + address
         }
-        payload._periphery = address
         this.$emit('search', payload)
       }
       this.query()

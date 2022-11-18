@@ -71,14 +71,15 @@
               </a-select>
             </a-form-item>
           </a-col>
+          <!-- 质押有效期/抵押有效期 -->
           <a-col class="playground-col" :span="8">
             <a-form-item :colon="false" v-bind="formItemLayout">
-              <label slot="label">交付日期：</label>
+              <label slot="label">{{ debtTypeLabel }}有效期：</label>
               <a-range-picker
                 v-decorator="[
                   'debtDate',
                   {
-                    rules: [{ required: false, message: '请选择交付日期' }],
+                    rules: [{ required: false, message: '请选择' + debtTypeLabel + '有效期'}],
                     initialValue: newDebt.debtDate,
                   },
                 ]"
@@ -159,7 +160,7 @@
           </a-col>
           <a-col class="playground-col" :span="8">
             <a-form-item :colon="false" v-bind="formItemLayout">
-              <label slot="label">抵押额（元）：</label>
+              <label slot="label">{{ debtTypeLabel }}额（元）：</label>
               <a-input
                 placeholder=""
                 :style="allWidth"
@@ -369,6 +370,7 @@ export default {
   props: {},
   data() {
     return {
+      debtTypeLabel: '抵押',
       moment,
       debtType: "",
       debtId: "", // 债务id
@@ -762,6 +764,11 @@ export default {
     },
     // 资产类型监听
     assetTypeFn (value) {
+      if (value === "1") {
+        this.debtTypeLabel = '抵押'
+      } else {
+        this.debtTypeLabel = '质押'
+      }
     //   this.tableData = []
     //   this.checkedData = []
     },

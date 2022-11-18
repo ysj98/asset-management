@@ -288,7 +288,7 @@ export default {
         return null
       }
       bdary.get(`${address}`, function(rs) {
-        console.log('address',address)
+        console.log('资产地图行政区域', address)
         //获取行政区域
         let count = rs.boundaries.length; //行政区域的点有多少个
         if (count === 0) {
