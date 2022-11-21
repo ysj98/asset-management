@@ -17,6 +17,7 @@
           :allowClear="false"
           :style="allStyle"
           :showSearch='true'
+          :multiple="true" :treeCheckable="true"
         ></treeSelect>
         <!-- 资产项目 -->
         <a-select
@@ -243,6 +244,8 @@ export default {
             : "", // 资产类型id(多个用，分割)
       };
       delete data.assetType;
+      data.organIds=data.organId
+      delete data.organId;
       this.table.loading = true;
       this.$api.ownership.organView(data).then(
         (res) => {
