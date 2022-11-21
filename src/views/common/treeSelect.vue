@@ -68,12 +68,12 @@ export default {
     // 多选
     multiple: {
       type: Boolean,
-      default: false
+      default: true
     },
     // 显示 checkbox
     treeCheckable: {
       type: Boolean,
-      default: false
+      default: true
     },
     // 默认展开所有树节点
     treeDefaultExpandAll: {
@@ -102,6 +102,7 @@ export default {
       treeData: [],
       maxTagCount: -1,
       searchvalueBusinessType:'',
+      organIdMap: {} // 存储所有的组织结构id {key: organId, value: {}}
     }
   },
   computed: {
@@ -137,8 +138,9 @@ export default {
               name: organTopName
             }]
           }
+          this.setOrganIdMap(resultData)
+          console.log(this.organIdMap, 'organid')
           this.treeData = this.mapTreeNodes(resultData)
-          // console.log(this.treeData)
           if (this.default) {
             this.organId = this.treeData[0].organId
             this.organName = this.treeData[0].name
@@ -151,7 +153,6 @@ export default {
     onLoadData (node) {
       return new Promise((re) => {
          this.$api.paramsConfig.queryParamsConfigDetail({organId: node.value, serviceType: 1010}).then(res => {
-             console.log(res)
              if (res.data.code === "0"){
            const {isValid, paramKey} = res.data.data
            if (Number(isValid) === 1) {
@@ -167,12 +168,13 @@ export default {
                 this.typeFilter = this.typeFilter.split(',').filter((item) => {return item !== '7'}).join(',')
             }
            }
+          //  根据父节点organId 去获取子节点
            this.$api.assets.queryAsynOrganByUserId({parentOrganId: node.value, typeFilter: this.typeFilter}).then(r => {
              if (Number(r.data.code) === 0) {
+               this.setOrganIdMap(r.data.data)
                let children = this.mapTreeNodes(r.data.data)
                this.setTree(node.value, this.treeData, children)
                this.treeData = [...this.treeData]
-               console.log(this.treeData)
              }
            })
          }
@@ -226,34 +228,50 @@ export default {
       //   return {...v}
       // })
     },
+    setOrganIdMap(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        if (arr[i].children && arr[i].children.length > 0) {
+          this.setOrganIdMap(arr[i].children)
+        }
+        delete arr[i].children
+        if (!this.organIdMap[arr[i].organId]) {
+          this.organIdMap[arr[i].organId] = arr[i]
+        }
+      }
+    },
     // 选择树
     changeTree (value, label, extra) {
-      console.log(value,label)
-      console.log(this.treeData)
+      console.log('组织结构树change事件', value, label, extra)
       this.showDefaultOrganName = false
       if (!this.multiple) { // 单选
         this.$emit('changeTree', value, label[0])
         this.organName = label[0]
         this.organId = value
       } else { // 多选
-        this.$emit('changeTree', value, label)
-        this.organName = label
-        this.organId = value
+        // 如果是多选只能选中一个一级物业 一级物业 如organCode为八位
+        let flag = value.filter(item => this.organIdMap[item].organCode.length === 8)
+        if (flag.length >= 2) {
+          this.$message.error('不能跨物业选择')
+          this.organName = label.slice(0, label.length-1)
+          this.organId = value.slice(0, label.length-1)
+        }
+        else {
+          this.$emit('changeTree', value.toString(), label.toString())
+          this.organName = label
+          this.organId = value
+        }
       }
     },
     //转换查询
     searchOrgan(value){
       this.searchvalueBusinessType=value
-      console.log(value)
       if (this.showSearch && value.length>0) {
         this.organId=''
         this.keywordOrgan(value)
-        console.log('查关键字')
       }
     },
     //关键字查询组织机构
     keywordOrgan(value){
-      console.log('要查关键字了')
       this.searchvalueBusinessType=value
       this.$api.assets.queryAsynOrganByKey({keywords:value}).then(res => {
         if (Number(res.data.code) === 0) {
@@ -273,7 +291,7 @@ export default {
   created () {
   },
   mounted () {
-    console.log('treeSelect-mounted加载')
+    // 多选模式防止换行
     this.maxTagCount = this.multiple ? 1 : -1
     this.organId = this.value
     this.initDepartment()
@@ -288,6 +306,7 @@ export default {
 </script>
 <style lang="less" scoped>
   .select-organ-container {
+    width: 200px !important;
     position: relative;
     display: inline-block;
     text-align: left;

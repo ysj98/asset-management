@@ -10,6 +10,7 @@
         <span v-if="type == 'add' || type == 'edit'">
           <SG-Button icon="edit" type="primary" ghost @click="handleEditTableAll(true)">快捷录入资产估值</SG-Button>
           <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin: 10px">添加资产</SG-Button>
+          <SG-Button icon="plus" type="primary" ghost @click="handleAddCard(true)" style="margin: 10px">添加资产卡片</SG-Button>
           <!--<SG-Button icon="import" type="primary" ghost @click="handleExport" :loading="exportBtnLoading">批量导入</SG-Button>-->
           <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
         </span>
@@ -79,6 +80,9 @@
       <!--快捷录入资产估值-->
       <set-asset v-else ref="setAsset" :assetType="dynamicData.assetType"/>
     </SG-Modal>
+
+    <!-- 资产卡片 -->
+   <assetCard></assetCard>
   </div>
 </template>
 
@@ -87,9 +91,10 @@
   import SetAsset from './SetAssetValue'
   import OverviewNumber from 'src/views/common/OverviewNumber'
   import TooltipText from "src/views/common/TooltipText";
+  import assetCard from './assetCard.vue'
   export default {
     name: 'WorthListPart',
-    components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText },
+    components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText, assetCard},
     props: ['type', 'registerId', 'organId', 'dynamicData'],
     data () {
       return {
@@ -212,6 +217,10 @@
           this.selectedList = this.initList
         }
         this.modalObj.isShow = bool
+      },
+      // 添加资产卡片
+      handleAddCard (bool) {
+
       },
 
       // 导出
