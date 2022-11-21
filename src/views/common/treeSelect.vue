@@ -68,12 +68,12 @@ export default {
     // 多选
     multiple: {
       type: Boolean,
-      default: true
+      default: false
     },
     // 显示 checkbox
     treeCheckable: {
       type: Boolean,
-      default: true
+      default: false
     },
     // 默认展开所有树节点
     treeDefaultExpandAll: {
@@ -102,7 +102,7 @@ export default {
       treeData: [],
       maxTagCount: -1,
       searchvalueBusinessType:'',
-      organIdMap: {} // 存储所有的组织结构id {key: organId, value: {}}
+      organIdMap: {} // 存储所有的组织机构id {key: organId, value: {}}
     }
   },
   computed: {
@@ -139,7 +139,6 @@ export default {
             }]
           }
           this.setOrganIdMap(resultData)
-          console.log(this.organIdMap, 'organid')
           this.treeData = this.mapTreeNodes(resultData)
           if (this.default) {
             this.organId = this.treeData[0].organId
