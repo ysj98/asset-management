@@ -190,6 +190,7 @@
                 })
               }
             })
+            return
             // return this.calcMaxTotalArea(res.data)
           }
           throw res.message || '查询楼层信息出错'
