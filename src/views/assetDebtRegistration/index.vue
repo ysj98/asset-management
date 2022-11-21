@@ -187,7 +187,7 @@ export default {
       this.$router.push({path: '/debt/creatDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'add'} })
     },
     editDebt(record){
-      this.$router.push({path: '/debt/creatDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'edit',debtId:record.debtId} })
+      this.$router.push({path: '/debt/editDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'edit',debtId:record.debtId} })
     },
     detailDebt(record){
       this.$router.push({path: '/debt/detailDebt',query: {organId: this.queryCondition.organId, organName: this.organName,setType:'detail',debtId:record.debtId} })

@@ -459,6 +459,7 @@ export default {
               debtId:'',
               creditorAddr: "",
               amount: "",
+              debtDate:undefined,
               dateStart:undefined,
               dateEnd:undefined,
               debtType: undefined, // 资产类型
@@ -475,7 +476,10 @@ export default {
               }
             }
             console.log(o)
-            o.debtDate=[moment(o.dateStart, "YYYY-MM-DD"),moment(o.dateEnd, "YYYY-MM-DD")]
+            if(o.dateStart&&o.dateEnd){
+
+              o.debtDate=[moment(o.dateStart, "YYYY-MM-DD"),moment(o.dateEnd, "YYYY-MM-DD")]
+            }
             this.form.setFieldsValue(o);
             this.debtType = obj.debtType;
           } else {
