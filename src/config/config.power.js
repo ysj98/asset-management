@@ -704,6 +704,7 @@ export const ASSET_MANAGEMENT = {
   insurance_asset_insurance_schedule: 'insurance_asset_insurance_schedule', // 资产保险一览表tab
 
   INSURANCE_INSURANCE_POLICY_CREATE: 'insurance_insurance_policy_create', // 资产保险单新增
+  INSURANCE_INSURANCE_POLICY_EXPORT: 'insurance_insurance_policy_export', // 资产一览表导出
   INSURANCE_INSURANCE_POLICY_EDIT: 'insurance_insurance_policy_edit', // 资产保险单编辑
   INSURANCE_INSURANCE_POLICY_DELETE: 'insurance_insurance_policy_delete', // 资产保险单删除
 

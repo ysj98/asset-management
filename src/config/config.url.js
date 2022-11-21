@@ -1743,7 +1743,9 @@ export const assetInsurance = {
   // 资产保险一览表--统计
   getAssetRegInsuranceTotal: '/ams/assetInsurance/getAssetRegInsuranceTotal',
   //  
-  deleteInsurance: '/ams/assetInsurance/deleteInsurance'
+  deleteInsurance: '/ams/assetInsurance/deleteInsurance',
+  //导出
+  exportValueExcel:'/ams/assetInsurance/exportValueExcel'
 }
 // 房屋状态配置
 export const houseStatusConfig = {
