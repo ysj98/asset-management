@@ -284,8 +284,8 @@ export default {
             item.key = index
             Object.keys(sumObj).forEach(key => {
               !pageSum[key] && (pageSum[key] = 0)
-              pageSum[key] += item[key] ? Number(item[key]) : 0
-              if (index === data.length - 1) { pageSum[key] = pageSum[key].toFixed(2)}
+              pageSum[key] += item[key] ? (key === 'buildNum' ? Number(item[key]) : Number(item[key].toFixed(2)))   : 0
+              if (index === data.length - 1) { pageSum[key] = pageSum[key]}
             })
             for (let key in item) {
               item[key] = item[key] || '--'
@@ -316,7 +316,7 @@ export default {
           this.numList = numList.map(m => {
             return {...m, value: temp[m.key] ? temp[m.key].toFixed(2) : 0}
           })
-          Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ? temp[key].toFixed(2) : 0)
+          Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ? (key === 'buildNum' ? temp[key] : temp[key].toFixed(2)) : 0)
           sumObj.area =  measuredArea ? measuredArea.toFixed(2) : 0
           this.sumObj = sumObj
           dataSource.length && this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
