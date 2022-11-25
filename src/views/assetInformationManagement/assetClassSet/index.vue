@@ -7,16 +7,16 @@
     <div class="custom-tabs">
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_HOUSE)" tab="房屋" key="house">
-          <listModel type="house"/>
+          <listModel type="house" :curTab="showKey" />
         </a-tab-pane>
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_LAND)" tab="土地" key="land">
-          <listModel type="land"/>
+          <listModel type="land" :curTab="showKey"/>
         </a-tab-pane>
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_EQ)" tab="设备设施" key="facilityAndEquipment">
           <EquipmentCategory />
         </a-tab-pane>
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_CLASS_TAB_PARK)" tab="车场" key="carPark">
-          <listModel type="carPark"/>
+          <listModel type="carPark" :curTab="showKey"/>
         </a-tab-pane>
       </a-tabs>
     </div>
