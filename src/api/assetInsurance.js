@@ -41,4 +41,7 @@ export function findAssetRegInsuranceList (data) {
 export function getAssetRegInsuranceTotal (data) {
   return axiosPost(assetInsurance.getAssetRegInsuranceTotal, data)
 }
- 
+ // 资产保险一览表导出
+export function exportValueExcel (data) {
+  return axiosPost(assetInsurance.exportValueExcel, data, false, false, {responseType: 'blob'})
+}
