@@ -14,7 +14,7 @@
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" />
+          <tree-select @changeTree="changeTree" style="width: 100%" :multiple="true" :treeCheckable="true"/>
         </a-col>
         <a-col :span="5">
           <a-select
@@ -171,7 +171,7 @@ export default {
       this.tableObj.loading = true;
       this.$api.land
         .organView({
-          organId,
+          organIds: organId.toString(),
           pageSize: pageLength,
           pageNum: pageNo,
           flag: current ? current - 1 : "",
@@ -237,7 +237,7 @@ export default {
       this.overviewNumSpinning = true;
       this.$api.land
         .organViewTotal({
-          organId,
+          organIds: organId.toString(),
           flag: current ? current - 1 : "",
           statusList: statusList.includes("all") ? [] : statusList,
         })
@@ -275,7 +275,7 @@ export default {
       const { organId, current } = this;
       this.$api.land
         .organViewExport({
-          organId,
+          organIds: organId.toString(),
           flag: current ? current - 1 : "",
           pageSize: 1,
           pageNum: 1,

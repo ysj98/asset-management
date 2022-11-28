@@ -12,7 +12,7 @@
         >导出</SG-Button>
       </div>
       <div slot="headRight">
-        <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
+        <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true' :multiple="true" :treeCheckable="true"></treeSelect>
         <a-select
           showSearch
           placeholder="请选择资产项目"
@@ -283,7 +283,7 @@ export default {
     queryList (type) {
       let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current, status} = this
       let form = {
-        organId,
+        organIds: organId.toString(),
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
@@ -334,7 +334,7 @@ export default {
     },
     queryStatistics () {
       let form = {
-        organId: this.organId,
+        organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null
@@ -361,7 +361,7 @@ export default {
     },
     getAssetProjectOptions () {
       let form = {
-        organId: this.organId
+        organIds: this.organId.toString()
       }
       this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
         if (res.data.code === '0') {

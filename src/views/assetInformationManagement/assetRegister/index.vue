@@ -7,7 +7,7 @@
       <div slot="headBtns">
         <a-button type="primary" @click="newChangeSheetFn">新建登记单</a-button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree" :multiple="true" :treeCheckable="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           <a-input-search v-model="queryCondition.registerOrderName" placeholder="登记单名称/编号" :max-length="30" style="width: 140px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
@@ -340,7 +340,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn () {
       let obj = {
-        organIds: this.queryCondition.organId,
+        organId: this.queryCondition.organId,
         projectName: ''
       }
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
@@ -399,7 +399,7 @@ export default {
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organIds: this.queryCondition.organId,        // 组织机构id
+        organId: this.queryCondition.organId,        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
         createDateS: '',         // 开始创建日期
         crateDateE: '',          // 结束创建日期

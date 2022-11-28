@@ -13,7 +13,7 @@
       :loadData="onLoadData"
       v-model="organId"
       :disabled="disabled"
-      :searchValue="searchvalueBusinessType"
+      :searchValue="searchName"
       :treeCheckable="treeCheckable"
       :treeDefaultExpandAll="treeDefaultExpandAll"
       tree-node-filter-prop="title"
@@ -102,7 +102,7 @@ export default {
       organId: "",
       treeData: [],
       maxTagCount: -1,
-      searchvalueBusinessType: "",
+      searchName: "", // 搜索字段
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
     };
   },
@@ -145,7 +145,10 @@ export default {
           if (this.default) {
             this.organId = this.treeData[0].organId;
             this.organName = this.treeData[0].name;
-            this.$emit("changeTree", this.organId, this.organName);
+            // 顶级机构不要一进来就查 organId为1 的是顶级机构
+            if (this.treeData[0].organId !== "1") {
+              this.$emit("changeTree", this.organId, this.organName);
+            }
           }
         }
       });
@@ -153,6 +156,7 @@ export default {
     // 组织机构子节点选择
     onLoadData(node) {
       return new Promise((re) => {
+        // 组织机构系统设置统一查询接口
         this.$api.paramsConfig.queryParamsConfigDetail({ organId: node.value, serviceType: 1010 }).then((res) => {
           if (res.data.code === "0") {
             const { isValid, paramKey } = res.data.data;
@@ -210,32 +214,24 @@ export default {
         }
       }
     },
+    // 处理 组织机构树 数据
     mapTreeNodes(nodeList) {
       function deep(nodeList) {
         let resultData = [];
-        nodeList.forEach((v) => {
-          const { organId, name, organName, children } = v;
-          v.title = organName || name;
-          v.key = organId;
-          v.value = v.organId;
-          v.isLeaf = organId + "" === "1" ? true : false;
-          v.disableCheckbox = organId + "" === "1" ? true : false;
-          v.selectable = organId + "" === "1" ? true : false;
-          v.children = Array.isArray(children) && children.length > 0 ? deep(children) : [];
+        nodeList.forEach((node) => {
           resultData.push({
-            ...v,
+            title: node.organName || node.name,
+            key: node.organId,
+            value: node.organId,
+            checkable: node.organId + "" === "1" ? false : true,
+            // disabled: node.organId + "" === "1" ? true : false,  // 禁用
+            children: Array.isArray(node.children) && node.children.length > 0 ? deep(node.children) : [],
+            ...node,
           });
         });
         return resultData;
       }
       return deep(nodeList);
-      // return nodeList.map(v => {
-      //   const { organId, name,organName } = v
-      //   v.title = organName||name
-      //   v.key = organId
-      //   v.value = v.organId
-      //   return {...v}
-      // })
     },
     setOrganIdMap(arr) {
       for (let i = 0; i < arr.length; i++) {
@@ -258,7 +254,6 @@ export default {
         this.organName = label[0];
         this.organId = value;
       } else {
-        // 多选
         // 如果是多选只能选中一个一级物业 一级物业 如organCode为八位
         let flag = value.filter((item) => this.organIdMap[item].organCode.length === 8);
         if (flag.length >= 2) {
@@ -266,15 +261,19 @@ export default {
           this.organName = label.slice(0, label.length - 1);
           this.organId = value.slice(0, label.length - 1);
         } else {
-          this.$emit("changeTree", value.toString(), label.toString());
-          this.organName = label;
-          this.organId = value;
+          if (this.organId && this.organId.length > 0) {
+            this.$emit("changeTree", value.toString(), label.toString());
+            this.organName = label;
+            this.organId = value;
+          } else {
+            this.$message.error("请选择物业");
+          }
         }
       }
     },
     //转换查询
     searchOrgan(value) {
-      this.searchvalueBusinessType = value;
+      this.searchName = value;
       if (this.showSearch && value.length > 0) {
         this.organId = "";
         this.keywordOrgan(value);
@@ -282,18 +281,12 @@ export default {
     },
     //关键字查询组织机构
     keywordOrgan(value) {
-      this.searchvalueBusinessType = value;
+      this.searchName = value;
       this.$api.assets.queryAsynOrganByKey({ keywords: value }).then((res) => {
         if (Number(res.data.code) === 0) {
           let resultData = res.data.data;
           this.treeData = [];
           this.treeData = this.mapTreeNodes(resultData);
-          // console.log(this.treeData)
-          // if (this.default) {
-          //   this.organId = this.treeData[0].organId
-          //   this.organName = this.treeData[0].name
-          //   this.$emit('changeTree', this.organId, this.organName)
-          // }
         }
       });
     },
@@ -307,7 +300,7 @@ export default {
     this.$nextTick(() => {
       document.addEventListener("click", (event) => {
         event.stopPropagation();
-        this.searchvalueBusinessType = "";
+        this.searchName = "";
       });
     });
   },
@@ -315,7 +308,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .select-organ-container {
-  width: 200px !important;
+  min-width: 250px;
   position: relative;
   display: inline-block;
   text-align: left;

@@ -18,7 +18,6 @@
           placeholder="请选择组织机构"
           :allowClear="false"
           :style="allStyle"
-          :multiple="true" :treeCheckable="true"
           :showSearch='true'
         ></treeSelect>
         <!-- 资产项目 -->
@@ -340,8 +339,6 @@ export default {
         ...this.queryCondition,
         flag: this.queryCondition.currentOrgan ? 1 : 0,
       };
-      data.organIds=data.organId
-      delete data.organId;
       data.assetTypes = this.alljudge(data.assetTypes)
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(

@@ -26,7 +26,6 @@
                             :allowClear="false"
                             :style="allStyle"
                             :showSearch='true'
-                            :multiple="true" :treeCheckable="true"
                     ></treeSelect>
                     <a-select
                             showSearch
@@ -554,7 +553,7 @@
               const params = {
                 ...queryData,
                 ...obj,
-                organIds: this.organId
+                organId: this.organId
               }
               const params2 ={
                 city: this.provinces.city ? this.provinces.city : '',               // 市

@@ -260,7 +260,7 @@ export default {
     queryList (type) {
       let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current, status} = this
       let form = {
-        organIds:organId,
+        organIds:organId.toString(),
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
@@ -303,7 +303,7 @@ export default {
     },
     queryStatistics () {
       let form = {
-        organId: this.organId,
+        organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null
@@ -327,7 +327,7 @@ export default {
     },
     getAssetProjectOptions () {
       let form = {
-        organId: this.organId
+        organIds: this.organId.toString()
       }
       this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
         if (res.data.code === '0') {
