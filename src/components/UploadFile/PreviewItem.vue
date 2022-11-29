@@ -64,12 +64,12 @@ export default {
     preview: {
       // 健名
       from: "preview", // 来源
-      default: false, // 默认值
+      default: true, // 默认值
     },
     download: {
       // 健名
       from: "download", // 来源
-      default: false, // 默认值
+      default: true, // 默认值
     },
   },
   data() {
@@ -85,7 +85,8 @@ export default {
     };
   },
   mounted() {
-    console.log(this.preview);
+    console.log('权证管理页面详情预览权限', this.preview);
+    console.log('权证管理页面详情下载权限', this.download);
   },
   computed: {
     // 图片地址
