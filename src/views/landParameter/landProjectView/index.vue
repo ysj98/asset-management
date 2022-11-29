@@ -202,7 +202,7 @@ export default {
       },
       showNoDataTips: false,
       sumObj: {
-        area: '', buildNum: '', assetNum: '', transferOperationArea: '', selfUserArea: '',
+        area: '', buildNum: '', landArea: '', assetNum: '', transferOperationArea: '', selfUserArea: '',
         idleArea: '', occupationArea: '', otherArea: '', originalValue: '', marketValue: ''
       }, // 求和用的对象
       current: null, // 当前选中的概览区域下标，与后台入参一一对应
@@ -287,12 +287,23 @@ export default {
             this.showNoDataTips = false
           }
           let pageSum = {}
+          /**
+           * 面积类统一是4位，金额、百分数统一2位
+           * 数量类全部整数，不保留小数位
+           * 数量：buildNum assetNum, 金额：originalValue marketValue, 
+           */
           data.forEach((item, index) => {
             item.key = index
             Object.keys(sumObj).forEach(key => {
               !pageSum[key] && (pageSum[key] = 0)
-              pageSum[key] += item[key] ? Number(item[key]) : 0
-              if (index === data.length - 1) { pageSum[key] = pageSum[key].toFixed(2)}
+              pageSum[key] += item[key] ?
+                (['buildNum', 'assetNum'].includes(key) ?
+                  Number(item[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(item[key]*100)/100 : Math.round(item[key]*10000)/10000)
+                  : 0
+              if (index === data.length - 1) {
+                pageSum[key] = ['buildNum', 'assetNum'].includes(key) ?
+                  pageSum[key] : ['originalValue', 'marketValue'].includes(key) ? Math.round(pageSum[key]*100)/100 : Math.round(pageSum[key]*10000)/10000
+              }
             })
             for (let key in item) {
               item[key] = item[key] || '--'
@@ -328,8 +339,11 @@ export default {
           this.numList = numList.map(m => {
             return {...m, value: temp[m.key] || 0}
           })
-          Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ? temp[key].toFixed(2) : 0)
-          sumObj.area =  measuredArea ? measuredArea.toFixed(2) : 0
+          Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ?
+          (['buildNum', 'assetNum'].includes(key) ?
+            Number(temp[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(temp[key]*100)/100 : Math.round(temp[key]*10000)/10000)
+            : 0)
+          sumObj.area =  measuredArea ? Math.round(measuredArea*10000)/10000 : 0
           this.sumObj = sumObj
           dataSource.length && this.dataSource.push({...sumObj, projectCode: '所有页-合计', key: Date.now()})
           this.overviewNumSpinning = false
