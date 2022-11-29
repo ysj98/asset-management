@@ -706,14 +706,14 @@ export default {
       // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
       let arr = []
       // 草稿 已驳回
-      if (['0', '3'].includes(String(type))) {
-        if (this.$power.has(ASSET_MANAGEMENT.ASSET_ACM_EDIT)) {
-          arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
-        }
-        if (this.$power.has(ASSET_MANAGEMENT.ASSET_ACM_DELETE)) {
-          arr.push({iconType: 'delete', text: '注销', editType: 'logout'})
-        }
+      // if (['0', '3'].includes(String(type))) {
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_ACM_EDIT)) {
+        arr.push({iconType: 'edit', text: '编辑', editType: 'edit'})
       }
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_ACM_DELETE)) {
+        arr.push({iconType: 'delete', text: '注销', editType: 'logout'})
+      }
+      // }
       // 待审批
       if (['2'].includes(String(type))) {
         arr.push({iconType: 'edit', text: '审批', editType: 'approval'})
