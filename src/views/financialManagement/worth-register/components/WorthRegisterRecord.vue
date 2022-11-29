@@ -116,7 +116,7 @@
         tableObj: {
           dataSource: [],
           loading: false,
-          scroll: { x: 2000 },
+          scroll: { x: 2600 },
           pagination: false,
           rowKey: 'relId',
           columns: [
