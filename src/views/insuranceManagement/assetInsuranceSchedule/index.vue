@@ -2,6 +2,13 @@
   <div>
     <!--资产保险一览表 -- 搜索条件-->
     <search-container size="fold" v-model="fold">
+       <div slot="headerBtns">
+        <SG-Button
+          v-power="ASSET_MANAGEMENT.INSURANCE_INSURANCE_POLICY_EXPORT"
+          type="primary"
+          @click="handleExport"
+        >导出</SG-Button>
+      </div>
       <div slot="headerForm">
         <div style="width: 75%; float: right; margin-right: 8px; text-align: left">
           <a-row :gutter="8">
@@ -54,6 +61,7 @@
 </template>
 
 <script>
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi'
 import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
 import SearchContainer from 'src/views/common/SearchContainer'
 import InsuranceType from '../components/InsuranceType.vue'
@@ -61,6 +69,7 @@ import InsuranceCompany from '../components/InsuranceCompany.vue'
 import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from 'src/views/common/ProvinceCityDistrict'
 import { getFormat } from "utils/utils";
+import {ASSET_MANAGEMENT} from '@/config/config.power'
 export default {
   components: {
     OrganProjectBuilding,
@@ -72,6 +81,7 @@ export default {
   },
   data () {
     return {
+      ASSET_MANAGEMENT,
       getFormat,
       allStyle: 'width: 100%; margin-right: 10px;',
       assetName: '',
@@ -175,6 +185,21 @@ export default {
       })
 
     },
+    // 导出
+       handleExport () {
+        let {organProjectBuildingValue: {projectId}, assetName, provinceCityDistrictValue: { city, district, province }, paginationObj: {pageNo,pageLength}} = this
+      let data = {
+        organId:this.organProjectBuildingValue.organId,
+        projectId:projectId,
+        province,
+        city,
+        region: district,
+        pageSize: 5000,
+        pageNum: 1,
+        assetNameCode: assetName,
+      }
+        exportDataAsExcel(data, this.$api.assetInsurance.exportValueExcel, '资产保险一览表.xls', this)
+      },
     getCount (data) {
       this.$api.assetInsurance.getAssetRegInsuranceTotal(data)
       .then(res => {

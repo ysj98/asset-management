@@ -19,7 +19,8 @@
             :allowClear="false"
             @changeTree="changeTree"
             class="search-item"
-            
+            :multiple="true"
+            :treeCheckable="true"
           />
           <a-select
             v-model="queryForm.projectIdList"
@@ -281,7 +282,7 @@ export default {
     // 获取资产项目并清空 双向绑定数据
     getObjectKeyValueByOrganIdFn({ organId }) {
       let req = {
-        organId,
+        organIds: organId.toString(),
       };
       this.$api.assets.getObjectKeyValueByOrganId(req).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -310,8 +311,8 @@ export default {
     // 获取 tableData
     queryTableData(options) {
       const { pageLength, pageNo } = this.paginationObj;
-      const req = { ...options, pageNum: pageNo, pageSize: pageLength };
-      console.log({ req });
+      const req = { ...options, pageNum: pageNo, pageSize: pageLength, organIds: options.organId.toString() };
+      delete req.organId
       this.tableOptions.loading = true;
       this.$api.equipmentview
         .viewProject(req)
@@ -327,8 +328,8 @@ export default {
         });
     },
     queryTotal(options) {
-      const req = { ...options };
-      console.log({ req });
+      const req = { ...options, organIds: options.organId.toString() };
+      delete req.organId
       this.totalLoadingFlag = true;
       this.$api.equipmentview
         .equipmentStatistics(req)

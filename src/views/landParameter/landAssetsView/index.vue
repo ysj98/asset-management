@@ -12,7 +12,7 @@
         <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;" :showSearch='true'></treeSelect>
+        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;" :showSearch='true' :multiple="true" :treeCheckable="true"></treeSelect>
         <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="allQuery" />
         <a-input-search v-model="queryCondition.landCategory" placeholder="权属用途" maxlength="20" style="width: 140px; margin-right: 10px;" @search="allQuery"/>
       </div>
@@ -392,7 +392,7 @@ export default {
         landName: this.queryCondition.landName,                             // 资产名称/编码模糊查询
         objectTypes: this.alljudge(this.queryCondition.objectTypes),        // 资产分类(多选)
         useTypes: this.alljudge(this.queryCondition.useType),               // 用途(多选)
-        organId: this.queryCondition.organId,                               // 组织机构id
+        organIds: this.queryCondition.organId.toString(),                               // 组织机构id
         projectId: this.alljudge(this.queryCondition.projectId),            // 项目id
         statuss: this.alljudge(this.queryCondition.statuss),                // 资产状态(多选)
         pageNum: this.queryCondition.pageNum,          // 当前页
@@ -523,7 +523,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn () {
       let obj = {
-        organId: this.queryCondition.organId,
+        organIds: this.queryCondition.organId.toString(),
         projectName: ''
       }
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
@@ -543,7 +543,7 @@ export default {
       })
     },
     async getSourceOptions(){
-      let organId = this.queryCondition.organId
+      let organId = this.queryCondition.organId.toString()
       this.sourceOptions = []
       this.queryCondition.sourceModes = ''
       querySourceType(organId, this).then(list => {
@@ -556,7 +556,7 @@ export default {
         return
       }
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: '4'
       }
       this.$api.assets.getList(obj).then(res => {
@@ -721,9 +721,9 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE",
         dictFlag: "1",
-        groupId: this.queryCondition.organId,
+        groupIds: this.queryCondition.organId.toString(),
         code: "OCM_LANDUSE",
-        organId: this.queryCondition.organId,
+        organIds: this.queryCondition.organId.toString(),
       }
       this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {

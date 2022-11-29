@@ -13,7 +13,7 @@
         <div class="search-from-box" >
           <a-checkbox :style="checkboxAllStyle" :checked="queryCondition.flag" @change="checkboxFn">仅当前机构资产登记单</a-checkbox>
           <div class="box" style="positon:absolute">
-            <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true' :multiple="true" :treeCheckable="true"></treeSelect>
+            <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           </div>
           <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
@@ -391,7 +391,7 @@ export default {
       let obj = {
         registerTypeList: this.alljudge(this.queryCondition.registerTypeList),
         projectId: this.queryCondition.projectId,       // 资产项目Id
-        organIds: Number(this.queryCondition.organId),         // 组织机构id
+        organId: Number(this.queryCondition.organId),         // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
         approvalStatuss: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         minDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',       // 创建日期开始日期

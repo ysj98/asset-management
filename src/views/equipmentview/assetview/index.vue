@@ -36,6 +36,8 @@
             :allowClear="false"
             @changeTree="changeTree"
             class="search-item"
+            :multiple="true"
+            :treeCheckable="true"
           />
           <a-select
             v-model="queryForm.projectIdList"
@@ -581,7 +583,7 @@ export default {
     // 获取 资产标签
     getAssetLabel({ organId }) {
       this.$api.publicCode
-        .queryAssetLabelConfig({ organId })
+        .queryAssetLabelConfig({ organId: organId.split(',')[0] })
         .then(
           ({
             data: {
@@ -636,7 +638,7 @@ export default {
     // 获取资产项目并清空 双向绑定数据
     getObjectKeyValueByOrganIdFn({ organId }) {
       let req = {
-        organId,
+        organIds: organId.toString(),
       };
       this.$api.assets.getObjectKeyValueByOrganId(req).then((res) => {
         if (Number(res.data.code) === 0) {

@@ -32,7 +32,6 @@
               :allowClear="false"
               :style="allStyle"
               :showSearch='true'
-              :multiple="true" :treeCheckable="true"
             ></treeSelect>
             <!-- 资产项目 -->
             <a-select
@@ -581,8 +580,6 @@ export default {
         province: this.provinces.province,
         flag: "0",
       };
-      data.organIds=data.organId
-      delete data.organId;
       data.ownershipStatuss = data.ownershipStatuss.join(",");
       data.kindOfRights = data.kindOfRights.join(",");
       data.statuss = data.statuss.join(",");

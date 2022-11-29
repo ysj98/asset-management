@@ -14,7 +14,7 @@
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch='true'/>
+          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch='true' :multiple="true" :treeCheckable="true"/>
         </a-col>
         <a-col :span="5">
           <a-select
@@ -176,7 +176,7 @@ export default {
       }
       this.tableObj.loading = true;
       this.$api.carPark.carParkViewOrgan({
-        organId,
+        organIds: organId.toString(),
         pageSize: pageLength,
         pageNum: pageNo,
         flag: current ? current - 1 : "",
@@ -248,7 +248,7 @@ export default {
       } = this;
       this.overviewNumSpinning = true;
       this.$api.carPark.organGetTotal({
-          organId,
+          organIds: organId.toString(),
           flag: current ? current - 1 : "",
           statusList: statusList.includes("all") ? [] : statusList,
         })

@@ -14,7 +14,7 @@
         >导出资产项目视图</SG-Button>
       </a-col>
       <a-col :span="3">
-        <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+        <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :multiple="true" :treeCheckable="true"></treeSelect>
       </a-col>
       <a-col :span="3">
         <a-select
@@ -270,7 +270,7 @@ export default {
       this.loading = true
       let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
       let form = {
-        organId,
+        organIds: organId.toString(),
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
@@ -315,7 +315,7 @@ export default {
       this.overviewNumSpinning = true
       let form = {
         statusList: this.statusList.includes("all") ? [] : this.statusList,
-        organId: this.organId,
+        organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null
@@ -345,7 +345,7 @@ export default {
       const { organId, current, assetProject, onlyCurrentOrgan } = this;
       this.$api.land
         .viewGetAssetLandExport({
-          organId,
+          organIds: organId.toString(),
           projectId: assetProject,
           isCurrent: onlyCurrentOrgan,
           statusList: this.statusList.includes("all") ? [] : this.statusList,
@@ -372,7 +372,7 @@ export default {
     // 查询项目
     getAssetProjectOptions () {
       let form = {
-        organId: this.organId
+        organId: this.organId.toString()
       }
       this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
         if (res.data.code === '0') {

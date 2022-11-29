@@ -8,7 +8,7 @@
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_TABLE_HEADER" @click="changeListSettingsModal(true)">列表设置</SG-Button>
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_IN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true' :multiple="true" :treeCheckable="true"></treeSelect>
+          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -252,7 +252,7 @@ export default {
       return {
         statusList: this.alljudge(this.queryCondition.approvalStatus),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organIds: Number(this.queryCondition.organId),        // 组织机构id
+        organId: Number(this.queryCondition.organId),        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
         assetName: this.queryCondition.assetNameCode,         // 资产名称/编码
