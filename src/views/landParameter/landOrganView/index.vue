@@ -182,13 +182,24 @@ export default {
           if (res && String(res.code) === "0") {
             const { count, data } = res.data;
             let pageSum = {};
+            /**
+             * 面积类统一是4位，金额、百分数统一2位
+             * 数量类全部整数，不保留小数位
+             * 数量：buildNum assetNum, 金额：originalValue marketValue, 
+             */
             data.forEach((item, index) => {
               item.key = index;
-              Object.keys(sumObj).forEach((key) => {
-                !pageSum[key] && (pageSum[key] = 0);
-                pageSum[key] += item[key] ? Number(item[key]) : 0;
-                pageSum[key] = Number(pageSum[key].toFixed(2));
-              });
+              Object.keys(sumObj).forEach(key => {
+                !pageSum[key] && (pageSum[key] = 0)
+                pageSum[key] += item[key] ?
+                  (['buildNum', 'assetNum'].includes(key) ?
+                    Number(item[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(item[key]*100)/100 : Math.round(item[key]*10000)/10000)
+                    : 0
+                if (index === data.length - 1) {
+                  pageSum[key] = ['buildNum', 'assetNum'].includes(key) ?
+                    pageSum[key] : ['originalValue', 'marketValue'].includes(key) ? Math.round(pageSum[key]*100)/100 : Math.round(pageSum[key]*10000)/10000
+                }
+              })
             });
             this.tableObj.dataSource = data.length
               ? data.concat({

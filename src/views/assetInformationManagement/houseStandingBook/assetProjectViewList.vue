@@ -325,7 +325,7 @@ export default {
           let {measuredArea} = temp
           let {numList, dataSource, sumObj} = this
           this.numList = numList.map(m => {
-            return {...m, value: temp[m.key] ? temp[m.key].toFixed(2) : 0}
+            return {...m, value: temp[m.key] ? Math.round(temp[m.key]*10000)/10000 : 0}
           })
           Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ?
           (['buildNum', 'assetNum'].includes(key) ?
