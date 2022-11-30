@@ -638,7 +638,7 @@ export default {
     // 获取资产项目并清空 双向绑定数据
     getObjectKeyValueByOrganIdFn({ organId }) {
       let req = {
-        organIds: organId.toString(),
+        organIds: organId,
       };
       this.$api.assets.getObjectKeyValueByOrganId(req).then((res) => {
         if (Number(res.data.code) === 0) {

@@ -4,7 +4,7 @@
 <template>
   <div class="asset-project-view-list" style="overflow-x: hidden">
     <a-row :gutter="8" style="padding: 20px 30px">
-      <a-col :span="9">
+      <a-col :span="7">
         <SG-Button
           icon="import"
           type="primary"
@@ -13,7 +13,7 @@
           :loading="exportBtnLoading"
         >导出资产项目视图</SG-Button>
       </a-col>
-      <a-col :span="3">
+      <a-col :span="5">
         <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :multiple="true" :treeCheckable="true"></treeSelect>
       </a-col>
       <a-col :span="3">

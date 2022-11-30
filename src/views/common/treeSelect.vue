@@ -26,6 +26,7 @@
 </template>
 
 <script>
+import { debounce } from "@/utils/utils";
 export default {
   components: {},
   props: {
@@ -216,18 +217,23 @@ export default {
     },
     // 处理 组织机构树 数据
     mapTreeNodes(nodeList) {
+      let self = this;
       function deep(nodeList) {
         let resultData = [];
         nodeList.forEach((node) => {
-          resultData.push({
+          let obj = {
+            ...node,
             title: node.organName || node.name,
             key: node.organId,
             value: node.organId,
-            checkable: node.organId + "" === "1" ? false : true,
-            // disabled: node.organId + "" === "1" ? true : false,  // 禁用
             children: Array.isArray(node.children) && node.children.length > 0 ? deep(node.children) : [],
-            ...node,
-          });
+            // isLeaf: Array.isArray(node.children) && node.children.length <= 0,
+          };
+          // 多选时，顶级机构不可被选中
+          if (self.multiple && obj.organId + "" === "1") {
+            obj.checkable = false;
+          }
+          resultData.push(obj);
         });
         return resultData;
       }
@@ -255,13 +261,17 @@ export default {
         this.organId = value;
       } else {
         // 如果是多选只能选中一个一级物业 一级物业 如organCode为八位
-        let flag = value.filter((item) => this.organIdMap[item].organCode.length === 8);
+        let flag = value.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
         if (flag.length >= 2) {
           this.$message.error("不能跨物业选择");
           this.organName = label.slice(0, label.length - 1);
           this.organId = value.slice(0, label.length - 1);
         } else {
           if (this.organId && this.organId.length > 0) {
+            if (value[0] === "") {
+              value.shift();
+              label.shift();
+            }
             this.$emit("changeTree", value.toString(), label.toString());
             this.organName = label;
             this.organId = value;
@@ -271,25 +281,27 @@ export default {
         }
       }
     },
-    //转换查询
+    // 转换查询
     searchOrgan(value) {
       this.searchName = value;
-      if (this.showSearch && value.length > 0) {
+      if (this.showSearch && this.searchName.length > 0) {
         this.organId = "";
         this.keywordOrgan(value);
       }
     },
-    //关键字查询组织机构
-    keywordOrgan(value) {
+    // 关键字查询组织机构
+    keywordOrgan: debounce(function (value) {
       this.searchName = value;
-      this.$api.assets.queryAsynOrganByKey({ keywords: value }).then((res) => {
+      this.$api.assets.queryAsynOrganByKey({ keywords: this.searchName }).then((res) => {
         if (Number(res.data.code) === 0) {
           let resultData = res.data.data;
           this.treeData = [];
+          // this.setOrganIdMap(resultData);
           this.treeData = this.mapTreeNodes(resultData);
+          console.log("🚀 ~ file: treeSelect.vue:296 ~ this.$api.assets.queryAsynOrganByKey ~ this.treeData", this.treeData);
         }
       });
-    },
+    }, 200),
   },
   created() {},
   mounted() {

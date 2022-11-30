@@ -20,7 +20,7 @@
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
-          placeholder="全部资产分类1"
+          placeholder="全部资产分类"
           v-model="assetClassify"
           :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px"
@@ -86,32 +86,33 @@ const columnsData = [
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
-    width: 120,
+    width: 80,
   },
   {
     title: "资产分类",
     dataIndex: "assetCategoryName",
-    width: 120,
+    width: 110,
   },
   {
     title: "入账日期",
     dataIndex: "accountEntryTime",
-    width: 120,
+    width: 100,
   },
+  { title: "存放地点", dataIndex: "storagePath", width: 120 },
   {
     title: "入账原值(元)",
     dataIndex: "purchaseValue",
-    width: 120,
+    width: 110,
   },
   {
     title: "累计折旧(元)",
     dataIndex: "cumulativeDepreciation",
-    width: 120,
+    width: 110,
   },
   {
     title: "净值(元)",
     dataIndex: "netValue",
-    width: 120,
+    width: 110,
   },
 ];
 
@@ -245,7 +246,7 @@ export default {
     queryList() {
       let form = {
         organId: this.organId,
-        projectId: this.assetProject,
+        projectId: Number(this.projectId),
         cardName: this.cardName,
         assetType: this.assetType,
         assetCategoryId: this.assetClassify.join(","),

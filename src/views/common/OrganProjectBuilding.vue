@@ -15,6 +15,7 @@
       <a-col :span="isShowBuilding ? 8 : 12">
         <tree-select 
           :multiple="multiple"
+          :treeCheckable="true"
           :allowClear="false" 
           @changeTree="changeTree"
           :showSearch='showSearch'
