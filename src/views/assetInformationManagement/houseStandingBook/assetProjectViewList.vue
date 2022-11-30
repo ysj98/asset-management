@@ -281,8 +281,7 @@ export default {
           }
           let pageSum = {}
           /**
-           * 面积类统一是4位，金额、百分数统一2位
-           * 数量类全部整数，不保留小数位
+           * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
            * 数量：buildNum assetNum, 金额：originalValue marketValue, 
            */
           data.forEach((item, index) => {

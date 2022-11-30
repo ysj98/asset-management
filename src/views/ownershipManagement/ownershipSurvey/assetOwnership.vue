@@ -421,6 +421,9 @@ columns.forEach((ele) => (ele.ellipsis = true));
 columns.push({
   title: "",
 });
+const decimalFormat = (area) => {
+  return Math.round(area*10000)/10000
+}
 export default {
   components: {
     SearchContainer,
@@ -540,12 +543,12 @@ export default {
       this.$api.basics.listStatis(data).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          this.numList[0].value = data.totalNum;
-          this.numList[1].value = data.houseNum;
-          this.numList[2].value = data.landNum;
-          this.numList[3].value = data.otherNum;
-          this.numList[4].value = data.certifiedNum;
-          this.numList[5].value = data.unlicensedNum;
+          this.numList[0].value = data.totalNum ? decimalFormat(data.totalNum) : 0;
+          this.numList[1].value = data.houseNum ? decimalFormat(data.houseNum) : 0;
+          this.numList[2].value = data.landNum ? decimalFormat(data.landNum) : 0;
+          this.numList[3].value = data.otherNum ? decimalFormat(data.otherNum) : 0;
+          this.numList[4].value = data.certifiedNum ? decimalFormat(data.certifiedNum) : 0;
+          this.numList[5].value = data.unlicensedNum ? decimalFormat(data.unlicensedNum) : 0;
           this.loading = false;
         } else {
           this.$message.error(res.data.message);
@@ -564,7 +567,7 @@ export default {
           if (code === "0") {
             const temp = this.table.dataSource.pop();
             const resData = {
-              area: data.areaCount,
+              area: data.areaCount ? Math.round(data.areaCount*10000)/10000 : 0,
             };
             this.table.dataSource.push({ ...temp, ...resData });
           } else {

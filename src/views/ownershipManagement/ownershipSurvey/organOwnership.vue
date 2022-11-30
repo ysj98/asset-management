@@ -281,6 +281,12 @@ export default {
       return this.$api.ownership.organViewTotal(data).then((res) => {
         if (res.data.code === "0") {
           let result = res.data.data || {};
+          let areaKey = ["assetArea", "ownerShipTotalArea", "ownerShipArea", "useShipYesArea", "useShipNoArea", "useShipWaitArea", "noShipCountArea"]
+          Object.keys(result).forEach(key => {
+            if (areaKey.includes(key)) {
+              result[key] = result[key] ? Math.round(result[key]*10000)/10000 :0
+            }
+          })
           this.totalTableRow = {
             ...result,
             key: utils.getUuid(),

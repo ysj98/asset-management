@@ -270,7 +270,7 @@ export default {
       this.loading = true
       let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
       let form = {
-        organIds: organId.toString(),
+        organId: organId.toString(),
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
@@ -288,8 +288,7 @@ export default {
           }
           let pageSum = {}
           /**
-           * 面积类统一是4位，金额、百分数统一2位
-           * 数量类全部整数，不保留小数位
+           * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
            * 数量：buildNum assetNum, 金额：originalValue marketValue, 
            */
           data.forEach((item, index) => {
@@ -326,7 +325,7 @@ export default {
       this.overviewNumSpinning = true
       let form = {
         statusList: this.statusList.includes("all") ? [] : this.statusList,
-        organIds: this.organId.toString(),
+        organId: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null
@@ -337,7 +336,7 @@ export default {
           let {measuredArea} = temp
           let {numList, dataSource, sumObj} = this
           this.numList = numList.map(m => {
-            return {...m, value: temp[m.key] || 0}
+            return {...m, value: temp[m.key] ? ['landCount'].includes(m.key) ? temp[m.key] : Math.round(temp[m.key]*10000)/10000 :  0}
           })
           Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ?
           (['buildNum', 'assetNum'].includes(key) ?

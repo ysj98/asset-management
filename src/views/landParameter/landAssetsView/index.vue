@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-07-23 10:16:25
+ * @LastEditTime: 2022-11-30 10:21:43
  * @Description: 土地资产视图
 -->
 <template>
@@ -288,6 +288,9 @@ const queryCondition =  {
   address: '',         // 地理位置
   landCategory: '',
   sourceModes:''            // 来源方式
+}
+const decimalFormat = (area) => {
+  return Math.round(area*10000)/10000
 }
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
@@ -681,18 +684,18 @@ export default {
       this.$api.land.assetViewListTotal(obj).then(res => {
         if (String(res.data.code) === '0') {
           let data = res.data.data
-          for(let key in data){
-              data[key] = getFormat(data[key])
-            }
-          this.totalField.landArea = judgment.includes(data.area) ? 0 : data.area               // 土地面积
-          this.totalField.acreage = judgment.includes(data.acreageTotal) ? 0 : data.acreageTotal                // 计容面积
-          this.totalField.transferOperationArea = judgment.includes(data.transferOperationArea) ? 0 : data.transferOperationArea  // 运营
-          this.totalField.selfUserArea = judgment.includes(data.selfUserArea) ? 0 : data.selfUserArea           // 自用
-          this.totalField.idleArea = judgment.includes(data.idleArea) ? 0 : data.idleArea               // 闲置
-          this.totalField.otherArea = judgment.includes(data.otherArea) ? 0 : data.otherArea              // 其他
-          this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : data.originalValue          // 资产原值
-          this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : data.marketValue             // 最新估值
+          this.totalField.landArea = judgment.includes(data.area) ? 0 : decimalFormat(data.area)               // 土地面积
+          this.totalField.acreage = judgment.includes(data.acreageTotal) ? 0 : decimalFormat(data.acreageTotal)                // 计容面积
+          this.totalField.transferOperationArea = judgment.includes(data.transferOperationArea) ? 0 : decimalFormat(data.transferOperationArea)  // 运营
+          this.totalField.selfUserArea = judgment.includes(data.selfUserArea) ? 0 : decimalFormat(data.selfUserArea)           // 自用
+          this.totalField.idleArea = judgment.includes(data.idleArea) ? 0 : decimalFormat(data.idleArea)               // 闲置
+          this.totalField.otherArea = judgment.includes(data.otherArea) ? 0 : decimalFormat(data.otherArea)              // 其他
+          this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : Math.round(data.originalValue*100)/100          // 资产原值
+          this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : Math.round(data.marketValue*100)/100             // 最新估值
           this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
+          for(let key in data){
+            data[key] = getFormat(data[key])
+          }
         } else {
           this.$message.error(res.message)
         }
@@ -707,7 +710,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           this.numList = this.numList.map(m => {
-            return { ...m, value: data[m.key] || 0 }
+            return { ...m, value: data[m.key] ? ['assetCount'].includes(key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
           })
           this.overviewNumSpinning = false
         } else {
