@@ -188,11 +188,11 @@ export default {
     };
   },
   provide() {
-            return {
-                    preview: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_PREVIEW),
-                    download:this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_DOWNLOAD)
-            };
-},
+    return {
+      preview: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_PREVIEW),
+      download: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_DOWNLOAD)
+    };
+  },
   computed: {
     useModal() {
       return this.$route && this.$route.path !== "/authorityCardInfo";

@@ -210,7 +210,7 @@ export default {
           value: ''
         }
       ],
-      alterationDate: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
+      alterationDate: []
     }
   },
   computed: {
@@ -364,7 +364,7 @@ export default {
     // 清空
     eliminateFn () {
       let organId = this.queryCondition.organId
-      this.alterationDate = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())]
+      this.alterationDate = []
       this.queryCondition = {...queryCondition}
       this.queryCondition.organId = organId
       this.query()

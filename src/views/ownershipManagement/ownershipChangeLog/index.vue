@@ -67,7 +67,7 @@ const columns = [
     width: 100
   },
   {
-    title: '手机号',
+    title: '工号',
     dataIndex: 'createAccount',
     width: 120
   },
