@@ -614,6 +614,7 @@ export default {
     },
     // 获取供应商
     async getEquipmentSupplierListByOrganId (organId) {
+      if (!organId) return
       const params = {
         systemCode: 'assets',
         organId: organId

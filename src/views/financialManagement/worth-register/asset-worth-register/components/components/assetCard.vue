@@ -2,21 +2,7 @@
   <div class="assetCard">
     <SG-Modal v-model="isShow" width="1000px" height="450px" title="选择资产卡片" okText="确定选择" cancelText="取消" @cancel="handleAction('cancel')" @ok="handleAction('ok')">
       <div class="search" style="display: flex">
-        <EquipmentSelectTree
-          v-if="isSelectedEquipment"
-          style="width: 190px; margin-right: 10px"
-          :top-organ-id="organId"
-          :multiple="false"
-          v-model="assetClassify"
-          :options-data-format="
-            (data) => {
-              return [{ label: '全部资产分类', value: '', isLeaf: true }, ...data];
-            }
-          "
-          @select="changeAssetClassify($event, true)"
-        />
         <a-select
-          v-else
           :maxTagCount="1"
           mode="multiple"
           :tokenSeparators="[',']"
@@ -24,9 +10,10 @@
           v-model="assetClassify"
           :options="$addTitle(assetClassifyOptions)"
           style="width: 190px; margin-right: 10px"
-          @select="changeAssetClassify($event, true)"
+          @select="changeAssetClassify($event)"
         ></a-select>
-        <a-input-search placeholder="卡片名称/编码" :style="allStyle" :value="cardName" @change="cardNameChange" @search="queryClick" />
+        <a-input placeholder="卡片名称/编码" :style="allStyle" :value="cardName" @change="cardNameChange" />
+        <a-button icon="search" @click="queryClick"> 查询 </a-button>
       </div>
       <div>
         <a-table
@@ -66,7 +53,6 @@
 </template>
 <script>
 import noDataTips from "@/components/noDataTips";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 
 const columnsData = [
   {
@@ -118,7 +104,7 @@ const columnsData = [
 
 export default {
   name: "assetCard",
-  components: { noDataTips, EquipmentSelectTree },
+  components: { noDataTips },
   props: {
     organId: {
       type: String || Number,
@@ -155,12 +141,6 @@ export default {
       loading: false,
     };
   },
-  computed: {
-    isSelectedEquipment() {
-      const assetTypeArr = this.assetType || [];
-      return assetTypeArr.length === 1 && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
-    },
-  },
   mounted() {
     // 获取资产分类
     this.getAssetClassifyOptions();
@@ -193,7 +173,7 @@ export default {
         projectId,
         assetType,
         objectType: assetClassify.toString(), // 资产分类
-        cardIds: selectedRowKeys.toString(), // 资产卡片id
+        cardIds: selectedRowKeys, // 资产卡片id
         queryType,
         pageSize: 100,
         pageNum: 1,
@@ -284,11 +264,9 @@ export default {
       };
     },
     // 资产分类发生变化
-    changeAssetClassify(value, isSelectedEquipment) {
+    changeAssetClassify(value) {
       this.$nextTick(function () {
-        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyOptions;
-        this.assetClassify = this.handleMultipleSelectValue(value, this.assetClassify, resOptions);
-        this.queryClick();
+        this.assetClassify = this.handleMultipleSelectValue(value, this.assetClassify, this.assetClassifyOptions);
       });
     },
     // 处理多选下拉框有全选时的数组
@@ -298,7 +276,6 @@ export default {
         data = [""];
       } else {
         let totalIndex = data.indexOf("");
-
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {

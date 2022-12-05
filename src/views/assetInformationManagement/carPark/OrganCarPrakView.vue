@@ -61,7 +61,7 @@ import { getFormat } from '../../../utils/utils'
 import costInfoVue from '../../reportingManagement/reportingRecordList/costInfo.vue'
 export default {
   name: "index",
-  components: { OverviewNumber, NoDataTip, TreeSelect },
+  components: { OverviewNumber, NoDataTip, TreeSelect},
   data() {
     return {
       organName: "",

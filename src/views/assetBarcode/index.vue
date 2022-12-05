@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import TreeSelect from '../common/treeSelect.vue'
+import TreeSelect from '../common/treeSelectold.vue'
 import changeLogo from './changeLogo.vue'
 import configs from "@/config/config.base.js";
 import {ASSET_MANAGEMENT} from '@/config/config.power'

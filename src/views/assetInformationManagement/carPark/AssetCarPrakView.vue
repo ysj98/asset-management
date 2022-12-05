@@ -348,7 +348,6 @@ const requiredColumn = [
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
-        address:'',  // 查询条件-资产地址
         status: ['0', '1', '2', '3', '4', '7'], // 查询条件-资产状态值
         categoryId: [], // 查询条件-资产分类
         categoryOptions: [], // 查询条件-资产分类选项
@@ -455,6 +454,7 @@ const requiredColumn = [
           if(val.organId.split(',').length === 1){
             this.getAssetLabel(val.organId)
           }
+          this.queryNodesByRootCode()
         }
       },
       fold (val) {
@@ -480,7 +480,7 @@ const requiredColumn = [
       // }
     },
     mounted () {
-      this.queryNodesByRootCode()
+      
     },
     created () {
       //this.initHeader()
@@ -810,7 +810,8 @@ const requiredColumn = [
       // 楼栋用途
       queryNodesByRootCode () {
         let data = {
-          categoryCode: '60'
+          categoryCode: '60',
+          organId: this.organProjectBuildingValue.organId.split(',')[0]
         }
         this.$api.basics.queryNodesByRootCode(data).then(res => {
           if (res.data.code === '0') {

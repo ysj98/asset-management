@@ -210,6 +210,7 @@
 </template>
 
 <script>
+import { debounce } from '@/utils/utils'
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
@@ -677,7 +678,7 @@ export default {
       })
     },
     // 合计汇总合并
-    totalFn (obj) {
+    totalFn : debounce(function (obj) {
       this.$api.land.assetViewListTotal(obj).then(res => {
         if (String(res.data.code) === '0') {
           let data = res.data.data
@@ -693,11 +694,11 @@ export default {
           this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : data.originalValue          // 资产原值
           this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : data.marketValue             // 最新估值
           this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
-        } else {
-          this.$message.error(res.message)
-        }
-      })
-    },
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      }, 400),
     // 资产登记-详情明细统计
     assetViewTotal (obj) {
       this.overviewNumSpinning = true
@@ -721,9 +722,9 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE",
         dictFlag: "1",
-        groupIds: this.queryCondition.organId.toString(),
+        groupIds: this.queryCondition.organId[0],
         code: "OCM_LANDUSE",
-        organIds: this.queryCondition.organId.toString(),
+        organId: this.queryCondition.organId[0],
       }
       this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {
