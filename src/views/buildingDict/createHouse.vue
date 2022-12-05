@@ -23,7 +23,7 @@
                   <treeSelect
                     v-else
                     ref="organTopRef"
-                    :default="false"
+                    :defaultDisplay="false"
                     @changeTree="changeTree"
                     placeholder='请选择所属机构'
                     :defaultOrganName="defaultOrganName"
