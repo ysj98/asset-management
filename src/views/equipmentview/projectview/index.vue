@@ -19,6 +19,7 @@
             :allowClear="false"
             @changeTree="changeTree"
             class="search-item"
+            :showSearch='true'
             :multiple="true"
             :treeCheckable="true"
           />

@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-11-30 10:21:43
+ * @LastEditTime: 2022-12-05 18:37:03
  * @Description: 土地资产视图
 -->
 <template>
@@ -210,6 +210,7 @@
 </template>
 
 <script>
+import { debounce } from '@/utils/utils'
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
@@ -680,7 +681,7 @@ export default {
       })
     },
     // 合计汇总合并
-    totalFn (obj) {
+    totalFn : debounce(function (obj) {
       this.$api.land.assetViewListTotal(obj).then(res => {
         if (String(res.data.code) === '0') {
           let data = res.data.data
@@ -700,7 +701,7 @@ export default {
           this.$message.error(res.message)
         }
       })
-    },
+    }, 400),
     // 资产登记-详情明细统计
     assetViewTotal (obj) {
       this.overviewNumSpinning = true
@@ -724,9 +725,9 @@ export default {
       let data = {
         dictCode: "OCM_LANDUSE",
         dictFlag: "1",
-        groupIds: this.queryCondition.organId.toString(),
+        groupIds: this.queryCondition.organId[0],
         code: "OCM_LANDUSE",
-        organIds: this.queryCondition.organId.toString(),
+        organId: this.queryCondition.organId[0],
       }
       this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === "0") {

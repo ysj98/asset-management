@@ -1,176 +1,230 @@
+<!--
+  查询组织机构树 新
+-->
 <template>
-  <div class="select-organ-container">
-    <a-tree-select
-      class="tree-select"
-      :class="{ 'have-default-name': showDefaultOrganName }"
-      :maxTagCount="maxTagCount"
-      :multiple="multiple"
-      :showSearch="showSearch"
-      :dropdownStyle="dropdownStyle"
-      :treeData="treeData"
-      :placeholder="placeholder"
-      :allowClear="allowClear"
-      :loadData="onLoadData"
-      v-model="organId"
+  <div class="treeSelect">
+    <SG-Select
+      :popper-append-to-body="false"
+      :autoValidate="true"
+      :size="size"
       :disabled="disabled"
-      :searchValue="searchName"
-      :treeCheckable="treeCheckable"
-      :treeDefaultExpandAll="treeDefaultExpandAll"
-      tree-node-filter-prop="title"
-      @change="changeTree"
-      @search="searchOrgan"
+      v-model="organName"
+      :formType="formType"
+      :formInputConfig="formInputConfig"
+      placeholder="组织机构"
+      ref="select"
+      :style="width ? `width:${width}'px'` : 'width:100%'"
+      class="select-classify-tree"
+      :class="{ 'required-icon': !formType }"
     >
-    </a-tree-select>
-    <div class="default-organ-name" v-show="showDefaultOrganName">{{ defaultOrganName }}</div>
+      <a-spin :spinning="loading">
+        <SG-Input-Search v-if="showSearch" class="select-name" :placeholder="placeholder" style="width: 96%" v-model="keywords" search @search="queryTree"></SG-Input-Search>
+        <a-tree
+          v-if="treeData && treeData.length"
+          :checkable="multiple"
+          :multiple="multiple"
+          :loadData="onLoadData"
+          :treeData="treeData"
+          :defaultExpandAll="defaultExpandAll"
+          :checkedKeys="checkedKeys"
+          @select="treeNodeSelect"
+          @check="treeNodeSelect"
+          style="padding-left: 5px; padding-right: 10px; width: 226px"
+        ></a-tree>
+        <div class="nav-no-data" v-else>暂无数据</div>
+      </a-spin>
+    </SG-Select>
   </div>
 </template>
 
 <script>
 export default {
-  components: {},
+  model: {
+    prop: "value",
+    event: "input",
+  },
   props: {
-    // 是否展示默认值
-    default: {
-      type: Boolean,
-      default: true,
-    },
-    defaultOrganName: {
-      type: String,
-      default: "",
-    },
-    // 默认支持清空
-    allowClear: {
-      type: Boolean,
-      default: true,
-    },
-    placeholder: {
-      type: String,
-      default: "请选择组织机构树",
-    },
-    // 过滤参数
-    typeFilter: {
-      type: String,
-      default: "",
-    },
-    value: {
-      type: [String, Number],
-      // default: ''
-    },
-    // 禁用
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    // 搜索
-    showSearch: {
-      type: Boolean,
-      default: false,
-    },
     // 多选
     multiple: {
       type: Boolean,
       default: false,
     },
-    // 显示 checkbox
-    treeCheckable: {
+    // 默认选择第一个
+    defaultDisplay: {
+      type: Boolean,
+      default: true,
+    },
+    value: {
+      type: [String, Number],
+    },
+    // 编辑给回来展示的
+    name: {
+      type: String,
+      default: "",
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
-    // 默认展开所有树节点
-    treeDefaultExpandAll: {
-      type: Boolean,
-      default: false,
+    width: {
+      type: [String, Number],
+      default: "",
     },
-    // 下拉框样式
-    dropdownStyle: {
+    placeholder: {
+      type: String,
+      default: "请输入组织机构名字",
+    },
+    // 过滤参数
+    TypeFilter: {
+      type: String,
+      default: "",
+    },
+    size: {
+      type: String,
+      default: "small",
+    },
+    formInputConfig: {
       type: Object,
       default: function () {
         return {
-          maxHeight: "400px",
-          overflow: "auto",
+          label: "所属机构",
+          required: true,
+          requiredText: "(必选):",
         };
       },
     },
-  },
-  model: {
-    event: "change",
-    prop: "value",
+    // 新增编辑传form
+    formType: {
+      type: String,
+      default: "",
+    },
+    // 自定义传入的根元素  Array: {organName: '', organId: ''}
+    rootData: {
+      type: Array,
+      default: () => [],
+    },
+    // 是否展示搜索
+    showSearch: {
+      type: Boolean,
+      default: true,
+    },
+    authorizedUserId: {
+      type: String || Number,
+      default: "",
+    },
   },
   data() {
     return {
-      showDefaultOrganName: false,
+      loading: false,
       organId: "",
+      organName: "",
+      keywords: "",
+      expandedKeys: [],
+      autoExpandParent: true,
+      defaultExpandedKeys: [],
+      defaultExpandAll: false, // 是否展开所有树节点
       treeData: [],
-      maxTagCount: -1,
-      searchName: "", // 搜索字段
+      userId: "",
+      orgtype: "",
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
+      checkedKeys: [], //选中复选框的树节点
+      mapTypeFilter: this.TypeFilter,
     };
   },
-  computed: {},
-  watch: {
-    value(val) {
-      this.organId = val;
-    },
-    organId(nVal, oVal) {
-      // organId和value 互相监听，若不判等，将造成死循环，不建议，也不要这样写，但是组件本身逻辑已完成
-      if (nVal === oVal || !nVal) return;
-      this.$emit("change", nVal);
-    },
-    defaultOrganName: {
-      handler: function (newValue) {
-        if (newValue) {
-          this.showDefaultOrganName = true;
-        }
-      },
-      immediate: true,
-    },
-  },
   methods: {
-    // 第一次进来获取组织机构
-    initDepartment(organTopId, organTopName) {
-      this.$api.assets.queryAsynOrganByUserId({ parentOrganId: "", typeFilter: this.typeFilter }).then((res) => {
-        if (Number(res.data.code) === 0) {
-          let resultData = res.data.data;
-          // TODO: 过滤同一 一级机构, 这种通过 外部 ref 调用内部方法 传参 区分过滤 的写法 不太优雅,有时间优化一下
-          if (organTopId && organTopName) {
-            resultData = [
-              {
-                organId: organTopId,
-                name: organTopName,
-              },
-            ];
-          }
-          this.setOrganIdMap(resultData);
-          this.treeData = this.mapTreeNodes(resultData);
-          if (this.default) {
-            this.organId = this.treeData[0].organId;
-            this.organName = this.treeData[0].name;
-            // 顶级机构不要一进来就查 organId为1 的是顶级机构
-            if (this.treeData[0].organId !== "1") {
-              this.$emit("changeTree", this.organId, this.organName);
-            }
-          }
+    // 处理自定义跟节点
+    manageRootData(data) {
+      this.treeData = [];
+      this.expandedKeys = [];
+      let children = data.map((item) => {
+        return {
+          title: item.organName || item.name,
+          key: item.organId,
+          selectable: !this.multiple,
+          orgtype: item.orgtype,
+          organCode: item.organCode,
+        };
+      });
+      this.treeData = children;
+      this.organId = this.treeData[0].key;
+      this.organName = this.treeData[0].title;
+      this.orgtype = this.treeData[0].orgtype;
+      this.$emit("changeTree", this.organId, this.organName, this.orgtype);
+    },
+    // 校验组件必填
+    validateForm(context = this) {
+      context.$children.forEach((item) => {
+        item.validate && item.validate();
+        if (!item.validate && item.$children && item.$children.length) {
+          this.validateForm(item);
         }
       });
     },
-    // 组织机构子节点选择
-    onLoadData(node) {
-      return new Promise((re) => {
+    // 返回机构名称
+    getOrganName(treeData, key) {
+      let organName = [];
+      treeData.forEach((item) => {
+        if (key.includes(item.key)) {
+          organName.push(item.title);
+        }
+        if (item.children && item.children.length > 0) {
+          organName.push(...this.getOrganName(item.children, key));
+        }
+      });
+      return organName;
+    },
+    // 选中树节点
+    treeNodeSelect(selectedKeys, e) {
+      if (this.multiple) {
+        this.checkedKeys = selectedKeys;
+        if (selectedKeys.length === 0) {
+          this.$message.info("请选择组织机构");
+          return;
+        }
+        let flag = selectedKeys.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
+        if (flag.length >= 2) {
+          this.$message.info("不能跨物业选择");
+          this.checkedKeys = selectedKeys.slice(0, selectedKeys.length - 1);
+          return;
+        }
+        this.organId = selectedKeys.toString();
+        // this.organName = this.getOrganName(this.treeData, selectedKeys).toString();
+        this.organName = "";
+      } else {
+        this.$refs.select.changeVisible(false);
+        this.organId = e.node.dataRef.key;
+        this.organName = e.node.dataRef.title;
+        this.orgtype = e.node.dataRef.orgtype;
+      }
+      if (this.formType) {
+        this.$nextTick(function () {
+          this.validateForm();
+        });
+      }
+      this.$emit("changeTree", this.organId, this.organName, this.orgtype);
+    },
+    // 下载下级数据
+    onLoadData(treeNode) {
+      return new Promise((resolve) => {
+        if (treeNode.dataRef.children) {
+          resolve();
+          return;
+        }
         // 组织机构系统设置统一查询接口
-        this.$api.paramsConfig.queryParamsConfigDetail({ organId: node.value, serviceType: 1010 }).then((res) => {
+        this.$api.paramsConfig.queryParamsConfigDetail({ organId: treeNode.dataRef.key, serviceType: 1010 }).then((res) => {
           if (res.data.code === "0") {
-            const { isValid, paramKey } = res.data.data;
+            const { isValid } = res.data.data;
             if (Number(isValid) === 1) {
-              if (this.typeFilter.length) {
-                if (!this.typeFilter.includes("7")) {
-                  this.typeFilter = this.typeFilter + ",7";
+              if (this.mapTypeFilter.length) {
+                if (!this.mapTypeFilter.includes("7")) {
+                  this.mapTypeFilter = this.mapTypeFilter + ",7";
                 }
               } else {
-                this.typeFilter = "7";
+                this.mapTypeFilter = "7";
               }
             } else {
-              if (this.typeFilter.length && this.typeFilter.includes("7")) {
-                this.typeFilter = this.typeFilter
+              if (this.mapTypeFilter.length && this.mapTypeFilter.includes("7")) {
+                this.mapTypeFilter = this.mapTypeFilter
                   .split(",")
                   .filter((item) => {
                     return item !== "7";
@@ -178,60 +232,76 @@ export default {
                   .join(",");
               }
             }
-            //  根据父节点organId 去获取子节点
-            this.$api.assets.queryAsynOrganByUserId({ parentOrganId: node.value, typeFilter: this.typeFilter }).then((r) => {
-              if (Number(r.data.code) === 0) {
-                this.setOrganIdMap(r.data.data);
-                let children = this.mapTreeNodes(r.data.data);
-                this.setTree(node.value, this.treeData, children);
+
+            let obj = {
+              mapTypeFilter: this.mapTypeFilter,
+              parentOrganId: treeNode.dataRef.key,
+            };
+            this.expandedKeys.push(treeNode.dataRef.key);
+            this.$api.assets.queryAsynOrganByUserId(obj).then((res) => {
+              if (+res.data.code === 0) {
+                let data = res.data.data;
+                let children = data.map((item) => {
+                  return {
+                    title: item.organName || item.name,
+                    key: item.organId,
+                    selectable: !this.multiple,
+                    orgtype: item.orgtype,
+                    organCode: item.organCode,
+                  };
+                });
+                this.setOrganIdMap(children);
+                treeNode.dataRef.children = children;
                 this.treeData = [...this.treeData];
+                resolve();
               }
             });
           }
-          re();
         });
       });
-      // return new Promise((resolve) => {
-      //   this.$api.assets.queryAsynOrganByUserId({parentOrganId: node.value, typeFilter: this.typeFilter}).then(res => {
-      //     if (Number(res.data.code) === 0) {
-      //       let children = this.mapTreeNodes(res.data.data)
-      //       this.setTree(node.value, this.treeData, children)
-      //       this.treeData = [...this.treeData]
-      //       resolve()
-      //     }
-      //   })
-      // })
     },
-    setTree(id, tree, children) {
-      for (let i = 0; i < tree.length; i++) {
-        if (Number(tree[i].key) !== Number(id)) {
-          if (tree[i].children && tree[i].children.length > 0) {
-            this.setTree(id, tree[i].children, children);
+    // 根据用户加载组织机构
+    loadOrganTree(organTopId, organTopName) {
+      this.treeData = [];
+      this.expandedKeys = [];
+      let form = {
+        parentOrganId: "",
+        mapTypeFilter: this.mapTypeFilter,
+      };
+      this.loading = true;
+      this.$api.assets.queryAsynOrganByUserId(form).then((res) => {
+        this.loading = false;
+        if (+res.data.code === 0) {
+          let data = res.data.data;
+          if (organTopId && organTopName) {
+            data = [
+              {
+                organId: organTopId,
+                name: organTopName,
+              },
+            ];
           }
-        } else {
-          tree[i].children = [...children];
-          return;
-        }
-      }
-    },
-    // 处理 组织机构树 数据
-    mapTreeNodes(nodeList) {
-      function deep(nodeList) {
-        let resultData = [];
-        nodeList.forEach((node) => {
-          resultData.push({
-            title: node.organName || node.name,
-            key: node.organId,
-            value: node.organId,
-            checkable: node.organId + "" === "1" ? false : true,
-            // disabled: node.organId + "" === "1" ? true : false,  // 禁用
-            children: Array.isArray(node.children) && node.children.length > 0 ? deep(node.children) : [],
-            ...node,
+          let children = data.map((item) => {
+            return {
+              title: item.organName || item.name,
+              key: item.organId,
+              selectable: !this.multiple,
+              orgtype: item.orgtype,
+              organCode: item.organCode,
+            };
           });
-        });
-        return resultData;
-      }
-      return deep(nodeList);
+          this.setOrganIdMap(children);
+          console.log(this.organIdMap, "12345", children);
+          this.treeData = children;
+          // 默认选择第一个
+          if (this.defaultDisplay) {
+            this.organId = this.treeData[0].key;
+            this.organName = this.treeData[0].title;
+            this.orgtype = this.treeData[0].orgtype;
+            this.$emit("changeTree", this.organId, this.organName, this.orgtype);
+          }
+        }
+      });
     },
     setOrganIdMap(arr) {
       for (let i = 0; i < arr.length; i++) {
@@ -239,103 +309,121 @@ export default {
           this.setOrganIdMap(arr[i].children);
         }
         delete arr[i].children;
-        if (!this.organIdMap[arr[i].organId]) {
-          this.organIdMap[arr[i].organId] = arr[i];
+        if (!this.organIdMap[arr[i].key]) {
+          this.organIdMap[arr[i].key] = arr[i];
         }
       }
     },
-    // 选择树
-    changeTree(value, label, extra) {
-      console.log("组织结构树change事件", value, label, extra);
-      this.showDefaultOrganName = false;
-      if (!this.multiple) {
-        // 单选
-        this.$emit("changeTree", value, label[0]);
-        this.organName = label[0];
-        this.organId = value;
+    // 按关键字搜索
+    queryTree() {
+      this.treeData = [];
+      if (this.keywords) {
+        this.defaultExpandAll = true;
       } else {
-        // 如果是多选只能选中一个一级物业 一级物业 如organCode为八位
-        let flag = value.filter((item) => this.organIdMap[item].organCode.length === 8);
-        if (flag.length >= 2) {
-          this.$message.error("不能跨物业选择");
-          this.organName = label.slice(0, label.length - 1);
-          this.organId = value.slice(0, label.length - 1);
-        } else {
-          if (this.organId && this.organId.length > 0) {
-            this.$emit("changeTree", value.toString(), label.toString());
-            this.organName = label;
-            this.organId = value;
-          } else {
-            this.$message.error("请选择物业");
-          }
-        }
+        this.defaultExpandAll = false;
+        this.loadOrganTree();
+        return;
       }
-    },
-    //转换查询
-    searchOrgan(value) {
-      this.searchName = value;
-      if (this.showSearch && value.length > 0) {
-        this.organId = "";
-        this.keywordOrgan(value);
-      }
-    },
-    //关键字查询组织机构
-    keywordOrgan(value) {
-      this.searchName = value;
-      this.$api.assets.queryAsynOrganByKey({ keywords: value }).then((res) => {
-        if (Number(res.data.code) === 0) {
-          let resultData = res.data.data;
-          this.treeData = [];
-          this.treeData = this.mapTreeNodes(resultData);
+      this.checkedKeys = [];
+      let form = {
+        keywords: this.keywords,
+      };
+      this.loading = true;
+      this.$api.assets.queryAsynOrganByKey(form).then((res) => {
+        this.loading = false;
+        if (+res.data.code === 0) {
+          let data = res.data.data;
+          // this.setOrganIdMap(data);
+          this.dataToTree(data, this.treeData);
         }
       });
+    },
+    // 构造树形结构
+    dataToTree(data, tree) {
+      data.forEach((item) => {
+        tree.push({
+          title: item.organName || item.name,
+          key: item.organId,
+          selectable: !this.multiple,
+          orgtype: item.orgtype,
+          organCode: item.organCode,
+          children: this.treeAdapter(item.children),
+        });
+      });
+    },
+    treeAdapter(children) {
+      let result = [];
+      if (children && children.length) {
+        result = children.map((item) => {
+          return {
+            title: item.organName || item.name,
+            key: item.organId,
+            selectable: !this.multiple,
+            orgtype: item.orgtype,
+            organCode: item.organCode,
+            children: this.treeAdapter(item.children),
+          };
+        });
+      }
+      return result;
     },
   },
   created() {},
   mounted() {
-    // 多选模式防止换行
-    this.maxTagCount = this.multiple ? 1 : -1;
-    this.organId = this.value;
-    this.initDepartment();
-    this.$nextTick(() => {
-      document.addEventListener("click", (event) => {
-        event.stopPropagation();
-        this.searchName = "";
-      });
-    });
+    this.organName = this.name;
+    if (this.rootData.length) {
+      this.manageRootData(this.rootData);
+    } else {
+      this.loadOrganTree();
+    }
+  },
+  watch: {
+    organId(nVal,oVal) {
+      if (nVal === oVal || !nVal) return;
+      this.$emit("input", nVal);
+    },
+    name() {
+      this.organName = this.name;
+    },
+    authorizedUserId(val) {
+      console.log(val);
+    },
+    rootData: {
+      handler(val) {
+        if (val.length > 0) {
+          this.treeData = [];
+          this.manageRootData(val);
+        }
+      },
+      deep: true,
+    },
   },
 };
 </script>
-<style lang="less" scoped>
-.select-organ-container {
-  min-width: 250px;
-  position: relative;
+
+<style lang="less">
+.select-name {
+  display: flex;
+  margin: 0 auto;
+}
+.nav-no-data {
+  padding-left: 20px;
+  line-height: 40px;
+  color: #ccc;
+}
+.treeSelect {
   display: inline-block;
-  text-align: left;
-  .tree-select {
-    width: 100%;
-  }
-  .have-default-name {
-    z-index: 100;
-    /deep/ .ant-select-selection-selected-value {
-      opacity: 0;
+  position: relative;
+  .required-icon {
+    &:before {
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      content: "*";
+      color: #fd7474;
+      font-weight: bold;
+      z-index: 1;
     }
-    /deep/ .ant-select-selection {
-      background: transparent;
-    }
-  }
-  .default-organ-name {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 0;
-    width: 100%;
-    padding: 0 30px 0 11px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    z-index: 1;
-    line-height: 30px;
   }
 }
 </style>

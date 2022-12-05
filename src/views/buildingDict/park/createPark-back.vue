@@ -16,7 +16,7 @@
                 <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
                   <treeSelect
                       ref="organTopRef"
-                      :default="false"
+                      :defaultDisplay="false"
                       :typeFilter="typeFilter"
                       @changeTree="changeTree"
                       placeholder='请选择所属机构'

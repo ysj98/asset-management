@@ -1305,7 +1305,8 @@ export default {
     getAssetPurposeOptions () {
       if (+this.detail.assetType === 1) {
         let form = {
-          categoryCode: 60
+          categoryCode: 60,
+          organId: this.organId
         }
         this.$api.basics.queryNodesByRootCode(form).then(res => {
           if (res.data.code === '0') {

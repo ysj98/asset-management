@@ -11,11 +11,10 @@ export function queryTopOrganByOrganID({nOrgId, nOrganId}) {
       subUrl: "/datacachesvr-api-netty/queryTopOrganByOrganID",
       form: {
         channel: 1,
-        nOrgId: +nOrgId,
-        nOrganId: +nOrganId
+        nOrgId: +nOrgId.split(',')[0],
+        nOrganId: +nOrganId.split(',')[0]
       }
     };
-    console.log(vueInstance)
     vueInstance.$api.dataCenter.dataCacheTrans(form).then(res => {
       if (!res.data.data.organId) {
         vueInstance.$message.error(res.data.message || "获取组织机构失败");

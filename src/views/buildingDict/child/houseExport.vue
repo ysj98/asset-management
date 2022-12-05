@@ -19,7 +19,7 @@
      <div class="export-item">
        <!-- 公司 -->
        <treeSelect
-         :default="false"
+         :defaultDisplay="false"
          :defaultOrganName="defaultOrganName"
          :value="organId"
          @changeTree="changeTree"

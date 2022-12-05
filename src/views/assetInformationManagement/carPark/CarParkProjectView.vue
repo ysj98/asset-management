@@ -12,7 +12,7 @@
         >导出</SG-Button>
       </div>
       <div slot="headRight">
-        <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true' :multiple="true" :treeCheckable="true"></treeSelect>
+        <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :style="allStyle" :showSearch='true' :multiple="true" :treeCheckable="true"></treeSelect>
         <a-select
           showSearch
           placeholder="请选择资产项目"

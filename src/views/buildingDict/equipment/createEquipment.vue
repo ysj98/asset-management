@@ -13,7 +13,7 @@
                 <a-form-model-item :required="true"  label="所属机构"  prop="topOrganId">
                   <tree-select
                       ref="organTopRef"
-                      :default="false"
+                      :defaultDisplay="false"
                       @changeTree="changeTree"
                       :typeFilter="typeFilter"
                       placeholder='请选择所属机构'
@@ -614,6 +614,7 @@ export default {
     },
     // 获取供应商
     async getEquipmentSupplierListByOrganId (organId) {
+      if (!organId) return
       const params = {
         systemCode: 'assets',
         organId: organId

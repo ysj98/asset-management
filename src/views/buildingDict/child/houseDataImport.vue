@@ -25,7 +25,7 @@
          <div :style="inputStyple">
            <!-- 公司 -->
            <treeSelect
-             :default="false"
+             :defaultDisplay="false"
              :defaultOrganName="defaultOrganName"
              :value="organId"
              @changeTree="changeTree"

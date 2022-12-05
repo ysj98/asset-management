@@ -17,7 +17,7 @@
 <!--                      :defaultOrganName="formInfo.organName"-->
                   <treeSelect
                     ref="organTopRef"
-                    :default="false"
+                    :defaultDisplay="false"
                     :typeFilter="typeFilter"
                     @changeTree="changeTree"
                     placeholder='请选择所属机构'

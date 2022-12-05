@@ -78,7 +78,7 @@
 
 <script>
 import SearchContainer from 'src/views/common/SearchContainer'
-import TreeSelect from '../common/treeSelect.vue'
+import TreeSelect from '../common/treeSelectold.vue'
 import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
 import noDataTips from '@/components/noDataTips'
 import labelCodeModal from './labelCodeModal.vue'
