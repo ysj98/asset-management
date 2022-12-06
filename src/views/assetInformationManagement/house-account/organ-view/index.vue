@@ -183,33 +183,24 @@ export default {
           this.tableObj.loading = false;
           if (res && String(res.code) === "0") {
             const { count, data } = res.data;
-            let pageSum = {};
-            /**
-             * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
-             * 数量：buildNum assetNum, 金额：originalValue marketValue, 
-             */
+            // let pageSum = {};
             data.forEach((item, index) => {
               item.key = index;
-              Object.keys(sumObj).forEach((key) => {
-                !pageSum[key] && (pageSum[key] = 0);
-                pageSum[key] += item[key] ?
-                  (['buildNum', 'assetNum'].includes(key) ?
-                    Number(item[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(item[key]*100)/100 : Math.round(item[key]*10000)/10000)
-                    : 0;
-                if (index === data.length - 1) {
-                  pageSum[key] = ['buildNum', 'assetNum'].includes(key) ?
-                    pageSum[key] : ['originalValue', 'marketValue'].includes(key) ? Math.round(pageSum[key]*100)/100 : Math.round(pageSum[key]*10000)/10000
-                }
-              });
+              // Object.keys(sumObj).forEach((key) => {
+              //   !pageSum[key] && (pageSum[key] = 0);
+              //   pageSum[key] += item[key] ? Number(item[key]) : 0;
+              //   pageSum[key] = Number(pageSum[key].toFixed(2));
+              // });
             });
-            this.tableObj.dataSource = data.length
-              ? data.concat({
-                  ...pageSum,
-                  organName: "本页合计",
-                  organId: "-999",
-                  totalRow: true
-                })
-              : [];
+             this.tableObj.dataSource = data.length ? data : []
+            // this.tableObj.dataSource = data.length
+            //   ? data.concat({
+            //       ...pageSum,
+            //       organName: "本页合计",
+            //       organId: "-999",
+            //       totalRow: true
+            //     })
+            //   : [];
             // 查询楼栋面积统计数据
             if (type !== "search") {
               data.length &&
@@ -258,6 +249,10 @@ export default {
           if (res && String(res.code) === "0") {
             let obj = {};
             let list = res.data || {};
+            /**
+             * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
+             * 数量：buildNum assetNum, 金额：originalValue marketValue, 
+             */
             Object.keys(sumObj).forEach(
               (key) => (obj[key] = list[key] ?
                 (['buildNum', 'assetNum'].includes(key) ?
@@ -334,11 +329,11 @@ export default {
     bottom: 0;
     background: #fff;
   }
-  tr:nth-last-child(2){
-    position: sticky;
-    bottom: 43px;
-    background: #fff;
-  }
+  // tr:nth-last-child(2){
+  //   position: sticky;
+  //   bottom: 43px;
+  //   background: #fff;
+  // }
 }
 .custom-table {
   padding-bottom: 55px;
@@ -349,7 +344,7 @@ export default {
       white-space: nowrap;
     }
     tr:last-child,
-    tr:nth-last-child(2) {
+    tr:nth-last-child(1) {
       font-weight: bold;
     }
     td{
