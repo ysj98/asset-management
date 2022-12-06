@@ -185,23 +185,24 @@ export default {
           this.tableObj.loading = false;
           if (res && String(res.code) === "0") {
             const { count, data } = res.data;
-            let pageSum = {};
+            // let pageSum = {};
             data.forEach((item, index) => {
               item.key = index;
-              Object.keys(sumObj).forEach((key) => {
-                !pageSum[key] && (pageSum[key] = 0);
-                pageSum[key] += item[key] ? Number(item[key]) : 0;
-                pageSum[key] = Number(pageSum[key].toFixed(2));
-              });
+              // Object.keys(sumObj).forEach((key) => {
+              //   !pageSum[key] && (pageSum[key] = 0);
+              //   pageSum[key] += item[key] ? Number(item[key]) : 0;
+              //   pageSum[key] = Number(pageSum[key].toFixed(2));
+              // });
             });
-            this.tableObj.dataSource = data.length
-              ? data.concat({
-                  ...pageSum,
-                  organName: "本页合计",
-                  organId: "-999",
-                  totalRow: true
-                })
-              : [];
+            this.tableObj.dataSource = data.length ? data : []
+            // this.tableObj.dataSource = data.length
+            //   ? data.concat({
+            //       ...pageSum,
+            //       organName: "本页合计",
+            //       organId: "-999",
+            //       totalRow: true
+            //     })
+            //   : [];
             // 查询楼栋面积统计数据
             if (type !== "search") {
               data.length &&
@@ -336,7 +337,7 @@ export default {
       white-space: nowrap;
     }
     tr:last-child,
-    tr:nth-last-child(2) {
+    tr:nth-last-child(1) {
       font-weight: bold;
     }
   }
@@ -347,10 +348,10 @@ export default {
     bottom: 4px;
     background: #fff;
   }
-  tr:nth-last-child(2){
-    position: sticky;
-    bottom: 43px;
-    background: #fff;
-  }
+  // tr:nth-last-child(2){
+  //   position: sticky;
+  //   bottom: 43px;
+  //   background: #fff;
+  // }
 }
 </style>
