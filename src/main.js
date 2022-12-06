@@ -7,6 +7,7 @@ import Vue from 'vue'
 import App from './LocalApp'
 import router from './router'
 import store from './store'
+import VueI18n from 'vue-i18n'
 
 // 引入UI组件库
 import Antd from 'ant-design-vue'
@@ -41,6 +42,7 @@ Vue.use(Axios)
 Vue.use(Dev)
 Vue.use(Power)
 Vue.use(Directive)
+Vue.use(VueI18n)
 
 Vue.prototype.$importf = importf
 
@@ -53,9 +55,21 @@ Vue.prototype.$addTitle = function (options){
 }
 Vue.config.productionTip = false
 
+// 定义挂载文件
+const i18n = new VueI18n({
+  // locale: "zh", // 语言标识 //this.$i18n.locale // 通过切换locale的值来实现语言切换
+  locale: localStorage.getItem('lang') || 'zh',
+  messages: {
+    zh: require("./vueI18n/language-zh"), 
+    hk: require("./vueI18n/language-hk"),
+  },
+});
+
+
 const vueInstance = new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
 // 初始化用户数据
