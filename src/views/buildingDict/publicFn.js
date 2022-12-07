@@ -7,12 +7,19 @@ export function queryTopOrganByOrganID({nOrgId, nOrganId}) {
       resolve(null)
       return null;
     }
+    // 此处做处理，是因为组织机构会多选，多选时，只用传第一个organId即可
+    if (Array.isArray(nOrgId) && nOrgId.length > 0) {
+      nOrgId.split(',')[0]
+    }
+    if (Array.isArray(nOrganId) && nOrganId.length > 0) {
+      nOrganId.split(',')[0]
+    }
     let form = {
       subUrl: "/datacachesvr-api-netty/queryTopOrganByOrganID",
       form: {
         channel: 1,
-        nOrgId: +nOrgId.split(',')[0],
-        nOrganId: +nOrganId.split(',')[0]
+        nOrgId: +nOrgId,
+        nOrganId: +nOrganId
       }
     };
     vueInstance.$api.dataCenter.dataCacheTrans(form).then(res => {
