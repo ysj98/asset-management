@@ -85,7 +85,7 @@
   import FormFooter from '@/components/FormFooter'
   import {generateTableAreaByAssetTypeString} from "utils/utils";
   import uploadAndDownLoadFIle from "@/mixins/downLoadH5.js";
-  import configBase from "@/config/config.base";
+  import configs from "@/config/config.base";
   export default {
     name: 'DetailPage',
     components: {FormFooter},
@@ -139,7 +139,7 @@
     },
     methods: {
       download (url) {
-      window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg1 + url)
+      window.parent.uhomeNativeApi.downloadFile(configs.hostImg + url)
     },
       printFn(){
         if (this.$route.path==='/assetIn/printDetail'){

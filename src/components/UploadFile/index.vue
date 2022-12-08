@@ -142,7 +142,7 @@ export default {
   computed: {
     // 图片基础地址
     hostImg() {
-      return configs.hostImg1
+      return configs.hostImg
     },
     // 上传文件可选择类型
     uploadFileType() {

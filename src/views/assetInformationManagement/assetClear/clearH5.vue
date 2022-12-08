@@ -127,7 +127,8 @@
 </template>
 
 <script>
-import configBase from "@/config/config.base";
+// 获取图片域名
+import configs from '@/config/config.base'
 import FormFooter from '@/components/FormFooter'
 import uploadAndDownLoadFIle from "@/mixins/downLoadH5.js";
 import SGUploadFilePlus from '@/components/SGUploadFilePlus'
@@ -240,7 +241,7 @@ export default {
   },
   methods: {
     download (url) {
-      window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg1 + url)
+      window.parent.uhomeNativeApi.downloadFile(configs.hostImg + url)
     },
     formatDate (value) {
       if (value) {

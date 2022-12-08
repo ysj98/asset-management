@@ -135,13 +135,13 @@ export default {
           this.selectConfigure.thirdly = data[2]
           this.selectConfigure.forthly = data[3]
           if (res.data.data.attachmentList && res.data.data.attachmentList[0]) {
-            let hostImgLength = configs.hostImg1.length
+            let hostImgLength = configs.hostImg.length
             this.logoInfo.name = res.data.data.attachmentList[0].oldAttachmentName
             this.logoInfo.imageUrl = res.data.data.attachmentList[0].attachmentPath
-            if (configs.hostImg1[hostImgLength - 1] === '/') {
-              this.logoInfo.src = configs.hostImg1 + res.data.data.attachmentList[0].attachmentPath
+            if (configs.hostImg[hostImgLength - 1] === '/') {
+              this.logoInfo.src = configs.hostImg + res.data.data.attachmentList[0].attachmentPath
             } else {
-              this.logoInfo.src = configs.hostImg1 + '/' + res.data.data.attachmentList[0].attachmentPath
+              this.logoInfo.src = configs.hostImg + '/' + res.data.data.attachmentList[0].attachmentPath
             }
             console.log('>>>', this.logoInfo.src)
             this.$forceUpdate()
