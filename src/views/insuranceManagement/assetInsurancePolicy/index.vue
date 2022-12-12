@@ -226,7 +226,7 @@ export default {
       console.log(val, 'val')
       this.paginationObj.pageLength = val.pageLength
       this.paginationObj.pageNo = val.pageNo
-      this.init(this.organId, true)
+      this.init(this.organProjectBuildingValue.organId, true)
     },
     handleClic (val, record) {
       // 删除
