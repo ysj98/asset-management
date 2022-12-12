@@ -14,7 +14,7 @@
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" :multiple="true" :treeCheckable="true"/>
+          <tree-select @changeTree="changeTree" style="width: 100%"/>
         </a-col>
         <a-col :span="5">
           <a-select

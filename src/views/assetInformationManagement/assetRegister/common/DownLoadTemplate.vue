@@ -20,7 +20,7 @@
     >
       <span class="title">所属组织：</span>
       <TreeSelect
-        @change="handleChangeOrgan"
+        @changeTree="handleChangeOrgan"
         style="width: 300px"
         :allowClear="false"
       />
