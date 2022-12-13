@@ -810,6 +810,7 @@ export default {
           utils.each(values, (value, key) => {
             data[key] = value || ""
           })
+          if (data.otherArea) data.otherArea = data.otherArea.toString()
           // 处理开始时间
           if (data.startDate) {
             data.startDate = data.startDate.format("YYYY-MM-DD")
