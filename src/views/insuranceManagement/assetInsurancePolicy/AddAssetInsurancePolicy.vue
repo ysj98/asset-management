@@ -23,7 +23,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <!-- <a-col :span="8">
           <a-form-item>
             <div slot="label" class="label_tit">
               资产项目<span>(必填):</span>
@@ -36,9 +36,7 @@
               placeholder="请选择资产项目"
             ></a-select>
           </a-form-item>
-        </a-col>
-        </a-row>
-        <a-row :gutter="24">
+        </a-col> -->
           <a-col :span="8">
             <a-form-item>
               <div slot="label" class="label_tit">
@@ -53,6 +51,8 @@
               ></a-select>
             </a-form-item>
           </a-col>
+        </a-row>
+        <a-row :gutter="24">
           <a-col :span="8">
             <a-form-item>
               <div slot="label" class="label_tit">
@@ -78,9 +78,7 @@
               ></a-select>
             </a-form-item>
           </a-col>
-        </a-row>
-        <a-row :gutter="24">
-          <a-col :span="8">
+           <a-col :span="8">
             <a-form-item >
               <div slot="label" class="label_tit">
                 保险公司电话<span>(非必填):</span>
@@ -91,6 +89,8 @@
               />
             </a-form-item>
           </a-col>
+        </a-row>
+        <a-row :gutter="24">
           <a-col :span="8">
             <a-form-item>
               <div slot="label" class="label_tit">
@@ -118,12 +118,11 @@
             </a-form-item>
           </a-col>
         </a-row>
-
         <a-row>
           <a-col :span="24">
             <a-form-item label="备注">
               <a-textarea
-                maxLength="2000"
+                :maxLength="2000"
                 v-decorator="['remark', {initialValue: form.remark}]"
                 placeholder="请填写备注(不超过2000字)"
                 :autoSize="{ minRows: 3, maxRows: 5 }"
@@ -186,10 +185,12 @@
     </FormFooter>
     <AssetBundlePopover
       :changeType="true"
+      assetType="1"
       :organId="organId"
       queryType="1"
       ref="assetBundlePopover"
       @status="status"
+      :projectIdMultiple="true"
     ></AssetBundlePopover>
   </div>
 </template>
@@ -246,7 +247,7 @@ export default {
   created () {
     this.organName = this.$route.query.organName
     this.organId = this.$route.query.organId
-    this.getProjects()
+    // this.getProjects()
     this.getDictData()
     if(this.$route.query.insuranceId) {
       // 编辑
@@ -344,7 +345,7 @@ export default {
     },
     save () {
       let {insuranceCode, insuranceType, policyHolder, insuranceCompanyId, policyAmount, projectId, rangeValue, insurancePhone} = this.form.getFieldsValue()
-      if(!insuranceCode || !insuranceType || !policyHolder || !insuranceCompanyId || !projectId || !policyAmount || !rangeValue){
+      if(!insuranceCode || !insuranceType || !policyHolder || !insuranceCompanyId || !policyAmount || !rangeValue){ // !projectId
         this.$message.info("必填项不能为空");
         return
       }
@@ -366,6 +367,7 @@ export default {
         return
       }
       let data = this.form.getFieldsValue()
+      data.projectId = null
       data.insuranceBeginDate = this.rangeValue[0]
       data.insuranceEndDate = this.rangeValue[1]
       data.organId = this.organId
@@ -459,13 +461,14 @@ export default {
       this.$refs.assetBundlePopover.show = false;
     },
     addTheAsset () {
-      if (!this.form.projectId) {
-        this.$message.info("请先选择资产项目");
-        return;
-      }
+      // if (!this.form.projectId) {
+      //   this.$message.info("请先选择资产项目");
+      //   return;
+      // }
       this.$refs.assetBundlePopover.redactCheckedDataFn(
         this.checkedData,
-        this.form.getFieldsValue().projectId,
+        // this.form.getFieldsValue().projectId,
+        '',
         '1',
         this.tableObj.dataSource
       );
