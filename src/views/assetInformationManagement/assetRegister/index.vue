@@ -25,7 +25,7 @@
           <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
-          <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="createDateValue" format="YYYY-MM-DD"></SG-DatePicker>
+          <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="createDateValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -401,8 +401,8 @@ export default {
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: this.queryCondition.organId,        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
-        createDateS: this.createDateValue ? moment(this.createDateValue[0]).format('YYYY-MM-DD') : '',         // 开始创建日期
-        crateDateE: this.createDateValue ? moment(this.createDateValue[1]).format('YYYY-MM-DD') : '',          // 结束创建日期
+        createDateS: this.createDateValue ? this.createDateValue[0] ? moment(this.createDateValue[0]).format('YYYY-MM-DD') : '' : '',         // 开始创建日期
+        crateDateE: this.createDateValue ? this.createDateValue[1] ? moment(this.createDateValue[1]).format('YYYY-MM-DD') : '' : '',          // 结束创建日期
         registerOrderName: this.queryCondition.registerOrderName ? this.queryCondition.registerOrderName : null,                                // 登记单名称
       }
       this.$api.assets.getRegisterOrderListPage(obj).then(res => {
