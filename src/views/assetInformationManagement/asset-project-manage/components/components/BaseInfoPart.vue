@@ -59,8 +59,8 @@
         <a-col :span="colSpan">
           <a-form-item label="来源方式说明" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
-              :disabled="!isEdit" placeholder="请输入来源渠道"
-              v-decorator="['souceChannelType', {initialValue, rules: [{required: true, message: '请输入来源渠道'}, {max: 40, message: '最多40个字符'}]}]"
+              :disabled="!isEdit" placeholder="请输入来源方式说明"
+              v-decorator="['souceChannelType', {initialValue, rules: [{required: true, message: '请输入来源方式说明'}, {max: 40, message: '最多40个字符'}]}]"
             />
           </a-form-item>
         </a-col>
