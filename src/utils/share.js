@@ -128,13 +128,21 @@ export function handleTableTotalRow({ columns, dataSource, totalKeyArr,rowKey}){
     // 保证 rowKey 有值
     [rowKey]: Math.random()
   }
+  /**
+   * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
+   */
+  let intType = ['assetNum', 'buildNum', 'houseNum', 'buildCount', 'assetBuildCount', 'assetCount'];
+  let valueType = ['originalValue', 'marketValue'];
   columns.forEach((ele,index)=>{
     const keyStr = ele.dataIndex || ele.key
     if (totalKeyArr.includes(keyStr)){
       const data = dataSource.reduce((pre,cur)=>{
         return $math.simplify(`${pre}+${cur[keyStr]||0}`).toString()
       },0)
-      currentPageTotalData[keyStr] = isNaN(data) ? "" : Number(data)
+      currentPageTotalData[keyStr] = isNaN(data) ? 
+        "" : (intType.includes(keyStr) ? 
+          Number(data) : valueType.includes(keyStr) ?
+            Math.round(Number(data)*100)/100 : Math.round(Number(data)*10000)/10000)
     }
     if (index === 0){
       currentPageTotalData[keyStr] = '当前页-合计'

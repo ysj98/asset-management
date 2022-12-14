@@ -445,6 +445,7 @@
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.numList = numList.map(m => {
+              res.data[m.key] = Math.round(res.data[m.key]*10000)/10000
               return { ...m, value: res.data[m.key] }
             })
           }

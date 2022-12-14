@@ -195,37 +195,37 @@
         </span>
       </template> -->
       <template slot="area" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="transferOperationArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="selfUserArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="idleArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="occupationArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="otherArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="originalValue" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(Math.round(text*100)/100)}}
       </template>
       <template slot="marketValue" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(Math.round(text*100)/100)}}
       </template>
       <template slot="organFee" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(Math.round(text*100)/100)}}
       </template>
       <template slot="rentedArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
       <template slot="unRentedArea" slot-scope="text">
-       {{getFormat(text)}}
+       {{getFormat(decimalFormat(text))}}
       </template>
     </a-table>
     <div style="height: 70px;">
@@ -361,6 +361,10 @@
 const requiredColumn = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
 ]
+  // 面积最多保留4位小数
+  const decimalFormat = (area) => {
+    return Math.round(area*10000)/10000
+  }
   export default {
     name: 'index',
     components: { EditRemark, TableHeaderSettings, EditPledge, EditTableHeader, OverviewNumber, SearchContainer, ProvinceCityDistrict, OrganProjectBuilding, NoDataTip, tooltipText, EditTag},
@@ -528,6 +532,7 @@ const requiredColumn = [
       }
     },
     methods: {
+      decimalFormat,
       // 配置
     useForConfig () {
       this.$api.houseStatusConfig.querySettingByOrganId({organId: this.configOrganId}).then(res => {
@@ -891,20 +896,20 @@ const requiredColumn = [
         this.$api.assets.assetHousePageTotal(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
+            this.totalField.area = judgment.includes(data.totalArea) ? 0 : decimalFormat(data.totalArea)                            // 建筑面积
+            this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : decimalFormat(data.totalOperationArea)  // 运营
+            this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : decimalFormat(data.totalSelfUserArea)            // 自用
+            this.totalField.idleArea = judgment.includes(data.totalIdleArea) ? 0 : decimalFormat(data.totalIdleArea)                    // 闲置
+            this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : decimalFormat(data.totalOccupationArea)        // 占用
+            this.totalField.otherArea = judgment.includes(data.totalOtherArea) ? 0 : decimalFormat(data.totalOtherArea)                  // 其他
+            this.totalField.originalValue = judgment.includes(data.totalOriginalValue) ? 0 : Math.round(data.totalOriginalValue*100)/100          // 资产原值
+            this.totalField.marketValue = judgment.includes(data.totalMarketValue) ? 0 : Math.round(data.totalMarketValue*100)/100              // 最新估值
+            this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : decimalFormat(data.rentedArea)                     // 已租面积
+            this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : decimalFormat(data.unRentedArea)                  // 未租面积
+            this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
             for(let key in data){
               data[key] = getFormat(data[key])
             }
-            this.totalField.area = judgment.includes(data.totalArea) ? 0 : data.totalArea                            // 建筑面积
-            this.totalField.transferOperationArea = judgment.includes(data.totalOperationArea) ? 0 : data.totalOperationArea  // 运营
-            this.totalField.selfUserArea = judgment.includes(data.totalSelfUserArea) ? 0 : data.totalSelfUserArea            // 自用
-            this.totalField.idleArea = judgment.includes(data.totalIdleArea) ? 0 : data.totalIdleArea                    // 闲置
-            this.totalField.occupationArea = judgment.includes(data.totalOccupationArea) ? 0 : data.totalOccupationArea        // 占用
-            this.totalField.otherArea = judgment.includes(data.totalOtherArea) ? 0 : data.totalOtherArea                  // 其他
-            this.totalField.originalValue = judgment.includes(data.totalOriginalValue) ? 0 : data.totalOriginalValue          // 资产原值
-            this.totalField.marketValue = judgment.includes(data.totalMarketValue) ? 0 : data.totalMarketValue              // 最新估值
-            this.totalField.rentedArea = judgment.includes(data.rentedArea) ? 0 : data.rentedArea                     // 已租面积
-            this.totalField.unRentedArea = judgment.includes(data.unRentedArea) ? 0 : data.unRentedArea                  // 未租面积
-            this.tableObj.dataSource.push({assetName: '所有页-合计', assetHouseId: 'assetHouseId', ...this.totalField})
           } else {
             this.$message.error(res.message)
           }
@@ -918,7 +923,7 @@ const requiredColumn = [
           let res = r.data
           if (res && String(res.code) === '0') {
             return this.numList = this.numList.map(m => {
-              return { ...m, value: res.data[m.key] }
+              return { ...m, value: Math.round(res.data[m.key]*10000)/10000 }
             })
           }
           throw res.message || '查询资产视图面积使用统计出错'

@@ -292,8 +292,6 @@
               <a-col :span="24">
                 <a-form-item label="平面图" v-bind="formItemLayout2">
                   <UploadFile
-                    :customDownload="customDownload"
-                    :customUpload="customUpload"
                     :max="1"
                     v-model="planeFigurePath"
                   />
@@ -303,8 +301,6 @@
                 <a-form-item label="图片" v-bind="formItemLayout2">
                   <UploadFile
                     v-model="housePic"
-                    :customDownload="customDownload"
-                    :customUpload="customUpload"
                   />
                 </a-form-item>
               </a-col>
@@ -315,8 +311,6 @@
                   <UploadFile
                     :max="5"
                     :maxSize="51200"
-                    :customDownload="customDownload"
-                    :customUpload="customUpload"
                     type="all"
                     v-model="filepaths"
                   />

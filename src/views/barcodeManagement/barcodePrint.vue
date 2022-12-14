@@ -126,7 +126,7 @@ export default {
           const cEle = divBlock.querySelector('canvas')
           const iEle = divBlock.querySelector('img')
           const image = new Image(50, 50)
-          const reqUrl = `${configs.hostImg1}${url}`
+          const reqUrl = `${configs.hostImg}${url}`
           axiosGet(`${reqUrl}`, {}, false, { responseType: 'blob'}).then(value=>{
             image.src = URL.createObjectURL(value.data)
             image.onload = function (){

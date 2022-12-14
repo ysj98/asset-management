@@ -149,7 +149,7 @@ export default {
       this.organId = this.treeData[0].key;
       this.organName = this.treeData[0].title;
       this.orgtype = this.treeData[0].orgtype;
-      this.$emit("changeTree", this.organId, this.organName, this.orgtype);
+      // this.$emit("changeTree", this.organId, this.organName, this.orgtype);
     },
     // 校验组件必填
     validateForm(context = this) {
@@ -291,7 +291,6 @@ export default {
             };
           });
           this.setOrganIdMap(children);
-          console.log(this.organIdMap, "12345", children);
           this.treeData = children;
           // 默认选择第一个
           if (this.defaultDisplay) {

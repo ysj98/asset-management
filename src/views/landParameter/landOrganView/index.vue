@@ -14,7 +14,7 @@
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" :multiple="true" :treeCheckable="true"/>
+          <tree-select @changeTree="changeTree" style="width: 100%"/>
         </a-col>
         <a-col :span="5">
           <a-select
@@ -182,13 +182,23 @@ export default {
           if (res && String(res.code) === "0") {
             const { count, data } = res.data;
             let pageSum = {};
+            /**
+             * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
+             * 数量：landCount, 金额：originalValue marketValue, 
+             */
             data.forEach((item, index) => {
               item.key = index;
-              Object.keys(sumObj).forEach((key) => {
-                !pageSum[key] && (pageSum[key] = 0);
-                pageSum[key] += item[key] ? Number(item[key]) : 0;
-                pageSum[key] = Number(pageSum[key].toFixed(2));
-              });
+              Object.keys(sumObj).forEach(key => {
+                !pageSum[key] && (pageSum[key] = 0)
+                pageSum[key] += item[key] ?
+                  (['landCount'].includes(key) ?
+                    Number(item[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(item[key]*100)/100 : Math.round(item[key]*10000)/10000)
+                    : 0
+                if (index === data.length - 1) {
+                  pageSum[key] = ['buildNum'].includes(key) ?
+                    pageSum[key] : ['originalValue', 'marketValue'].includes(key) ? Math.round(pageSum[key]*100)/100 : Math.round(pageSum[key]*10000)/10000
+                }
+              })
             });
             this.tableObj.dataSource = data.length
               ? data.concat({
@@ -247,7 +257,10 @@ export default {
             let obj = {};
             let list = res.data || {};
             Object.keys(sumObj).forEach(
-              (key) => (obj[key] = list[key] ? list[key].toFixed(2) : 0)
+              (key) => (obj[key] = list[key] ?
+                (['landCount'].includes(key) ?
+                  list[key] : (['originalValue', 'marketValue'].includes(key) ?
+                    Math.round(list[key]*100)/100 : Math.round(list[key]*10000)/10000)) : 0)
             );
             this.sumObj = obj;
             dataSource.length &&
@@ -258,7 +271,7 @@ export default {
                 totalRow: true
               });
             return (this.numList = numList.map((m) => {
-              return { ...m, value: list[m.key] || 0 };
+              return { ...m, value: list[m.key] ? Math.round(list[m.key]*10000)/10000 : 0 };
             }));
           }
           throw res.message;

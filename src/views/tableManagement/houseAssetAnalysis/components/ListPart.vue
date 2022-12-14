@@ -438,11 +438,12 @@ export default {
       /*if you want to set scroll: { x: true }*/
       /*you need to add style .ant-table td { white-space: nowrap; }*/
       & /deep/ .ant-table {
-        .ant-table-thead th, td {
+        .ant-table-thead th {
           white-space: nowrap;
           text-align: center;
         }
         td {
+          text-align: center;
           padding-left: 0 !important;
           padding-right: 0 !important;
         }

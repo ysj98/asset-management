@@ -327,7 +327,7 @@
                 </a-col>
                 <a-col :span="24">
                     <a-form-item label="平面图" v-bind="formItemLayout2">
-                      <UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :maxSize="51200" :max="1"/>
+                      <UploadFile v-model="picPath" :maxSize="51200" :max="1"/>
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
@@ -336,18 +336,14 @@
                       v-model="buildPic"
                       :max="5"
                       :maxSize="51200"
-                      :customDownload="customDownload"
-                      :customUpload="customUpload"
                       />
                   </a-form-item>
                 </a-col>
                 <a-col :span="24">
                   <a-form-item label="附件" v-bind="formItemLayout2">
                     <UploadFile
-                      :customDownload="customDownload"
                       :max="5"
                       :maxSize="51200"
-                      :customUpload="customUpload"
                       type="all"
                       v-model="filepaths"/>
                   </a-form-item>
@@ -830,7 +826,7 @@ export default {
       // console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false
       data.communityId = data.communityId && data.communityId !== '-1' ? data.communityId : ''
-      this.queryCommunityTypeInfo(data.communityId)
+      // this.queryCommunityTypeInfo(data.communityId)
       // end
       let o = this.form.getFieldsValue()
       // console.log('表单数据=>', o)

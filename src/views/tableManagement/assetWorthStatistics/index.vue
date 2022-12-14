@@ -378,9 +378,10 @@
         let last = dataSource.pop()
         Object.keys(this.sumObj).forEach(key => {
           pageSum[key] = dataSource.reduce((pre, cur) => {
-            cur[key] = cur[key] ? cur[key] : 0
+            cur[key] = cur[key] ? Math.round(cur[key]*100)/100 : 0
             return  +format(add(bignumber(pre || 0), bignumber(cur[key] || 0)))
           }, 0)
+          pageSum[key] = pageSum[key] ? Math.round(pageSum[key]*100)/100 : 0
         })
         dataSource.push(last)
         let index = dataSource.length - 1
@@ -547,7 +548,7 @@
           totalObj = {dynamicData: [...valueOfYearCount], ...counts} // 数据统计
           if (res.data && String(res.data.code) === '0') {
             counts ? this.numList = this.numList.map(m => {
-              return { ...m, value: counts[m.key] }
+              return { ...m, value: counts[m.key] ? ['assetCount'].includes(m.key) ? counts[m.key] : Math.round(counts[m.key]*100)/100 : 0 }
             }) : false
           }
           this.overviewNumSpinning = false

@@ -14,7 +14,7 @@
           >导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch='true' :multiple="true" :treeCheckable="true"/>
+          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch='true'/>
         </a-col>
         <a-col :span="5">
           <a-select
@@ -249,8 +249,15 @@ export default {
           if (res && String(res.code) === "0") {
             let obj = {};
             let list = res.data || {};
+            /**
+             * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
+             * 数量：buildNum assetNum, 金额：originalValue marketValue, 
+             */
             Object.keys(sumObj).forEach(
-              (key) => (obj[key] = list[key] ? list[key].toFixed(2) : 0)
+              (key) => (obj[key] = list[key] ?
+                (['buildNum', 'assetNum'].includes(key) ?
+                  Number(list[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(list[key]*100)/100 : Math.round(list[key]*10000)/10000)
+                  : 0)
             );
             this.sumObj = obj;
             dataSource.length &&

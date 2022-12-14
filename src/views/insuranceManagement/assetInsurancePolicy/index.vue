@@ -13,7 +13,7 @@
         <div style="width: 75%; float: right; margin-right: 8px; text-align: left">
           <a-row :gutter="8">
             <a-col :span="12">
-              <organ-project-building v-model="organProjectBuildingValue" :isShowBuilding="false"/>
+              <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true" :isShowBuilding="false"/>
             </a-col>
             <a-col :span="6"><InsuranceCompany @companyClick="companyClick" ref="companyRef"/></a-col>
             <a-col :span="6"><a-input placeholder="保险单号/投保人" v-model="insuranceCode"/></a-col>
@@ -42,10 +42,10 @@
     <a-table
       v-bind="tableObj"
       class="custom-table td-pd10">
-      <template slot="policyAmount" slot-scope="text, record">
+      <template slot="policyAmount" slot-scope="text">
         <span>{{ getFormat(text) }}</span>
       </template>
-      <template slot="assetNum" slot-scope="text, record">
+      <template slot="assetNum" slot-scope="text">
         <span>{{ getFormat(text) }}</span>
       </template>
       <template slot="action" slot-scope="text, record">
@@ -155,7 +155,7 @@ export default {
   watch: {
     organProjectBuildingValue: {
       deep: true,
-      handler(newval,oldval){
+      handler(newval){
         this.init(newval.organId)
         // this.getDictData(newval.organId)
         this.$nextTick(() => {
@@ -170,7 +170,7 @@ export default {
       let {insuranceCode, insuranceCompanyIdList, insuranceStatusList, insuranceTypeList, organProjectBuildingValue: {projectId}} = this
       let data = {
         organId: organId,
-        projectId: projectId,
+        projectIds: projectId && projectId.toString(),
         insuranceCompanyIdList: insuranceCompanyIdList,
         insuranceCodeAndPolicyHolder: insuranceCode,
         insuranceStatusList: insuranceStatusList,
@@ -226,7 +226,7 @@ export default {
       console.log(val, 'val')
       this.paginationObj.pageLength = val.pageLength
       this.paginationObj.pageNo = val.pageNo
-      this.init(this.organId, true)
+      this.init(this.organProjectBuildingValue.organId, true)
     },
     handleClic (val, record) {
       // 删除

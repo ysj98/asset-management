@@ -770,7 +770,7 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data
           return this.numList = this.numList.map(m => {
-            return { ...m, value: data[m.key] || 0 }
+            return { ...m, value: data[m.key] ? ['assetCount'].includes(m.key) ? data[m.key] : Math.round(data[m.key]*10000)/10000:  0 }
           })
         } else {
           this.$message.error(res.data.message)

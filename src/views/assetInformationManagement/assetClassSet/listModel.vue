@@ -103,11 +103,11 @@ import { statusOptions, pageTypeMap, typeMap } from "./child/dict";
 import createClassModal from "./child/createClassModal";
 import Tools from "@/utils/utils";
 const columns = [
-  {
-    title: "分类编号",
-    dataIndex: "professionId",
-    width: 160
-  },
+  // {
+  //   title: "分类编号",
+  //   dataIndex: "professionId",
+  //   width: 160
+  // },
   {
     title: "所属机构",
     dataIndex: "organName",
@@ -168,7 +168,8 @@ const paginator = {
 const allStyle = `width: 150px; marginLeft: 10px;`;
 export default {
   props: {
-    type: {default: ''}
+    type: {default: ''},
+    curTab: { default: ''}
   },
   components: {
     segiIcon,
@@ -199,6 +200,20 @@ export default {
       changePower: false, // 状态改变权限
       deletePower: false // 删除权限
     };
+  },
+  watch: {
+    curTab(val) {
+      if (val === 'house') {
+        this.columns = JSON.parse(JSON.stringify(columns));
+      } else {
+        let idColumns = {
+          title: "分类编号",
+          dataIndex: "professionId",
+          width: 160
+        };
+        this.columns = [idColumns, ...columns];
+      }
+    }
   },
   mounted() {
     this.handlePower();
