@@ -78,16 +78,16 @@
         type: String,
         default: () => 'default'
       },
-      // 多选/单选模式
+      // 资产项目和楼栋列表 多选/单选模式
       mode: {
         type: String,
         default: () => 'default'
       },
-      // true 多选
+      // 组织机构 多选
       multiple: {
         type: Boolean,
         default: false
-      }
+      },
     },
     data () {
       return {
