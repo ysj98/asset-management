@@ -24,9 +24,9 @@
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
           <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <!-- <div class="box">
-          <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" :defaultValue="defaultValue" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
-        </div> -->
+        <div class="box">
+          <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="createDateValue" format="YYYY-MM-DD"></SG-DatePicker>
+        </div>
       </div>
     </SG-SearchContainer>
     <!--数据总览-->
@@ -180,7 +180,7 @@ export default {
         crateDateE: '',            // 结束创建日期
         registerOrderName: ''      // 登记单名称/编码
       },
-      defaultValue: [moment([moment().year(), '0', '1']), moment(new Date())], // 查询起始时间默认为今年1月1号
+      createDateValue: null, // 去掉时间的默认值 [moment([moment().year(), '0', '1']), moment(new Date())],  查询起始时间默认为今年1月1号
       count: '',
       assetTypeData: [
         {
@@ -401,8 +401,8 @@ export default {
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
         organId: this.queryCondition.organId,        // 组织机构id
         assetTypes: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',  // 资产类型id(多个用，分割)
-        createDateS: '',         // 开始创建日期
-        crateDateE: '',          // 结束创建日期
+        createDateS: this.createDateValue ? moment(this.createDateValue[0]).format('YYYY-MM-DD') : '',         // 开始创建日期
+        crateDateE: this.createDateValue ? moment(this.createDateValue[1]).format('YYYY-MM-DD') : '',          // 结束创建日期
         registerOrderName: this.queryCondition.registerOrderName ? this.queryCondition.registerOrderName : null,                                // 登记单名称
       }
       this.$api.assets.getRegisterOrderListPage(obj).then(res => {
