@@ -18,7 +18,7 @@
       <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
         <!-- <SG-Button slot="col-l" type="primary" :disabled="selectedRowKeys.length <= 0">导出</SG-Button> -->
         <div slot="col-r">
-          <a-select :style="allStyle" :disabled="true" placeholder="全部资产项目" v-model="selecData.projectId">
+          <a-select :style="allStyle" :disabled="!projectIdMultiple" placeholder="全部资产项目" v-model="selecData.projectId" :mode="projectIdMultiple ? 'multiple': 'default'" :maxTagCount="1" :maxTagTextLength="8">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
@@ -133,6 +133,10 @@ export default {
     judgmentType: {
       type: String,
       default: ''
+    },
+    projectIdMultiple: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -165,7 +169,7 @@ export default {
         objectType: '',  // 资产类别
         assetNameCode: '',  // 资产名称/编码
         queryType: this.queryType,   // 查询类型 1 资产变动，2 资产清理 3权属登记
-        projectId: '',  // 资产项目ID
+        projectId: undefined,  // 资产项目ID
         pageSize: 10,
         pageNum: 1
       },
@@ -235,7 +239,7 @@ export default {
 
       let flag = false // 搜索条件有变化
       // 项目变化
-      if (this.selecData.projectId !== projectId) {
+      if (projectId && this.selecData.projectId !== projectId) {
         this.selecData.projectId = projectId
         flag = true
       }
@@ -244,7 +248,9 @@ export default {
       if (typeof assetType !== 'undefined' && this.selecData.assetType !== assetType) {
         flag = true
         this.selecData.assetType = assetType
-        this.assetTypeDisabled = true
+        if (!this.projectIdMultiple) {
+          this.assetTypeDisabled = true
+        }
         this.assetTypeFn()
       }
       // 是否第一次加载
@@ -361,6 +367,10 @@ export default {
         pageSize: this.selecData.pageSize,
         pageNum: this.selecData.pageNum
       }
+      if (this.projectIdMultiple) {
+        obj.projectIds = obj.projectId && obj.projectId.toString()
+        delete obj.projectId
+      }
       if (this.changeType && !obj.assetType) {
         this.loading=false
         return
@@ -456,6 +466,9 @@ export default {
   }
   .sg-footer {
     border-top: none;
+  }
+ .ant-select:first-of-type{
+    width: 160px !important;
   }
 }
 </style>
