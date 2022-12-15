@@ -18,7 +18,8 @@
       <Cephalosome :rightCol="23" :leftCol="1" class="cephalosome" rowHeight="48px">
         <!-- <SG-Button slot="col-l" type="primary" :disabled="selectedRowKeys.length <= 0">导出</SG-Button> -->
         <div slot="col-r">
-          <a-select :style="allStyle" :disabled="!projectIdMultiple" placeholder="全部资产项目" v-model="selecData.projectId" :mode="projectIdMultiple ? 'multiple': 'default'" :maxTagCount="1" :maxTagTextLength="8">
+          <a-select :style="allStyle" :filterOption="filterOption" :disabled="!projectIdMultiple" placeholder="全部资产项目" 
+          v-model="selecData.projectId" :mode="projectIdMultiple ? 'multiple': 'default'" :maxTagCount="1" :maxTagTextLength="8">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
           <a-select :style="allStyle" placeholder="全部资产类型"  v-model="selecData.assetType" @change="assetTypeFn" :disabled="assetTypeDisabled">
@@ -199,6 +200,12 @@ export default {
     }
   },
   methods: {
+    // 搜索过滤选项
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      )
+    },
     // 选中的
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
