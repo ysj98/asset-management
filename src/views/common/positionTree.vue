@@ -249,6 +249,9 @@ export default {
         upPositionId: treeNode.dataRef.id,
         positionType: '1',
         organId:this.organId,
+        pageNo: 1,
+        pageLength: 300,
+
       }
       return this.queryPositionListByParId(data, treeNode.dataRef.key)
     },
