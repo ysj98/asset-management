@@ -13,7 +13,7 @@
         <div style="width: 75%; float: right; margin-right: 8px; text-align: left">
           <a-row :gutter="8">
             <a-col :span="12">
-              <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true" :isShowBuilding="false"/>
+              <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :isShowBuilding="false"/>
             </a-col>
             <a-col :span="6"><InsuranceCompany @companyClick="companyClick" ref="companyRef"/></a-col>
             <a-col :span="6"><a-input placeholder="保险单号/投保人" v-model="insuranceCode"/></a-col>
@@ -42,6 +42,22 @@
     <a-table
       v-bind="tableObj"
       class="custom-table td-pd10">
+      <template slot="organName" slot-scope="text">
+        <a-tooltip>
+          <template slot="title">
+           {{text}}
+          </template>
+          <span>{{ text }}</span>
+        </a-tooltip>
+      </template>
+      <template slot="projectName" slot-scope="text">
+        <a-tooltip>
+          <template slot="title">
+            {{text}}
+          </template>
+          <span>{{ text }}</span>
+        </a-tooltip>
+      </template>
       <template slot="policyAmount" slot-scope="text">
         <span>{{ getFormat(text) }}</span>
       </template>
@@ -136,8 +152,8 @@ export default {
         scroll:{x: '100%'},
         columns: [
           { title: '保险单号', dataIndex: 'insuranceCode', width: 180 },
-          { title: '所属机构', dataIndex: 'organName', width: 150 },
-          { title: '资产项目', dataIndex: 'projectName', width: 150 },
+          { title: '所属机构', dataIndex: 'organName', width: 150 , ellipsis: true, scopedSlots: {customRender: 'organName'}},
+          { title: '资产项目', dataIndex: 'projectName', width: 150, ellipsis: true , scopedSlots: {customRender: 'projectName'}},
           { title: '投保人', dataIndex: 'policyHolder', width: 120 },
           { title: '保险类型', dataIndex: 'insuranceTypeName', width: 150 },
           { title: '保险公司', dataIndex: 'insuranceCompanyName', width: 120 },
@@ -292,9 +308,6 @@ export default {
     span{
       padding-left: 8px;
     }
-  }
-  .custom-table {
-    padding-bottom: 70px;
   }
   /deep/.overview_num .current_selected:before {
     border: 0 !important;
