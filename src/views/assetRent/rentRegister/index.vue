@@ -119,6 +119,7 @@
         </a-select>
         <SG-DatePicker
           :allowClear="false"
+          :defaultValue="signDate"
           label="签订日期"
           style="width: 200px"
           pickerType="RangePicker"
@@ -127,6 +128,7 @@
         ></SG-DatePicker>
         <SG-DatePicker
           :allowClear="false"
+          :defaultValue="rentDate"
           label="出租日期"
           style="width: 200px; float: right"
           pickerType="RangePicker"

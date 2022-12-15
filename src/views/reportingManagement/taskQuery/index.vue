@@ -31,7 +31,7 @@
         </a-select>
         <div class="box">
           <!-- <segi-range-picker label="执行日期" :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]" @dateChange="onDateChange"></segi-range-picker> -->
-          <SG-DatePicker :allowClear="false" label="执行日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+          <SG-DatePicker :allowClear="false" label="执行日期" style="width: 200px;"  pickerType="RangePicker" :defaultValue="defaultValue" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>

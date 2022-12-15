@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产运营信息
  * @Date: 2020-03-06 11:25:35
- * @LastEditTime: 2022-06-21 17:08:48
+ * @LastEditTime: 2022-12-15 14:19:56
  -->
 <template>
   <div>
@@ -30,7 +30,7 @@
               notFoundContent="没有查询到数据"
             />
             <div class="box">
-              <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+              <SG-DatePicker :allowClear="false" :defaultValue="defaultValue" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
             <!-- 资产名称或编码 -->
             <a-input

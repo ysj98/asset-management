@@ -127,6 +127,7 @@
         ></a-select>
         <SG-DatePicker
           :allowClear="false"
+          :defaultValue="repairDate"
           label="维修日期"
           style="width: 200px"
           pickerType="RangePicker"

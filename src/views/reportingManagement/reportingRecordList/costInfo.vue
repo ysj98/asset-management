@@ -1,7 +1,7 @@
 <!--
  * @Description: 资产费用信息
  * @Date: 2020-03-06 11:27:16
- * @LastEditTime: 2022-06-21 17:23:17
+ * @LastEditTime: 2022-12-15 14:17:37
  * @LastEditTime: 2020-04-29 17:58:35
  -->
 <template>
@@ -31,7 +31,7 @@
           <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
         <div class="box">
-          <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+          <SG-DatePicker :allowClear="false" :defaultValue="defaultValue" label="填报日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>

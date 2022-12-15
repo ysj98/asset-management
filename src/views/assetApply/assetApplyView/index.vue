@@ -77,7 +77,7 @@
         ></a-select>
         <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="false"></treeSelect>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" :defaultValue="applyValue" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
             <a-input placeholder="领用单编号" v-model="queryCondition.receiveName" :maxLength="30"></a-input>

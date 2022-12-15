@@ -1,7 +1,7 @@
 <!--
  * @Description:
  * @Date: 2020-02-26 12:45:49
- * @LastEditTime: 2020-04-29 17:42:56
+ * @LastEditTime: 2022-12-15 11:43:39
  -->
 <!--
 呈报记录页面
@@ -88,7 +88,7 @@
               notFoundContent="没有查询到数据"
             />
             <div class="box">
-              <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+              <SG-DatePicker :allowClear="false" label="填报日期" style="width: 200px;text-align: left;"  pickerType="RangePicker" :defaultValue="defaultValue" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
             </div>
             <!-- 全部数据状态 -->
             <a-select

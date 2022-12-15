@@ -60,7 +60,7 @@
           @select="changeAssetClassify"
         ></a-select>
         <div class="box">
-          <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+          <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="登记单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         <ProvinceCityDistrict
@@ -173,7 +173,7 @@ export default {
       organId: '',
       allStyle: 'width: 150px; margin-right: 10px;',
       approvalStatusData: [...approvalStatusData],
-      defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
+      defaultValue: [null, null],
       tableData: [],
       count: '',
       noPageTools: false,
@@ -272,8 +272,8 @@ export default {
         objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
         sourceModeList: this.alljudge(this.queryCondition.sourceModes),   // 来源方式
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
-        createTimeStart: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
-        createTimeEnd: moment(this.defaultValue[1]).format('YYYY-MM-DD'),          // 结束创建日期
+        createTimeStart: this.defaultValue[0] ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',         // 开始创建日期
+        createTimeEnd: this.defaultValue[1] ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',          // 结束创建日期
         registerOrderNameOrId: this.queryCondition.registerOrderNameOrId,                                // 登记单编码
         city: this.provinces.city ? this.provinces.city : '',               // 市
         province: this.provinces.province ? this.provinces.province : '',   // 省

@@ -55,6 +55,7 @@
           </a-select>
           <SG-DatePicker
             :allowClear="false"
+            :defaultValue="signDate"
             label="收益账期"
             style="width: 200px; margin-right: 10px"
             pickerType="RangePicker"
