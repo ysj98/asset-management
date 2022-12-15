@@ -16,3 +16,7 @@ export function queryParamsConfigDetail(data) {
 export function getDataFromBpmWorkFlow(data) {
   return axiosPost(paramsConfig.getDataFromBpmWorkFlow, data);
 }
+/* 项目信息设置 获取货币单位以及面积单位 */
+export function getResourceConfig(data) {
+  return axiosPost(paramsConfig.getResourceConfig, data, true);
+}

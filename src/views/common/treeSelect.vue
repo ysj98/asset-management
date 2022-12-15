@@ -188,6 +188,7 @@ export default {
           return;
         }
         this.organId = selectedKeys.toString();
+        // 选中的组织机构名称
         // this.organName = this.getOrganName(this.treeData, selectedKeys).toString();
         this.organName = "";
       } else {
@@ -201,6 +202,8 @@ export default {
           this.validateForm();
         });
       }
+      // 获取货币单位以及面积单位 项目信息设置页面根据项目配置
+      this.getResourceConfig(this.organId);
       this.$emit("changeTree", this.organId, this.organName, this.orgtype);
     },
     // 下载下级数据
@@ -210,12 +213,13 @@ export default {
           resolve();
           return;
         }
-        // 组织机构系统设置统一查询接口
+        // 是否过滤部门节点 （资产参数配置页面）
         this.$api.paramsConfig.queryParamsConfigDetail({ organId: treeNode.dataRef.key, serviceType: 1010 }).then((res) => {
           if (res.data.code === "0") {
             const { isValid } = res.data.data;
             if (Number(isValid) === 1) {
               if (this.mapTypeFilter.length) {
+                // 如果prop传入的过滤参数不包含部门，则加上部门
                 if (!this.mapTypeFilter.includes("7")) {
                   this.mapTypeFilter = this.mapTypeFilter + ",7";
                 }
@@ -223,6 +227,7 @@ export default {
                 this.mapTypeFilter = "7";
               }
             } else {
+              // 如果关闭了过滤部门设置 传入prop包含部门也剔除掉
               if (this.mapTypeFilter.length && this.mapTypeFilter.includes("7")) {
                 this.mapTypeFilter = this.mapTypeFilter
                   .split(",")
@@ -261,7 +266,7 @@ export default {
       });
     },
     // 根据用户加载组织机构
-    loadOrganTree(organTopId, organTopName) {
+    loadOrganTree() {
       this.treeData = [];
       this.expandedKeys = [];
       let form = {
@@ -273,14 +278,6 @@ export default {
         this.loading = false;
         if (+res.data.code === 0) {
           let data = res.data.data;
-          if (organTopId && organTopName) {
-            data = [
-              {
-                organId: organTopId,
-                name: organTopName,
-              },
-            ];
-          }
           let children = data.map((item) => {
             return {
               title: item.organName || item.name,
@@ -366,6 +363,27 @@ export default {
       }
       return result;
     },
+    // 项目信息设置 获取货币单位以及面积单位
+    async getResourceConfig(organId) {
+      // 多选时，只要选中的组织机构中包含人民币单位直接显示人民币（元）包含平方米直接显示（m²）
+      // if (this.multiple) {
+      // }
+      // const {data:{code,data}} = await this.$api.paramsConfig.getResourceConfig({organId})
+      const data = {
+        resourceConfigId: "1014",
+        organId: "67",
+        topOrganId: "",
+        currencyId: "1",
+        areaUnitId: "1",
+        configFlowList: [],
+      };
+      const { currencyId } = data;
+      if (currencyId === 1) {
+        localStorage.setItem("lang", "zh");
+      } else if (currencyId === 2) {
+        localStorage.setItem("lang", "hk");
+      }
+    },
   },
   created() {},
   mounted() {
@@ -377,7 +395,7 @@ export default {
     }
   },
   watch: {
-    organId(nVal,oVal) {
+    organId(nVal, oVal) {
       if (nVal === oVal || !nVal) return;
       this.$emit("input", nVal);
     },
