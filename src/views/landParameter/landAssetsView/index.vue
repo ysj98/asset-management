@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-12-05 18:37:03
+ * @LastEditTime: 2022-12-16 10:49:49
  * @Description: 土地资产视图
 -->
 <template>
@@ -709,11 +709,11 @@ export default {
       obj.pageSize = 1
       this.$api.land.assetViewTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
+          this.overviewNumSpinning = false
           let data = res.data.data
           this.numList = this.numList.map(m => {
             return { ...m, value: data[m.key] ? ['assetCount'].includes(key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
           })
-          this.overviewNumSpinning = false
         } else {
           this.$message.error(res.data.message)
           this.overviewNumSpinning = false
