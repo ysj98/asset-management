@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-12-16 10:49:49
+ * @LastEditTime: 2022-12-16 11:10:34
  * @Description: 土地资产视图
 -->
 <template>
@@ -711,8 +711,9 @@ export default {
         if (Number(res.data.code) === 0) {
           this.overviewNumSpinning = false
           let data = res.data.data
+          console.log(1111111, data)
           this.numList = this.numList.map(m => {
-            return { ...m, value: data[m.key] ? ['assetCount'].includes(key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
+            return { ...m, value: data[m.key] ? ['assetCount'].includes(m.key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
           })
         } else {
           this.$message.error(res.data.message)
