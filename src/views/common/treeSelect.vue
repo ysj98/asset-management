@@ -295,6 +295,7 @@ export default {
             this.organName = this.treeData[0].title;
             this.orgtype = this.treeData[0].orgtype;
             this.$emit("changeTree", this.organId, this.organName, this.orgtype);
+            this.getResourceConfig(this.organId)
           }
         }
       });
@@ -365,6 +366,7 @@ export default {
     },
     // 项目信息设置 获取货币单位以及面积单位
     async getResourceConfig(organId) {
+      console.log("获取货币单位以及面积单位");
       // 多选时，只要选中的组织机构中包含人民币单位直接显示人民币（元）包含平方米直接显示（m²）
       // if (this.multiple) {
       // }
@@ -377,12 +379,17 @@ export default {
         areaUnitId: "1",
         configFlowList: [],
       };
-      const { currencyId } = data;
-      if (currencyId === 1) {
-        localStorage.setItem("lang", "zh");
-      } else if (currencyId === 2) {
-        localStorage.setItem("lang", "hk");
+      if (organId !== "1000279") {
+        data.currencyId = "2";
+        data.areaUnitId = "2";
       }
+      const { currencyId, areaUnitId } = data;
+      const lang = {
+        monetaryUnit: currencyId === "1" ? "元" : "港币",
+        areaUnit: areaUnitId === "1" ? "m²" : "ft²",
+      };
+      localStorage.setItem("lang", JSON.stringify(lang));
+      this.$textReplace()
     },
   },
   created() {},

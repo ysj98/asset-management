@@ -662,7 +662,6 @@ export default {
       this.queryCondition.houseId = "";
       this.queryCondition.unitId = "";
       this.queryCondition.buildId = "";
-      console.log("监听公司改变");
       if (!organId) {
         return;
       }
@@ -812,7 +811,7 @@ export default {
           }
         },
         () => {
-          this.DE_Loding(loadingName).then(res => {
+          this.DE_Loding(loadingName).then(() => {
             this.$SG_Message.error("导入失败！");
           });
         }
