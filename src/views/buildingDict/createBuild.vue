@@ -802,7 +802,6 @@ export default {
         this.addressObj.regionName = this.transformArea()
         this.lngAndlatData = `${data.longitude}-${data.latitude}`
       })
-      this.organNameMain = data.organName
       let {organId:organTopId, organName:organTopName}  = await queryTopOrganByOrganID(
         {
           nOrgId: data.organId,
@@ -813,7 +812,7 @@ export default {
       this.queryNodesByRootCode('30')
       this.queryNodesByRootCode('60')
       this.queryNodesByRootCode('20')
-      this.$refs.organTopRef.manageRootData([{organId: organTopId, organName: organTopName}])
+      // this.$refs.organTopRef.manageRootData([{organId: data.organId, organName: data.organName}])
       this.getLandTheNo()
       // console.log('dfsdfsdf')
       // 在获取 所属机构id 之后 获取项目 暂时和所属机构一样只能选同一 一级机构下的
@@ -822,6 +821,7 @@ export default {
       }catch (e) {
         console.error(e)
       }
+      this.organNameMain = data.organName
       // 处理项目是否可以选择
       // console.log('楼栋数据=>', data)
       this.communityIdDisabled = data.communityId && data.communityId !== '-1' ? true : false

@@ -58,7 +58,7 @@ export default {
       type: [String, Number],
     },
     // 编辑给回来展示的
-    name: {
+    defaultOrganName: {
       type: String,
       default: "",
     },
@@ -369,7 +369,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.organName = this.name;
+    this.organName = this.defaultOrganName;
     if (this.rootData.length) {
       this.manageRootData(this.rootData);
     } else {
@@ -381,8 +381,8 @@ export default {
       if (nVal === oVal || !nVal) return;
       this.$emit("input", nVal);
     },
-    name() {
-      this.organName = this.name;
+    defaultOrganName() {
+      this.organName = this.defaultOrganName;
     },
     authorizedUserId(val) {
       console.log(val);

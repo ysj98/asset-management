@@ -17,10 +17,10 @@
                       @changeTree="changeTree"
                       :typeFilter="typeFilter"
                       placeholder='请选择所属机构'
-                      :defaultOrganName="formInfo.topOrganName"
+                      :defaultOrganName="formInfo.organName"
                       :style="allWidth"
                       :allowClear="false"
-                      v-model="formInfo.topOrganId"
+                      v-model="formInfo.organId"
                   >
                   </tree-select>
                 </a-form-model-item>
