@@ -17,10 +17,10 @@
                       @changeTree="changeTree"
                       :typeFilter="typeFilter"
                       placeholder='请选择所属机构'
-                      :defaultOrganName="formInfo.organName"
+                      :defaultOrganName="formInfo.topOrganName"
                       :style="allWidth"
                       :allowClear="false"
-                      v-model="formInfo.organId"
+                      v-model="formInfo.topOrganId"
                   >
                   </tree-select>
                 </a-form-model-item>
@@ -294,6 +294,7 @@ export default {
       equipmentId:[{ required: true, message: '请选择设备设施分类'}],
       equipmentInstName:[{ required: true, message: '请输入设备设施名称'}],
       equipmentInstCode: [{ required: true, message: '请输入设备设施编码'}],
+      communityId: [{ required: false, message: '请选择运营项目'}],
     },
     allWidth: 'width: 100%;'
   }),
