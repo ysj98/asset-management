@@ -51,10 +51,10 @@
       <div slot="form" class="formCon">
         <treeSelect @changeTree="changeLeaf"  placeholder='全部领用部门' :allowClear="true" :style="allStyle" :default="false"></treeSelect>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="归还日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" :defaultValue="applyValue" label="归还日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <SG-DatePicker :allowClear="false" label="提交日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
+            <SG-DatePicker :allowClear="false" :defaultValue="createValue" label="提交日期" style="width: 200px;"  pickerType="RangePicker" v-model="createValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>

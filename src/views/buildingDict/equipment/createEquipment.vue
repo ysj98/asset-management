@@ -294,6 +294,7 @@ export default {
       equipmentId:[{ required: true, message: '请选择设备设施分类'}],
       equipmentInstName:[{ required: true, message: '请输入设备设施名称'}],
       equipmentInstCode: [{ required: true, message: '请输入设备设施编码'}],
+      communityId: [{ required: false, message: '请选择运营项目'}],
     },
     allWidth: 'width: 100%;'
   }),

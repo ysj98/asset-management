@@ -82,7 +82,7 @@
           @select="changeAssetSubject"
         ></a-select>
         <!--<segi-range-picker label="提交日期" style="margin-right: 10px;" :defaultValue="[moment(beginDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')]" :canSelectToday="true" @dateChange="onDateChange"></segi-range-picker>-->
-        <SG-DatePicker label="提交日期" pickerType="RangePicker" style="width: 200px;" :defaultValue="[moment(beginDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD')]" @change="onDateChange"></SG-DatePicker>
+        <SG-DatePicker label="提交日期" pickerType="RangePicker" style="width: 200px;" :defaultValue="[moment(beginDate), moment(endDate)]" format="YYYY-MM-DD" @change="onDateChange"></SG-DatePicker>
         <SG-DatePicker label="入账日期" pickerType="RangePicker" style="width: 200px;" @change="onEntryDateChange"></SG-DatePicker>
       </div>
     </SG-SearchContainer>

@@ -13,41 +13,38 @@
         >新增资产项目</SG-Button>
       </div>
       <div slot="contentForm" style="text-align: left;width: 100%; position: absolute;display:contents">
-        <a-row :gutter="10" style="width: 100%">
-          <a-col :span="6" style="text-align: left; width: 20%">
+        <a-row :gutter="8" style="width: 100%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <tree-select @changeTree="changeTree" style="width: 100%;" placeholder='请选择组织机构' :allowClear="false"/>
           </a-col>
-          <a-col :span="6"  style="text-align: left; width: 20%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <a-select v-model="approvalStatusList" mode="multiple" :maxTagCount="2" :options="$addTitle(statusOptions)" placeholder="请选择项目状态" style="width: 100%;"/>
           </a-col>
-          <a-col :span="6" style="text-align: left; width: 20%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <a-select v-model="sourceTypeList" mode="multiple" :maxTagCount="1" placeholder="请选择来源方式" style="width: 100%;" :options="$addTitle(sourceTypeOptions)"/>
           </a-col>
-          <a-col :span="6" style="text-align: left; width: 10%">
+          <a-col :span="5" style="text-align: left; width: 20%">
+            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 100%;" :options="$addTitle(takeOverOptions)"/>
+          </a-col>
+          <a-col :span="4" style="text-align: left; width: 10%">
             <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
           </a-col>
         </a-row>
         <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="6" style="text-align: left; width: 20%">
-            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 100%;" :options="$addTitle(takeOverOptions)"/>
-          </a-col>
-          <a-col :span="6" style="text-align: left; width: 20%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 100%;" :options="$addTitle(operateOptions)"/>
           </a-col>
-          <a-col :span="6" style="text-align: left; width: 20%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <a-input placeholder="请输入资产项目名称" v-model="projectName"/>
           </a-col>
-          
-        </a-row>
-        <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="6" style="text-align: left; width: 20%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <a-date-picker @change="onChangeStart" placeholder="请选择创建开始日期" style="width: 100%;"/>
           </a-col>
-          <a-col :span="6" style="text-align: left; width: 20%">
+          <a-col :span="5" style="text-align: left; width: 20%">
             <a-date-picker @change="onChangeEnd" placeholder="请选择创建结束日期" style="width: 100%;"/>
           </a-col>
-          <a-col :span="6" style="text-align: left">
+          <a-col :span="4" style="text-align: left; width: 20%">
             <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
           </a-col>
         </a-row>
@@ -536,6 +533,9 @@
       cursor: pointer;
       margin-right: 12px;
       white-space: nowrap;
+    }
+    /deep/.search-content{
+      overflow: visible;
     }
   }
 </style>

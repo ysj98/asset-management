@@ -378,7 +378,8 @@ export default {
         dataSource: [],
         loading: false,
         totalCount: 0
-      }
+      },
+      tableList: 0
     };
   },
   watch: {
@@ -535,6 +536,7 @@ export default {
                 ...item
               };
             });
+            this.tableList = this.table.dataSource.length
             this.table.totalCount = res.data.paginator.totalCount || 0;
             this.queryHouseTotal(data)
           }
@@ -554,7 +556,7 @@ export default {
           data.shareArea =  getFormat(data.shareAreaTotal, '') || "-"
           data.useArea =  getFormat(data.useAreaTotal, '') || "-"
           data.houseId = '合计'
-          this.table.dataSource.push(data)
+          this.$set(this.table.dataSource, this.tableList, data)
         }
       });
     },

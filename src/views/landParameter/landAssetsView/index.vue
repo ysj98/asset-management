@@ -1,7 +1,7 @@
 <!--
  * @Author: LW
  * @Date: 2020-07-24 09:59:14
- * @LastEditTime: 2022-12-05 18:37:03
+ * @LastEditTime: 2022-12-16 16:09:40
  * @Description: 土地资产视图
 -->
 <template>
@@ -372,7 +372,8 @@ export default {
         otherArea: '',              // 其他
         originalValue: '',          // 资产原值
         marketValue: ''             // 最新估值
-      }
+      },
+      listLength: 0,
     }
   },
   computed: {
@@ -655,6 +656,9 @@ export default {
     query (str) {
       this.loading = true
       let obj = this.initQueryReqParams()
+      if (str !== 'asset') {
+        this.assetViewTotal(obj)
+      }
       this.$api.land.assetView(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
@@ -664,19 +668,15 @@ export default {
               item.ownershipStatusName = String(item.ownershipStatus) ? this.ownershipStatusObj[String(item.ownershipStatus)] : ''
             })
             this.tableData = [...data]
+            this.listLength = data.length;
             this.count = res.data.data.count
             this.totalFn(obj)
           } else {
             this.tableData = []
             this.count = 0
           }
-          this.loading = false
-          if (str !== 'asset') {
-            this.assetViewTotal(obj)
-          }
         } else {
           this.$message.error(res.data.message)
-          this.loading = false
         }
       })
     },
@@ -693,11 +693,14 @@ export default {
           this.totalField.otherArea = judgment.includes(data.otherArea) ? 0 : decimalFormat(data.otherArea)              // 其他
           this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : Math.round(data.originalValue*100)/100          // 资产原值
           this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : Math.round(data.marketValue*100)/100             // 最新估值
-          this.tableData.push({assetName: '所有页-合计', key: 'key', ...this.totalField})
+          let obj = { assetName: '所有页-合计', key: 'key', ...this.totalField };
+          this.$set(this.tableData, this.listLength, obj)
           for(let key in data){
             data[key] = getFormat(data[key])
           }
+          this.loading = false
         } else {
+          this.loading = false
           this.$message.error(res.message)
         }
       })
@@ -709,11 +712,11 @@ export default {
       obj.pageSize = 1
       this.$api.land.assetViewTotal(obj).then(res => {
         if (Number(res.data.code) === 0) {
+          this.overviewNumSpinning = false
           let data = res.data.data
           this.numList = this.numList.map(m => {
-            return { ...m, value: data[m.key] ? ['assetCount'].includes(key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
+            return { ...m, value: data[m.key] ? ['assetCount'].includes(m.key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
           })
-          this.overviewNumSpinning = false
         } else {
           this.$message.error(res.data.message)
           this.overviewNumSpinning = false

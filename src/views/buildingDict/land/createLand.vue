@@ -1040,7 +1040,7 @@ export default {
                   nOrganId: data.organId,
                 }
               )
-              this.$refs.organTopRef.manageRootData([{organId: organTopId, organName: organTopName}])
+              // this.$refs.organTopRef.manageRootData([{organId: organTopId, organName: organTopName}])
               await this.queryCommunityListByOrganId(organTopId)
               this.organNameMain = data.organName
               this.form.setFieldsValue(values)
