@@ -1466,7 +1466,7 @@ export const paramsConfig = {
   // 获取Bpm工作流公共接口
   getDataFromBpmWorkFlow:"/ams/approval/getDataFromBpmWorkFlow",
   // 项目信息设置 获取货币单位以及面积单位
-  getResourceConfig: "/basic-data-api/rest-api/v1/resourceConfig/getResourceConfigV2",
+  getResourceConfig: "/ams/publicApi/getResourceConfig",
 };
 
 // 资产编码规则

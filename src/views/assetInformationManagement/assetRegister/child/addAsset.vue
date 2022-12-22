@@ -506,6 +506,9 @@ export default {
     this.debounceMothed() // 获取楼栋列表
     this.getAssetSourceOptions() // 获取资产来源下拉列表
     this.ownershipFn() // 获取权属类型
+    this.$nextTick(() => {
+      this.$textReplace()
+    })
   },
   methods: {
     moment,

@@ -140,6 +140,9 @@ export default {
   methods: {
     selectTabChange (val) {
       this.selectTabValue = val
+      this.$nextTick(() => {
+        this.$textReplace()
+      })
     },
     // 查询详情
     query () {
@@ -176,6 +179,9 @@ export default {
   },
   mounted () {
     this.query()
+    this.$nextTick(()=>{
+      this.$textReplace()
+    })
   }
 }
 </script>

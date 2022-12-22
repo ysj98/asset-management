@@ -150,6 +150,7 @@ export default {
     }
   },
   mounted () {
+    this.$textReplace()
   },
   methods: {
     onConfirm() {

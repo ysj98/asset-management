@@ -901,6 +901,7 @@ export default {
                 newSourceMode: String(ele.newSourceMode)
               }
             });
+            this.$textReplace()
             console.log(this.tableData, "拿到的数据");
           });
         } else {
@@ -1195,6 +1196,9 @@ export default {
     // 变更类型
     changeTypeChange(val) {
       this.changeType = val;
+      this.$nextTick(() => {
+        this.$textReplace()
+      })
       console.log(val, this.originalObjectType)
     },
     // 分摊方式改变

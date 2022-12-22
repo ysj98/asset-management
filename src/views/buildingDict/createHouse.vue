@@ -117,7 +117,7 @@
           <div class="form-content">
             <a-row>
               <a-col :span="8">
-                <a-form-item label="建筑面积" v-bind="formItemLayout">
+                <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :style="allWidth"
                     v-decorator="['area', {initialValue: '' || undefined, rules: [{required: true, message: '请输入建筑面积'}]}]"
@@ -125,7 +125,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="使用面积" v-bind="formItemLayout">
+                <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :style="allWidth"
                     v-decorator="['useArea', {initialValue: '' || undefined, rules: [{required: true, message: '请输入使用面积'}]}]"
@@ -133,7 +133,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="分摊面积" v-bind="formItemLayout">
+                <a-form-item label="分摊面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :style="allWidth"
                     v-decorator="['shareArea', {initialValue: '' || undefined }]"
@@ -141,7 +141,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="套内面积" v-bind="formItemLayout">
+                <a-form-item label="套内面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :style="allWidth"
                     v-decorator="['innerArea', {initialValue: '' || undefined }]"
@@ -149,7 +149,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="阳台面积" v-bind="formItemLayout">
+                <a-form-item label="阳台面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :precision="4"
                     :min="0"
@@ -159,7 +159,7 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="分摊土地面积" v-bind="formItemLayout">
+                <a-form-item label="分摊土地面积(㎡)" v-bind="formItemLayout">
                   <a-input-number
                     :style="allWidth"
                     v-decorator="['landArea', {initialValue: '' || undefined }]"
@@ -505,6 +505,7 @@ export default {
       this.goPage("index");
     },
     queryHouseDetailById() {
+      this.$textReplace(this.organId)
       let data = {
         houseId: this.houseId,
         organId: this.organId || ""

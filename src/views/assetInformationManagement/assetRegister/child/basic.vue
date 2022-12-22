@@ -306,6 +306,9 @@ export default {
       } else {
         this.bridgeFn()
       }
+      this.$nextTick(() => {
+        this.$textReplace()
+      })
       this.organDict()
       this.ownershipFn()
     },
@@ -448,12 +451,14 @@ export default {
           }
           this.assetType = resType
           this.columns = resColumns
-
           if (this.isEquipment){
             this.numList = numListEq
           }else {
             this.numList = numList
           }
+          this.$nextTick(() => {
+            this.$textReplace()
+          })
         }
         // 项目切换
         if (type === 'project' && val) {

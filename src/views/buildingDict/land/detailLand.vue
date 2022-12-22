@@ -3,7 +3,7 @@
  * @Description: 土地详情
 -->
 <template>
-  <div class="detailHouse-page">
+  <div class="detailLand-page">
     <!-- 基础信息 -->
     <div class="detail-page-item">
       <!-- 标题 -->
@@ -296,8 +296,11 @@ export default {
     };
   },
   mounted() {
-    let {blankId} = this.$route.query;
+    let {blankId, organId} = this.$route.query;
     Object.assign(this.routeQuery, {blankId});
+    this.$nextTick(() => {
+      this.$textReplace(organId)
+    })
     this.init()
   },
   methods: {
@@ -486,7 +489,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.detailHouse-page {
+.detailLand-page {
   color: #49505e;
   padding: 42px 10px 0px 94px;
   .detail-page-item {

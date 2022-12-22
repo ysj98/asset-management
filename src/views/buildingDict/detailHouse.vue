@@ -227,6 +227,9 @@
    mounted () {
      this.houseId = this.$route.query.houseId || ''
      this.organId = this.$route.query.organId || ''
+     this.$nextTick(() => {
+      this.$textReplace(this.organId)
+     })
      this.queryHouseDetailById()
    },
    methods: {

@@ -504,6 +504,9 @@ export default {
     this.platformDictFn()
     this.init()
     this.handleBtn()
+    this.$nextTick(() => {
+      this.$textReplace()
+    })
   },
   methods: {
     getLandTheNo () {

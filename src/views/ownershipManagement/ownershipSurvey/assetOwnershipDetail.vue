@@ -318,6 +318,11 @@ export default {
     this.organId = this.$route.query.organId || ''
     this.assetDetail();
   },
+  mounted() {
+    this.$nextTick(() => {
+      this.$textReplace()
+    })
+  },
   methods: {
     assetDetail() {
       let data = {

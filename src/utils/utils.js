@@ -681,7 +681,6 @@ export function getArrayRepeat(arr,getStrFn){
  * */
 export function handleEnumerationConversion(value, list, keyWord = ['title', 'value']) {
   if (!value || !list) {
-    console.trace()
     return null
   }
   const result = list.filter(ele => ele[keyWord[0]] === value)[0]

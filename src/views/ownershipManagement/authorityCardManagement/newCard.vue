@@ -403,6 +403,9 @@ export default {
     },
     // 权证类型
     kindOfRightChange (val) {
+      this.$nextTick(() => {
+        this.$textReplace()
+      })
       this.typeJudgment = val
     },
     // 提交
@@ -903,6 +906,9 @@ export default {
             elv.key = index
           })
           this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList
+          this.$nextTick(() => {
+            this.$textReplace()
+          })
         } else {
           this.show = false
           this.$message.error(res.data.message)

@@ -320,6 +320,9 @@ export default {
             evl.key = index;
           });
           this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList;
+          this.$nextTick(() => {
+            this.$textReplace()
+          })
         } else {
           this.$message.error(res.data.message);
         }
