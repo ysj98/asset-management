@@ -113,7 +113,7 @@ export default {
           { title: "上次评估值", dataIndex: "lastAssessmentValue" },
           { title: "本次评估方法", dataIndex: "assessmentMethodName" },
           { title: "评估机构", dataIndex: "assessmentOrganName", width: 150, scopedSlots: { customRender: "assessmentOrganName" } },
-          { title: "本次估值(元)", dataIndex: "assessmentValue", scopedSlots: { customRender: "assessmentValue" }, fixed: "right", width: 120 },
+          { title: "本次估值(元)", dataIndex: "assessmentValue", scopedSlots: { customRender: "assessmentValue" }, fixed: "right", width: 130 },
           { title: "上浮比", dataIndex: "upRate", fixed: "right", width: 120 },
         ],
       },

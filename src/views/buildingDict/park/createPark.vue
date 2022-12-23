@@ -784,6 +784,7 @@ export default {
       this.organNameMain = data.organName
       this.organIdMain = data.organId
       if (data.organId) {
+        this.$textReplace(data.organId)
         let {organId:organTopId} = await queryTopOrganByOrganID(
             {
               nOrgId: data.organId,

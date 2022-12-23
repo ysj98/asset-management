@@ -761,7 +761,6 @@ export default {
     let { organName, organId, type, blankId } = this.$route.query
     this.organIdMain = organId
     this.organNameMain = organName
-    this.queryCommunityListByOrganId(organId)
     Object.assign(this, {
       routeQuery: { organName, organId, type, blankId },
     })
@@ -1034,6 +1033,7 @@ export default {
                 }
               })
               this.organIdMain = data.organId
+              this.$textReplace(data.organId)
               let {organId:organTopId, organName:organTopName} = await queryTopOrganByOrganID(
                 {
                   nOrgId: data.organId,
@@ -1303,6 +1303,8 @@ export default {
       if (this.routeQuery.type === "edit") {
         await this.blankApiDetail()
       } else {
+        this.$textReplace()
+        this.queryCommunityListByOrganId(this.routeQuery.organId)
         this.getCode(this.routeQuery.organId)
       }
       // 请求下拉框数据

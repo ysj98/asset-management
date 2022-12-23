@@ -15,7 +15,7 @@
       ref="select"
       :style="width ? `width:${width}'px'` : 'width:100%'"
       class="select-classify-tree"
-      :class="{ 'required-icon': !formType }"
+      :class="{ 'required-icon': formType }"
     >
       <a-spin :spinning="loading">
         <SG-Input-Search v-if="showSearch" class="select-name" :placeholder="placeholder" style="width: 96%" v-model="keywords" search @search="queryTree"></SG-Input-Search>

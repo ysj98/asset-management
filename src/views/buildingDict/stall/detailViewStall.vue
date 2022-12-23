@@ -232,6 +232,7 @@ export default {
         ...data
       }
       const {data:res} = await stallApiDetail(params)
+      this.$textReplace(res.data.organId)
       if(res.code === '0') {
         this.formInfo = this.afterStallApiList(res.data)
       }

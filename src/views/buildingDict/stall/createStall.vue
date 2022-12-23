@@ -567,6 +567,7 @@ export default {
       try {
         const { data: res } = await stallApiDetail(params);
         if (res.code === "0") {
+          this.$textReplace(res.data.organId)
           this.formInfo = await this.afterStallApiList(res.data);
           this.$nextTick(()=>{
             this.handleCarStallUsage(this.formInfo.parkingUsage || '')

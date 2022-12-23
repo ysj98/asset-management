@@ -23,7 +23,8 @@
       <!-- 查询主体 -->
       <div class="search-content">
         <div class="serach-condition-input">
-          <organTreeSelect @changeTree="changeTree" style="width: 100%" />
+          <treeSelect @changeTree="changeTree" style="width: 100%"></treeSelect>
+          <!-- <organTreeSelect @changeTree="changeTree" style="width: 100%" /> -->
         </div>
         <!-- 类型 -->
         <div class="search-item">
@@ -108,6 +109,7 @@
 </template>
 <script>
 import {dataIndexs} from '../lib/dict'
+import TreeSelect from '@/views/common/treeSelect'
 import Tools, {calc, getFormat} from "@/utils/utils"
 import organTreeSelect from "./organTreeSelect"
 import {
@@ -127,6 +129,7 @@ export default {
   name: "suspensionRightBlock",
   components: {
     organTreeSelect,
+    TreeSelect
   },
   data() {
     return {
@@ -186,6 +189,7 @@ export default {
   created() {
     this.platformDict("asset_type")
     this.queryProvinceList()
+    this.$textReplace()
   },
   methods: {
     /*

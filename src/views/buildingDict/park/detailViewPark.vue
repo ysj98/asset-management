@@ -279,8 +279,8 @@ export default {
                 this.formInfo =await this.afterParkApiDetail(res.data.data)
                 this.page.totalCount = this.formInfo.areaArray.length
                 this.handleChange(this.page)
+                this.$textReplace(res.data.data.organId)
                 this.formInfo.placeAddr = this.formInfo.location.province.split('/')[1] + this.formInfo.location.city.split('/')[1] + this.formInfo.location.district.split('/')[1] + this.formInfo.placeAddr
-                console.log()
               } else {
                 this.$message.error(res.data.message)
               }

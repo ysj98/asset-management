@@ -222,13 +222,19 @@
     },
 
     created () {
-      const { params : { type, organId, organName, registerId } } = this.$route
+      const { params : { type, organId, organName, registerId, relatedOrganId } } = this.$route
       Object.assign(this, { type, registerId }, { details: { organId, organName }})
       registerId && this.queryDetailById(registerId)
       console.log('this.type',this.type)
       if (['detail','approval'].includes(this.type)){
         this.queryApprovalRecordByBus()
       }
+      if (['add'].includes(this.type)) {
+        this.$textReplace()
+      } else {
+        this.$textReplace(relatedOrganId)
+      }
+      
     },
     beforeRouteEnter(to, from, next){
       to.meta.noShowProBreadNav = from.path === '/approve';

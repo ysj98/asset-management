@@ -504,9 +504,6 @@ export default {
     this.platformDictFn()
     this.init()
     this.handleBtn()
-    this.$nextTick(() => {
-      this.$textReplace()
-    })
   },
   methods: {
     getLandTheNo () {
@@ -746,6 +743,7 @@ export default {
       this.$api.building.queryBuildDetail(data).then(res => {
         this.loading = false
         if (res.data.code === '0') {
+          this.$textReplace(res.data.data.organId)
           this.handleEdit({...res.data.data})
         } else {
           this.$message.error(res.data.message)
@@ -756,6 +754,7 @@ export default {
     },
     // 处理编辑数据
     async handleEdit (data) {
+      let loadingName = this.SG_Loding("加载中")
       //消防材料
       data.fireMaterial = +data.fireMaterial || 0
       // 把楼栋的 organId 传出去供 单元和楼层使用
@@ -841,6 +840,7 @@ export default {
       })
       // console.log('得到值all=>', values)
       this.form.setFieldsValue(values)
+      this.DE_Loding(loadingName)
     },
     // 重置所有数据
     resetAll () {

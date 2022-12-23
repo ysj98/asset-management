@@ -3,6 +3,7 @@
  * 参数： organId 可选，如果传了organId，则获取配置的接口，将返回信息存到localStorage，没传，直接获取localStorage信息
  * 工作方式：通过获取存在货币单位，面积到位的dom，遍历dom，通过innerText拿到文本值通过replace去改变
  */
+import * as paramsConfig from "@/api/paramsConfig";
 // 判断是不是改造范围
 let langType = () => {
   // 香港需求资本改造页面第一期范围
@@ -28,31 +29,41 @@ let langType = () => {
 };
 // 项目信息设置 获取货币单位以及面积单位
 let getResourceConfig = (organIds) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     if (organIds) {
-        // const {
-        //   data: { code, data },
-        // } = await this.$api.paramsConfig.getResourceConfig({ organIds: organIds });
-      const data = {
-        resourceConfigId: "1014",
-        organId: "67",
-        topOrganId: "",
-        currencyId: "1",
-        areaUnitId: "1",
-        configFlowList: [],
-      };
-      if (organIds === "1000279") {
-        data.currencyId = "2";
-        data.areaUnitId = "2";
-      }
-      const { currencyId, areaUnitId } = data;
-      const lang = {
-        monetaryUnit: currencyId === "1" ? "元" : "港币",
-        areaUnit: areaUnitId === "1" ? "m²" : "ft²",
-      };
-      localStorage.setItem("lang", JSON.stringify(lang));
-      console.log("获取货币单位以及面积单位", organIds, lang);
-      resolve();
+      // const data = {
+      //   resourceConfigId: "1014",
+      //   organId: "67",
+      //   topOrganId: "",
+      //   currencyId: "1",
+      //   areaUnitId: "1",
+      //   configFlowList: [],
+      // };
+      // if (organIds === "1000279") {
+      //   data.currencyId = "2";
+      //   data.areaUnitId = "2";
+      // }
+      // const { currencyId, areaUnitId } = data;
+      // const lang = {
+      //   monetaryUnit: currencyId === 1 ? "元" : "港币",
+      //   areaUnit: areaUnitId === 1 ? "m²" : "ft²",
+      // };
+      // localStorage.setItem("lang", JSON.stringify(lang));
+      // console.log("获取货币单位以及面积单位", organIds, lang);
+      // resolve();
+      paramsConfig.getResourceConfig({ organIds: organIds }).then((result) => {
+        const { code, data } = result.data;
+        if (code === "0") {
+          const { currencyId, areaUnitId } = data;
+          const lang = {
+            monetaryUnit: currencyId === 1 ? "元" : "港币",
+            areaUnit: areaUnitId === 1 ? "m²" : "ft²",
+          };
+          localStorage.setItem("lang", JSON.stringify(lang));
+          console.log("获取货币单位以及面积单位", organIds, lang);
+          resolve();
+        }
+      });
     } else {
       console.log("直接改变货币单位以及面积单位");
       resolve();
