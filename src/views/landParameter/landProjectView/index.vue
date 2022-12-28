@@ -270,7 +270,7 @@ export default {
       this.loading = true
       let {assetProject, organId, sumObj, onlyCurrentOrgan, paginator: {pageNo, pageLength}, current} = this
       let form = {
-        organId: organId.toString(),
+        organIds: organId.toString(),
         pageNum: pageNo,
         pageSize: pageLength,
         projectId: assetProject,
@@ -325,7 +325,7 @@ export default {
       this.overviewNumSpinning = true
       let form = {
         statusList: this.statusList.includes("all") ? [] : this.statusList,
-        organId: this.organId.toString(),
+        organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
         flag: this.current ? (this.current - 1) : null

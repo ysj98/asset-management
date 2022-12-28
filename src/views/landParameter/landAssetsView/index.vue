@@ -708,9 +708,12 @@ export default {
     // 资产登记-详情明细统计
     assetViewTotal (obj) {
       this.overviewNumSpinning = true
-      obj.pageNum = 1
-      obj.pageSize = 1
-      this.$api.land.assetViewTotal(obj).then(res => {
+      const params = {
+        ...obj
+      }
+      params.pageNum = 1
+      params.pageSize = 1
+      this.$api.land.assetViewTotal(params).then(res => {
         if (Number(res.data.code) === 0) {
           this.overviewNumSpinning = false
           let data = res.data.data
