@@ -108,6 +108,7 @@
             temp.encloseWallPic = temp.encloseWallPic ? temp.encloseWallPic.split(',') : []
             temp.nowPic = temp.nowPic ? temp.nowPic.split(',') : []
             temp.isEncloseWall = temp.isEncloseWall + '' === '0' ? '否' : '是'
+            this.$textReplace(temp.organId)
             return this.infoData = { ...temp, assetType: '土地' }
           } else {
             this.$message.error(res.message || '查询接口出错')

@@ -218,7 +218,7 @@
               tableData = list
             } else if (type === 'archive') {
               tableData = info.data
-              this.pagination.totalCount = Number(info.count)
+              this.pagination.totalCount = Number(info.total)
             } else if (type === 'patrolRecord') {
               tableData = info.data
               this.pagination.totalCount = Number(info.count)
@@ -317,6 +317,7 @@
     },
     watch: {
       tabKey (key) {
+        this.$textReplace()
         // 如果是运营管理退出
         if (key === 'operationInformation') {
           return

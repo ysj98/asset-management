@@ -175,6 +175,7 @@ export default {
           if (+res.data.code === 0) {
             let result = res.data.data || {}
             this.detailInfo = { ...result[detailInfoKey[String(resourceType)]] }
+            this.$textReplace(this.detailInfo.organId)
             // 楼栋信息
             if (String(resourceType) === MAP_ASSET_TYPE_CODE.HOUSE) {
               // 修改价值元

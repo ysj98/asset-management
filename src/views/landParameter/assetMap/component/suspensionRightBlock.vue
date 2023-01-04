@@ -107,6 +107,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import {dataIndexs} from '../lib/dict'
 import TreeSelect from '@/views/common/treeSelect'
@@ -259,6 +260,16 @@ export default {
             let dataSource = arrkeys.map((item) => {
               let key = item[1]
               let o = { key: Tools.getUuid(), name: item[0] }
+              let lang = localStorage.getItem("lang")
+              if (typeof lang === "string") {
+                lang = JSON.parse(lang);
+              }
+              if (o.name.search(/m²|㎡|ft²/g) !== -1) {
+                o.name = o.name.replace(/m²|㎡|ft²/g, lang.areaUnit);
+              }
+              if (o.name.search(/元|港元/g) !== -1) {
+                o.name = o.name.replace(/元|港元/g, lang.monetaryUnit);
+              }
               keysArr.forEach((dataIndex) => {
                 // 如果是面积
                 if (key === "assetArea") {
@@ -287,6 +298,12 @@ export default {
                 decimal: 2
               }
             ]
+            let lang = localStorage.getItem("lang")
+            if (typeof lang === "string") {
+              lang = JSON.parse(lang);
+            }
+            keyArr[0].keyStr = keyArr[0].keyStr.replace(/m²|㎡|ft²/g, lang.areaUnit);
+            keyArr[1].keyStr = keyArr[1].keyStr.replace(/元|港元/g, lang.monetaryUnit);
             dataSource = dataSource.map(ele=>{
               let res  = ele
               let item = keyArr.find(e=>e.keyStr===ele.name)

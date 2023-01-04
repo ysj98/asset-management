@@ -131,6 +131,7 @@ export default {
       this.columns = this.directionUseDataCom
     }
     this.query()
+    this.$textReplace()
   },
   methods: {
     allQuery () {

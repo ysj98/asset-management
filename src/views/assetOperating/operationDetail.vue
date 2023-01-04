@@ -311,7 +311,7 @@ export default {
                       title: ele.operOpinion,
                       desc: "",
                       isDone: false,
-                      operation: ele.files.length>0?JSON.parse(ele.files).map(ele=>{
+                      operation: ele.files && ele.files.length>0?JSON.parse(ele.files).map(ele=>{
                         return{
                           buttonName:ele.name,
                           funcName:'getFile',
@@ -324,6 +324,7 @@ export default {
                   }
                 );
                 this.stepList.length && (this.stepList[0].isDone = true);
+                console.log('first', this.stepList)
                 if (this.fromType === "approve") {
                   this.isApprove = data.amsApprovalResDto.isAbRole === 1;
                 }

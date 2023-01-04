@@ -84,9 +84,10 @@
     },
     
     created () {
-      const { query: { assetCarParkId, assetId } } = this.$route
+      const { query: { assetCarParkId, assetId, organId } } = this.$route
       this.assetCarParkId = assetCarParkId
       this.assetId = assetId
+      this.$textReplace(organId)
     }
   }
 </script>

@@ -227,9 +227,6 @@
    mounted () {
      this.houseId = this.$route.query.houseId || ''
      this.organId = this.$route.query.organId || ''
-     this.$nextTick(() => {
-      this.$textReplace(this.organId)
-     })
      this.queryHouseDetailById()
    },
    methods: {
@@ -240,6 +237,7 @@
       }
       this.$api.building.queryHouseDetailById(data).then(res => {
         if (res.data.code === '0') {
+          this.$textReplace(res.data.data.organId)
           this.handleEditData({...res.data.data})
         } else {
           this.$message.error(res.data.message)

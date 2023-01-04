@@ -70,6 +70,9 @@ export default {
       } = await this.$api.global.assetRolListV2(req);
       this.loading = false;
       if (code === "0") {
+        this.$nextTick(() => {
+          this.$textReplace()
+        })
         if (this.aliasConfig && Object.keys(this.aliasConfig).length) {
           data.templeCode.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})
           data.customShow.map(item => {item.colName = this.aliasConfig[item.colCode] || item.colName})

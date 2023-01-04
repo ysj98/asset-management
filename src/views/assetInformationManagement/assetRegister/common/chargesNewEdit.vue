@@ -113,7 +113,7 @@
                 :precision="2"
                 :max="9999999.99"
                 v-decorator="['amount',
-                  {rules: [{required: true, message: '请输入金额(元)'}], initialValue: subData.amount}
+                  {rules: [{required: true, message: '请输入金额'}], initialValue: subData.amount}
                 ]"/>
               </a-form-item>
             </a-col>
@@ -214,6 +214,9 @@ export default {
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      this.$textReplace()
+    })
   },
   methods: {
     moment,

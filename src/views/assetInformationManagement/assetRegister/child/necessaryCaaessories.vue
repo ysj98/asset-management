@@ -100,6 +100,7 @@ export default {
       this.columns = auxiliary
     }
     this.query()
+    this.$textReplace()
   },
   methods: {
     allQuery () {
@@ -151,6 +152,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.completeSetNew.allMounted(str, obj)
         this.$refs.completeSetNew.modalShow = true
+        this.$textReplace()
       })
     },
     cancel () {

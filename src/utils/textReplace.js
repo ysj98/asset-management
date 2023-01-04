@@ -20,12 +20,15 @@ let langType = () => {
     "assetView", // 房屋资产视图
     "landAssetsView", // 土地资产视图
     "assetCarPrakView", // 车场资产视图
-    "ownershipRegisterView", // 权属证件一览表
+    "ownershipCardList", // 权属证件一览表
   ];
-  if (routerList.indexOf(location.hash.split("/")[1]) !== -1) {
-    return true;
-  }
-  return false;
+  var flag = false;
+  routerList.forEach((url) => {
+    if (location.hash.split("/")[1].indexOf(url) !== -1) {
+      flag = true;
+    }
+  });
+  return flag;
 };
 // 项目信息设置 获取货币单位以及面积单位
 let getResourceConfig = (organIds) => {
@@ -45,7 +48,7 @@ let getResourceConfig = (organIds) => {
       // }
       // const { currencyId, areaUnitId } = data;
       // const lang = {
-      //   monetaryUnit: currencyId === 1 ? "元" : "港币",
+      //   monetaryUnit: currencyId === 1 ? "元" : "港元",
       //   areaUnit: areaUnitId === 1 ? "m²" : "ft²",
       // };
       // localStorage.setItem("lang", JSON.stringify(lang));
@@ -56,7 +59,7 @@ let getResourceConfig = (organIds) => {
         if (code === "0") {
           const { currencyId, areaUnitId } = data;
           const lang = {
-            monetaryUnit: currencyId === 1 ? "元" : "港币",
+            monetaryUnit: currencyId === 1 ? "元" : "港元",
             areaUnit: areaUnitId === 1 ? "m²" : "ft²",
           };
           localStorage.setItem("lang", JSON.stringify(lang));
@@ -73,7 +76,7 @@ let getResourceConfig = (organIds) => {
 let textReplace = (organIds) => {
   // 判断是不是改造范围
   if (!langType()) {
-    console.log("非单位改造范围");
+    console.log("非本次改造范围");
     return;
   }
   getResourceConfig(organIds).then(() => {
@@ -89,15 +92,20 @@ let textReplace = (organIds) => {
     let body = document.body;
     const domList = {
       ".ant-table-thead": ["span"],
+      ".ant-table-tbody": ["span"],
       ".particulars": ["span"],
       ".overview_num": ["div"],
-      ".ant-modal-body": ["label", "div"],
+      ".ant-modal-body": ["label", "div", "span"],
       ".page-detail-item": ["span"],
       ".createBuilding-page": ["label"],
       ".createHouse-page": ["label"],
-      ".landInfo-create-page": ["label"],
+      ".landInfo-create-page": ["label", 'span'],
       ".detailHouse-page": ["div"],
       ".detailLand-page": ["div"],
+      ".necessaryCaaessories": ["span"],
+      ".valueToRegister": ["span"],
+      ".basicDownload": ["label"],
+      ".asset_view": ["span"],
     };
     Object.keys(domList).forEach((node) => {
       let doms = body.querySelectorAll(node);
@@ -107,9 +115,9 @@ let textReplace = (organIds) => {
           let nodes = dom.querySelectorAll(nodeType);
           console.log(nodes, "nodes");
           Array.from(nodes).forEach((node) => {
-            if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/单元/g) === -1 && node.innerText.search(/元|港币/g) !== -1) {
+            if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/单元/g) === -1 && node.innerText.search(/元|港元/g) !== -1) {
               console.log(node);
-              node.innerText = node.innerText.replace(/元|港币/g, lang.monetaryUnit);
+              node.innerText = node.innerText.replace(/元|港元/g, lang.monetaryUnit);
             }
             if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/m²|㎡|ft²/g) !== -1) {
               console.log(node);
@@ -118,6 +126,16 @@ let textReplace = (organIds) => {
           });
         });
       });
+    });
+    Array.from(document.querySelectorAll("input")).forEach((dom) => {
+      if (dom.placeholder.search(/元|港元/g) !== -1) {
+        console.log(dom);
+        dom.placeholder = dom.placeholder.replace(/元|港元/g, lang.monetaryUnit);
+      }
+      if (dom.placeholder.search(/m²|㎡|ft²/g) !== -1) {
+        console.log(dom);
+        dom.placeholder = dom.placeholder.replace(/m²|㎡|ft²/g, lang.areaUnit);
+      }
     });
   });
 };

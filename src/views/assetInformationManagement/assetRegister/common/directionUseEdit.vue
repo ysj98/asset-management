@@ -65,8 +65,8 @@
                   </a-form-item>
                </a-col>
               <a-col :span="12" class="h-65">
-                <a-form-item label="转物业面积" v-bind="formItemLayout">
-                  <a-input-number placeholder="转物业面积"
+                <a-form-item label="转物业面积(㎡)" v-bind="formItemLayout">
+                  <a-input-number placeholder="转物业面积(㎡)"
                   :style="allWidth"
                   :min="0"
                   :precision="4"
@@ -95,7 +95,7 @@
                   :max="99999999.99"
                   :precision="4"
                   v-decorator="['transferOperationArea',
-                    {rules: [{ required: true, message: '运营面积(㎡)(支持四位小数)'}], initialValue: subData.transferOperationArea}
+                    {rules: [{ required: true, message: '运营面积(支持四位小数)'}], initialValue: subData.transferOperationArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -107,7 +107,7 @@
                   :max="99999999.99"
                   :precision="4"
                   v-decorator="['selfUserArea',
-                    {rules: [{ required: true, message: '自用面积(㎡)(支持四位小数)'}], initialValue: subData.selfUserArea}
+                    {rules: [{ required: true, message: '自用面积(支持四位小数)'}], initialValue: subData.selfUserArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -119,7 +119,7 @@
                   :max="99999999.99"
                   :precision="4"
                   v-decorator="['occupationArea',
-                    {rules: [{ required: true, message: '占用面积(㎡)(支持四位小数)'}], initialValue: subData.occupationArea}
+                    {rules: [{ required: true, message: '占用面积(支持四位小数)'}], initialValue: subData.occupationArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -131,7 +131,7 @@
                   :max="99999999.99"
                   :precision="4"
                   v-decorator="['otherArea',
-                    {rules: [{ required: true, message: '其他面积(㎡)(支持四位小数)'}], initialValue: subData.otherArea}
+                    {rules: [{ required: true, message: '其他面积(支持四位小数)'}], initialValue: subData.otherArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -143,7 +143,7 @@
                   :max="99999999.99"
                   :precision="4"
                   v-decorator="['idleArea',
-                    {rules: [{ required: true, message: '闲置面积(㎡)(支持四位小数)'}], initialValue: subData.idleArea}
+                    {rules: [{ required: true, message: '闲置面积(支持四位小数)'}], initialValue: subData.idleArea}
                   ]"/>
                 </a-form-item>
               </a-col>
@@ -223,6 +223,9 @@ export default {
     this.$store.dispatch('platformDict/getPlatformDict',{
       code:'AMS_USE_DIRECTION',
       type: SET_AMS_USE_DIRECTION
+    })
+    this.$nextTick(() => {
+      this.$textReplace()
     })
   },
   methods: {

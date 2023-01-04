@@ -23,7 +23,7 @@
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_HEADER_SET">列表设置</SG-Button>
-        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
+        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET" v-show="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">资产标签</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
@@ -168,7 +168,7 @@
         </span>
       </template>
       <span slot="action" slot-scope="text, record">
-        <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetCarPrakView/detail', query: { assetCarParkId: record.assetCarParkId, assetId: record.assetId } }">详情</router-link>
+        <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetCarPrakView/detail', query: { assetCarParkId: record.assetCarParkId, assetId: record.assetId, organId: record.organId } }">详情</router-link>
       </span>
       <template slot="fireMaterial" slot-scope="text, record">
         <span v-if="record.assetName !== '所有页-合计'">

@@ -505,13 +505,13 @@ export default {
       this.goPage("index");
     },
     queryHouseDetailById() {
-      this.$textReplace(this.organId)
       let data = {
         houseId: this.houseId,
         organId: this.organId || ""
       };
       this.$api.building.queryHouseDetailById(data).then(res => {
         if (res.data.code === "0") {
+          this.$textReplace(res.data.data.organId)
           this.handleEditData({ ...res.data.data });
         } else {
           this.$message.error(res.data.message);

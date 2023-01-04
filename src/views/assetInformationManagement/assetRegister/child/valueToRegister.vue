@@ -97,6 +97,7 @@ export default {
       this.columns = valueToRegisterData
     }
     this.query()
+    this.$textReplace()
   },
   methods: {
     allQuery () {

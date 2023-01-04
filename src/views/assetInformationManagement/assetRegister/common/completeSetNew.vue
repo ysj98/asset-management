@@ -102,7 +102,7 @@
                 :min="0"
                 :precision="2"
                 v-decorator="['value',
-                  {rules: [{required: true, message: '请输入价值(元)(支持两位小数)'}], initialValue: subData.value}
+                  {rules: [{required: true, message: '请输入价值(支持两位小数)'}], initialValue: subData.value}
                 ]"/>
               </a-form-item>
             </a-col>
@@ -221,6 +221,7 @@ export default {
     }
   },
   computed: {
+
   },
   created () {
   },

@@ -21,6 +21,7 @@
         <SG-Input-Search v-if="showSearch" class="select-name" :placeholder="placeholder" style="width: 96%" v-model="keywords" search @search="queryTree"></SG-Input-Search>
         <a-tree
           v-if="treeData && treeData.length"
+          :checkStrictly="true"
           :checkable="multiple"
           :multiple="multiple"
           :loadData="onLoadData"
@@ -127,7 +128,7 @@ export default {
       userId: "",
       orgtype: "",
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
-      checkedKeys: [], //选中复选框的树节点
+      checkedKeys: null, //选中复选框的树节点  多选时 { checked: [], halfChecked: [] }
       mapTypeFilter: this.TypeFilter,
     };
   },
@@ -175,19 +176,20 @@ export default {
     },
     // 选中树节点
     treeNodeSelect(selectedKeys, e) {
+      console.log(selectedKeys, e);
       if (this.multiple) {
         this.checkedKeys = selectedKeys;
-        if (selectedKeys.length === 0) {
+        if (this.checkedKeys.checked.length === 0) {
           this.$message.info("请选择组织机构");
           return;
         }
-        let flag = selectedKeys.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
+        let flag = this.checkedKeys.checked.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
         if (flag.length >= 2) {
           this.$message.info("不能跨物业选择");
-          this.checkedKeys = selectedKeys.slice(0, selectedKeys.length - 1);
+          this.checkedKeys.checked = selectedKeys.slice(0, selectedKeys.length - 1);
           return;
         }
-        this.organId = selectedKeys.toString();
+        this.organId = this.checkedKeys.checked.toString();
         // 选中的组织机构名称
         // this.organName = this.getOrganName(this.treeData, selectedKeys).toString();
         this.organName = "";
@@ -203,7 +205,7 @@ export default {
         });
       }
       // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
-      this.$textReplace(this.organId)
+      this.$textReplace(this.organId);
       this.$emit("changeTree", this.organId, this.organName, this.orgtype);
     },
     // 下载下级数据
@@ -289,14 +291,23 @@ export default {
           });
           this.setOrganIdMap(children);
           this.treeData = children;
-          // 默认选择第一个
+          // 默认选择
           if (this.defaultDisplay) {
-            this.organId = this.treeData[0].key;
-            this.organName = this.treeData[0].title;
-            this.orgtype = this.treeData[0].orgtype;
+            // 如果用户初始返回的不是一级机构，则全部选中初始返回的
+            if (this.treeData[0].organCode.length !== 8 && this.multiple) {
+              this.organId = this.treeData.map((item) => {
+                return item.key;
+              });
+              this.organName = "";
+              // 默认选择第一个
+            } else {
+              this.organId = this.treeData[0].key;
+              this.organName = this.treeData[0].title;
+              this.orgtype = this.treeData[0].orgtype;
+            }
+            // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
             this.$emit("changeTree", this.organId, this.organName, this.orgtype);
-           // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
-           this.$textReplace(this.organId)
+            this.$textReplace(this.organId);
           }
         }
       });

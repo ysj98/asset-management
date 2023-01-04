@@ -90,7 +90,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="土地面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="土地面积">土地面积(㎡)</span>
                   <a-input-number
                     :max="999999.9999"
                     :min="0"
@@ -303,7 +304,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="计容面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="计容面积">计容面积(㎡)</span>
                   <a-input-number
                     :max="999999.9999"
                     :min="0"
@@ -351,7 +353,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="红线面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="红线面积">红线面积(㎡)</span>
                   <a-input-number
                     :max="999999.9999"
                     :style="allWidth"
@@ -360,7 +363,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="可出租土地面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="可出租土地面积">可出租土地面积(㎡)</span>
                   <a-input-number
                     :precision="4"
                     :max="999999.9999"
@@ -370,7 +374,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="土地上盖建筑物面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="土地上盖建筑物面积">土地上盖建筑物面积(㎡)</span>
                   <a-input-number
                     :max="999999.9999"
                     :style="allWidth"
@@ -379,7 +384,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="不可开发利用土地面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="不可开发利用土地面积">不可开发利用土地面积(㎡)</span>
                   <a-input-number
                     :max="999999.9999"
                     :style="allWidth"
@@ -388,7 +394,8 @@
                 </a-form-item>
               </a-col>
               <a-col :span="8">
-                <a-form-item label="其他土地面积(㎡)" v-bind="formItemLayout">
+                <a-form-item v-bind="formItemLayout">
+                  <span slot="label" title="其他土地面积">其他土地面积(㎡)</span>
                   <a-input-number
                     :max="999999.9999"
                     :style="allWidth"

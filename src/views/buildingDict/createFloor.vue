@@ -185,6 +185,7 @@ export default {
   mounted () {
     this.init()
     this.handleBtn()
+    this.$textReplace()
   },
   methods: {
     init () {

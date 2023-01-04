@@ -12,7 +12,7 @@ export const columnsData = [
   { title: '房间名称', dataIndex: 'houseName', width: 150 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
-  { title: '建筑面积', dataIndex: 'area', width: 100 },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 100 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
@@ -49,7 +49,7 @@ export const houseVerificationList = [
   { title: '房屋名称', dataIndex: 'houseName', required: false },
   { title: '资产名称', dataIndex: 'assetName', required: true },
   { title: '资产编码', dataIndex: 'assetCode', required: false },
-  { title: '建筑面积', dataIndex: 'area', required: false, type: 'float4' },
+  { title: '建筑面积(㎡)', dataIndex: 'area', required: false, type: 'float4' },
   { title: '坐落位置', dataIndex: 'position', required: false },
   { title: '权属类型', dataIndex: 'kindOfRightName', required: true },
   { title: '有无经营权', dataIndex: 'managementRightName', required: false },

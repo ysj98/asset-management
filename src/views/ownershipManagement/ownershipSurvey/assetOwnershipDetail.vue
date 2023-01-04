@@ -318,11 +318,7 @@ export default {
     this.organId = this.$route.query.organId || ''
     this.assetDetail();
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.$textReplace()
-    })
-  },
+  mounted() {},
   methods: {
     assetDetail() {
       let data = {
@@ -334,6 +330,7 @@ export default {
         this.spinning = false
         if (res.data.code === "0") {
           let baseInfo = res.data.data.baseInfo || {};
+          this.$textReplace(baseInfo.organId)
           let ownershipInfo = res.data.data.ownershipInfo || [];
           let sameNo = res.data.data.sameNo || [];
           let transactionList = res.data.data.transactionList || [];

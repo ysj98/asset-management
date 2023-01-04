@@ -98,6 +98,7 @@ export default {
       this.columns = costData
     }
     this.query()
+    this.$textReplace()
   },
   methods: {
     allQuery () {

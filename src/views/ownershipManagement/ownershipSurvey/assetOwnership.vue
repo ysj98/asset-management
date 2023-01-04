@@ -560,7 +560,6 @@ export default {
       });
     },
     queryOwnershipCardTableTotal(form) {
-      console.log(form,'aaaaaaaa')
       this.$api.basics
         .statistics(form)
         .then(({ data: { code, message, data } }) => {

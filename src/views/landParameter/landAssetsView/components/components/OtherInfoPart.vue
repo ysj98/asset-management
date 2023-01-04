@@ -276,6 +276,7 @@
     },
     watch: {
       tabKey (key) {
+        this.$textReplace()
         // 如果是运营管理退出
         if (key === 'operationInformation') {
           return

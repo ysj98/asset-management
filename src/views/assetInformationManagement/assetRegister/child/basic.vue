@@ -432,17 +432,17 @@ export default {
             case this.ASSET_TYPE_CODE.HOUSE:
               resType = this.ASSET_TYPE_CODE.HOUSE
               resColumns = columnsData
-              this.numList[1].title = '建筑面积'
+              this.numList[1].title = '建筑面积(㎡)'
               break
             case this.ASSET_TYPE_CODE.LAND:
               resType = this.ASSET_TYPE_CODE.LAND
               resColumns = landData
-              this.numList[1].title = '土地面积'
+              this.numList[1].title = '土地面积(㎡)'
               break
             case this.ASSET_TYPE_CODE.YARD:
               resType = this.ASSET_TYPE_CODE.YARD
               resColumns = yard
-              this.numList[1].title = '资产面积'
+              this.numList[1].title = '资产面积(㎡)'
               break
             case this.ASSET_TYPE_CODE.EQUIPMENT:
               resType = this.ASSET_TYPE_CODE.EQUIPMENT

@@ -62,7 +62,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item label="车场面积(㎡)" :required="true" prop="placeArea">
+            <a-form-model-item :required="true" prop="placeArea">
+              <span slot="label" title="车场面积">车场面积(㎡)</span>
               <a-input-number
                   :min="0"
                   step="0.0001"
@@ -222,7 +223,10 @@
                       区域编码</span>
                   <span slot="areaZone">
                       <span style="color:red">*</span>
-                      区域面积(㎡)</span>
+                      <span>
+                        区域面积(㎡)
+                      </span>
+                  </span>
                   <span slot="areaPosiNums">
                       <span style="color:red">*</span>
                       区域车位数</span>

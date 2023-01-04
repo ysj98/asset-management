@@ -28,8 +28,8 @@
         <a-row>
           <a-form :form="form" @submit="handleSubmit">
             <a-col :span="12" class="h-65">
-              <a-form-item label="资产原值" v-bind="formItemLayout">
-                <a-input-number placeholder="资产原值"
+              <a-form-item label="资产原值(元)" v-bind="formItemLayout">
+                <a-input-number placeholder="资产原值(元)"
                 :style="allWidth"
                 :min="0"
                 :max="99999999.99"
@@ -141,6 +141,9 @@ export default {
     }
   },
   mounted () {
+    this.$nextTick(() => {
+      this.$textReplace()
+    })
   },
   methods: {
     moment,
