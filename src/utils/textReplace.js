@@ -34,26 +34,6 @@ let langType = () => {
 let getResourceConfig = (organIds) => {
   return new Promise((resolve) => {
     if (organIds) {
-      // const data = {
-      //   resourceConfigId: "1014",
-      //   organId: "67",
-      //   topOrganId: "",
-      //   currencyId: "1",
-      //   areaUnitId: "1",
-      //   configFlowList: [],
-      // };
-      // if (organIds === "1000279") {
-      //   data.currencyId = "2";
-      //   data.areaUnitId = "2";
-      // }
-      // const { currencyId, areaUnitId } = data;
-      // const lang = {
-      //   monetaryUnit: currencyId === 1 ? "元" : "港元",
-      //   areaUnit: areaUnitId === 1 ? "m²" : "ft²",
-      // };
-      // localStorage.setItem("lang", JSON.stringify(lang));
-      // console.log("获取货币单位以及面积单位", organIds, lang);
-      // resolve();
       paramsConfig.getResourceConfig({ organIds: organIds }).then((result) => {
         const { code, data } = result.data;
         if (code === "0") {
@@ -63,7 +43,7 @@ let getResourceConfig = (organIds) => {
             areaUnit: areaUnitId === 1 ? "m²" : "ft²",
           };
           localStorage.setItem("lang", JSON.stringify(lang));
-          console.log("获取货币单位以及面积单位", organIds, lang);
+          console.log("获取货币单位以及面积单位", "organIds", organIds, "lang", lang);
           resolve();
         }
       });
@@ -88,7 +68,6 @@ let textReplace = (organIds) => {
       lang = JSON.parse(lang);
     }
     // 考虑到性能问题，对可能含有货币单位，面积单位的dom类型进行总结
-    // 表头 thead.ant-table-thead 基本信息 div.particulars 资产数量div.overview_num 弹框div.ant-modal-body
     let body = document.body;
     const domList = {
       ".ant-table-thead": ["span"],
@@ -99,7 +78,7 @@ let textReplace = (organIds) => {
       ".page-detail-item": ["span"],
       ".createBuilding-page": ["label"],
       ".createHouse-page": ["label"],
-      ".landInfo-create-page": ["label", 'span'],
+      ".landInfo-create-page": ["label", "span"],
       ".detailHouse-page": ["div"],
       ".detailLand-page": ["div"],
       ".necessaryCaaessories": ["span"],
@@ -109,18 +88,18 @@ let textReplace = (organIds) => {
     };
     Object.keys(domList).forEach((node) => {
       let doms = body.querySelectorAll(node);
-      console.log(doms, "doms");
+      // console.log(doms, "doms");
       Array.from(doms).forEach((dom) => {
         domList[node].forEach((nodeType) => {
           let nodes = dom.querySelectorAll(nodeType);
-          console.log(nodes, "nodes");
+          // console.log(nodes, "nodes");
           Array.from(nodes).forEach((node) => {
             if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/单元/g) === -1 && node.innerText.search(/元|港元/g) !== -1) {
-              console.log(node);
+              // console.log(node);
               node.innerText = node.innerText.replace(/元|港元/g, lang.monetaryUnit);
             }
             if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/m²|㎡|ft²/g) !== -1) {
-              console.log(node);
+              // console.log(node);
               node.innerText = node.innerText.replace(/m²|㎡|ft²/g, lang.areaUnit);
             }
           });
@@ -129,11 +108,9 @@ let textReplace = (organIds) => {
     });
     Array.from(document.querySelectorAll("input")).forEach((dom) => {
       if (dom.placeholder.search(/元|港元/g) !== -1) {
-        console.log(dom);
         dom.placeholder = dom.placeholder.replace(/元|港元/g, lang.monetaryUnit);
       }
       if (dom.placeholder.search(/m²|㎡|ft²/g) !== -1) {
-        console.log(dom);
         dom.placeholder = dom.placeholder.replace(/m²|㎡|ft²/g, lang.areaUnit);
       }
     });

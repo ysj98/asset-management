@@ -85,13 +85,21 @@ export default {
     };
   },
   mounted() {
-    console.log('权证管理页面详情预览权限', this.preview);
-    console.log('权证管理页面详情下载权限', this.download);
+    console.log("权证管理页面详情预览权限", this.preview);
+    console.log("权证管理页面详情下载权限", this.download);
   },
   computed: {
     // 图片地址
     FileURL() {
-      let resUrl = this.hostImg + this.item.url;
+      let resUrl = "";
+      if (this.item.url.split("/")[0].indexOf("group") !== -1) {
+        resUrl = this.hostImg + this.item.url;
+      } else {
+        // 兼容老文件
+        // let host = window.__configs && window.__configs.hostImg;
+        let host = "https://pic.uhomecp.com";
+        resUrl = host + this.item.url;
+      }
       return resUrl;
     },
     // 扩展名，即文件类型

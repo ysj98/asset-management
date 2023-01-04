@@ -245,7 +245,6 @@ export default {
         changeOrderId: this.changeOrderId,
       };
       this.$api.assets.getChangeDetail(obj).then((res) => {
-        console.log(res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           this.changeType = data.changeType + "";
@@ -279,6 +278,9 @@ export default {
       };
       this.$api.assets.getChangeDetailPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
+          this.$nextTick(() => {
+            this.$textReplace(this.$route.query.relatedOrganId)
+          })
           let data = res.data.data.data;
           data.forEach((item, index) => {
             item.key = index;
