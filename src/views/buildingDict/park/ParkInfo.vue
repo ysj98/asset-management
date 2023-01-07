@@ -24,11 +24,6 @@
         </div>
 
         <div style="overflow: visible">
-          <a-checkbox :checked="Boolean(queryCondition.onlyCurrentNode)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-            仅当前机构下车场
-          </a-checkbox>
-          <!-- 公司 -->
-          <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth" :showSearch='true'></treeSelect>
           <!-- 全部运营项目-->
 <!--            mode="multiple"-->
           <a-select
@@ -121,8 +116,6 @@ import {
   parkTypeOpt,
   registerList
 } from "./dict.js";
-import {tablePageList} from './mock'
-import {parkApiList} from "../../../api/building";
 import DictSelect from "../../common/DictSelect";
 const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
 export default {
@@ -132,6 +125,18 @@ export default {
     noDataTips,
     segiIcon,
     OperationPopover,
+  },
+  props: {
+    organIdInfo: {
+      type: Object,
+      default: () => {
+        return ({})
+      },
+    },
+    isCurrent: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -166,6 +171,18 @@ export default {
         this.queryCondition.pageLength = 10;
         this.query();
       }
+    },
+    organIdInfo: {
+      handler({organId, organName}) {
+        if (organId) {
+          this.organIdChange(organId, organName)
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    isCurrent() {
+      this.queryCondition.onlyCurrentNode = this.isCurrent
     },
   },
   mounted() {
@@ -371,9 +388,6 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    },
-    changeChecked (e) {
-      this.queryCondition.onlyCurrentNode = Number(e.target.checked)
     },
   },
 };

@@ -23,11 +23,6 @@
         </div>
 
         <div style="overflow: visible"  class="search-from-box">
-          <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-            仅当前机构下土地
-          </a-checkbox>
-          <!-- 公司 -->
-          <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth" :showSearch='true'></treeSelect>
           <!-- 全部运营项目-->
           <a-select
             showSearch
@@ -169,6 +164,18 @@ export default {
     landDataImport,
     ProvinceCityDistrict
   },
+  props: {
+    organIdInfo: {
+      type: Object,
+      default: () => {
+        return ({})
+      },
+    },
+    isCurrent: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       getFormat,
@@ -211,15 +218,23 @@ export default {
         this.query();
       }
     },
+    organIdInfo: {
+      handler({organId, organName}) {
+        if (organId) {
+          this.organIdChange(organId, organName)
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    isCurrent() {
+      this.queryCondition.isCurrent = this.isCurrent
+    },
   },
   mounted() {
     this.handlePower();
   },
   methods: {
-    // 处理是否选中仅当前机构
-    changeChecked (e) {
-      this.queryCondition.isCurrent = Number(e.target.checked)
-    },
     query() {
       let data = {
         ...this.queryCondition,

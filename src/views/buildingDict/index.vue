@@ -5,58 +5,68 @@
  -->
 <template>
   <div class="buildingDict-page">
-    <i class="copy-left" v-show="showKey==='building'"></i>
-    <i class="copy-right" v-show="showKey==='building'"></i>
     <div class="custom-tabs">
-      <!-- 公司 -->
       <div class="top-select">
-        <a-checkbox v-if="showKey==='building'" :checked="Boolean(isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;">
-          仅当前机构下楼栋
-        </a-checkbox>
-        <treeSelect
-          v-if="showKey==='building'"
-          @changeTree="organIdChange"
-          :typeFilter="typeFilter"
-          placeholder='请选择组织机构'
-          :allowClear="false"
-          :style="allWidth"
-          :showSearch='true'
-        ></treeSelect>
+        <a-checkbox :checked="Boolean(isCurrent)" @change="changeChecked" style="margin-top: 7px; margin-right: 10px"> 仅当前机构下{{ tabName }} </a-checkbox>
+        <treeSelect @changeTree="organIdChange" :typeFilter="typeFilter" placeholder="请选择组织机构" :allowClear="false" :style="allWidth" :showSearch="true"></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
-        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD)" tab="楼栋信息" key="building">
-          <buildingInfo :isCurrent="isCurrent" :organId="organId"/>
-        </a-tab-pane>
-        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE)" tab="房间信息" key="house">
-          <houseInfo />
-        </a-tab-pane>
-        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND)" tab="土地信息" key="land">
-          <landInfo />
-        </a-tab-pane>
-        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK)" tab="车场信息" key="park">
-           <parkInfo />
-        </a-tab-pane>
-        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK_ITEM)" tab="车位信息" key="stall">
-          <stall-info />
-        </a-tab-pane>
-        <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_SOURCE_TAB_EQ)" tab="设备信息" key="equipment">
-          <equipment-info />
+        <a-tab-pane v-for="tabPane in tabList" :key="tabPane.keyStr" v-show="$power.has(tabPane.auth)" :tab="tabPane.title">
+          <components v-if="showKey === tabPane.keyStr" :is="tabPane.components" :isCurrent="isCurrent" :organIdInfo="organIdInfo"></components>
         </a-tab-pane>
       </a-tabs>
     </div>
   </div>
 </template>
 <script>
+const tabList = [
+  {
+    auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD,
+    title: "楼栋信息",
+    keyStr: "building",
+    components: "buildingInfo",
+  },
+  {
+    auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE,
+    title: "房间信息",
+    keyStr: "house",
+    components: "houseInfo",
+  },
+  {
+    auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND,
+    title: "土地信息",
+    keyStr: "land",
+    components: "landInfo",
+  },
+  {
+    auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK,
+    title: "车场信息",
+    keyStr: "park",
+    components: "parkInfo",
+  },
+  {
+    auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK_ITEM,
+    title: "车位信息",
+    keyStr: "stall",
+    components: "stallInfo",
+  },
+  {
+    auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_EQ,
+    title: "设备信息",
+    keyStr: "equipment",
+    components: "equipmentInfo",
+  },
+];
 import { ASSET_MANAGEMENT } from "@/config/config.power";
-import buildingInfo from './buildingInfo'
-import houseInfo from './houseInfo'
-import landInfo from './land/landInfo'
-import parkInfo from './park/ParkInfo'
+import buildingInfo from "./buildingInfo";
+import houseInfo from "./houseInfo";
+import landInfo from "./land/landInfo";
+import parkInfo from "./park/ParkInfo";
 import StallInfo from "./stall/StallInfo";
-import TreeSelect from '../common/treeSelect'
-import { typeFilter } from './buildingDictConfig'
+import TreeSelect from "../common/treeSelect";
+import { typeFilter } from "./buildingDictConfig";
 import EquipmentInfo from "./equipment/EquipmentInfo";
-const allWidth = {width: '185px'}
+const allWidth = { width: "250px", zIndex: 99999 };
 export default {
   components: {
     EquipmentInfo,
@@ -67,18 +77,28 @@ export default {
     TreeSelect,
     buildingInfo,
   },
-  data () {
+  computed: {
+    tabName() {
+      return tabList
+        .filter((i) => {
+          return this.showKey === i.keyStr;
+        })[0]
+        .title.slice(0, 2);
+    },
+  },
+  data() {
     return {
       ASSET_MANAGEMENT,
       typeFilter,
       isCurrent: 0, // 查询条件-是否仅当前机构
-      showKey: 'building',
+      showKey: "building",
       allWidth,
-      organId: ''
-    }
+      organIdInfo: { organId: "", organName: "" },
+      tabList: tabList,
+    };
   },
-  created () {
-    this.init()
+  created() {
+    this.init();
     // let query = this.GET_ROUTE_QUERY(this.$route.path)
     // if (Object.keys(query).length > 0) {
     //   if (query.showKey === 'house') {
@@ -98,72 +118,34 @@ export default {
   // },
   methods: {
     // 处理是否选中仅当前机构
-    changeChecked (e) {
-      this.isCurrent = Number(e.target.checked)
+    changeChecked(e) {
+      this.isCurrent = Number(e.target.checked);
     },
-    tabChange (v) {
-      console.log(v)
-      this.showKey = v
+    tabChange(v) {
+      console.log(this.organIdInfo, "切换tab", v);
+      this.showKey = v;
     },
-    organIdChange (value) {
-      this.organId = value
+    organIdChange(organId, organName) {
+      console.log(organId, organName, "顶部组织机构");
+      this.organIdInfo.organId = organId;
+      this.organIdInfo.organName = organName;
     },
-    init(){
-      const arr = [
-        {
-          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD,
-          keyStr:'building'
-        },
-        {
-          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE,
-          keyStr:'house'
-        },
-        {
-          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND,
-          keyStr:'land'
-        },
-        {
-          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK,
-          keyStr:'park'
-        },
-        {
-          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK_ITEM,
-          keyStr:'stall'
-        },
-        {
-          auth:ASSET_MANAGEMENT.ASSET_SOURCE_TAB_EQ,
-          keyStr:'equipment'
-        }
-      ]
-      for (let i = 0;i<arr.length;i++){
-        if (this.$power.has(arr[i].auth)){
-          this.showKey  = arr[i].keyStr
+    init() {
+      for (let i = 0; i < tabList.length; i++) {
+        if (this.$power.has(tabList[i].auth)) {
+          this.showKey = tabList[i].keyStr;
           break;
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="less" scoped>
-  .buildingDict-page{
-    position: relative;
-    .copy-left, .copy-right{
-      content: '';
-      position: absolute;
-      width: 34px;
-      height: 1px;
-      background: #fff;
-      top: 61px;
-    }
-    .copy-left{
-      left: 0;
-    }
-    .copy-right{
-      right: 0;
-    }
-  }
-  .top-select{
+.buildingDict-page {
+  position: relative;
+}
+.top-select {
   position: absolute;
   right: 30px;
   top: 13px;

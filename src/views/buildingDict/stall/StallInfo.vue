@@ -24,11 +24,6 @@
             <SG-Button v-if="stallImportButton" @click="showStallDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
           </div>
           <div style="overflow: visible;margin-top:-10px;">
-            <a-checkbox :checked="Boolean(queryCondition.isOnlyCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-              仅当前机构下车位
-            </a-checkbox>
-            <!-- 公司 -->
-            <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth" :showSearch='true'></treeSelect>
             <!-- 全部运营项目-->
 <!--                mode="multiple"-->
             <a-select
@@ -187,6 +182,18 @@ export default {
     SearchContainer,
     stallDataImport
   },
+  props: {
+    organIdInfo: {
+      type: Object,
+      default: () => {
+        return ({})
+      },
+    },
+    isCurrent: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       showImport: false,
@@ -228,6 +235,18 @@ export default {
         this.queryCondition.pageLength = 10;
         this.query();
       }
+    },
+    organIdInfo: {
+      handler({organId, organName}) {
+        if (organId) {
+          this.organIdChange(organId, organName)
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    isCurrent() {
+      this.queryCondition.isOnlyCurrent = this.isCurrent ? "1" : ""
     },
   },
   mounted() {
@@ -461,10 +480,6 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    },
-    // 仅当先组织机构 1 选中, "" 不选中
-    changeChecked (e) {
-      this.queryCondition.isOnlyCurrent = Number(e.target.checked) ? "1" : ""
     },
     /* ******************************************************** */
     // 车场搜索

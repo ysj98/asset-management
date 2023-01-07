@@ -143,8 +143,11 @@ export default {
     downErrorFile,
   },
   props: {
-    organId: {
-      default: "",
+    organIdInfo: {
+      type: Object,
+      default: () => {
+        return ({})
+      },
     },
     isCurrent: {
       type: Number,
@@ -153,6 +156,7 @@ export default {
   },
   data() {
     return {
+      organId: '',
       selectedKeysDefault: [],
       expandedKeysDefault: [],
       organIdOwn: "", // 所属机构ID
@@ -170,10 +174,15 @@ export default {
     };
   },
   watch: {
-    organId(nv) {
-      if (nv) {
-        this.resetInit();
-      }
+    organIdInfo: {
+      handler({organId}) {
+        if (organId) {
+          this.organId = organId
+          this.resetInit();
+        }
+      },
+      deep: true,
+      immediate: true
     },
     isCurrent() {
       this.resetInit();

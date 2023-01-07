@@ -167,8 +167,8 @@
         </a-form>
       </a-row>
     </div>
-    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6'">
-      <span class="section-title blue">{{this.typeJudgment === '1' || this.typeJudgment === '4' || this.typeJudgment === '5' || this.typeJudgment === '6'? '权属人' : '土地使用权人'}}</span>
+    <div class="newCard-nav" v-if="this.typeJudgment !== '2'">
+      <span class="section-title blue">{{this.typeJudgment !== '3'? '权属人' : '土地使用权人'}}</span>
       <div class="tab-nav table-border">
         <a-table
           :columns="columns"
@@ -202,7 +202,7 @@
       </div>
       <div class="add-information" @click="communityAroundsFn"><a-icon type="plus" class="item-tab-icon"/>添加权属人</div>
     </div>
-    <div class="newCard-nav" v-if="this.typeJudgment === '1' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6'">
+    <div class="newCard-nav" v-if="this.typeJudgment !== '2' && this.typeJudgment !== '3'">
       <span class="section-title blue">抵押信息</span>
       <div class="tab-nav table-border">
         <a-table
@@ -337,13 +337,13 @@ export default {
       if (this.newData === 'new') {
         if (this.typeJudgment) {
           let arr = []
-          if (this.typeJudgment === '1'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
+          if (this.typeJudgment === '1') {
             arr = this.titleDeed
           } else if (this.typeJudgment === '2') {
             arr = this.accessCard
           } else if (this.typeJudgment === '3') {
             arr = this.landDeed
-          } else if (this.typeJudgment === '4') {
+          } else{
             arr = this.titleDeed
           }
           arr.forEach(item => {
@@ -371,13 +371,13 @@ export default {
           this.amsOwnershipWarrantMortgageList = []
         }
       } else {
-        if (this.typeJudgment === '1'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
+        if (this.typeJudgment === '1') {
           this.beat = this.titleDeed
         } else if (this.typeJudgment === '2') {
           this.beat = this.accessCard
         } else if (this.typeJudgment === '3') {
           this.beat = landDeed
-        }else if (this.typeJudgment === '4') {
+        } else {
           this.beat = this.titleDeed
         }
       }
@@ -414,7 +414,7 @@ export default {
         if (!err) {
           let amsOwnershipWarrantObligeeList = []
           let amsOwnershipWarrantMortgageList = []
-          if (this.typeJudgment === '1' || this.typeJudgment === '3' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
+          if (this.typeJudgment !== '2') {
             if (this.amsOwnershipWarrantObligeeList.length === 0) {
               this.$message.info('请选择权属人')
               return
@@ -444,7 +444,7 @@ export default {
               }
             }
           }
-          if (this.typeJudgment === '1' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
+          if (this.typeJudgment !== '2' && this.typeJudgment !== '3') {
             // 抵押信息
             if (this.amsOwnershipWarrantMortgageList.length > 0) {
               for (let i = 0; i < this.amsOwnershipWarrantMortgageList.length; i++) {
@@ -595,7 +595,6 @@ export default {
     platformDictFn () {
       Promise.all([
         this.$api.assets.platformDict({code: 'AMS_OWNER_TYPE'}),
-        this.$api.assets.platformDict({code: 'AMS_KIND_OF_RIGHT'}),
         this.$api.assets.organDict({code: 'OWNERSHIP_USE', organId: this.organId}),
         this.$api.assets.platformDict({code: 'BUILD_STRUCT'}),
         this.$api.assets.organDict({code: 'QUALITY_OF_RIGHT', organId: this.organId}),
@@ -610,19 +609,9 @@ export default {
           })
           this.ownerTypeData = arr
         }
-        // 权证类型
-        // if (+res[1].data.code === 0) {
-        //   let data = res[1].data.data
-        //   let arr = []
-        //   data.forEach(item => {
-        //     arr.push({ value: item.value, label: item.name })
-        //   })
-        //   let temp = [{label:'不动产证', value:'1'}, {label:'使用权证', value:'2'}, {label:'土地使用权证', value:'3'}, {label:'房屋产权证', value:'3'}] // 临时本地模拟数据
-        //   this.kindOfRightData = arr.length < 3 ? temp : arr
-        // }
         // 权属用途
-        if (+res[2].data.code === 0) {
-          let data = res[2].data.data
+        if (+res[1].data.code === 0) {
+          let data = res[1].data.data
           let arr = []
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
@@ -630,8 +619,8 @@ export default {
           this.ownershipUseData = arr
         }
         // 建筑建筑结构
-        if (+res[3].data.code === 0) {
-          let data = res[3].data.data
+        if (+res[2].data.code === 0) {
+          let data = res[2].data.data
           let arr = []
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
@@ -639,8 +628,8 @@ export default {
           this.structureData = arr
         }
         // 权利性质
-        if (+res[4].data.code === 0) {
-          let data = res[4].data.data
+        if (+res[3].data.code === 0) {
+          let data = res[3].data.data
           let arr = []
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
@@ -648,8 +637,8 @@ export default {
           this.qualityOfRightData = arr
         }
         //权证类型
-        if (+res[5].data.code === 0) {
-          let data = res[5].data.data
+        if (+res[4].data.code === 0) {
+          let data = res[4].data.data
           let arr = []
           data.forEach(item => {
             arr.push({ value: item.value, label: item.name })
@@ -837,7 +826,7 @@ export default {
               propertyRightUnit: data.amsOwnershipWarrant.propertyRightUnit,    // 实际产权单位
               safekeepUnit: data.amsOwnershipWarrant.safekeepUnit,    // 实际保管单位
             })
-            if (this.typeJudgment === '1' || this.typeJudgment === '4'|| this.typeJudgment === '5' || this.typeJudgment === '6') {
+            if (this.typeJudgment !== '2' && this.typeJudgment !== '3') {
               this.form.setFieldsValue({
                 lotNo: data.amsOwnershipWarrant.lotNo,
                 estateUnitCode: data.amsOwnershipWarrant.estateUnitCode,

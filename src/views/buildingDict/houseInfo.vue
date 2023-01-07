@@ -32,19 +32,6 @@
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-            仅当前机构下房屋
-          </a-checkbox>
-          <!-- 公司 -->
-          <treeSelect
-            :typeFilter="typeFilter"
-            @changeTree="organIdChange"
-            placeholder='请选择组织机构'
-            :allowClear="false"
-            :style="allWidth"
-            :showSearch='true'
-          >
-          </treeSelect>
           <!-- 楼栋 -->
           <a-select
             showSearch
@@ -212,7 +199,6 @@ import houseDataImport from "./child/houseDataImport.vue";
 import downErrorFile from "@/views/common/downErrorFile";
 import { ASSET_MANAGEMENT } from "@/config/config.power";
 import noDataTips from "@/components/noDataTips";
-import TreeSelect from '../common/treeSelect'
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
 let getUuid = ((uuid = 1) => () => ++uuid)();
 const allWidth = {
@@ -350,7 +336,18 @@ export default {
     houseDataImport,
     downErrorFile,
     noDataTips,
-    TreeSelect
+  },
+  props: {
+    organIdInfo: {
+      type: Object,
+      default:() => {
+        return ({})
+      },
+    },
+    isCurrent: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -383,6 +380,18 @@ export default {
     };
   },
   watch: {
+    organIdInfo: {
+      handler({organId, organName}) {
+        if (organId) {
+          this.organIdChange(organId, organName)
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    isCurrent() {
+      this.queryCondition.isCurrent = this.isCurrent
+    },
     $route () {
       if (
         this.$route.path === "/buildingDict" &&
@@ -393,7 +402,7 @@ export default {
         this.queryCondition.pageLength = 10;
         this.query();
       }
-    }
+    },
   },
   created() {
     this.handleBtn();
@@ -503,10 +512,6 @@ export default {
           );
         }
       });
-    },
-    // 处理是否选中仅当前机构
-    changeChecked (e) {
-      this.queryCondition.isCurrent = Number(e.target.checked)
     },
     // 查询房屋列表
     query() {

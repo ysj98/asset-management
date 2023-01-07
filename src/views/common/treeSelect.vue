@@ -176,7 +176,7 @@ export default {
     },
     // 选中树节点
     treeNodeSelect(selectedKeys, e) {
-      console.log(selectedKeys, e);
+      // console.log(selectedKeys, e);
       if (this.multiple) {
         this.checkedKeys = selectedKeys;
         if (this.checkedKeys.checked.length === 0) {

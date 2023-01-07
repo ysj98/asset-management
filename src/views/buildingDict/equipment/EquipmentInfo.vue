@@ -23,11 +23,6 @@
 <!--            </SG-Button>-->
           </div>
           <div style="overflow: visible;margin-top:-10px;">
-            <a-checkbox :checked="Boolean(queryCondition.isCurrent)" @change="changeChecked" style="margin-top: 7px;margin-right: 10px;" :style="allWidth">
-              仅当前机构下设备
-            </a-checkbox>
-            <!-- 公司 -->
-            <treeSelect :typeFilter="typeFilter"  @changeTree="organIdChange"  placeholder='请选择组织机构' :allowClear="false" :style="allWidth" :showSearch='true'></treeSelect>
             <equipment-select-tree
                 style="margin-right: 10px;"
                 :allowClear="true"
@@ -140,6 +135,18 @@ export default {
     OperationPopover,
     SearchContainer
   },
+  props: {
+    organIdInfo: {
+      type: Object,
+      default: () => {
+        return ({})
+      },
+    },
+    isCurrent: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       typeFilter,
@@ -177,6 +184,18 @@ export default {
         this.queryCondition.pageLength = 10;
         this.query();
       }
+    },
+    organIdInfo: {
+      handler({organId, organName}) {
+        if (organId) {
+          this.organIdChange(organId, organName)
+        }
+      },
+      deep: true,
+      immediate: true
+    },
+    isCurrent() {
+      this.queryCondition.isCurrent = this.isCurrent
     },
   },
   mounted() {
@@ -418,9 +437,6 @@ export default {
           .toLowerCase()
           .indexOf(input.toLowerCase()) >= 0
       );
-    },
-    changeChecked (e) {
-      this.queryCondition.isCurrent = Number(e.target.checked)
     },
     // 根据communityId查询organId
     async queryOrganIdByCommunityId (communityId) {
