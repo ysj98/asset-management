@@ -14,7 +14,7 @@
               <a-row>
                 <a-col class="playground-col" :span="24">
                   <a-form-model-item label="业务名称：" :required="true" prop="attrName">
-                    <a-input v-model="formInfo.attrName" :max-Length="30"></a-input>
+                    <a-input v-model="formInfo.attrName" :maxLength="30"></a-input>
                   </a-form-model-item>
                 </a-col>
               </a-row>

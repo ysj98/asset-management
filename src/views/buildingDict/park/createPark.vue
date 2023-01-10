@@ -29,7 +29,7 @@
             <a-form-model-item label="车场名称" :required="true" prop="placeName">
               <a-input
                 style="width: 100%;"
-                :max-Length="128"
+                :maxLength="128"
                 placeholder="请输入车场名称"
                 v-model="formInfo.placeName"
                 />
@@ -39,7 +39,7 @@
             <a-form-model-item label="车场编码" :required="true" prop="placeCode">
               <a-input
                 :style="allWidth"
-                :max-Length="64"
+                :maxLength="64"
                 placeholder="请输入车场编码"
                 v-model="formInfo.placeCode"
               />
@@ -90,7 +90,7 @@
           <!-- <a-col :span="16">
             <a-form-model-item label="地理位置" :label-col="{ span: 2 }" :wrapper-col="{ span: 19 }" prop="placeAddr">
               <a-input
-                :max-Length="128"
+                :maxLength="128"
                 :style="allWidth"
                 placeholder="详细地址"
                 v-model="formInfo.placeAddr"
@@ -140,7 +140,7 @@
                         :filterOption="filterOption"
                         notFoundContent="没有查询到数据"
                       />
-                      <a-input :disabled="true" :max-Length="100"  v-model="formInfo.placeAddr"  placeholder="详细地址"/>
+                      <a-input :disabled="true" :maxLength="100"  v-model="formInfo.placeAddr"  placeholder="详细地址"/>
                     </div>
                   </a-form-model-item>
                 </a-col>
@@ -167,7 +167,7 @@
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
             <div style="width: 86%">
               <a-textarea
-                  :max-Length="128"
+                  :maxLength="128"
                   placeholder="请输入备注"
                   v-model="formInfo.description"
               />
@@ -244,7 +244,7 @@
                               :key="'areaDescription'+index+ind"
                               type="textarea"
                               :disabled="formInfo.areaArray[index].disabled"
-                              :max-Length="128"
+                              :maxLength="128"
                               :style="allWidth"
                               :placeholder="com.placeHolder"
                               v-model="formInfo.areaArray[index].areaDescription"
@@ -260,7 +260,7 @@
                            {required: true,pattern: new RegExp(/^\d{0,11}?$/), message: '请输入区域车位数量,并且小于11位的正整数,'}]">
                         <a-input
                             :key="'areaPosiNums'+index+ind"
-                            :max-Length="com.max-Length"
+                            :maxLength="com.maxLength"
                             :style="allWidth"
                             :disabled="formInfo.areaArray[index].disabled"
                             :placeholder="com.placeHolder"
@@ -278,7 +278,7 @@
                       >
                         <a-input
                           :style="allWidth"
-                          :max-Length="com.max-Length"
+                          :maxLength="com.maxLength"
                           :placeholder="com.placeHolder"
                           :disabled="formInfo.areaArray[index].disabled"
                           v-model="formInfo.areaArray[index].areaZone"
@@ -294,7 +294,7 @@
 <!--                        区域名称-->
                         <a-input
                           :style="allWidth"
-                          :max-Length="64"
+                          :maxLength="64"
                           :placeholder="com.placeHolder"
                           :disabled="formInfo.areaArray[index].disabled"
                           v-model="formInfo.areaArray[index].areaName"
@@ -310,7 +310,7 @@
 <!--                        区域编码-->
                         <a-input
                             :style="allWidth"
-                            :max-Length="64"
+                            :maxLength="64"
                             :placeholder="com.placeHolder"
                             :disabled="formInfo.areaArray[index].disabled"
                             v-model="formInfo.areaArray[index].areaCode"

@@ -49,7 +49,7 @@
             />
             <!-- 资产名称或编码 -->
             <a-input
-              :max-Length="30"
+              :maxLength="30"
               placeholder="资产(卡片)名称/编码"
               v-model="queryCondition.objName"
               :style="allStyle"

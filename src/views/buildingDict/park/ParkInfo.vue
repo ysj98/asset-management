@@ -58,7 +58,7 @@
           />
           <!-- 资产名称或编码 -->
           <a-input
-            :max-Length="30"
+            :maxLength="30"
             placeholder="车场名称/编码"
             v-model="queryCondition.nameOrCode"
             :style="allStyle"

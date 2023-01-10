@@ -51,7 +51,7 @@
             />
             <!-- 资产名称或编码 -->
             <a-input
-              :max-Length="30"
+              :maxLength="30"
               placeholder="输入资产名称/编码"
               v-model="queryCondition.assetNameOrCode"
               :style="allStyle"
@@ -102,7 +102,7 @@
               notFoundContent="没有查询到数据"
             />
             <a-input
-              :max-Length="30"
+              :maxLength="30"
               v-model="queryCondition.matchingNameOrCode"
               placeholder="附属配套名称/编码"
               :style="allWidth"

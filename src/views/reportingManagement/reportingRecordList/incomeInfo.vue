@@ -34,7 +34,7 @@
             </div>
             <!-- 资产名称或编码 -->
             <a-input
-              :max-Length="30"
+              :maxLength="30"
               placeholder="资产名称/编码"
               v-model="queryCondition.objName"
               :style="allStyle"
@@ -71,14 +71,14 @@
             />
             <!-- 收入类型 -->
             <a-input
-              :max-Length="60"
+              :maxLength="60"
               placeholder="请输入收入类型"
               v-model="queryCondition.incomeType"
               :style="allWidth"
             />
             <!-- 收入名称 -->
             <a-input
-              :max-Length="60"
+              :maxLength="60"
               placeholder="请输入收入名称"
               v-model="queryCondition.incomeName"
               :style="allWidth"

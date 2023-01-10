@@ -52,7 +52,7 @@
           <span v-else>{{text}}</span>
         </template>
         <template slot="remark" slot-scope="text, record">
-          <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" :max-Length="200" />
+          <a-input v-if="type == 'add' || type == 'edit'" v-model="record.remark" :maxLength="200" />
           <span v-else>{{text}}</span>
         </template>
          <template slot="opt" slot-scope="text, record" >

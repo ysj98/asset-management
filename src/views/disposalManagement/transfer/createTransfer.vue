@@ -745,7 +745,7 @@ export default {
       configBase,
       textareaProps: {
         maxLength: 3000,
-        autoSize: {
+        autosize: {
           minRows: 6,
           maxRows: 12,
         },

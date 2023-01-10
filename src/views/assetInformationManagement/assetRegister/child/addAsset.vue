@@ -363,12 +363,18 @@
                 </a-select>
               </a-form-item>
             </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" v-bind="formItemLayout">
+                <label slot="label">资产原始来源方：</label>
+                <a-input placeholder="请输入资产原始来源方" :style="allWidth" :max="30" v-decorator="['originSource', { rules: [{ required: false, max: 30, whitespace: true, message: '请输入资产原始来源方(不超过30字符)' }], initialValue: params.originSource }]" />
+              </a-form-item>
+            </a-col>
           </a-row>
           <a-row v-show="lawsuitRemarkShow">
             <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
                 <label slot="label">诉讼情况：</label>
-                <a-textarea placeholder="请输入诉讼情况" :style="widthBox" :autoSize="{ minRows: 2, maxRows: 4 }" v-decorator="['lawsuitRemark', { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark }]" />
+                <a-textarea placeholder="请输入诉讼情况" :style="widthBox" :autosize="{ minRows: 2, maxRows: 4 }" v-decorator="['lawsuitRemark', { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark }]" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -435,6 +441,7 @@ const params = {
   mortgage: '', // 是否抵押
   lawsuit: '', // 是否涉诉 /lawsuitName
   lawsuitRemark: '', //诉讼情况
+  originSource: '', // 资产原始来源方
 }
 export default {
   props: {

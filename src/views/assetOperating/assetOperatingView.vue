@@ -18,7 +18,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" show-search :filter-option="filterOption" placeholder="全部运营项目" :tokenSeparators="[',']" @select="operatingObjFn" v-model="queryCondition.operatingObject">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">

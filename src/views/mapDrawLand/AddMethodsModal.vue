@@ -46,7 +46,7 @@
               {{ record.schemeName }}
             </div>
             <div v-else>
-              <a-input :max-Length="100" v-model="record.schemeName"></a-input>
+              <a-input :maxLength="100" v-model="record.schemeName"></a-input>
             </div>
           </template>
           <!-- 操作  -->

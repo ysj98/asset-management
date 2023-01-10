@@ -190,7 +190,7 @@
               <a-textarea
                 placeholder="请输入备注"
                 :style="widthBox"
-                :autoSize="{ minRows: 2, maxRows: 4 }"
+                :autosize="{ minRows: 2, maxRows: 4 }"
                 v-decorator="[
                   'remark',
                   {

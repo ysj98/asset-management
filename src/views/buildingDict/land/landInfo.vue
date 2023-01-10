@@ -74,7 +74,7 @@
           />
           <!-- 资产名称或编码 -->
           <a-input
-            :max-Length="30"
+            :maxLength="30"
             placeholder="土地名称/编码/宗地号"
             v-model="queryCondition.queryName"
             :style="allStyle"
@@ -84,7 +84,7 @@
           ref="ProvinceCityDistrict"
           v-model="provinces"
         ></ProvinceCityDistrict>
-        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;margin-top:10px" @search="searchQuery" />
+        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;margin-top:10px" @search="searchQuery" />
           <SG-Button @click="searchQuery" class="mr10 mt10" type="primary">查询</SG-Button>
         </div>
       </div>

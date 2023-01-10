@@ -11,7 +11,7 @@
         <SG-Button v-if="$power.has(ASSET_MANAGEMENT.ASSET_COST_EXPORT)" @click="openExport" type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="资产名称/编码" max-Length="30" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="资产名称/编码" :maxLength="30" @search="onSearch" />
         </div>
       </div>
       <div slot="btns">
@@ -24,8 +24,8 @@
         <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部呈报方式" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.taskType">
           <a-select-option :title="item.name" v-for="(item, index) in taskTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
-        <a-input style="width: 170px; margin-right: 10px;" v-model="queryCondition.expenseType" placeholder="费用类型" max-Length="60" />
-        <a-input style="width: 170px; margin-right: 10px;" v-model="queryCondition.expenseName" placeholder="费用名称" max-Length="60" />
+        <a-input style="width: 170px; margin-right: 10px;" v-model="queryCondition.expenseType" placeholder="费用类型" :maxLength="60" />
+        <a-input style="width: 170px; margin-right: 10px;" v-model="queryCondition.expenseName" placeholder="费用名称" :maxLength="60" />
         <a-month-picker v-model="month"  placeholder="所属月份" />
         <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状数据状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
           <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>

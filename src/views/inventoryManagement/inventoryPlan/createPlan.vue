@@ -48,7 +48,7 @@
                 v-if="editable"
                 placeholder="请输入计划名称"
                 :style="allStyle"
-                :max-Length="30"
+                :maxLength="30"
                 v-decorator="[
                   'planName',
                   {
@@ -316,7 +316,7 @@
                 v-if="editable"
                 placeholder="请输入备注（最多200字）"
                 :rows="3"
-                :max-Length="200"
+                :maxLength="200"
                 v-decorator="['remark', { initialValue: '' }]"
               ></a-textarea>
               <span class="label-value" v-else>{{detail.remark || '--'}}</span>
@@ -346,13 +346,13 @@
       >
         <template slot="taskName" slot-scope="text, record">
           <div v-if="editable">
-            <a-input placeholder="请输入任务名称" :max-Length="30" v-model="record.taskName" />
+            <a-input placeholder="请输入任务名称" :maxLength="30" v-model="record.taskName" />
           </div>
           <span v-else>{{ record.taskName }}</span>
         </template>
         <template slot="checkRange" slot-scope="text, record">
           <div v-if="editable">
-            <a-input placeholder="请输入范围描述" :max-Length="100" v-model="record.checkRange" />
+            <a-input placeholder="请输入范围描述" :maxLength="100" v-model="record.checkRange" />
           </div>
           <span v-else>{{ record.checkRange }}</span>
         </template>

@@ -38,7 +38,7 @@
           <a-select style="width: 170px; margin-right: 10px;" placeholder="全部状态" @change="checkStatusChange" :tokenSeparators="[',']" v-model="queryCondition.checkStatus">
             <a-select-option :title="item.name" v-for="(item, index) in checkStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search style="width: 170px;" v-model="queryCondition.name" placeholder="资产名称/编码" max-Length="30" @search="onSearch" />
+          <a-input-search style="width: 170px;" v-model="queryCondition.name" placeholder="资产名称/编码" :maxLength="30" @search="onSearch" />
         </div>
       </Cephalosome>
         <div class="table-layout-fixed table-border">
@@ -117,9 +117,9 @@
       <span class="section-title blue">盘点结果说明</span>
       <div class="particulars-obj" style="line-height: 64px; padding: 20px 0 30px 0">
         <span class="required-color">盘点结果：</span><a-textarea placeholder="请输入盘点结果说明"
-            :autoSize="{ minRows: 3, maxRows: 3 }"
+            :autosize="{ minRows: 3, maxRows: 3 }"
             style="width: 93%;"
-            max-Length="200"
+            :maxLength="200"
             v-model="checkDetail"
             />
       </div>

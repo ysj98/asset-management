@@ -110,7 +110,7 @@
       </a-col>
       <a-col :span="8">
         <a-form-item :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol" label="评估报告号">
-          <a-input v-decorator="['assessmentNum']" :disabled="type == 'approval' || type == 'detail'" :max-Length="100" placeholer="请输入评估报告号" />
+          <a-input v-decorator="['assessmentNum']" :disabled="type == 'approval' || type == 'detail'" :maxLength="100" placeholer="请输入评估报告号" />
         </a-form-item>
       </a-col>
       <!--当type === detail || type === approval时展示审批人、提交时间、审批状态-->

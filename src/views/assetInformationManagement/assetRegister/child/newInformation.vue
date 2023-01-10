@@ -78,7 +78,7 @@
               <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
-                :autoSize="{ minRows: 2, maxRows: 4 }"
+                :autosize="{ minRows: 2, maxRows: 4 }"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newEditSingleData.remark}
                 ]"

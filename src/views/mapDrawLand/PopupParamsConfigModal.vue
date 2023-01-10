@@ -59,7 +59,7 @@
               <template #fieldAliasName="text, record">
                 <a-input
                   v-model="record.fieldAliasName"
-                  :max-Length="50"
+                  :maxLength="50"
                   placeholer="请输入"
                 />
               </template>

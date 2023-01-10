@@ -156,7 +156,7 @@
                 <label slot="label">巡查问题描述：</label>
                 <a-textarea placeholder="请输入巡查问题描述"
                   :style="widthBox"
-                  :autoSize="{ minRows: 2, maxRows: 4 }"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
                   v-decorator="['problemDescription',
                   {rules: [{required: false, max: 200, message: '请输入巡查问题描述(不超过200字符)'}], initialValue: newEditSingleData.problemDescription}
                   ]"
@@ -168,7 +168,7 @@
                 <label slot="label">现场处理措施：</label>
                 <a-textarea placeholder="请输入现场处理措施"
                   :style="widthBox"
-                  :autoSize="{ minRows: 2, maxRows: 4 }"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
                   v-decorator="['sceneHandleMeasure',
                   {rules: [{required: false, max: 200, message: '请输入现场处理措施(不超过200字符)'}], initialValue: newEditSingleData.sceneHandleMeasure}
                   ]"
@@ -192,7 +192,7 @@
                 <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
                 <a-textarea placeholder="请输入备注"
                   :style="widthBox"
-                  :autoSize="{ minRows: 2, maxRows: 4 }"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newEditSingleData.remark}
                   ]"

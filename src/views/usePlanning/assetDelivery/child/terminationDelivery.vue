@@ -23,7 +23,7 @@
           <a-textarea
             placeholder="请输入原因"
             :style="widthBox"
-            :autoSize="{ minRows: 2, maxRows: 4 }"
+            :autosize="{ minRows: 2, maxRows: 4 }"
             v-decorator="['cause',
             {rules: [{required: false, max: 200, message: '请输入原因(不超过200字符)'}], initialValue: subData.cause}
             ]"

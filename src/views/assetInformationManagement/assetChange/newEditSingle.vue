@@ -245,7 +245,7 @@
               <a-textarea
                 placeholder="请输入备注"
                 :style="widthBox"
-                :autoSize="{ minRows: 2, maxRows: 4 }"
+                :autosize="{ minRows: 2, maxRows: 4 }"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newEditSingleData.remark}
                 ]"
@@ -419,7 +419,7 @@
             </template>
             <!-- 位置变更 -->
             <template v-if="changeType === '5'" slot="addressName" slot-scope="text, record">
-              <a-input size="small" max-Length="100" v-model="record.addressName" />
+              <a-input size="small" :maxLength="100" v-model="record.addressName" />
             </template>
             <!-- 资产项目变更 -->
             <template v-if="changeType === '6'" slot="changeProjectId" slot-scope="text, record">
@@ -455,17 +455,17 @@
               />
             </template>
             <template v-if="changeType === '7'" slot="newAssetName" slot-scope="text, record">
-              <a-input size="small" max-Length="30" v-model="record.newAssetName" />
+              <a-input size="small" :maxLength="30" v-model="record.newAssetName" />
             </template>
             <template v-if="changeType === '7'" slot="newAssetCode" slot-scope="text, record">
-              <a-input size="small" max-Length="30" v-model="record.newAssetCode" />
+              <a-input size="small" :maxLength="30" v-model="record.newAssetCode" />
             </template>
             <template
               v-if="changeType === '7' && ['1'].includes(assetType)"
               slot="newDecorationSituation"
               slot-scope="text, record"
             >
-              <a-input size="small" max-Length="200" v-model="record.newDecorationSituation" />
+              <a-input size="small" :maxLength="200" v-model="record.newDecorationSituation" />
             </template>
             <template v-if="changeType === '7'" slot="newSourceMode" slot-scope="text, record">
               <a-select

@@ -73,7 +73,7 @@
           />
           <!-- 资产名称/编码 -->
           <a-input
-            :max-Length="30"
+            :maxLength="30"
             placeholder="输入资产名称/编码"
             v-model="queryCondition.assetNameCode"
             :style="allStyle"
@@ -133,7 +133,7 @@
               ></segi-range-picker>
             </div>
             <a-input
-              :max-Length="30"
+              :maxLength="30"
               v-model="queryCondition.registerNameCode"
               placeholder="权属登记单名称"
               :style="allWidth"

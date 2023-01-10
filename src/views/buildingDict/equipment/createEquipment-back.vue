@@ -44,7 +44,7 @@
                 <a-form-item label="设备设施名称" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :max-Length="30"
+                    :maxLength="30"
                     placeholder="请输入设备设施名称"
                     v-decorator="['equipmentInstName', {initialValue: ''|| undefined, rules: [{ required: true, whitespace: true, message: '请输入设备设施名称'}]}]"
                   />
@@ -56,7 +56,7 @@
                 <a-form-item label="设备设施编码" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :max-Length="30"
+                    :maxLength="30"
                     placeholder="请输入设备设施编码"
                     v-decorator="['equipmentInstCode', { rules: [{ required: true, whitespace: true, message: '请输入设备设施编码'}]}]"
                   />
@@ -85,7 +85,7 @@
                 <a-form-item label="规格型号" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :max-Length="30"
+                    :maxLength="30"
                     placeholder="请输入规格型号"
                     v-decorator="['equipmentInstModel', {initialValue: '' || undefined, rules: [{ message: '请输入规格型号'}]}]"
                   />
@@ -108,7 +108,7 @@
 <!--                    v-decorator="['equipmentAreaId']"/>-->
                   <a-input
                     style="width: 55.5%;"
-                    :max-Length="100"
+                    :maxLength="100"
                     placeholder="请输入详细地址"
                     v-decorator="['position']"
                   />
@@ -118,7 +118,7 @@
                 <a-form-item label="品牌" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :max-Length="30"
+                    :maxLength="30"
                     placeholder="请输入品牌"
                     v-decorator="['equipmentInstBrand',{initialValue: ''|| undefined }]"
                   />
@@ -143,7 +143,7 @@
                   <a-input
                     :style="allWidth"
                     style="width: 55.5%;"
-                    :max-Length="30"
+                    :maxLength="30"
                     placeholder="请输入生产厂家"
                     v-decorator="['equipmentFactory', {initialValue: ''}]"
                   />
@@ -190,7 +190,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
                   <a-textarea
-                    :max-Length="200"
+                    :maxLength="200"
                     v-decorator="['equipmentInstDesc', { initialValue: ''|| undefined }]"
                   />
                 </a-form-item>
@@ -231,7 +231,7 @@
                   <a-form-item :label="item.attrName" v-bind="formItemLayout">
                     <a-input
                       :style="allWidth"
-                      :max-Length="30"
+                      :maxLength="30"
                       :placeholder="'请输入' + item.attrName"
                       v-model="item.attrValue"
                     />

@@ -19,7 +19,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="taskStatusFn" v-model="queryCondition.taskStatus">
             <a-select-option :title="item.name" v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="任务名称" max-Length="50" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="任务名称" :maxLength="50" @search="onSearch" />
           <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </Cephalosome>

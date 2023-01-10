@@ -30,7 +30,7 @@
           {{item.title}}
           </a-select-option>
         </a-select>
-        <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" max-Length="40" :style="allStyle" @search="allQuery" />
+        <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" :maxLength="40" :style="allStyle" @search="allQuery" />
         <SG-Button type="primary" style="margin-right: 10px;" @click="allQuery">查询</SG-Button>
       </div>
     </SearchContainer>

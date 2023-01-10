@@ -43,7 +43,7 @@
               :value="item.value"
             >{{item.name}}</a-select-option>
           </a-select>
-        <a-input-search v-model="queryCondition.assetNameOrCode" placeholder="资产名称/编码" max-Length="30" :style="assetTypeList" @search="allQuery" />
+        <a-input-search v-model="queryCondition.assetNameOrCode" placeholder="资产名称/编码" :maxLength="30" :style="assetTypeList" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">

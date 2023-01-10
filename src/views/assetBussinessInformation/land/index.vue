@@ -42,7 +42,7 @@
               :dict-options="approvalStatusData"
               v-model="queryCondition.statuss"/>
             <a-input
-                :max-Length="30"
+                :maxLength="30"
                 placeholder="资产名称/编码"
                 v-model="queryCondition.landName"
                 :style="allStyle"

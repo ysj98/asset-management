@@ -61,7 +61,7 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
-          <!-- <a-input v-model="queryCondition.houseId" placeholder="房号" max-Length="40" :style="allStyle" /> -->
+          <!-- <a-input v-model="queryCondition.houseId" placeholder="房号" :maxLength="40" :style="allStyle" /> -->
           <SG-Button type="primary" style="margin-left: 10px;" @click="doSearch">查询</SG-Button>
         </div>
       </div>

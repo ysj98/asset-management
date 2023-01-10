@@ -40,7 +40,7 @@
               <a-input placeholder="请输入权证号"
               :disabled="setType === 'edit'"
               :style="allWidth"
-              :max-length="30"
+              :maxLength="30"
               v-decorator="['warrantNbr', {rules: [{required: true, max: 30, whitespace: true, message: '请输入权证号(不超过30字符)'}], initialValue: newCardData.warrantNbr}]"/>
             </a-form-item>
           </a-col>
@@ -96,7 +96,7 @@
               <a-input :placeholder="`请输入${item.label}`"
               :style="allWidth"
               :max=item.max
-              :max-length="item.max"
+              :maxLength="item.max"
               v-decorator="[item.attrCode, {rules: [{required: item.required, max: item.max, whitespace: true, message: `请输入${item.label}(不超过${item.max}字符)`}], initialValue: item.attrValue}]"/>
             </a-form-item>
             <!-- 数字输入框 -->
@@ -133,8 +133,8 @@
               <a-textarea
                 placeholder="请输入附加说明"
                 :style="widthBox"
-                :autoSize="{ minRows: 2, maxRows: 4 }"
-                :max-length="200"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :maxLength="200"
                 v-decorator="['excursus',
                   {rules: [{required: false, max: 200, message: '请输入附加说明(不超过200字符)'}], initialValue: newCardData.excursus}
                 ]"
@@ -146,8 +146,8 @@
               <label slot="label">备注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
-                :autoSize="{ minRows: 2, maxRows: 4 }"
-                :max-length="200"
+                :autosize="{ minRows: 2, maxRows: 4 }"
+                :maxLength="200"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newCardData.remark}
                 ]"
@@ -216,19 +216,19 @@
             />
           </template>
           <template slot="pledgee" slot-scope="text, record">
-            <a-input placeholder="抵押权人" :max-length="50" v-model="record.pledgee" />
+            <a-input placeholder="抵押权人" :maxLength="50" v-model="record.pledgee" />
           </template>
           <template slot="mortgageBank" slot-scope="text, record">
-            <a-input placeholder="抵押银行" :max-length="50" v-model="record.mortgageBank" />
+            <a-input placeholder="抵押银行" :maxLength="50" v-model="record.mortgageBank" />
           </template>
           <template slot="mortgageYear" slot-scope="text, record">
-            <a-input placeholder="抵押年限" :max-length="30" v-model="record.mortgageYear" />
+            <a-input placeholder="抵押年限" :maxLength="30" v-model="record.mortgageYear" />
           </template>
           <template slot="mortgageName" slot-scope="text, record">
-            <a-input placeholder="抵押物名称" :max-length="50" v-model="record.mortgageName" />
+            <a-input placeholder="抵押物名称" :maxLength="50" v-model="record.mortgageName" />
           </template>
           <template slot="loanContractName" slot-scope="text, record">
-            <a-input placeholder="借款合同编号" :max-length="30" v-model="record.loanContractName" />
+            <a-input placeholder="借款合同编号" :maxLength="30" v-model="record.loanContractName" />
           </template>
           <template slot="operation" slot-scope="text, record">
             <span class="postAssignment-icon" @click="mortgageInformationDeleteFn(record)">删除</span>

@@ -31,7 +31,7 @@
         <span v-if="type === 'detail'">{{ record.remark }}</span>
         <div v-else>
           <a-input
-            :max-Length="200"
+            :maxLength="200"
             @input="watchRemarkChange($event, record)"
             v-model="record.remark"
           />

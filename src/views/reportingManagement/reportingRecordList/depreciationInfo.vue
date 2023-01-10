@@ -10,7 +10,7 @@
         <SG-Button v-if="$power.has(ASSET_MANAGEMENT.ASSET_DEPRECIATION_EXPORT)" @click="openExport" type="primary"><segiIcon type="#icon-ziyuan10" class="mr10"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="资产卡片名称/编码" max-Length="30" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="资产卡片名称/编码" :maxLength="30" @search="onSearch" />
         </div>
       </div>
       <div slot="btns">

@@ -8,7 +8,7 @@
       <div class="content">
         <a-input
           v-model="centralName"
-          :max-Length="100"
+          :maxLength="100"
           placeholder="请输入"
           @focus="initDefault"
           @blur="handleBlur"

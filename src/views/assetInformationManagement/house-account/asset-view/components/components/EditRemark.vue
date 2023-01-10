@@ -20,7 +20,7 @@
         <a-spin :spinning="spinning">
       <div style="marginBottom: 10px">备注内容：</div>
      <div class="content">
-       <a-textarea placeholder="请输入备注内容" showCount :max-Length="200" :rows="5" v-model="remark"></a-textarea>
+       <a-textarea placeholder="请输入备注内容" showCount :maxLength="200" :rows="5" v-model="remark"></a-textarea>
        <div class="files">
         <!-- <UploadFile type="all" v-model="uploadList" :maxSize="51200">
           <div slot="tips">上传的文件最多为5个，文件大小最多为50M</div>

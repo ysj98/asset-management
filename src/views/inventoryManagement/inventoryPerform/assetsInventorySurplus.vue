@@ -26,7 +26,7 @@
               <a-form-item v-bind="formItemLayout" label="资产名称：">
                 <a-input placeholder="请输入资产名称"
                 :style="allWidth"
-                :max-Length="30"
+                :maxLength="30"
                 v-decorator="['assetName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入资产名称(不超过30字符)'}], initialValue: newCardData.assetName}]"/>
               </a-form-item>
             </a-col>
@@ -50,8 +50,8 @@
               <a-form-item v-bind="formItemTextarea" label="资产位置：">
                 <a-textarea placeholder="请输入资产位置"
                   :style="widthBox"
-                  :autoSize="{ minRows: 3, maxRows: 3 }"
-                  :max-Length="100"
+                  :autosize="{ minRows: 3, maxRows: 3 }"
+                  :maxLength="100"
                   v-decorator="['assetAddress',
                   {rules: [{required: false, max: 100, message: '请输入资产位置(不超过100字符)'}], initialValue: newCardData.assetAddress}
                   ]"
@@ -62,8 +62,8 @@
               <a-form-item v-bind="formItemTextarea" label="备注：">
                 <a-textarea placeholder="请输入备注"
                   :style="widthBox"
-                  :autoSize="{ minRows: 3, maxRows: 3 }"
-                  :max-Length="200"
+                  :autosize="{ minRows: 3, maxRows: 3 }"
+                  :maxLength="200"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newCardData.remark}
                   ]"

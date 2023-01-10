@@ -122,10 +122,10 @@
           <a-col :span="24">
             <a-form-item label="备注">
               <a-textarea
-                :max-Length="2000"
+                :maxLength="2000"
                 v-decorator="['remark', {initialValue: form.remark}]"
                 placeholder="请填写备注(不超过2000字)"
-                :autoSize="{ minRows: 3, maxRows: 5 }"
+                :autosize="{ minRows: 3, maxRows: 5 }"
               />
             </a-form-item>
           </a-col>

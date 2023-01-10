@@ -19,7 +19,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -62,13 +62,14 @@
         <div class="box">
           <SG-DatePicker label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-        <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="登记单编码" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="登记单编码" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         <ProvinceCityDistrict
           class="city"
           ref="ProvinceCityDistrict"
           v-model="provinces"
         ></ProvinceCityDistrict>
-        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.originSource" placeholder="请输入资产原始来源方" :maxLength="5" style="width: 170px; height: 32px; margin-right: 10px;" @search="allQuery" />
       </div>
     </SG-SearchContainer>
     <!--数据总览-->
@@ -189,6 +190,7 @@ export default {
         assetClassify: [''],        // 资产分类
         registerOrderNameOrId: '',     // 登记单编号
         sourceModes : [''],         // 来源方式
+        originSource : '' // 资产原始来源方
       },
       numList: [
         {title: '全部', key: 'whole', value: 0, fontColor: '#324057'},
@@ -279,6 +281,7 @@ export default {
         province: this.provinces.province ? this.provinces.province : '',   // 省
         region: this.provinces.district ? this.provinces.district : '',     // 区
         address: this.queryCondition.address ? this.queryCondition.address : '',     // 区
+        originSource: this.queryCondition.originSource ? this.queryCondition.originSource : '',     // 资产原始来源方
       }
     },
     exportFn () {
