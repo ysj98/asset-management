@@ -1,6 +1,6 @@
 /**
  * 调用方式： this.$textReplace(), textReplace 工具函数已经挂在到vue prototype 上
- * 参数： organId 可选，如果传了organId，则获取配置的接口，将返回信息存到localStorage，没传，直接获取localStorage信息
+ * 参数： organId 可选，如果传了organId，则获取配置的接口，将配置信息存到localStorage，没传，直接获取localStorage信息
  * 工作方式：通过获取存在货币单位，面积到位的dom，遍历dom，通过innerText拿到文本值通过replace去改变
  */
 import * as paramsConfig from "@/api/paramsConfig";

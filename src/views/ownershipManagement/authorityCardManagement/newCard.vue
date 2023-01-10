@@ -40,7 +40,7 @@
               <a-input placeholder="请输入权证号"
               :disabled="setType === 'edit'"
               :style="allWidth"
-              :maxLength="30"
+              :max-length="30"
               v-decorator="['warrantNbr', {rules: [{required: true, max: 30, whitespace: true, message: '请输入权证号(不超过30字符)'}], initialValue: newCardData.warrantNbr}]"/>
             </a-form-item>
           </a-col>
@@ -89,7 +89,6 @@
             </a-form-item>
           </a-col>
           <!-- beat -->
-          <!-- -----------------------------------------------------------21212------------------------------------------------------------->
           <!-- 基本输入框 -->
           <a-col class="playground-col" v-for="(item, index) in beat" :key="index" :span="12">
             <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'input'">
@@ -97,7 +96,7 @@
               <a-input :placeholder="`请输入${item.label}`"
               :style="allWidth"
               :max=item.max
-              :maxLength="item.max"
+              :max-length="item.max"
               v-decorator="[item.attrCode, {rules: [{required: item.required, max: item.max, whitespace: true, message: `请输入${item.label}(不超过${item.max}字符)`}], initialValue: item.attrValue}]"/>
             </a-form-item>
             <!-- 数字输入框 -->
@@ -109,7 +108,7 @@
                 v-decorator="[item.attrCode, {rules: [{required: item.required, message: `请输入${item.label}(范围${item.min}-${item.max})`}], initialValue: item.attrValue}]"/>
             </a-form-item>
             <!-- 选择框 -->
-            <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'selcet'">
+            <a-form-item v-bind="formItemLayout" :colon="false" v-if="item.formType === 'select'">
               <label slot="label">{{item.label}}：</label>
               <a-select :style="allWidth" showSearch :placeholder="`请选择${item.label}`"
               optionFilterProp="children"
@@ -134,8 +133,8 @@
               <a-textarea
                 placeholder="请输入附加说明"
                 :style="widthBox"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                :maxLength="200"
+                :autoSize="{ minRows: 2, maxRows: 4 }"
+                :max-length="200"
                 v-decorator="['excursus',
                   {rules: [{required: false, max: 200, message: '请输入附加说明(不超过200字符)'}], initialValue: newCardData.excursus}
                 ]"
@@ -147,8 +146,8 @@
               <label slot="label">备注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                :maxLength="200"
+                :autoSize="{ minRows: 2, maxRows: 4 }"
+                :max-length="200"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newCardData.remark}
                 ]"
@@ -217,19 +216,19 @@
             />
           </template>
           <template slot="pledgee" slot-scope="text, record">
-            <a-input placeholder="抵押权人" maxlength="50" v-model="record.pledgee" />
+            <a-input placeholder="抵押权人" :max-length="50" v-model="record.pledgee" />
           </template>
           <template slot="mortgageBank" slot-scope="text, record">
-            <a-input placeholder="抵押银行" maxlength="50" v-model="record.mortgageBank" />
+            <a-input placeholder="抵押银行" :max-length="50" v-model="record.mortgageBank" />
           </template>
           <template slot="mortgageYear" slot-scope="text, record">
-            <a-input placeholder="抵押年限" maxlength="30" v-model="record.mortgageYear" />
+            <a-input placeholder="抵押年限" :max-length="30" v-model="record.mortgageYear" />
           </template>
           <template slot="mortgageName" slot-scope="text, record">
-            <a-input placeholder="抵押物名称" maxlength="50" v-model="record.mortgageName" />
+            <a-input placeholder="抵押物名称" :max-length="50" v-model="record.mortgageName" />
           </template>
           <template slot="loanContractName" slot-scope="text, record">
-            <a-input placeholder="借款合同编号" maxlength="30" v-model="record.loanContractName" />
+            <a-input placeholder="借款合同编号" :max-length="30" v-model="record.loanContractName" />
           </template>
           <template slot="operation" slot-scope="text, record">
             <span class="postAssignment-icon" @click="mortgageInformationDeleteFn(record)">删除</span>
@@ -254,14 +253,14 @@ import TreeSelect from "src/views/common/treeSelect";
 // import Cephalosome from '@/components/Cephalosome'
 import configBase from "@/config/config.base";
 import moment from 'moment'
-import {debounce, utils} from '@/utils/utils'
+import {debounce, utils, accAdd} from '@/utils/utils'
 import {accessCard, titleDeed, newCardData, columns, mortgageInformation, landDeed} from './beat'
 // import warantAnnex from './warrantAnnex'
 import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
 import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
 const conditionalJudgment = [undefined, null, '']
 export default {
-  components: {TreeSelect},
+  // components: {TreeSelect},
   props: {
     queryType: {
       type: [String, Number],
@@ -336,6 +335,7 @@ export default {
     'typeJudgment' () {
       if (this.newData === 'new') {
         if (this.typeJudgment) {
+          this.beat = []
           let arr = []
           if (this.typeJudgment === '1') {
             arr = this.titleDeed
@@ -349,11 +349,14 @@ export default {
           arr.forEach(item => {
             if (item.formType === 'input' || item.formType === 'inputNumber') {
               item.attrValue = ''
-            } else if (item.formType === 'selcet' || item.formType === 'date') {
+            } else if (item.formType === 'select' || item.formType === 'date') {
               item.attrValue = undefined
             }
           })
-          this.beat = arr
+          this.$nextTick(() => {
+            this.beat = arr
+            this.$textReplace()
+          })
         } else {
           // 新增进来全面清空数据
           this.beat = []
@@ -381,7 +384,7 @@ export default {
           this.beat = this.titleDeed
         }
       }
-    }
+    },
   },
   methods: {
     changeTree(value, label){
@@ -403,9 +406,6 @@ export default {
     },
     // 权证类型
     kindOfRightChange (val) {
-      this.$nextTick(() => {
-        this.$textReplace()
-      })
       this.typeJudgment = val
     },
     // 提交
@@ -430,7 +430,7 @@ export default {
                   this.$message.info('请输入占用比例')
                   return
                 }
-                percentTotal = percentTotal + this.amsOwnershipWarrantObligeeList[i].percent
+                percentTotal = accAdd(percentTotal, this.amsOwnershipWarrantObligeeList[i].percent)
                 amsOwnershipWarrantObligeeList.push({
                   obligeeId: this.amsOwnershipWarrantObligeeList[i].obligeeId,
                   percent: this.amsOwnershipWarrantObligeeList[i].percent,
@@ -674,7 +674,6 @@ export default {
     // 机构字典获取数据
     organDictFn () {
       this.$api.assets.organDict({code: 'AMS_RIGHT_TYPE', organId:1300}).then(res => {
-        console.log(res)
         if (res.data.code == 0) {
           let data = res.data.data
           let arr = []
@@ -689,7 +688,6 @@ export default {
                 }else{
                   item.chooseArray = arr
                 }
-                console.log(item.chooseArray )
             }
           })
         }

@@ -1,4 +1,4 @@
-// formType: input: 输入框  inputNumber: 数字输入框  selcet：选择框   date:时间选择
+// formType: input: 输入框  inputNumber: 数字输入框  select：选择框   date:时间选择
 // 权证类型：使用权证列表展示
 export const accessCard = [
   {
@@ -13,7 +13,7 @@ export const accessCard = [
     label: '承租人',
     attrCode: 'tenantId',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: true
   },
@@ -77,7 +77,7 @@ export const accessCard = [
     label: '用途',
     attrCode: 'ownershipUse',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: false
   },
@@ -85,7 +85,7 @@ export const accessCard = [
     label: '结构',
     attrCode: 'structure',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: false
   },
@@ -195,7 +195,7 @@ export const titleDeed = [
     label: '权利类型',
     attrCode: 'rightTypeName',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: false
   },
@@ -245,7 +245,7 @@ export const titleDeed = [
     label: '权属用途',
     attrCode: 'ownershipUse',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: true
   },
@@ -253,7 +253,7 @@ export const titleDeed = [
     label: '建筑结构',
     attrCode: 'structure',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: true
   },
@@ -301,7 +301,7 @@ export const titleDeed = [
     label: '权利性质',
     attrCode: 'qualityOfRight',
     chooseArray: [],
-    formType: 'selcet',
+    formType: 'select',
     attrValue: '',
     required: false
   },
@@ -353,7 +353,6 @@ export const titleDeed = [
     required: false
   }
 ]
-
 
 // 权证类型：土地使用权证展示
 export const landDeed = [
