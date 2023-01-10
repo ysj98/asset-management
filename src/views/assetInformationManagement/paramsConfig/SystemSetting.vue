@@ -32,12 +32,11 @@
       <!-- 参数值 -->
       <template #value="text,record,index">
         <component
-          v-if="record.isValid && !hiddenValue.includes(record.serviceType)"
+          v-if="record.isValid && serviceTypeAll[record.serviceType].component"
           :ref="record.serviceType"
           :is="serviceTypeAll[record.serviceType].component"
           @sendData="handleSendData(record, $event)"
           v-bind="record.customServiceParamSet"
-          :isValid="record.isValid"
           :serviceTypeText="record.serviceTypeText"
         ></component>
       </template>
@@ -47,9 +46,7 @@
 
 <script>
 // 显示在当前tab的 approveServiceType
-const approveServiceType = [1001, 1009, 1010,1011,1012,1013,1014];
-// 不显示参数列
-const hiddenValue = [1010,1011,1012,1013,1014]
+const approveServiceType = [1001, 1009, 1010,1011,1012,1013,1014,1017];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
@@ -72,7 +69,6 @@ export default {
   },
   data() {
     return {
-      hiddenValue,
       serviceTypeAll: serviceTypeAll,
       columns,
       tData: []
@@ -93,7 +89,6 @@ export default {
      * payload {subKey:city,paramKey:province}
      * */
     handleSendData(record, payload) {
-      console.log("payload", payload);
       Object.assign(record.customServiceParamSet, payload);
     },
     /*
@@ -103,11 +98,12 @@ export default {
       // 过滤掉 不在approveServiceType 中的  ref
       let resObj = {};
       approveServiceType.forEach(ele => {
-        // $refs 不是响应式的,过滤掉 ref 为 undefined 的
-        if ((ele in this.$refs) && this.$refs[ele] ) {
+        // 1. $refs 不是响应式的,过滤掉 ref 为 undefined 的 2. 过滤掉不需要验证的组件
+        if ((ele in this.$refs) && this.$refs[ele] && this.serviceTypeAll[ele].needValidate) {
           resObj[ele] = this.$refs[ele];
         }
       });
+      // 验证参数值组件参数是否填写
       for (let refName in resObj) {
         let errorMsg = resObj[refName].sendData();
         if (errorMsg) {

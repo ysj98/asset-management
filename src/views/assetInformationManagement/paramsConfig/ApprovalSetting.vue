@@ -32,12 +32,11 @@
       <!-- 参数值 -->
       <template #value="text, record, index">
         <component
-          v-if="record.isValid && !hiddenValue.includes(record.serviceType)"
+          v-if="record.isValid && serviceTypeAll[record.serviceType].component"
           :ref="record.serviceType"
           :is="serviceTypeAll[record.serviceType].component"
           @sendData="handleSendData(record, $event)"
           v-bind="record.customServiceParamSet"
-          :isValid="record.isValid"
           :serviceTypeText="record.serviceTypeText"
           :approvalOptions="approvalOptions"
         ></component>
@@ -50,8 +49,6 @@
 import {clone} from "lodash";
 
 const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008,1015,1016]; 
-// 不显示参数列
-const hiddenValue = []
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
@@ -80,7 +77,6 @@ export default {
   },
   data() {
     return {
-      hiddenValue,
       serviceTypeAll: serviceTypeAll,
       columns,
       tData: [],
@@ -90,7 +86,6 @@ export default {
     tabDataSource: {
       handler: function (newValue) {
         this.tData = clone(newValue).filter((ele) => {
-          console.log(approveServiceType.includes(ele.serviceType), ele.serviceType)
           return approveServiceType.includes(ele.serviceType);
         });
       },
@@ -102,7 +97,6 @@ export default {
      * payload {subKey:city,paramKey:province}
      * */
     handleSendData(record, payload) {
-      console.log("payload", record,payload);
       Object.assign(record.customServiceParamSet, payload);
     },
     /*
@@ -112,11 +106,12 @@ export default {
       // 过滤掉 不在approveServiceType 中的  ref
       let resObj = {};
       approveServiceType.forEach((ele) => {
-        // $refs 不是响应式的,过滤掉 ref 为 undefined 的
+        // 1. $refs 不是响应式的,过滤掉 ref 为 undefined 的 2. 过滤掉不需要验证的组件
         if (ele in this.$refs && this.$refs[ele]) {
           resObj[ele] = this.$refs[ele];
         }
       });
+      // 验证参数值组件参数是否填写
       for (let refName in resObj) {
         let errorMsg = resObj[refName].sendData();
         if (errorMsg) {
@@ -138,7 +133,6 @@ export default {
     },
   },
   mounted() {
-    console.log('mounted加载')
   },
 };
 </script>

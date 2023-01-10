@@ -318,7 +318,7 @@ let proRouter = [{
   },
   {
     path: '/paramsConfig',
-    name: '其他参数',
+    name: '资产参数配置',
     component: () => import('@/views/assetInformationManagement/paramsConfig/index.vue'),
     meta: {
       keepAlive: true
