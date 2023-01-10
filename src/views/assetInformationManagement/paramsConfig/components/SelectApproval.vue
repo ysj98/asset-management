@@ -1,10 +1,6 @@
 <template>
   <div>
-    <a-radio-group
-      v-model="approvalMethod"
-      name="radioGroup"
-      @change="changeApprovalMethod"
-    >
+    <a-radio-group v-model="approvalMethod" name="radioGroup" @change="changeApprovalMethod">
       <a-radio value="0"> AB角审批 </a-radio>
       <a-radio value="1"> BPM工作流 </a-radio>
       <a-select

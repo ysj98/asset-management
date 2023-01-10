@@ -1,7 +1,7 @@
 <!--
  * @Date: 2019-11-05 16:16:20
  * @Author: chen han
- * @Description: 楼栋信息
+ * @Description: 资产参数配置
  -->
 <template>
   <div class="buildingInfo-page" ref="buildingInfo">
@@ -12,26 +12,16 @@
       </div>
       <div class="tree-content">
         <!-- 过滤 部门 小组 -->
-        <OrganTree
-          type-filter="7,33"
-          @change="checkTreeChange"
-          ref="positionTree"
-        />
+        <OrganTree type-filter="7,33" @change="checkTreeChange" ref="positionTree" />
       </div>
     </div>
     <!-- 右边表格 -->
-    <div class="right-wrapper" style="width: calc(100% - 265px);">
+    <div class="right-wrapper" style="width: calc(100% - 265px)">
       <div class="top">
         <div style="display: flex; align-items: center">
-          <a-icon
-            type="info-circle"
-            style="color: #45a2ff; font-size: 16px"
-            theme="filled"
-          />
+          <a-icon type="info-circle" style="color: #45a2ff; font-size: 16px" theme="filled" />
           <div style="width: 6px"></div>
-          <span class="top-title top-title-right">
-            对应机构未开启个性化设置时，将使用机构树中最近节点上级组织的开启个性化设置
-          </span>
+          <span class="top-title top-title-right"> 对应机构未开启个性化设置时，将使用机构树中最近节点上级组织的开启个性化设置 </span>
         </div>
         <div style="justify-self: flex-end">
           <SG-Button @click="doSave" type="primary">保存</SG-Button>
@@ -121,9 +111,9 @@ export default {
             title: element.name,
           };
         });
-      } else if(code === "-1") {
-        this.approvalOptions = []
-      }else {
+      } else if (code === "-1") {
+        this.approvalOptions = [];
+      } else {
         this.$message.error(message);
       }
     },

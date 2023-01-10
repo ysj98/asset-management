@@ -1,36 +1,30 @@
 <template>
   <div>
-    <a-table
-      :columns="columns"
-      :data-source="tData"
-      :rowKey="record => record.serviceType"
-      :pagination="false"
-      :loading="loadingFlag"
-    >
+    <a-table :columns="columns" :data-source="tData" :rowKey="(record) => record.serviceType" :pagination="false" :loading="loadingFlag">
       <!-- 序号 -->
-      <template #index="row,record,index">
+      <template #index="row, record, index">
         {{ index + 1 }}
       </template>
       <!-- 业务分类 -->
-      <template #serviceTypeText="text,record,index">
+      <template #serviceTypeText="text, record, index">
         <span v-if="record.isValid">
           <!--  -->
         </span>
         {{ record.serviceTypeText }}
       </template>
       <!-- 个性化设置 -->
-      <template #isValid="text,record,index">
+      <template #isValid="text, record, index">
         <a-switch
           :checked="Boolean(record.isValid)"
           @change="
-            value => {
+            (value) => {
               record.isValid = Number(value);
             }
           "
         />
       </template>
       <!-- 参数值 -->
-      <template #value="text,record,index">
+      <template #value="text, record, index">
         <component
           v-if="record.isValid && serviceTypeAll[record.serviceType].component"
           :ref="record.serviceType"
@@ -46,45 +40,44 @@
 
 <script>
 // 显示在当前tab的 approveServiceType
-const approveServiceType = [1001, 1009, 1010,1011,1012,1013,1014,1017];
+const approveServiceType = [1001, 1009, 1010, 1011, 1012, 1013, 1014, 1017];
 import { serviceTypeAll, columns } from "./share.js";
 export default {
   /*
    * 系统设置 tab
    * */
   name: "SystemSetting",
-  props:{
-    organId:{
+  props: {
+    organId: {
       type: String,
-      default: ''
+      default: "",
     },
-    loadingFlag:{
-      type:Boolean,
-      default: true
+    loadingFlag: {
+      type: Boolean,
+      default: true,
     },
-    tabDataSource:{
-      type:Array,
-      required: true
-    }
+    tabDataSource: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       serviceTypeAll: serviceTypeAll,
       columns,
-      tData: []
+      tData: [],
     };
   },
   watch: {
-    tabDataSource:{
-      handler:function (newValue){
-        this.tData = newValue.filter(ele=>{
-          return approveServiceType.includes(ele.serviceType)
-        })
-      }
-    }
+    tabDataSource: {
+      handler: function (newValue) {
+        this.tData = newValue.filter((ele) => {
+          return approveServiceType.includes(ele.serviceType);
+        });
+      },
+    },
   },
   methods: {
-
     /*
      * payload {subKey:city,paramKey:province}
      * */
@@ -97,9 +90,9 @@ export default {
     sendData() {
       // 过滤掉 不在approveServiceType 中的  ref
       let resObj = {};
-      approveServiceType.forEach(ele => {
+      approveServiceType.forEach((ele) => {
         // 1. $refs 不是响应式的,过滤掉 ref 为 undefined 的 2. 过滤掉不需要验证的组件
-        if ((ele in this.$refs) && this.$refs[ele] && this.serviceTypeAll[ele].needValidate) {
+        if (ele in this.$refs && this.$refs[ele] && this.serviceTypeAll[ele].needValidate) {
           resObj[ele] = this.$refs[ele];
         }
       });
@@ -112,18 +105,18 @@ export default {
           return null;
         }
       }
-      return this.tData.map(ele => {
+      return this.tData.map((ele) => {
         const { isValid, serviceType } = ele;
         let keyTitle = "customServiceParamSet";
         // 现在就这几个 key
         return {
           isValid,
           serviceType,
-          subKey: isValid ? ele[keyTitle].subKey : '',
-          paramKey: isValid ?  ele[keyTitle].paramKey : '',
+          subKey: isValid ? ele[keyTitle].subKey : "",
+          paramKey: isValid ? ele[keyTitle].paramKey : "",
         };
       });
-    }
+    },
   },
 };
 </script>

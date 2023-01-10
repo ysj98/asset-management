@@ -40,31 +40,31 @@ export default {
       type: Object,
       default() {
         return {};
-      }
+      },
     },
     paramKey: {
       type: String,
-      default: ""
+      default: "",
     },
     subKey: {
       type: String,
-      default: ""
+      default: "",
     },
     // 是否可搜索
     showSearch: {
       type: Boolean,
-      default: () => true
+      default: () => true,
     },
     // 是否可清除
     allowClear: {
       type: Boolean,
-      default: () => true
+      default: () => true,
     },
     // 尺寸大小default large small
     size: {
       type: String,
-      default: () => "default"
-    }
+      default: () => "default",
+    },
   },
   data() {
     return {
@@ -74,7 +74,7 @@ export default {
       provinces: [],
       city: undefined,
       cities: [],
-      properties: {} // 属性值
+      properties: {}, // 属性值
     };
   },
 
@@ -85,11 +85,7 @@ export default {
     },
     // 搜索过滤选项
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
 
     // 查询省市区接口
@@ -98,15 +94,15 @@ export default {
         this.loading = true;
         const api = {
           provinces: "queryProvinceList",
-          cities: "queryCityAndAreaList"
+          cities: "queryCityAndAreaList",
         };
         let form = type === "provinces" ? {} : { parentRegionId };
         this.$api.basics[api[type]](form)
-          .then(r => {
+          .then((r) => {
             this.loading = false;
             let res = r.data;
             if (res && String(res.code) === "0") {
-              this[type] = (res.data || []).map(item => {
+              this[type] = (res.data || []).map((item) => {
                 return { key: item.regionId, title: item.name };
               });
               resolve();
@@ -116,7 +112,7 @@ export default {
             reject(errorMsg);
             throw errorMsg;
           })
-          .catch(err => {
+          .catch((err) => {
             let errorMsg = err || "区域查询失败";
             this.loading = false;
             this.$message.error(errorMsg);
@@ -146,7 +142,7 @@ export default {
         // console.log("校验未通过,请选择省市");
         return "请选择省市";
       }
-    }
+    },
   },
 
   created() {
@@ -158,17 +154,17 @@ export default {
     });
   },
   watch: {
-    province: function(province) {
+    province: function (province) {
       // 如果没有 paramKey 则说明不需要回显（此时是否清空 city 无所谓），如果有则需要回显，如果有但是 isChange 已经改变 此时也是需要清空 city 的
       if (!this.paramKey || this.isChange) {
         Object.assign(this, {
           city: undefined,
-          cities: []
+          cities: [],
         });
       }
       province && this.queryData("cities", province);
-    }
-  }
+    },
+  },
 };
 </script>
 

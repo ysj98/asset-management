@@ -2,10 +2,10 @@ import ProvinceCity from "./components/ProvinceCity";
 import SelectApproval from "@/views/assetInformationManagement/paramsConfig/components/SelectApproval";
 // import SelectSwitch from "./components/SelectSwitch";
 import SelectSwitchTwo from "./components/SelectSwitchTwo";
-import tip from "./components/tip.vue"
+import tip from "./components/tip.vue";
 /*
-* 每个组件中 都要有 sendData 方法
-* */
+ * 每个组件中 都要有 sendData 方法
+ * */
 import * as apiParamsConfig from "@/api/paramsConfig";
 /*
  * 前端维护一份 对应的数据
