@@ -222,7 +222,7 @@
               <a-textarea
                 placeholder="请输入备注"
                 style="width: 70%"
-                :autosize="{ minRows: 2, maxRows: 4 }"
+                :autoSize="{ minRows: 2, maxRows: 4 }"
                 @change="noteChange"
                 v-decorator="[
                   'remark',

@@ -41,7 +41,7 @@
           }
           ">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编号" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编号" :max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -80,7 +80,7 @@
             <SG-DatePicker :allowClear="false" :defaultValue="applyValue" label="领用日期" style="width: 200px;"  pickerType="RangePicker" v-model="applyValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
         <div class="box">
-            <a-input placeholder="领用单编号" v-model="queryCondition.receiveName" :maxLength="30"></a-input>
+            <a-input placeholder="领用单编号" v-model="queryCondition.receiveName" :max-Length="30"></a-input>
         </div>
       </div>
     </SG-SearchContainer>

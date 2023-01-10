@@ -238,7 +238,7 @@
               <a-col :span="8">
                 <a-form-item label="户型" v-bind="formItemLayout">
                   <a-input
-                    :maxLength="30"
+                    :max-Length="30"
                     :style="allWidth"
                     v-decorator="['houseMode', {initialValue: '' || undefined}]"
                   />
@@ -255,7 +255,7 @@
               <a-col :span="8">
                 <a-form-item label="房间编码" v-bind="formItemLayout">
                   <a-input
-                    :maxLength="30"
+                    :max-Length="30"
                     :style="allWidth"
                     v-decorator="['code', {initialValue: '' || undefined}]"
                   />

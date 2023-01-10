@@ -55,7 +55,7 @@
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea @input="(e)=>{ floorDescNum = e.target.value.length}" v-decorator="['floorDesc', {initialValue: ''}]" :maxLength="50" placeholder="请输入描述内容(50字内)" />
+                      <a-textarea @input="(e)=>{ floorDescNum = e.target.value.length}" v-decorator="['floorDesc', {initialValue: ''}]" :max-Length="50" placeholder="请输入描述内容(50字内)" />
                       <div style="text-align: right">{{floorDescNum}}/50</div>
                     </a-form-item>
                 </a-col>

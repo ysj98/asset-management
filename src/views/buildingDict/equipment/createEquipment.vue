@@ -40,7 +40,7 @@
                 <a-form-model-item label="设备设施名称" prop="equipmentInstName">
                   <a-input
                       :style="allWidth"
-                      :maxLength="64"
+                      :max-Length="64"
                       placeholder="请输入设备设施名称"
                       v-model="formInfo.equipmentInstName"
                   />
@@ -52,7 +52,7 @@
                 <a-form-model-item label="设备设施编码" :required="true" prop="equipmentInstCode">
                   <a-input
                       :style="allWidth"
-                      :maxLength="64"
+                      :max-Length="64"
                       placeholder="请输入设备设施编码"
                       v-model="formInfo.equipmentInstCode"
                   />
@@ -79,7 +79,7 @@
                 <a-form-model-item label="规格型号">
                   <a-input
                       :style="allWidth"
-                      :maxLength="64"
+                      :max-Length="64"
                       placeholder="请输入规格型号"
                       v-model="formInfo.equipmentInstModel"
                   />
@@ -97,7 +97,7 @@
                   v-model="formInfo.equipmentAreaId"/>
                   <a-input
                     style="width: 53.7%;"
-                    :maxLength="64"
+                    :max-Length="64"
                     placeholder="请输入详细地址"
                     v-model="formInfo.position"
                   />
@@ -107,7 +107,7 @@
                 <a-form-model-item label="品牌">
                   <a-input
                       :style="allWidth"
-                      :maxLength="64"
+                      :max-Length="64"
                       placeholder="请输入品牌"
                       v-model="formInfo.equipmentInstBrand"
                   />
@@ -132,7 +132,7 @@
                   <a-input
                       :style="allWidth"
                       style="width: 55.5%;"
-                      :maxLength="64"
+                      :max-Length="64"
                       placeholder="请输入生产厂家"
                       v-model="formInfo.equipmentFactory"
                   />
@@ -177,7 +177,7 @@
                 <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
                 <div style="width: 86%">
                   <a-textarea
-                    :maxLength="512"
+                    :max-Length="512"
                     placeholder="请输入备注"
                     v-model="formInfo.equipmentInstDesc"
                   />
@@ -227,7 +227,7 @@
                   <a-form-item :label="item.attrName">
                     <a-input
                         :style="allWidth"
-                        :maxLength="30"
+                        :max-Length="30"
                         :placeholder="'请输入' + item.attrName"
                         v-model="item.attrValue"
                     />

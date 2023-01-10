@@ -31,7 +31,7 @@
       <template slot="remark" slot-scope="text, record">
         <span v-if="type==='detail'">{{record.remark}}</span>
         <div v-else>
-          <a-input :maxLength="200" @input="watchRemarkChange($event,record)" v-model="record.remark" />
+          <a-input :max-Length="200" @input="watchRemarkChange($event,record)" v-model="record.remark" />
         </div>
       </template>
     </a-table>

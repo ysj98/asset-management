@@ -90,7 +90,7 @@
           <a-input-search
             v-model="queryCondition.assetNameCode"
             placeholder="出租单名称/出租单ID/合同编号"
-            maxlength="30"
+            max-Length="30"
             style="width: 210px; height: 32px; margin-right: 10px"
             @search="allQuery"
           />

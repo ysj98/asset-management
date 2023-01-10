@@ -55,7 +55,7 @@
           :style="allStyle"
           v-model="queryCondition.planName"
           placeholder="计划名称"
-          maxlength="30"
+          max-Length="30"
           @search="onSearch"
         />
       </div>

@@ -205,7 +205,7 @@
             <a-textarea
               placeholder="请输入备注"
               :style="widthBox"
-              :autosize="{ minRows: 2, maxRows: 4 }"
+              :autoSize="{ minRows: 2, maxRows: 4 }"
               @change="noteChange"
               v-decorator="[
                 'remark',
@@ -283,7 +283,7 @@
                 :max="200"
                 v-model="record.remark"
                 style="width: 150px"
-                maxLength="200"
+                max-Length="200"
               />
             </template>
           </a-table>

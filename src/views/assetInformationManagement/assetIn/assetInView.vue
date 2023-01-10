@@ -18,7 +18,7 @@
           <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px;" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn"  v-model="queryCondition.approvalStatus">
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.assetNameCode" placeholder="资产名称/编码" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
@@ -50,7 +50,7 @@
         <div class="box">
           <SG-DatePicker :allowClear="false" label="创建日期" style="width: 200px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
         </div>
-        <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="入库单编码" maxlength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.registerOrderNameOrId" placeholder="入库单编码" max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         <div  style="width:100%">
         <ProvinceCityDistrict
           class="city"

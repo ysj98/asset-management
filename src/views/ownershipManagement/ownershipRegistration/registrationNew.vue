@@ -14,7 +14,7 @@
               <a-input placeholder="请输入登记单名称"
               :style="allWidth"
               :max="60"
-              :maxLength="60"
+              :max-Length="60"
               v-decorator="['registerName',
                 {rules: [{required: true, max: 60, whitespace: true, message: '请输入登记单名称(不超过60字符)'}], initialValue: newEditSingleData.registerName}
               ]"/>
@@ -130,8 +130,8 @@
               <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea placeholder="请输入备注"
                 :style="widthBox"
-                :autosize="{ minRows: 3, maxRows: 4 }"
-                :maxLength="200"
+                :autoSize="{ minRows: 3, maxRows: 4 }"
+                :max-Length="200"
                 v-decorator="['remark',
                 {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: newEditSingleData.remark}
                 ]"

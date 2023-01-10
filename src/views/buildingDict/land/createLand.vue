@@ -33,7 +33,7 @@
                 <a-form-item label="土地名称" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :maxLength="30"
+                    :max-Length="30"
                     v-decorator="[
                       'blankName',
                       {
@@ -54,7 +54,7 @@
                 <a-form-item label="土地编码" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :maxLength="30"
+                    :max-Length="30"
                     v-decorator="[
                       'blankCode',
                       {
@@ -110,7 +110,7 @@
                 <a-form-item label="宗地号" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :maxLength="30"
+                    :max-Length="30"
                     v-decorator="[
                       'theNo',
                       {
@@ -177,7 +177,7 @@
                       notFoundContent="没有查询到数据"
                     />
                     <a-input
-                      :maxLength="100"
+                      :max-Length="100"
                       @input="getLL"
                       v-model="address"
                       :style="allWidth2"
@@ -407,7 +407,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="该地块原用地性质" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="1000"
+                    :max-Length="1000"
                     v-decorator="['landNature', { initialValue: '' }]"
                   />
                 </a-form-item>
@@ -416,7 +416,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="该地块最新城市规划情况" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="1000"
+                    :max-Length="1000"
                     v-decorator="['landPlanning', { initialValue: '' }]"
                   />
                 </a-form-item>
@@ -541,7 +541,7 @@
                 <a-form-item label="三旧改造图编号" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :maxLength="50"
+                    :max-Length="50"
                     v-decorator="[
                       'transformDrawingNo',
                       {
@@ -580,7 +580,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="四至范围" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="500"
+                    :max-Length="500"
                     v-decorator="['fourToRange', { initialValue: '' }]"
                   />
                 </a-form-item>
@@ -617,7 +617,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="200"
+                    :max-Length="200"
                     v-decorator="['blankDesc', { initialValue: '' }]"
                   />
                 </a-form-item>

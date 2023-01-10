@@ -143,7 +143,7 @@
               <a-form-item label="备注：" v-bind="formItemTextarea">
                 <a-textarea placeholder="请输入备注"
                   :style="widthBox"
-                  :autosize="{ minRows: 2, maxRows: 4 }"
+                  :autoSize="{ minRows: 2, maxRows: 4 }"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入问题备注(不超过200字符)'}], initialValue: subData.remark}
                   ]"

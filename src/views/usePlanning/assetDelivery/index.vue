@@ -22,7 +22,7 @@
             :allowClear="false"
             :style="allStyle"
           ></treeSelect>
-          <a-input-search v-model="queryCondition.deliveryNameOrId" placeholder="交付单号/名称" maxlength="30" :style="allStyle" @search="allQuery" />
+          <a-input-search v-model="queryCondition.deliveryNameOrId" placeholder="交付单号/名称" max-Length="30" :style="allStyle" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">

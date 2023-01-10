@@ -368,7 +368,7 @@
             <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
                 <label slot="label">诉讼情况：</label>
-                <a-textarea placeholder="请输入诉讼情况" :style="widthBox" :autosize="{ minRows: 2, maxRows: 4 }" v-decorator="['lawsuitRemark', { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark }]" />
+                <a-textarea placeholder="请输入诉讼情况" :style="widthBox" :autoSize="{ minRows: 2, maxRows: 4 }" v-decorator="['lawsuitRemark', { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark }]" />
               </a-form-item>
             </a-col>
           </a-row>

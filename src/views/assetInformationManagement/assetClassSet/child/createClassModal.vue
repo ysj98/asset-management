@@ -64,7 +64,7 @@
                   placeholder="请输入分类名称"
                   :style="allStyle"
                   v-if="editable"
-                  :maxLength="30"
+                  :max-Length="30"
                   v-decorator="['professionName',
                 {initialValue: detail.professionName, rules: [{required: true, whitespace: true, message: '请输入分类名称'}]}
               ]"
@@ -228,7 +228,7 @@
                   placeholder="请输入备注信息（最多200字）"
                   :rows="3"
                   style="width:91%;"
-                  :maxLength="200"
+                  :max-Length="200"
                   v-decorator="['remark',
                 {rules: [{validator: validateRemark}], initialValue: detail.remark}]"
                 ></a-textarea>

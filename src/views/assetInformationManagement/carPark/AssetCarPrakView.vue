@@ -98,7 +98,7 @@
               :options="$addTitle(assetLabelSelect)"
               placeholder="资产标签"
             />
-            <!-- <a-input placeholder="详细地址" v-model="address" :maxLength="20"/> -->
+            <!-- <a-input placeholder="详细地址" v-model="address" :max-Length="20"/> -->
           </a-col>
           <a-col :span="4">
             <a-input placeholder="请输入地址" v-model="address"/>

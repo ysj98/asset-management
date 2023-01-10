@@ -42,7 +42,7 @@
           }
           ">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search v-model="queryCondition.returnName" placeholder="归还单名称/编码" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
+          <a-input-search v-model="queryCondition.returnName" placeholder="归还单名称/编码" :max-Length="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">

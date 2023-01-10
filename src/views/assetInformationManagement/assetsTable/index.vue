@@ -61,7 +61,7 @@
                     <a-input
                             v-model.trim="queryData.assetName"
                             style="width: 190px"
-                            :maxLength="30"
+                            :max-Length="30"
                             placeholder="资产名称/编码"
                     />
                 </div>
@@ -119,7 +119,7 @@
                 <a-input
                         v-model.trim="queryData.cleaningOrderCode"
                         style="width: 190px"
-                        :maxLength="30"
+                        :max-Length="30"
                         placeholder="出库单名称/编号"
                 />
                 <div style="width:100%">

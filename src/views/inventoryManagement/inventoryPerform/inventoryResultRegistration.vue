@@ -51,8 +51,8 @@
               <a-form-item v-bind="formItemTextarea" label="异常说明：" :class="{'icon-color': requiredShow}">
                 <a-textarea placeholder="请输入异常说明"
                   :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
+                  :autoSize="{ minRows: 3, maxRows: 3 }"
+                  :max-Length="200"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入异常说明(不超过200字符)'}], initialValue: newCardData.remark}
                   ]"
@@ -63,8 +63,8 @@
               <a-form-item v-bind="formItemTextarea" label="处理建议：">
                 <a-textarea placeholder="请输入处理建议"
                             :style="widthBox"
-                            :autosize="{ minRows: 3, maxRows: 3 }"
-                            :maxLength="200"
+                            :autoSize="{ minRows: 3, maxRows: 3 }"
+                            :max-Length="200"
                             v-decorator="['handleTip',
                   {rules: [{required: false, max: 200, message: '请输入异常说明(不超过200字符)'}], initialValue: newCardData.handleTip}
                   ]"

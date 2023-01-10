@@ -69,8 +69,8 @@
           >
             <a-select-option :title="item.name" v-for="(item, index) in approvalStatusListData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" maxlength="30"  />
-          <a-input :style="allStyle" v-model="queryCondition.seatingPosition" placeholder="坐落位置" maxlength="30"  />
+          <a-input :style="allStyle" v-model="queryCondition.warrantNbr" placeholder="请输入权证号" max-Length="30"  />
+          <a-input :style="allStyle" v-model="queryCondition.seatingPosition" placeholder="坐落位置" max-Length="30"  />
           <a-select :style="allStyle" showSearch :filterOption="filterOption" placeholder="全部附件状态" v-model="queryCondition.attachmentStatus">
             <a-select-option :title="item.name" v-for="(item, index) in attachmentStatus" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>

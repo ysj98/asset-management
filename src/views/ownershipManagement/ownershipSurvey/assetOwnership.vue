@@ -167,13 +167,13 @@
               notFoundContent="没有查询到数据"
             />
             <a-input
-              :maxLength="30"
+              :max-Length="30"
               v-model="queryCondition.name"
               placeholder="输入资产名称/权利号"
               :style="allStyle"
             />
             <a-input
-              :maxLength="30"
+              :max-Length="30"
               v-model="queryCondition.ownershipRemark"
               placeholder="权属备注"
               :style="allStyle"
@@ -184,7 +184,7 @@
               v-model="provinces"
             ></ProvinceCityDistrict>
             <a-input
-              :maxLength="30"
+              :max-Length="30"
               v-model="queryCondition.address"
               placeholder="请输入地址"
               :style="allStyle"

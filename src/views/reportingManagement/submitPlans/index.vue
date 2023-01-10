@@ -24,7 +24,7 @@
 					<a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="taskStatusFn"  v-model="queryCondition.taskStatus">
             <a-select-option :title="item.name" v-for="(item, index) in taskStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
-          <a-input-search :style="allStyle" v-model="queryCondition.planName" placeholder="呈报计划名称/编码" maxlength="30" @search="onSearch" />
+          <a-input-search :style="allStyle" v-model="queryCondition.planName" placeholder="呈报计划名称/编码" max-Length="30" @search="onSearch" />
           <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
       </div>

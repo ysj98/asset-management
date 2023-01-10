@@ -66,7 +66,7 @@
           <a-input-search
             v-model="queryCondition.assetNameCode"
             placeholder="收益单名称/编号"
-            maxlength="30"
+            max-Length="30"
             style="width: 160px; height: 32px; margin-right: 10px"
             @search="allQuery"
           />
@@ -123,7 +123,7 @@
         <a-input-search
           v-model="queryCondition.rentNameCode"
           placeholder="出租单名称/编号"
-          maxlength="30"
+          max-Length="30"
           style="width: 150px; height: 32px; margin-right: 10px"
           @search="allQuery"
         />

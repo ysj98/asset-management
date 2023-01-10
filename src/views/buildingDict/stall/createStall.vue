@@ -67,7 +67,7 @@
                 <a-form-model-item label="车位名称" :required="true" prop="name">
                   <a-input
                     :style="allWidth"
-                    :maxLength="64"
+                    :max-Length="64"
                     placeholder="请输入车位名称"
                     v-model="formInfo.name"
                   />
@@ -78,7 +78,7 @@
                   <a-input
                     :style="allWidth"
                     placeholder="请输入车位编码"
-                    :maxLength="64"
+                    :max-Length="64"
                     v-model="formInfo.code"
                   />
                 </a-form-model-item>
@@ -173,7 +173,7 @@
                 <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
                 <div style="width: 86%">
                 <a-textarea
-                  :maxLength="128"
+                  :max-Length="128"
                   v-model="formInfo.description"
                 />
                 </div>

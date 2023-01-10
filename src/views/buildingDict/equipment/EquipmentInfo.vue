@@ -54,7 +54,7 @@
               notFoundContent="没有查询到数据"
             />
             <a-input
-                :maxLength="30"
+                :max-Length="30"
                 placeholder="设备设施名称/编码"
                 v-model="queryCondition.equipmentInstNameOrCode"
                 :style="allStyle"

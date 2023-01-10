@@ -46,7 +46,7 @@
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea @input="(e)=>{ unitDescNum = e.target.value.length}" v-decorator="['unitDesc', {initialValue: ''}]" :maxLength="200" placeholder="请输入描述内容(200字内)" />
+                      <a-textarea @input="(e)=>{ unitDescNum = e.target.value.length}" v-decorator="['unitDesc', {initialValue: ''}]" :max-Length="200" placeholder="请输入描述内容(200字内)" />
                       <div style="text-align: right">{{unitDescNum}}/200</div>
                     </a-form-item>
                 </a-col>

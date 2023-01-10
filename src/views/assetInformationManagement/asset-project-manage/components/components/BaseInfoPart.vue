@@ -117,7 +117,7 @@
         <a-col :span="24">
           <a-form-item label="备注" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
             <a-textarea
-              :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入备注"
+              :disabled="!isEdit" style="resize: none" :autoSize="{maxRows: 3}" placeholder="请输入备注"
               v-decorator="['remark', { initialValue, rules: [{max: 200, message: '最多200个字符'}] }]"
             />
           </a-form-item>
@@ -138,7 +138,7 @@
         <a-col :span="24">
           <a-form-item label="权属办理中存在问题" :label-col="type ? {span:4} : {span:3}" :wrapper-col="type ? {span: 20} : {span:21}">
             <a-textarea
-              :disabled="!isEdit" style="resize: none" :autosize="{maxRows: 3}" placeholder="请输入权属办理中存在问题"
+              :disabled="!isEdit" style="resize: none" :autoSize="{maxRows: 3}" placeholder="请输入权属办理中存在问题"
               v-decorator="['ownershipHandleProblems', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
             />
           </a-form-item>
@@ -148,7 +148,7 @@
             <a-textarea
               :disabled="!isEdit"
               style="resize: none"
-              :autosize="{maxRows: 3}"
+              :autoSize="{maxRows: 3}"
               placeholder="请输入历史遗留问题"
               v-decorator="['houseTransferHisProblem', { initialValue, rules: [{max: 200, message: '最多200个字符'}]  }]"
             />

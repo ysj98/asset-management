@@ -220,7 +220,7 @@
             <a-textarea
               placeholder="请输入维修说明"
               style="width: 70%"
-              :autosize="{ minRows: 2, maxRows: 4 }"
+              :autoSize="{ minRows: 2, maxRows: 4 }"
               explain
               @change="explainChange"
               v-decorator="[
@@ -270,7 +270,7 @@
               <a-input
                 placeholder="请输入收款人（单位）"
                 v-model="record.payee"
-                maxLength="200"
+                max-Length="200"
               />
             </template>
             <template slot="costId" slot-scope="text, record">
@@ -292,7 +292,7 @@
               <a-input
                 placeholder="请输入付款金额"
                 v-model="record.paymentAmount"
-                maxLength="13"
+                max-Length="13"
               />
             </template>
             <template slot="paymentDate">
@@ -305,13 +305,13 @@
               <a-input
                 placeholder="请输入跟进人"
                 v-model="record.followUpUser"
-                maxLength="30"
+                max-Length="30"
               />
             </template>
             <template slot="remark" slot-scope="text, record">
               <a-input
                 placeholder="请输入备注"
-                maxLength="200"
+                max-Length="200"
                 v-model="record.remark"
               />
             </template>

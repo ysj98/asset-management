@@ -7,7 +7,7 @@
       <div slot="headBtns">
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
           <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
-          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="呈报任务名称/编号" maxlength="30" @search="onSearch" />
+          <a-input-search style="width: 170px; margin-right: 10px;" v-model="queryCondition.taskName" placeholder="呈报任务名称/编号" max-Length="30" @search="onSearch" />
         </div>
       </div>
       <div slot="btns">

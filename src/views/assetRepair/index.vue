@@ -90,7 +90,7 @@
           <a-input-search
             v-model="queryCondition.assetNameCode"
             placeholder="维修单名称/编号"
-            maxlength="30"
+            max-Length="30"
             style="width: 160px; height: 32px; margin-right: 10px"
             @search="allQuery"
           />

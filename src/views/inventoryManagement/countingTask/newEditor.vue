@@ -25,7 +25,7 @@
               <a-form-item v-bind="formItemLayout" label="任务名称：">
                 <a-input placeholder="请输入任务名称"
                 :style="allWidth"
-                :maxLength="50"
+                :max-Length="50"
                 v-decorator="['taskName', {rules: [{required: true, max: 50, whitespace: true, message: '请输入任务名称(不超过50字符)'}], initialValue: newCardData.taskName}]"/>
               </a-form-item>
             </a-col>
@@ -66,8 +66,8 @@
                 <a-textarea placeholder="请输入资产盘点范围"
                 :disabled="true"
                 :style="widthBox"
-                :autosize="{ minRows: 3, maxRows: 3 }"
-                :maxLength="200"
+                :autoSize="{ minRows: 3, maxRows: 3 }"
+                :max-Length="200"
                 v-decorator="['checkRange', {rules: [], initialValue: newCardData.checkRange}]"/>
               </a-form-item>
             </a-col>
@@ -75,8 +75,8 @@
               <a-form-item v-bind="formItemTextarea" label="备注：">
                 <a-textarea placeholder="请输入备注"
                   :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
+                  :autoSize="{ minRows: 3, maxRows: 3 }"
+                  :max-Length="200"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newCardData.remark}
                   ]"
@@ -104,7 +104,7 @@
           </template>
           <template slot="checkName" slot-scope="text, record">
             <span v-if="record.IsEdit">{{record.checkName}}</span>
-            <a-input v-else placeholder="请输入盘点单名称" :maxLength="60" v-model="record.checkName"/>
+            <a-input v-else placeholder="请输入盘点单名称" :max-Length="60" v-model="record.checkName"/>
           </template>
           <!-- 盘点人 -->
           <template slot="chargePerson">

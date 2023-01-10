@@ -113,7 +113,7 @@
               <a-input
                 placeholder="请输入名称"
                 :style="allStyle"
-                :maxLength="30"
+                :max-Length="30"
                 v-decorator="[
                   'matchingName',
                   {
@@ -143,7 +143,7 @@
               <a-input
                 placeholder="请输入编码"
                 :style="allStyle"
-                :maxLength="30"
+                :max-Length="30"
                 v-decorator="[
                   'matchingCode',
                   {
@@ -204,7 +204,7 @@
               <a-input
                 placeholder="请输入规格型号"
                 :style="allStyle"
-                :maxLength="30"
+                :max-Length="30"
                 v-decorator="[
                   'specificationType',
                   {
@@ -334,7 +334,7 @@
               <a-textarea
                 placeholder="请输入备注（最多200字）"
                 :rows="3"
-                :maxLength="200"
+                :max-Length="200"
                 v-decorator="['remark', { initialValue: '' }]"
               ></a-textarea>
             </a-form-item>

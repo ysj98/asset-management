@@ -69,12 +69,12 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="承建商" v-bind="formItemLayout">
-                    <a-input :maxLength="30" :style="allWidth" v-decorator="['contractor', {initialValue: '' || undefined}]"/>
+                    <a-input :max-Length="30" :style="allWidth" v-decorator="['contractor', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="开发商" v-bind="formItemLayout">
-                    <a-input :maxLength="30" :style="allWidth" v-decorator="['developer', {initialValue: '' || undefined}]"/>
+                    <a-input :max-Length="30" :style="allWidth" v-decorator="['developer', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -229,7 +229,7 @@
                         notFoundContent="没有查询到数据"
                       />
                       <!-- @input="getLL" -->
-                      <a-input :maxLength="100" :disabled="true" v-model="address" :style="allWidth2" placeholder="详细地址"/>
+                      <a-input :max-Length="100" :disabled="true" v-model="address" :style="allWidth2" placeholder="详细地址"/>
                     </div>
                   </a-form-item>
                 </a-col>
@@ -265,12 +265,12 @@
                         v-decorator="['addressNo', {rules: [{required: false, whitespace: true, message: '请选择宗地号'}]}]"
                       />
                     <!-- @change="addressNoChange" -->
-                    <!-- <a-input :maxLength='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/> -->
+                    <!-- <a-input :max-Length='40' :style="allWidth" v-decorator="['addressNo', {initialValue: '' || undefined}]"/> -->
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="建筑年代" v-bind="formItemLayout">
-                    <a-input :maxLength='20' :style="allWidth" v-decorator="['builtAge', {initialValue: '' || undefined}]"/>
+                    <a-input :max-Length='20' :style="allWidth" v-decorator="['builtAge', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
@@ -285,17 +285,17 @@
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="物业管理单位" v-bind="formItemLayout">
-                    <a-input :maxLength="30" :style="allWidth" v-decorator="['organManagement', {initialValue: '' || undefined}]"/>
+                    <a-input :max-Length="30" :style="allWidth" v-decorator="['organManagement', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="物业缴费期限" v-bind="formItemLayout">
-                    <a-input :maxLength="30" :style="allWidth" v-decorator="['organPayDeadline', {initialValue: '' || undefined}]"/>
+                    <a-input :max-Length="30" :style="allWidth" v-decorator="['organPayDeadline', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col v-bind="formSpan">
                   <a-form-item label="物业费" v-bind="formItemLayout">
-                    <a-input :maxLength="30" :style="allWidth" v-decorator="['organFee', {initialValue: '' || undefined}]"/>
+                    <a-input :max-Length="30" :style="allWidth" v-decorator="['organFee', {initialValue: '' || undefined}]"/>
                   </a-form-item>
                 </a-col>
                 <a-col :span="10">
@@ -306,7 +306,7 @@
                 <a-col :span="24">
                     <!-- 文本框 -->
                     <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea :maxLength="200" v-decorator="['description', {initialValue: ''}]"/>
+                      <a-textarea :max-Length="200" v-decorator="['description', {initialValue: ''}]"/>
                     </a-form-item>
                 </a-col>
                 <a-col :span="12">

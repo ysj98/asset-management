@@ -79,7 +79,7 @@
                 <a-form-item label="车位名称" v-bind="formItemLayout">
                   <a-input
                     :style="allWidth"
-                    :maxLength="30"
+                    :max-Length="30"
                     placeholder="请输入车位名称"
                     v-decorator="[
                       'name',
@@ -102,7 +102,7 @@
                   <a-input
                     :style="allWidth"
                     placeholder="请输入车位编码"
-                    :maxLength="30"
+                    :max-Length="30"
                     v-decorator="[
                       'code',
                       {
@@ -221,7 +221,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
                   <a-textarea
-                    :maxLength="200"
+                    :max-Length="200"
                     v-decorator="[
                       'description',
                       { initialValue: '' || undefined }

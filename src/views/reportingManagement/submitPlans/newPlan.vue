@@ -12,7 +12,7 @@
               <a-form-item v-bind="formItemLayout" label="计划名称：">
                 <a-input placeholder="请输入计划名称"
                 :style="allWidth"
-                :maxLength="30"
+                :max-Length="30"
                 v-decorator="['planName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入计划名称(不超过30字符)'}], initialValue: newCardData.planName}]"/>
               </a-form-item>
             </a-col>
@@ -20,7 +20,7 @@
               <a-form-item v-bind="formItemLayout" label="计划编号：">
                 <a-input placeholder="请输入计划编号"
                 :style="allWidth"
-                :maxLength="30"
+                :max-Length="30"
                 v-decorator="['planCode', {rules: [{required: false, max: 30}], initialValue: newCardData.planCode}]"/>
               </a-form-item>
             </a-col>
@@ -61,8 +61,8 @@
               <a-form-item v-bind="formItemTextarea" label="备注：">
                 <a-textarea placeholder="请输入备注"
                   :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
+                  :autoSize="{ minRows: 3, maxRows: 3 }"
+                  :max-Length="200"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newCardData.remark}
                   ]"

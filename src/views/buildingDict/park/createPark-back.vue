@@ -32,7 +32,7 @@
                 <a-form-item label="车场名称" :required="true" v-bind="formItemLayout">
                   <a-input
                       :style="allWidth"
-                      :maxLength="128"
+                      :max-Length="128"
                       v-decorator="[
                       'placeName',
                       {
@@ -45,7 +45,7 @@
                 <a-form-item label="车场编码" v-bind="formItemLayout">
                   <a-input
                       :style="allWidth"
-                      :maxLength="64"
+                      :max-Length="64"
                       v-decorator="[
                       'placeCode',
                       {
@@ -110,7 +110,7 @@
                 <a-form-item label="地理位置" v-bind="formItemLayoutGeo">
                   <div class="address-box">
                     <a-input
-                        :maxLength="128"
+                        :max-Length="128"
                         :style="allWidth2"
                         placeholder="详细地址"
                         v-decorator="['placeAddr', {initialValue: undefined, rules: [{required: true,message: '请输入车场地址'}]}]"
@@ -135,7 +135,7 @@
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
                   <a-textarea
-                      :maxLength="128"
+                      :max-Length="128"
                       v-decorator="['description', { initialValue: '' }]"
                   />
                 </a-form-item>
@@ -175,7 +175,7 @@
                         <a-form-item style="margin: -5px;">
                           <a-input
                               type="textarea"
-                              :maxLength="com.maxLength"
+                              :max-Length="com.max-Length"
                               :style="allWidth"
                               :placeholder="com.placeHolder"
                               v-if="['textarea'].includes(com.component)"
@@ -184,7 +184,7 @@
                               @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <a-input
-                              :maxLength="com.maxLength"
+                              :max-Length="com.max-Length"
                               :style="allWidth"
                               :placeholder="com.placeHolder"
                               :key="formInfo.areaArray[index].key"
@@ -195,7 +195,7 @@
                           />
                           <a-input
                               :style="allWidth"
-                              :maxLength="com.maxLength"
+                              :max-Length="com.max-Length"
                               :key="index+'number'"
                               :placeholder="com.placeHolder"
                               v-if="['number'].includes(com.component)"
@@ -204,7 +204,7 @@
                               @change="e => handleTableInput(e.target.value, index, com.dataIndex)"
                           />
                           <a-input
-                            :maxLength="com.maxLength"
+                            :max-Length="com.max-Length"
                             :style="allWidth"
                             :placeholder="com.placeHolder"
                             :key="formInfo.areaArray[index].key"

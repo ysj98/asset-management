@@ -18,8 +18,8 @@
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" maxlength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
-        <a-input-search v-model="queryCondition.deliveryCodeName" @search="onSearch" placeholder="交付单名称/编号" maxlength="40" style="width: 140px; margin-right: 10px;"/>
+        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" max-Length="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
+        <a-input-search v-model="queryCondition.deliveryCodeName" @search="onSearch" placeholder="交付单名称/编号" max-Length="40" style="width: 140px; margin-right: 10px;"/>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">

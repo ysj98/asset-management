@@ -13,7 +13,7 @@
               <a-form-item v-bind="formItemLayout" label="资产处置名称：">
                 <a-input placeholder="请输入资产处置名称"
                 :style="allWidth"
-                :maxLength="30"
+                :max-Length="30"
                 v-decorator="['disposeName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入任务名称(不超过30字符)'}], initialValue: newCardData.disposeName}]"/>
               </a-form-item>
             </a-col>
@@ -128,7 +128,7 @@
               <a-form-item v-bind="formItemLayout" label="资产接收人：">
                 <a-input placeholder="请输入资产接收人"
                 :style="allWidth"
-                :maxLength="40"
+                :max-Length="40"
                 v-decorator="['assetReceiver', {rules: [{required: false, max: 50, whitespace: true, message: '请输入资产接收人(不超过40字符)'}], initialValue: newCardData.assetReceiver}]"/>
               </a-form-item>
             </a-col>
@@ -166,8 +166,8 @@
               <a-form-item v-bind="formItemTextarea" label="处置原因：">
                 <a-textarea placeholder="请输入处置原因"
                   :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
+                  :autoSize="{ minRows: 3, maxRows: 3 }"
+                  :max-Length="200"
                   v-decorator="['disposeReason',
                   {rules: [{required: true, max: 200, message: '请输入处置原因(不超过200字符)'}], initialValue: newCardData.disposeReason}
                   ]"
@@ -178,8 +178,8 @@
               <a-form-item v-bind="formItemTextarea" label="备注：">
                 <a-textarea placeholder="请输入备注"
                   :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
+                  :autoSize="{ minRows: 3, maxRows: 3 }"
+                  :max-Length="200"
                   v-decorator="['remark',
                   {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newCardData.remark}
                   ]"
@@ -236,7 +236,7 @@
             </template>
             <!-- 备注 -->
             <template slot="remark" slot-scope="text, record">
-              <a-input placeholder="请输入备注" :maxLength="200" v-model="record.remark"/>
+              <a-input placeholder="请输入备注" :max-Length="200" v-model="record.remark"/>
             </template>
             <!-- 操作 -->
             <template slot="operation" slot-scope="text, record, index">
@@ -290,12 +290,12 @@
             <!-- 收款方 -->
             <template slot="payee" slot-scope="text, record">
               <span v-if="record.receivecostType === '1'">--</span>
-              <a-input v-else placeholder="请输入收款方" :maxLength="50" v-model="record.payee"/>
+              <a-input v-else placeholder="请输入收款方" :max-Length="50" v-model="record.payee"/>
             </template>
             <!-- 付款方 -->
             <template slot="payer" slot-scope="text, record">
               <span v-if="record.receivecostType === '2'">--</span>
-              <a-input v-else placeholder="请输入付款方" :maxLength="50" v-model="record.payer"/>
+              <a-input v-else placeholder="请输入付款方" :max-Length="50" v-model="record.payer"/>
             </template>
             <!-- 费用科目 -->
             <template slot="feeSubject" slot-scope="text, record">
@@ -320,11 +320,11 @@
             </template>
             <!-- 跟进人 -->
             <template slot="secondMover" slot-scope="text, record">
-              <a-input placeholder="请输入跟进人" :maxLength="30" v-model="record.secondMover"/>
+              <a-input placeholder="请输入跟进人" :max-Length="30" v-model="record.secondMover"/>
             </template>
             <!-- 备注 -->
             <template slot="remark" slot-scope="text, record">
-              <a-input placeholder="请输入备注" :maxLength="200" v-model="record.remark"/>
+              <a-input placeholder="请输入备注" :max-Length="200" v-model="record.remark"/>
             </template>
             <!-- 操作 -->
             <template slot="operation" slot-scope="text, record, index">
