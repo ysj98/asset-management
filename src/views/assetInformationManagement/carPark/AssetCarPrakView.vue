@@ -67,6 +67,17 @@
           <a-col :span="4">
             <a-input placeholder="请输入资产名称或编码" v-model="assetName"/>
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="label"
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              @select="assetLabelFn"
+              :options="$addTitle(assetLabelSelect)"
+              placeholder="资产标签"
+            />
+          </a-col>
           <!-- <a-col :span="4">
             <a-select
               mode="multiple"
@@ -79,29 +90,20 @@
               placeholder="请选择用途"
             />
           </a-col> -->
-          <a-col :span="3" style="text-align: left">
-            <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
-            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
-          </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
-          <a-col :span="12">
+          <a-col :span="8">
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
           <a-col :span="4">
-            <a-select
-              v-model="label"
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              @select="assetLabelFn"
-              :options="$addTitle(assetLabelSelect)"
-              placeholder="资产标签"
-            />
-            <!-- <a-input placeholder="详细地址" v-model="address" :maxLength="20"/> -->
+            <a-input placeholder="请输入地址" v-model="address" :maxLength="20"/>
           </a-col>
           <a-col :span="4">
-            <a-input placeholder="请输入地址" v-model="address"/>
+            <a-input placeholder="请输入资产原始来源方" v-model="originSource" :maxLength="100"/>
+          </a-col>
+          <a-col :span="3" style="text-align: left">
+            <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
         </a-row>
         <!-- <a-row :gutter="12" style="margin-top: 14px">
@@ -280,6 +282,7 @@ const detailColumns = [
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
   { title: '资产状态', dataIndex: 'statusName', width: 100 },
   { title: '资产标签', dataIndex: 'label', width: 150},
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
   { title: '质押', dataIndex: 'pledgeName', width: 100 },
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
@@ -345,6 +348,7 @@ const requiredColumn = [
         useType: [],           // 用途
         useTypeOptions: [],    // 用途
         address:'',          //详细地址
+        originSource:'',     //资产原始来源方
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
@@ -391,6 +395,7 @@ const requiredColumn = [
             { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
             { title: '资产状态', dataIndex: 'statusName', width: 100 },
             { title: '资产标签', dataIndex: 'label', width: 150},
+            { title: '资产原始来源方', dataIndex: 'originSource', width: 150},
             { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
           ]
         },
@@ -661,7 +666,7 @@ const requiredColumn = [
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, },
           provinceCityDistrictValue: { province, city, district: region }, 
-          assetName, status, current, categoryId,sourceModes, label,address
+          assetName, status, current, categoryId,sourceModes, label,address,originSource
         } = this
         if (!organId) { return this.$message.info('请选择组织机构') }
         this.tableObj.loading = true
@@ -670,7 +675,7 @@ const requiredColumn = [
           projectIdList, 
           pageSize: pageLength,
           province, city, region, 
-          assetName, address,
+          assetName, address,originSource,
           pageNum: pageNo,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           statusList: status.includes('all') ? [] : status, 

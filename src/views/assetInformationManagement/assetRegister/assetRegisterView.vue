@@ -69,7 +69,7 @@
           v-model="provinces"
         ></ProvinceCityDistrict>
         <a-input-search v-model="queryCondition.address" placeholder="请输入地址" :maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;" @search="allQuery" />
-        <a-input-search v-model="queryCondition.originSource" placeholder="请输入资产原始来源方" :maxLength="5" style="width: 170px; height: 32px; margin-right: 10px;" @search="allQuery" />
+        <a-input-search v-model="queryCondition.originSource" placeholder="请输入资产原始来源方" :maxLength="100" style="width: 170px; height: 32px; margin-right: 10px;" @search="allQuery" />
       </div>
     </SG-SearchContainer>
     <!--数据总览-->

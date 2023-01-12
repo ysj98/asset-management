@@ -269,6 +269,25 @@ export default {
           this.loading = false
         })
     },
+    // getBoundary1(address){
+    //   var { mapDomId } = this
+    //   var map = new BMapGL.Map(mapDomId);
+    //   map.centerAndZoom(new BMapGL.Point(108.346242, 35.843776), 6);
+    //   map.enableScrollWheelZoom();
+    //   map.setDisplayOptions({
+    //       poi: false
+    //   });
+    //   var zoomCtrl = new BMapGL.ZoomControl();
+    //   map.addControl(zoomCtrl);
+    //   var dist = null;
+    //   map.removeDistrictLayer(dist);
+    //   dist = new BMapGL.DistrictLayer({
+    //   name:  '('+address+')',
+    //   fillColor: '#5e8bff',
+    //   fillOpacity: 1
+    //   });
+    //   map.addDistrictLayer(dist);
+    // },
     getBoundary(address) {
       const _this = this;
       let bdary = new BMap.Boundary();

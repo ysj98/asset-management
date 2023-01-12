@@ -18,7 +18,15 @@
       :class="{ 'required-icon': formType }"
     >
       <a-spin :spinning="loading">
-        <SG-Input-Search v-if="showSearch" class="select-name" :placeholder="placeholder" style="width: 96%" v-model="keywords" search @search="queryTree"></SG-Input-Search>
+        <SG-Input-Search
+          v-if="showSearch"
+          class="select-name"
+          :placeholder="placeholder"
+          style="width: 96%"
+          v-model="keywords"
+          search
+          @search="queryTree"
+        ></SG-Input-Search>
         <a-tree
           v-if="treeData && treeData.length"
           :checkStrictly="true"
@@ -129,7 +137,7 @@ export default {
       orgtype: "",
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
       checkedKeys: null, //选中复选框的树节点  多选时 { checked: [], halfChecked: [] }
-      mapTypeFilter: this.TypeFilter,
+      typeFilter: this.TypeFilter,
     };
   },
   methods: {
@@ -215,23 +223,27 @@ export default {
           resolve();
           return;
         }
-        // 是否过滤部门节点 （资产参数配置页面）
-        this.$api.paramsConfig.queryParamsConfigDetail({ organId: treeNode.dataRef.key, serviceType: 1010 }).then((res) => {
-          if (res.data.code === "0") {
-            const { isValid } = res.data.data;
+        Promise.all([
+          // 是否过滤部门节点 （资产参数配置页面）
+          this.$api.paramsConfig.queryParamsConfigDetail({ organId: treeNode.dataRef.key, serviceType: 1010 }),
+          // 是否过滤经营项目
+          this.$api.paramsConfig.queryParamsConfigDetail({ organId: treeNode.dataRef.key, serviceType: 1017 }),
+        ]).then((res) => {
+          if (res[0].data.code === "0") {
+            const { isValid } = res[0].data.data;
             if (Number(isValid) === 1) {
-              if (this.mapTypeFilter.length) {
+              if (this.typeFilter.length) {
                 // 如果prop传入的过滤参数不包含部门，则加上部门
-                if (!this.mapTypeFilter.includes("7")) {
-                  this.mapTypeFilter = this.mapTypeFilter + ",7";
+                if (!this.typeFilter.includes("7")) {
+                  this.typeFilter = this.typeFilter + ",7";
                 }
               } else {
-                this.mapTypeFilter = "7";
+                this.typeFilter = "7";
               }
             } else {
               // 如果关闭了过滤部门设置 传入prop包含部门也剔除掉
-              if (this.mapTypeFilter.length && this.mapTypeFilter.includes("7")) {
-                this.mapTypeFilter = this.mapTypeFilter
+              if (this.typeFilter.length && this.typeFilter.includes("7")) {
+                this.typeFilter = this.typeFilter
                   .split(",")
                   .filter((item) => {
                     return item !== "7";
@@ -239,31 +251,55 @@ export default {
                   .join(",");
               }
             }
-
-            let obj = {
-              mapTypeFilter: this.mapTypeFilter,
-              parentOrganId: treeNode.dataRef.key,
-            };
-            this.expandedKeys.push(treeNode.dataRef.key);
-            this.$api.assets.queryAsynOrganByUserId(obj).then((res) => {
-              if (+res.data.code === 0) {
-                let data = res.data.data;
-                let children = data.map((item) => {
-                  return {
-                    title: item.organName || item.name,
-                    key: item.organId,
-                    selectable: !this.multiple,
-                    orgtype: item.orgtype,
-                    organCode: item.organCode,
-                  };
-                });
-                this.setOrganIdMap(children);
-                treeNode.dataRef.children = children;
-                this.treeData = [...this.treeData];
-                resolve();
-              }
-            });
           }
+
+          if (res[1].data.code === "0") {
+            const { isValid } = res[1].data.data;
+            if (Number(isValid) === 1) {
+              if (this.typeFilter.length) {
+                // 如果prop传入的过滤参数不包含经营项目， 则加上经营项目
+                if (!this.typeFilter.includes("6")) {
+                  this.typeFilter = this.typeFilter + ",6";
+                }
+              } else {
+                this.typeFilter = "6";
+              }
+            } else {
+              // 如果关闭了过滤经营项目设置 传入prop包含经营项目也剔除掉
+              if (this.typeFilter.length && this.typeFilter.includes("6")) {
+                this.typeFilter = this.typeFilter
+                  .split(",")
+                  .filter((item) => {
+                    return item !== "6";
+                  })
+                  .join(",");
+              }
+            }
+          }
+
+          let obj = {
+            typeFilter: this.typeFilter,
+            parentOrganId: treeNode.dataRef.key,
+          };
+          this.expandedKeys.push(treeNode.dataRef.key);
+          this.$api.assets.queryAsynOrganByUserId(obj).then((result) => {
+            if (+result.data.code === 0) {
+              let data = result.data.data;
+              let children = data.map((item) => {
+                return {
+                  title: item.organName || item.name,
+                  key: item.organId,
+                  selectable: !this.multiple,
+                  orgtype: item.orgtype,
+                  organCode: item.organCode,
+                };
+              });
+              this.setOrganIdMap(children);
+              treeNode.dataRef.children = children;
+              this.treeData = [...this.treeData];
+              resolve();
+            }
+          });
         });
       });
     },
@@ -273,7 +309,7 @@ export default {
       this.expandedKeys = [];
       let form = {
         parentOrganId: "",
-        mapTypeFilter: this.mapTypeFilter,
+        typeFilter: this.typeFilter,
       };
       this.loading = true;
       this.$api.assets.queryAsynOrganByUserId(form).then((res) => {

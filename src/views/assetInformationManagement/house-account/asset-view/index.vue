@@ -84,13 +84,17 @@
               placeholder="请选择用途"
             />
           </a-col>
-          <a-col :span="3" style="text-align: left">
-            <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
-            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
+          <a-col :span="4">
+            <a-select
+              v-model="supportMaterial"
+              style="width: 100%"
+              :options="$addTitle(supportMaterialOpt)"
+              placeholder="权属用途"
+            />
           </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
-          <a-col :span="12">
+          <a-col :span="8">
             <province-city-district v-model="provinceCityDistrictValue"/>
           </a-col>
           <a-col :span="4">
@@ -99,8 +103,6 @@
           <a-col :span="4">
             <a-input placeholder="公安门牌号" v-model="houseNumber"/>
           </a-col>
-        </a-row>
-        <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4">
             <a-select
               :filter-option="filterOption"
@@ -111,14 +113,19 @@
               placeholder="权属用途"
             />
           </a-col>
-          <a-col :span="4">
+          <a-col :span="4" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
             <a-select
-              v-model="supportMaterial"
+              v-model="label"
+              mode="multiple"
+              :maxTagCount="1"
               style="width: 100%"
-              :options="$addTitle(supportMaterialOpt)"
-              placeholder="权属用途"
+              @select="assetLabelFn"
+              :options="$addTitle(assetLabelSelect)"
+              placeholder="资产标签"
             />
           </a-col>
+        </a-row>
+        <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
             <a-select
               v-model="label"
@@ -156,6 +163,13 @@
               :options="$addTitle(ownershipStatusList)"
               placeholder="请选择权属状态"
             />
+          </a-col>
+          <a-col :span="4">
+            <a-input placeholder="请输入资产原始来源方" v-model="originSource" :maxLength="100"/>
+          </a-col>
+          <a-col :span="3" style="text-align: left">
+            <SG-Button type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
+            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
         </a-row>
       </div>
@@ -357,6 +371,7 @@
             { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
             { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
             { title: '相关描述', dataIndex: 'remark', width: 350 },
+            { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
           ]
 const requiredColumn = [
   { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }
@@ -413,6 +428,7 @@ const requiredColumn = [
         fold: true,
         ASSET_MANAGEMENT, // 权限对象
         assetName: '', // 查询条件-资产名称
+        originSource: '', // 查询条件-资产原始来源方
         address:'',  // 查询条件-资产地址
         status: ['0', '1', '2', '3', '4', '7'], // 查询条件-资产状态值
         categoryId: [], // 查询条件-资产分类
@@ -840,7 +856,7 @@ const requiredColumn = [
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
           provinceCityDistrictValue: { province, city, district: region }, assetName, status, ownershipUse, current, categoryId, supportMaterial,
-          useType,sourceModes, address, uploadAttachment, label, houseNumber,pledge,ownershipStatus
+          useType,sourceModes, address, uploadAttachment, label, houseNumber,pledge,ownershipStatus,originSource
         } = this
         // this.pledge = !this.pledge ? '' : this.pledge
         if (!organId) { return this.$message.info('请选择组织机构') }
@@ -848,7 +864,7 @@ const requiredColumn = [
         let form = {
           assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId: 1, buildIdList, projectIdList, pageSize: pageLength,
-          province, city, region, assetName, pageNum: pageNo, address,
+          province, city, region, assetName, pageNum: pageNo, address,originSource,
           objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
           ownershipUse,
           supportMaterial,
@@ -942,7 +958,7 @@ const requiredColumn = [
         let api = { exportHouseBtn: 'exportAssetViewHouseExcel', exportAssetBtn: 'exportAssetViewExcel' }
         const {
           organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
-          provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType, address,
+          provinceCityDistrictValue: { province, city, district: region }, assetName, status, useType, address,originSource,
           tableObj: { columns }, current, label, pledge, houseNumber
         } = this
         let form = type === 'exportHouseBtn' ? {
@@ -950,7 +966,7 @@ const requiredColumn = [
         } : {
           assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
           organId: 1, organIds: organId, buildIdList, projectIdList, flag: current ? (current - 1) : '',
-          province, city, region, assetName,  address,
+          province, city, region, assetName,  address,originSource,
           statusList: status.includes('all') ? [] : status,
           display: columns.map(m => m.dataIndex).filter(n => n !== 'action'),
           useTypes: useType.includes('all') ? '' : useType.join(','),

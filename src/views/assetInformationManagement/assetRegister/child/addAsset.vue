@@ -366,7 +366,7 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">资产原始来源方：</label>
-                <a-input placeholder="请输入资产原始来源方" :style="allWidth" :max="30" v-decorator="['originSource', { rules: [{ required: false, max: 30, whitespace: true, message: '请输入资产原始来源方(不超过30字符)' }], initialValue: params.originSource }]" />
+                <a-input placeholder="请输入资产原始来源方" :style="allWidth" :max="100" v-decorator="['originSource', { rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产原始来源方(不超过30字符)' }], initialValue: params.originSource }]" />
               </a-form-item>
             </a-col>
           </a-row>

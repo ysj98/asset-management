@@ -476,6 +476,9 @@
                 :options="$addTitle(sourceOptions)"
               />
             </template>
+            <template v-if="changeType === '7'" slot="newOriginSource" slot-scope="text, record">
+              <a-input size="small" :maxLength="100" v-model="record.newOriginSource" />
+            </template>
             <!-- 债权债务 -->
             <template v-if="changeType === '8'" slot="newCreditorAmount" slot-scope="text, record">
               <a-input-number
@@ -593,7 +596,7 @@ export default {
       objectTypeOptions:[],
       sourceOptions:[], // 来源方式
       changeOrderId: "",
-      scroll: {y: 450, x: 1600},
+      scroll: {y: 450, x: 1700},
       organId: "",
       enitData: "", // 路由带入传入
       // 表单已有值start
@@ -715,11 +718,10 @@ export default {
       } else if (val === "10") {
         this.columns = propertyColumn;
       }
-      console.log(this.columns)
-      this.columns.forEach(item => {
-        item.width = 150
-      })
-      this.scroll.x = this.columns.length * 150
+      // this.columns.forEach(item => {
+      //   item.width = 150
+      // })
+      // this.scroll.x = this.columns.length * 155
     },
   },
   created() {
@@ -860,6 +862,8 @@ export default {
             item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
+            // 变更后资产原始来源方
+            item.newOriginSource = item.originSource;
             //有无经营产权
             item.managementRight = +item.managementRight
             // 实际产权单位
@@ -1070,6 +1074,8 @@ export default {
                 ["1"].includes(String(this.assetType))
                   ? item.newDecorationSituation
                   : "", // 变更后装修情况
+              originSource:
+                String(this.changeType) === "7" ? item.newOriginSource : "", // 变更后资产原始来源方
               creditorAmount:
                 String(this.changeType) === "8" ? item.newCreditorAmount : "", // 变更后债权金额
               debtAmount:
@@ -1131,6 +1137,7 @@ export default {
 
         item.key = item.assetId;
         item.oldDecorationSituation = item.decorationSituation;
+        item.oldOriginSource = item.originSource;
         item.oldPropertyRightUnit = item.propertyRightUnit
         // 弹窗中返回的是 sourceModeName 但是 columns 中绑定的是 oldSourceModeName,因为草稿状态 回显的时候需要这样
         item.oldSourceModeName = oldSourceModeName

@@ -62,6 +62,12 @@
             class="search-item"
             placeholder="资产名称/编码"
           ></a-input>
+          <a-input
+            v-model="queryForm.originSource"
+            class="search-item"
+            :maxLength="100"
+            placeholder="资产原始来源方"
+          ></a-input>
         </div>
       </div>
       <div slot="contentForm">
@@ -265,6 +271,11 @@ const detailColumns = [
     dataIndex: "label",
     width: 120,
   },
+  {
+    title: "资产原始来源方",
+    dataIndex: "originSource",
+    width: 120,
+  },
 ]
 const requiredColumn = [
   {
@@ -363,6 +374,11 @@ const allColumns = [
     width: 120,
   },
   {
+    title: "资产原始来源方",
+    dataIndex: "originSource",
+    width: 120,
+  },
+  {
     title: "操作",
     key: "action",
     width: 120,
@@ -430,6 +446,7 @@ export default {
         useTypes: [],
         statusList: [],
         equipmentTypes: [],
+        originSource: "",
       },
       numList: [
         { title: "资产数量", key: "total", value: 0, fontColor: "#324057" },

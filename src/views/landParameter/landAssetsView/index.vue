@@ -114,18 +114,25 @@
             </a-select-option>
           </a-select>
           <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="18" style="padding-left: 60px">
+            <a-col :span="16" style="padding-left: 60px">
               <ProvinceCityDistrict
                 class="city"
                 ref="ProvinceCityDistrict"
                 v-model="provinces"
               ></ProvinceCityDistrict>
             </a-col>
-            <a-col :span="5" style="padding-top: 13px; padding-left: 0">
+            <a-col :span="4" style="padding-top: 13px; padding-left: 0">
               <a-input
                 placeholder="详细地址"
                 v-model="address"
                 :maxLength="20"
+              />
+            </a-col>
+            <a-col :span="4" style="padding-top: 13px; padding-left: 0">
+              <a-input
+                placeholder="资产原始来源方"
+                v-model="originSource"
+                :maxLength="100"
               />
             </a-col>
           </a-row>
@@ -260,6 +267,7 @@ const columnsData = [
   { title: '四至范围', dataIndex: 'fourToRange', width: 350 },
   { title: '是否确权', dataIndex: 'isRight', width: 150 },
   { title: '缴纳土地出让金时间', dataIndex: 'payAssignmentTime', width: 150 },
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right'}
 ]
 const approvalStatusData = [
@@ -287,6 +295,7 @@ const queryCondition =  {
   pageNum: 1,         // 当前页
   pageSize: 10,       // 每页显示记录数
   address: '',         // 地理位置
+  originSource: '',    // 资产原始来源方
   landCategory: '',
   sourceModes:''            // 来源方式
 }
@@ -329,6 +338,7 @@ export default {
       organName: '',
       organId: '',
       address: '',
+      originSource: '',
       tableData: [],
       approvalStatusData: [...approvalStatusData],
       queryCondition: {...queryCondition},
@@ -404,6 +414,7 @@ export default {
         pageSize: this.queryCondition.pageSize,         // 每页显示记录数
         landCategory: this.queryCondition.landCategory,
         address: this.address,           // 详细地址
+        originSource: this.originSource,   // 资产原始来源方
         sourceModes: this.alljudge(this.queryCondition.sourceModes),
         ...obj
       }

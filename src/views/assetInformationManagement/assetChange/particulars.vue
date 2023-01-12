@@ -296,6 +296,7 @@ export default {
             item.assetArea = item.oldAssetArea;
             // 基础信息字段映射
             item.newDecorationSituation = item.decorationSituation;
+            item.newOriginSource = item.originSource;
             // 实际产权单位
             item.newPropertyRightUnit = item.propertyRightUnit
             //有无经营产权
