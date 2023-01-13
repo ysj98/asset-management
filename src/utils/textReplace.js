@@ -3,6 +3,7 @@
  * 参数： organId 可选，如果传了organId，则获取配置的接口，将配置信息存到localStorage，没传，直接获取localStorage信息
  * 工作方式：通过获取存在货币单位，面积到位的dom，遍历dom，通过innerText拿到文本值通过replace去改变
  */
+// 有一个文件没有调用属于直接写了方法  asset-management\src\views\landParameter\assetMap\component\suspensionRightBlock.vue
 import * as paramsConfig from "@/api/paramsConfig";
 // 判断是不是改造范围
 let langType = () => {
@@ -38,12 +39,12 @@ let getResourceConfig = (organIds) => {
         const { code, data } = result.data;
         if (code === "0") {
           const { currencyId, areaUnitId } = data;
-          const lang = {
+          const assetManagementLang = {
             monetaryUnit: currencyId === 1 ? "元" : "港元",
             areaUnit: areaUnitId === 1 ? "m²" : "ft²",
           };
-          localStorage.setItem("lang", JSON.stringify(lang));
-          console.log("获取货币单位以及面积单位", "organIds", organIds, "lang", lang);
+          localStorage.setItem("assetManagementLang", JSON.stringify(assetManagementLang));
+          console.log("获取货币单位以及面积单位", "organIds", organIds, "assetManagementLang", assetManagementLang);
           resolve();
         }
       });
@@ -60,12 +61,12 @@ let textReplace = (organIds) => {
     return;
   }
   getResourceConfig(organIds).then(() => {
-    let lang = localStorage.getItem("lang") || {
+    let assetManagementLang = localStorage.getItem("assetManagementLang") || {
       monetaryUnit: "元",
       areaUnit: "m²",
     };
-    if (typeof lang === "string") {
-      lang = JSON.parse(lang);
+    if (typeof assetManagementLang === "string") {
+      assetManagementLang = JSON.parse(assetManagementLang);
     }
     // 考虑到性能问题，对可能含有货币单位，面积单位的dom类型进行总结
     let body = document.body;
@@ -96,11 +97,11 @@ let textReplace = (organIds) => {
           Array.from(nodes).forEach((node) => {
             if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/单元/g) === -1 && node.innerText.search(/元|港元/g) !== -1) {
               // console.log(node);
-              node.innerText = node.innerText.replace(/元|港元/g, lang.monetaryUnit);
+              node.innerText = node.innerText.replace(/元|港元/g, assetManagementLang.monetaryUnit);
             }
             if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/m²|㎡|ft²/g) !== -1) {
               // console.log(node);
-              node.innerText = node.innerText.replace(/m²|㎡|ft²/g, lang.areaUnit);
+              node.innerText = node.innerText.replace(/m²|㎡|ft²/g, assetManagementLang.areaUnit);
             }
           });
         });
@@ -108,10 +109,10 @@ let textReplace = (organIds) => {
     });
     Array.from(document.querySelectorAll("input")).forEach((dom) => {
       if (dom.placeholder.search(/元|港元/g) !== -1) {
-        dom.placeholder = dom.placeholder.replace(/元|港元/g, lang.monetaryUnit);
+        dom.placeholder = dom.placeholder.replace(/元|港元/g, assetManagementLang.monetaryUnit);
       }
       if (dom.placeholder.search(/m²|㎡|ft²/g) !== -1) {
-        dom.placeholder = dom.placeholder.replace(/m²|㎡|ft²/g, lang.areaUnit);
+        dom.placeholder = dom.placeholder.replace(/m²|㎡|ft²/g, assetManagementLang.areaUnit);
       }
     });
   });

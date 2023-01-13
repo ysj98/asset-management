@@ -260,15 +260,15 @@ export default {
             let dataSource = arrkeys.map((item) => {
               let key = item[1]
               let o = { key: Tools.getUuid(), name: item[0] }
-              let lang = localStorage.getItem("lang")
-              if (typeof lang === "string") {
-                lang = JSON.parse(lang);
+              let assetManagementLang = localStorage.getItem("assetManagementLang")
+              if (typeof assetManagementLang === "string") {
+                assetManagementLang = JSON.parse(assetManagementLang);
               }
               if (o.name.search(/m²|㎡|ft²/g) !== -1) {
-                o.name = o.name.replace(/m²|㎡|ft²/g, lang.areaUnit);
+                o.name = o.name.replace(/m²|㎡|ft²/g, assetManagementLang.areaUnit);
               }
               if (o.name.search(/元|港元/g) !== -1) {
-                o.name = o.name.replace(/元|港元/g, lang.monetaryUnit);
+                o.name = o.name.replace(/元|港元/g, assetManagementLang.monetaryUnit);
               }
               keysArr.forEach((dataIndex) => {
                 // 如果是面积
@@ -298,12 +298,12 @@ export default {
                 decimal: 2
               }
             ]
-            let lang = localStorage.getItem("lang")
-            if (typeof lang === "string") {
-              lang = JSON.parse(lang);
+            let assetManagementLang = localStorage.getItem("assetManagementLang")
+            if (typeof assetManagementLang === "string") {
+              assetManagementLang = JSON.parse(assetManagementLang);
             }
-            keyArr[0].keyStr = keyArr[0].keyStr.replace(/m²|㎡|ft²/g, lang.areaUnit);
-            keyArr[1].keyStr = keyArr[1].keyStr.replace(/元|港元/g, lang.monetaryUnit);
+            keyArr[0].keyStr = keyArr[0].keyStr.replace(/m²|㎡|ft²/g, assetManagementLang.areaUnit);
+            keyArr[1].keyStr = keyArr[1].keyStr.replace(/元|港元/g, assetManagementLang.monetaryUnit);
             dataSource = dataSource.map(ele=>{
               let res  = ele
               let item = keyArr.find(e=>e.keyStr===ele.name)
