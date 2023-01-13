@@ -15,6 +15,7 @@
     <% if (process.env.NODE_ENV === 'production') { %>
       <script src="/uhomeccp/configs.js?v=<%=new Date().getTime()%>"></script>
       <script>
+        localStorage.removeItem('lang')
         /**
          * 加载 CDN 资源函数
          * urls: 资源列表
