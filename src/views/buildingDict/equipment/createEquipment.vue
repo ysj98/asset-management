@@ -191,14 +191,14 @@
               <a-col :span="24" style="display: flex">
                 <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
                 <div style="width: 86%">
-                  <UploadFile
+                  <SG-UploadFile
                     :customUpload="customUpload"
                     v-model="formInfo.imgPath"
                     :max="10"
                     :maxSize="2048"
                   >
                     <span slot="tips">(注：上传的图片最多为 10 张,且图片大小小于2M)</span>
-                  </UploadFile>
+                  </SG-UploadFile>
                 </div>
                 </a-col>
             </a-row>
@@ -206,7 +206,7 @@
               <a-col :span="24" style="display: flex">
                 <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
                 <div style="width: 86%">
-                  <UploadFile
+                  <SG-UploadFile
                     type="all"
                     :max="5"
                     :customUpload="customUpload"
@@ -214,7 +214,7 @@
                     :maxSize="2048"
                   >
                     <span slot="tips">(注：上传的文件最多为 20 个,且文件大小小于2M)</span>
-                  </UploadFile>
+                  </SG-UploadFile>
                 </div>
               </a-col>
             </a-row>

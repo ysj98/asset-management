@@ -327,25 +327,30 @@
                 </a-col>
                 <a-col :span="24">
                     <a-form-item label="平面图" v-bind="formItemLayout2">
-                      <UploadFile v-model="picPath" :maxSize="51200" :max="1"/>
+                      <SG-UploadFile v-model="picPath" :maxSize="51200" :max="1" :customDownload="customDownload" :customUpload="customUpload"/>
                     </a-form-item>
                 </a-col>
                 <a-col :span="24">
                   <a-form-item label="图片" v-bind="formItemLayout2">
-                    <UploadFile
+                    <SG-UploadFile
                       v-model="buildPic"
                       :max="5"
                       :maxSize="51200"
+                      :customDownload="customDownload"
+                      :customUpload="customUpload"
                       />
                   </a-form-item>
                 </a-col>
                 <a-col :span="24">
                   <a-form-item label="附件" v-bind="formItemLayout2">
-                    <UploadFile
+                    <SG-UploadFile
                       :max="5"
                       :maxSize="51200"
                       type="all"
-                      v-model="filepaths"/>
+                      v-model="filepaths"
+                      :customDownload="customDownload"
+                      :customUpload="customUpload"
+                      />
                   </a-form-item>
                 </a-col>
             </a-row>

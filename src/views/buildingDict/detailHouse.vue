@@ -183,7 +183,7 @@
                 <div class="detail-item">
                   <div class="item-label">平面图：</div>
                   <div class="item-content">
-                    <UploadFile v-if="planeFigurePath.length" :show="true" v-model="planeFigurePath"/>
+                    <SG-UploadFile v-if="planeFigurePath.length" :show="true" v-model="planeFigurePath"/>
                     <span v-else>-</span>
                   </div>
                 </div>
@@ -192,7 +192,7 @@
                 <div class="detail-item">
                   <div class="item-label">图片：</div>
                   <div class="item-content">
-                    <UploadFile v-if="housePic.length" :show="true" v-model="housePic"/>
+                    <SG-UploadFile v-if="housePic.length" :show="true" v-model="housePic"/>
                     <span v-else>-</span>
                   </div>
                 </div>
@@ -201,7 +201,7 @@
                 <div class="detail-item">
                   <div class="item-label">附&nbsp;&nbsp;&nbsp;&nbsp;件：</div>
                   <div class="item-content">
-                    <UploadFile v-if="filepaths.length" :show="true" type="all" v-model="filepaths"/>
+                    <SG-UploadFile v-if="filepaths.length" :show="true" type="all" v-model="filepaths"/>
                     <span v-else>-</span>
                   </div>
                 </div>

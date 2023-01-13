@@ -221,7 +221,7 @@
               <div class="detail-item">
                 <div class="item-label">围墙图片：</div>
                 <div class="item-content">
-                  <UploadFile v-if="encloseWallPic.length" :show="true" v-model="encloseWallPic" />
+                  <SG-UploadFile v-if="encloseWallPic.length" :show="true" v-model="encloseWallPic" />
                   <span v-else>-</span>
                 </div>
               </div>
@@ -236,7 +236,7 @@
               <div class="detail-item">
                 <div class="item-label">用地红线图：</div>
                 <div class="item-content">
-                  <UploadFile v-if="redMap.length" :show="true" v-model="redMap" />
+                  <SG-UploadFile v-if="redMap.length" :show="true" v-model="redMap" />
                   <span v-else>-</span>
                 </div>
               </div>
@@ -245,7 +245,7 @@
               <div class="detail-item">
                 <div class="item-label">现状图片：</div>
                 <div class="item-content">
-                  <UploadFile v-if="nowPic.length" :show="true" v-model="nowPic" />
+                  <SG-UploadFile v-if="nowPic.length" :show="true" v-model="nowPic" />
                   <span v-else>-</span>
                 </div>
               </div>
@@ -254,7 +254,7 @@
               <div class="detail-item">
                 <div class="item-label">图片：</div>
                 <div class="item-content">
-                  <UploadFile v-if="blankPic.length" :show="true" v-model="blankPic" />
+                  <SG-UploadFile v-if="blankPic.length" :show="true" v-model="blankPic" />
                   <span v-else>-</span>
                 </div>
               </div>
@@ -263,7 +263,7 @@
               <div class="detail-item">
                 <div class="item-label">附&nbsp;&nbsp;&nbsp;&nbsp;件：</div>
                 <div class="item-content">
-                  <UploadFile v-if="filePath.length" :show="true" type="all" v-model="filePath" />
+                  <SG-UploadFile v-if="filePath.length" :show="true" type="all" v-model="filePath" />
                   <span v-else>-</span>
                 </div>
               </div>

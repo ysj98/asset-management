@@ -291,7 +291,9 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="平面图" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
                     :max="1"
                     v-model="planeFigurePath"
                   />
@@ -299,8 +301,10 @@
               </a-col>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     v-model="housePic"
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
                   />
                 </a-form-item>
               </a-col>
@@ -308,11 +312,13 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     :max="5"
                     :maxSize="51200"
                     type="all"
                     v-model="filepaths"
+                    :customDownload="customDownload"
+                    :customUpload="customUpload"
                   />
                 </a-form-item>
               </a-col>

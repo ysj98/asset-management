@@ -179,7 +179,7 @@
             <!-- 文本框 -->
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
             <div style="width: 86%">
-              <UploadFile
+              <SG-UploadFile
                 ref="uploadFile"
                 :customDownload="customDownload"
                 :customUpload="customUpload"
@@ -188,7 +188,7 @@
                 :maxSize="2048"
               >
                 <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M,区域信息图片同上)</span>
-              </UploadFile>
+              </SG-UploadFile>
             </div>
           </a-col>
         </a-row>
@@ -196,7 +196,7 @@
           <a-col :span="24" style="display: flex;margin-top: 20px">
             <div style="width: 5.6%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
             <div style="width: 86%">
-              <UploadFile
+              <SG-UploadFile
                 type="all"
                 ref="uploadFile"
                 :customDownload="customDownload"
@@ -205,7 +205,7 @@
                 :max="5"
                 :maxSize="51200"
               >
-              </UploadFile>
+              </SG-UploadFile>
             </div>
           </a-col>
         </a-row>
@@ -322,7 +322,7 @@
                       :wrapper-col="{ span: 24 }"
                       :rules="{}">
                         <div style="transform: scale(0.8)" >
-                          <UploadFile
+                          <SG-UploadFile
                             :customDownload="customDownload"
                             :customUpload="customUpload"
                             :show="formInfo.areaArray[index].disabled"
@@ -331,7 +331,7 @@
                             :maxSize="2048"
                           >
                             <span slot="tips"></span>
-                          </UploadFile>
+                          </SG-UploadFile>
                         </div>
                       </a-form-model-item>
                       <div v-else-if="com.dataIndex === 'operation'">

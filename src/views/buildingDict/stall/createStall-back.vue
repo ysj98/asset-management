@@ -233,7 +233,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     :customDownload="customDownload"
                     :customUpload="customUpload"
                     v-model="formInfo.parkingImg"

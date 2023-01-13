@@ -202,7 +202,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     :customUpload="customUpload"
                     v-model="formInfo.imgPath"
                     :max="10"
@@ -213,7 +213,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     type="all"
                     :max="20"
                     :customUpload="customUpload"

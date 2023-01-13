@@ -77,7 +77,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     :show="true"
                     v-model="formInfo.otherImg"
                   />
@@ -87,7 +87,7 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <UploadFile
+                  <SG-UploadFile
                     :show="true"
                     v-model="formInfo.carPlaceDoc"
                   />
@@ -114,12 +114,12 @@
                         <a-form-item style="margin: -5px;">
                           <span v-if="['text', 'input','number', 'textarea'].includes(com.component)">{{ item }}</span>
                           <div style="transform: scale(0.8)" v-else-if="com.component ==='image'">
-                            <UploadFile
+                            <SG-UploadFile
                                 :show="true"
                                 v-model="tableCache[index].areaOtherImg"
                             >
                               <span slot="tips"></span>
-                            </UploadFile>
+                            </SG-UploadFile>
                           </div>
                         </a-form-item>
                       </div>
