@@ -12,7 +12,7 @@ export const columnsData = [
   { title: '房间名称', dataIndex: 'houseName', width: 150 },
   { title: '资产名称', dataIndex: 'assetName', width: 150 },
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
-  { title: '建筑面积(㎡)', dataIndex: 'area', width: 100 },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 120 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 350 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
   { title: '有无经营权', dataIndex: 'managementRightName', width: 100 }, //  有无经营权
@@ -30,6 +30,7 @@ export const columnsData = [
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
   { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
  
@@ -186,6 +187,7 @@ export const landData = [
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 300 },
   { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
@@ -278,7 +280,7 @@ export const yard = [
   { title: '车位编码', dataIndex: 'code', width: 100 },
   { title: '坐落位置', dataIndex: 'pasitionString', width: 100 },
   { title: '车场类型', key: 'type', width: 100 ,scopedSlots: {customRender: 'type'} },
-  { title: '建筑面积(㎡)', dataIndex: 'area', width: 100 },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 120 },
   { title: '资产名称', dataIndex: 'assetName', width: 350 },
   { title: '资产编码', dataIndex: 'assetCode', width: 100 },
   { title: '权属类型', dataIndex: 'kindOfRightName', width: 100 },
@@ -294,6 +296,7 @@ export const yard = [
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 300 },
   { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
@@ -316,6 +319,7 @@ export const equipment = [
   { title: '债务金额(元)', dataIndex: 'debtAmount', width: 150 },
   { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' }}
 ]
 
