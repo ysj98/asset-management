@@ -164,10 +164,14 @@
           },
         }) }">>
       <template slot="assetName" slot-scope="text">
-        <!-- <tooltip-text :text="text"/> -->
-        <span :title="text">
-          {{text}}
-        </span>
+        <a-tooltip>
+          <template slot="title">
+            {{text}}
+          </template>
+          <p style="width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            {{text}}
+          </p>
+        </a-tooltip>
       </template>
       <span slot="action" slot-scope="text, record">
         <router-link v-if="record.assetName !== '所有页-合计'" :to="{ path: '/assetCarPrakView/detail', query: { assetCarParkId: record.assetCarParkId, assetId: record.assetId, organId: record.organId } }">详情</router-link>
