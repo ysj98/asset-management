@@ -60,6 +60,7 @@
         <div class="table-layout-fixed table-border">
           <a-table
             :loading="loading"
+            :scroll="{y: 450, x: 1700}"
             :columns="columnsCom"
             :dataSource="tableData"
             class="custom-table td-pd10"

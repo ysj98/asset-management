@@ -81,6 +81,11 @@
             class="search-item"
             placeholder="全部资产分类"
           />
+          <province-city-district
+            class="search-item-address"
+            v-model="provinceCityDistrictValue"
+            @input="handleAddress"
+          />
           <a-select
             v-model="queryForm.useTypes"
             :options="amsUseDirectionCom"
@@ -90,11 +95,6 @@
             class="search-item"
             placeholder="全部使用方向"
           ></a-select>
-          <province-city-district
-            class="search-item-address"
-            v-model="provinceCityDistrictValue"
-            @input="handleAddress"
-          />
           <a-select
             v-model="queryForm.labels"
             :options="labelOptions"
@@ -763,7 +763,7 @@ export default {
 .contentForm {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 .search-item {
   width: 200px;

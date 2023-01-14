@@ -372,6 +372,7 @@ export default {
       this.checkedKeys = [];
       let form = {
         keywords: this.keywords,
+        // exclusionOrgTypes: "6,7",
       };
       this.loading = true;
       this.$api.assets.queryAsynOrganByKey(form).then((res) => {
