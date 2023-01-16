@@ -41,6 +41,7 @@
             optionFilterProp="children"
             :maxTagCount="1"
             :style="allStyle"
+            style="min-width: 165px"
             mode="multiple"
             placeholder="全部状态"
             :tokenSeparators="[',']"
@@ -114,7 +115,7 @@
             </a-select-option>
           </a-select>
           <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="16" style="padding-left: 60px">
+            <a-col :span="16" style="padding-left: 60px; width: 606px;">
               <ProvinceCityDistrict
                 class="city"
                 ref="ProvinceCityDistrict"
@@ -155,6 +156,7 @@
         :columns="columns"
         :dataSource="tableData"
         :pagination="false"
+        size="middle"
         class="pb70"
         >
         <template slot="landArea" slot-scope="text">
@@ -824,6 +826,7 @@ export default {
   display: flex;
   justify-content: space-between;
   .search-from-box{
+    display: flex;
     flex: 1;
     flex-wrap: wrap;
     text-align: right;
