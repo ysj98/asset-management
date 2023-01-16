@@ -32,13 +32,13 @@
       <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3'|| this.kindOfRight === '5' || this.kindOfRight === '6'">
         <span class="section-title blue">权属人</span>
         <div class="tab-nav table-border">
-          <a-table :columns="columns" :dataSource="amsOwnershipWarrantObligeeList" class="custom-table td-pd10" :pagination="false"></a-table>
+          <a-table :columns="columns" :dataSource="amsOwnershipWarrantObligeeList" size="middle" :pagination="false"></a-table>
         </div>
       </div>
       <div class="newCard-nav" v-if="this.kindOfRight === '1'|| this.kindOfRight === '5' || this.kindOfRight === '6'">
         <span class="section-title blue">抵押信息</span>
         <div class="tab-nav table-border">
-          <a-table :columns="mortgageInformation" :dataSource="amsOwnershipWarrantMortgageList" class="custom-table td-pd10" :pagination="false"></a-table>
+          <a-table :columns="mortgageInformation" :dataSource="amsOwnershipWarrantMortgageList" size="middle" :pagination="false"></a-table>
         </div>
       </div>
       <div class="newCard-nav" v-if="type === 'approval'">

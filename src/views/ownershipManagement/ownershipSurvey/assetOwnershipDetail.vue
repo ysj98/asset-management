@@ -75,7 +75,7 @@
           :class="[tableInfo.dataSource.length === 0&&'borderBottom']"
         >
           <a-table
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             :columns="tableInfo.columns"
             :dataSource="tableInfo.dataSource"
@@ -109,7 +109,7 @@
           :class="[tableCert.dataSource.length === 0&&'borderBottom']"
         >
           <a-table
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             :columns="tableCert.columns"
             :dataSource="tableCert.dataSource"
@@ -129,7 +129,7 @@
           :class="[tableHandler.dataSource.length === 0&&'borderBottom']"
         >
           <a-table
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             :columns="tableHandler.columns"
             :dataSource="tableHandler.dataSource"

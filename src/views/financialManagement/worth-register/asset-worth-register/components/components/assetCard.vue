@@ -20,7 +20,7 @@
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
           :columns="columns"
           :dataSource="dataSource"
-          class="custom-table td-pd10"
+          size="middle"
           :scroll="scroll"
           :pagination="false"
           rowKey="cardId"

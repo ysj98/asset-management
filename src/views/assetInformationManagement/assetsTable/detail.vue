@@ -77,7 +77,7 @@
                     <a-table
                             :columns="tableData.columns"
                             :dataSource="tableData.dataSource"
-                            class="custom-table"
+                            size="middle"
                             :pagination="false"
                     ></a-table>
                     <SG-FooterPagination

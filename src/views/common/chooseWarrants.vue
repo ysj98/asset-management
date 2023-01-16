@@ -35,7 +35,7 @@
                 :loading="loading"
                 :columns="columns"
                 :dataSource="tableData"
-                class="custom-table td-pd10"
+                size="middle"
                 :pagination="false"
                 >
                 <template slot="obligeeName" slot-scope="text, record">
@@ -65,7 +65,7 @@
                 <a-table
                   :columns="chosenColumns"
                   :dataSource="chosenDataSource"
-                  class="custom-table td-pd10"
+                  size="middle"
                   :pagination="false"
                 >
                   <template slot="obligeeName" slot-scope="text, record">

@@ -122,7 +122,7 @@
             name: record.statusName,
           },
         })}"
-        class="custom-table td-pd10"
+        size="middle"
         :pagination="false"
         :rowKey='record=>record.warrantId'
         :scroll="{y: scrollHeight}"

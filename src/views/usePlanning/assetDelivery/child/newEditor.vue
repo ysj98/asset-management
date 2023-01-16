@@ -143,7 +143,7 @@
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
             :columns="columnsCom"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
             <template slot="deliveryArea" slot-scope="text, record">

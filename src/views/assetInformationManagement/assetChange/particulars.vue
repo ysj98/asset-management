@@ -63,7 +63,7 @@
             :scroll="{y: 450, x: 1700}"
             :columns="columnsCom"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
             <!-- 有无经营权 -->

@@ -52,7 +52,7 @@
     <SG-Title title="投保信息"/>
     <a-table
       v-bind="tableObj"
-      class="custom-table td-pd10">
+      size="middle">
       <template slot="action" slot-scope="text, record">
         <p @click="detailPolicy(record)" style="color: #40a9ff;cursor: pointer; font-size: 14px;margin-bottom:0;">详情</p>
       </template>

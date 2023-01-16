@@ -41,7 +41,7 @@
       :scroll="{ x: 2500, y: scrollHeight }"
       :columns="columns"
       :dataSource="tableData"
-      class="custom-table td-pd10"
+      size="middle"
       :pagination="false"
       >
       <template slot="reportRecordId" slot-scope="text, record">

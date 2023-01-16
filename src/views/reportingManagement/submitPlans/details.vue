@@ -49,7 +49,7 @@
             :loading="loading"
             :columns="columns"
             :dataSource="dataSourceReportBill"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <template v-for="(item, index) in columns" :slot="item.dataIndex" slot-scope="text, record, index">
@@ -74,7 +74,7 @@
             :loading="loading"
             :columns="previewColumns"
             :dataSource="taskExecution"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
           </a-table>
@@ -96,7 +96,7 @@
             :loading="loading"
             :columns="executiveColumns"
             :dataSource="executiveLogging "
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
           </a-table>

@@ -110,7 +110,7 @@
                   <a-table
                     :columns="abnormalAsset.columns"
                     :dataSource="abnormalAsset.dataSource"
-                    class="custom-table td-pd10"
+                    size="middle"
                     :pagination="false"
                   >
                     <template slot="operation" slot-scope="text, record">
@@ -139,7 +139,7 @@
                   <a-table
                     :columns="unCountAsset.columns"
                     :dataSource="unCountAsset.dataSource"
-                    class="custom-table td-pd10"
+                    size="middle"
                     :pagination="false"
                   >
                   </a-table>
@@ -159,7 +159,7 @@
                   <a-table
                     :columns="normalAsset.columns"
                     :dataSource="normalAsset.dataSource"
-                    class="custom-table td-pd10"
+                    size="middle"
                     :pagination="false"
                   >
                     <template slot="operation" slot-scope="text, record">

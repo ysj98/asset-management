@@ -43,7 +43,7 @@
       :loading="loading"
       :columns="columns"
       :dataSource="tableData"
-      class="custom-table td-pd10"
+      size="middle"
       :pagination="false"
       >
       <template slot="reportTaskId" slot-scope="text, record">

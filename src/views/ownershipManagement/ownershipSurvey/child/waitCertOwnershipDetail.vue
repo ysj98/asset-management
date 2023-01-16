@@ -7,7 +7,7 @@
   <!-- 表格部分 -->
   <div class="table-layout-fixed detail-table">
     <a-table
-      class="custom-table td-pd10"
+      size="middle"
       :loading="table.loading"
       :pagination="false"
       :columns="table.columns"

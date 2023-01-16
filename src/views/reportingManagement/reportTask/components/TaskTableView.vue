@@ -21,7 +21,7 @@
         <!--</a-col>-->
       </a-row>
       <!--列表部分-->
-      <a-table v-if="tableObj.columns.length" v-bind="tableObj" class="custom-table td-pd10"/>
+      <a-table v-if="tableObj.columns.length" v-bind="tableObj" size="middle"/>
       <div v-if="!tableObj.dataSource.length" style="text-align: center; margin-top: 25px; color: rgba(0, 0, 0, 0.45)">暂无数据</div>
       <SG-FooterPagination
         v-bind="paginationObj"

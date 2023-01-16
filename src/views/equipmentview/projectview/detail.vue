@@ -5,7 +5,7 @@
     <SG-Title title="其他信息" />
     <Information v-bind="otherInfoOptions" />
     <SG-Title title="权属概况" />
-    <a-table v-bind="tableOptions" class="custom-table"></a-table>
+    <a-table v-bind="tableOptions" size="middle"></a-table>
     <SG-Title title="资产状况" />
     <div style="max-height: 600px; overflow: auto">
       <overview-number :numList="numList" />

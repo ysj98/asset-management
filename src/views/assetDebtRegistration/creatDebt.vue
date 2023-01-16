@@ -244,7 +244,7 @@
             }"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
           <template slot="num" slot-scope="text, record,index">

@@ -17,7 +17,7 @@
         :columns="columns" 
         :dataSource="dataSource" 
         bordered 
-        class="custom-table td-pd10" 
+        size="middle" 
         :pagination="false" 
         :loading="tableLoading"
         :scroll="tableScroll">

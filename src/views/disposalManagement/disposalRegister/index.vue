@@ -105,7 +105,7 @@
     </SearchContainer>
     <div class="table-layout-fixed">
       <a-table
-          class="custom-table td-pd10"
+          size="middle"
           :loading="table.loading"
           :pagination="false"
           :scroll="{ x: 1400}"

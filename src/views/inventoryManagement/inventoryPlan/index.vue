@@ -63,7 +63,7 @@
     <!-- 搜索框end -->
     <div>
         <a-table
-          class="custom-table td-pd10"
+          size="middle"
           :loading="table.loading"
           :pagination="false"
           :columns="table.columns"

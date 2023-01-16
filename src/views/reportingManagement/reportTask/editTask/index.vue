@@ -60,7 +60,7 @@
     <!--数据总览-->
     <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" size="middle">
       <span slot="executeDate" slot-scope="text, record">
         {{`${record.beginDate}-${record.endDate}`}}
       </span>

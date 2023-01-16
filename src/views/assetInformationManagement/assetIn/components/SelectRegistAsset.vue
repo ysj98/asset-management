@@ -33,7 +33,6 @@
               :scroll="{x: 900}"
               :dataSource="dataSource"
               rowKey="registerOrderId"
-              class="custom-table td-pd10"
               :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
             />
           </div>

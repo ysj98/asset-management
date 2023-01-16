@@ -11,7 +11,7 @@
     </div>
     <!-- 权属表格 -->
     <a-table
-      class="custom-table td-pd10"
+      size="middle"
       bordered
       :loading="tableFirst.loading"
       :pagination="false"
@@ -32,7 +32,7 @@
         :loading="table.loading"
         :columns="table.columns"
         :dataSource="table.dataSource"
-        class="custom-table td-pd10"
+        size="middle"
         :pagination="false"
       />
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>

@@ -172,7 +172,7 @@
         <a-table
           :columns="columns"
           :dataSource="amsOwnershipWarrantObligeeList"
-          class="custom-table td-pd10"
+          size="middle"
           :pagination="false"
           >
           <template slot="obligeeId" slot-scope="text, record">
@@ -207,7 +207,7 @@
         <a-table
           :columns="mortgageInformation"
           :dataSource="amsOwnershipWarrantMortgageList"
-          class="custom-table td-pd10"
+          size="middle"
           :pagination="false"
           >
           <template slot="mortgageAmount" slot-scope="text, record">

@@ -95,7 +95,7 @@
             :loading="table.loading"
             :columns="table.columns"
             :dataSource="table.dataSource"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
           <!-- 盘点单名称 -->

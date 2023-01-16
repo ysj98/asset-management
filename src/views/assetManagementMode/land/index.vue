@@ -26,7 +26,7 @@
       <!-- 表格部分 -->
       <div style="padding-top: 50px">
         <a-table
-          class="custom-table td-pd10"
+          size="middle"
           :loading="table.loading"
           :pagination="false"
           bordered

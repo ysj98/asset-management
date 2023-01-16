@@ -56,7 +56,7 @@
       </div>
     </search-container>
     <!--列表部分-->
-    <a-table :scroll="scroll" v-bind="tableObj" class="custom-table td-pd10">
+    <a-table :scroll="scroll" v-bind="tableObj" size="middle">
       <template slot="operation" slot-scope="text, record">
         <OperationPopover :operationData="operationDataBtn"  @operationFun="operationFun($event, record)"></OperationPopover>
       </template>

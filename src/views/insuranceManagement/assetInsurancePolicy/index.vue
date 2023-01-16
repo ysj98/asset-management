@@ -41,7 +41,7 @@
     </a-spin>
     <a-table
       v-bind="tableObj"
-      class="custom-table td-pd10">
+      size="middle">
       <template slot="organName" slot-scope="text">
         <a-tooltip>
           <template slot="title">

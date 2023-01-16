@@ -51,7 +51,7 @@
       </a-col>
     </a-row>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" size="middle">
       <span slot="executeDate" slot-scope="text, record">
         {{`${record.beginDate}-${record.endDate}`}}
       </span>

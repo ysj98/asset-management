@@ -18,7 +18,7 @@
             @search="queryLayerPageList"
           ></a-input-search>
         </div>
-        <a-table class="custom-table" ref="refTable" v-bind="tableOptions">
+        <a-table size="middle" ref="refTable" v-bind="tableOptions">
           <!-- 所属机构  -->
           <template #organName="text, record, index">
             <div v-if="record.layerId && !record._editFlag">

@@ -51,7 +51,7 @@
                   :loading="loading"
                   :columns="columns"
                   :dataSource="dataSource"
-                  class="custom-table td-pd10"
+                  size="middle"
                   :pagination="false"
                 >
                 </a-table>
@@ -76,7 +76,7 @@
                   :scroll="{y: 450 }"
                   :columns="chosenColumns"
                   :dataSource="chosenDataSource"
-                  class="custom-table td-pd10"
+                  size="middle"
                   :pagination="false"
                 >
                   <template slot="operation" slot-scope="text, record">

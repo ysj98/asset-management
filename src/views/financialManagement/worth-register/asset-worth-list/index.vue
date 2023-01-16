@@ -77,7 +77,7 @@
     <!--数据总览-->
     <overview-number :numList="numList" style="margin-bottom: 8px"/>
     <!--列表部分-->
-    <!-- class="custom-table td-pd10" -->
+    <!-- size="middle" -->
     <a-table v-bind="tableObj" class="custom-tables">
       <template slot="assetCode" slot-scope="text">
         <tooltip-text :text="text"/>

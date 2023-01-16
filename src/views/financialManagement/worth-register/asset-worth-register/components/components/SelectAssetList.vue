@@ -73,7 +73,6 @@
               :loading="loading"
               :pagination="false"
               :dataSource="dataSource"
-              class="custom-table td-pd10"
               :scroll="{x: 1200}"
               :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
             />

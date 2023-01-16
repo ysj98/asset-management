@@ -103,7 +103,7 @@
             :loading="loading"
             :columns="columns"
             :dataSource="dataSourceReportBill"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <template v-for="(item, index) in columns" :slot="item.dataIndex" slot-scope="text, record, index">
@@ -187,7 +187,7 @@
 							:loading="table.loading"
 							:columns="table.previewColumns"
 							:dataSource="table.tableData"
-							class="custom-table td-pd10"
+							size="middle"
 							:pagination="false"
 							>
               <!-- 填报人表头 -->

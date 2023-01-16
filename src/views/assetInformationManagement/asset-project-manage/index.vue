@@ -53,7 +53,7 @@
     <!--概览-->
     <overview-number :numList="numList"/>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" size="middle">
       <!--二期开发-->
       <!--<span slot="ownershipProgress" slot-scope="text">-->
         <!--<a-progress :percent="text || 0" :format="a => a" size="small"/>-->

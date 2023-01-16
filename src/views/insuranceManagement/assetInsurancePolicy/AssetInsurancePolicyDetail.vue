@@ -76,7 +76,7 @@
     <SG-Title title="资产信息"/>
     <a-table
       v-bind="tableObj"
-      class="custom-table td-pd10">
+      size="middle">
     </a-table>
     <SG-FooterPagination v-bind="paginationObj" @change="pageChange"/>
   </div>

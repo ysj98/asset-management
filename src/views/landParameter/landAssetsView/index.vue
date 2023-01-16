@@ -37,7 +37,7 @@
               {{ item.title }}
             </a-select-option>
           </a-select>
-          <a-select
+          <a-select 
             optionFilterProp="children"
             :maxTagCount="1"
             :style="allStyle"

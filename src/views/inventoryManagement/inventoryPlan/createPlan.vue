@@ -338,7 +338,7 @@
     <div class="mb30 mt30"><SG-Title noMargin title="计划明细" /></div>
     <div class="table-layout-fixed detail-table ml40">
       <a-table
-        class="custom-table td-pd10"
+        size="middle"
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"

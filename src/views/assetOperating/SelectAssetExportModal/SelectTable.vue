@@ -3,7 +3,7 @@
     <div style="margin-bottom: 10px">
       <SG-Button type="primary" @click="handleExport"> 导出 </SG-Button>
     </div>
-    <a-table class="custom-table" v-bind="tableOptions">
+    <a-table size="middle" v-bind="tableOptions">
       <template #action="text, reocrd">
         <a style="color: red" @click="handleDel(reocrd)">删除</a>
       </template>

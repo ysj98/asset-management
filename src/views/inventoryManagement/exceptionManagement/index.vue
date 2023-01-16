@@ -84,7 +84,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table td-pd10"
+        size="middle"
         :scroll="{ x: 1900 }"
         :pagination="false"
       >

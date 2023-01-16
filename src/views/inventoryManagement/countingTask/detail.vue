@@ -32,7 +32,7 @@
             :loading="loading"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
           <template slot="progress" slot-scope="text, record">
@@ -56,7 +56,7 @@
             :loading="loading"
             :columns="InventoryReportColumns"
             :dataSource="inventoryReportData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <template slot="reportName" slot-scope="text, record">

@@ -17,7 +17,7 @@
             :loading="loading"
             :columns="basicColumns"
             :dataSource="basicData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <div slot="index" slot-scope="text, record, index">{{ +index + 1 }}</div>
@@ -32,7 +32,7 @@
             :loading="loading"
             :columns="obligeeColumns"
             :dataSource="obligeeData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <div slot="index" slot-scope="text, record, index">{{ +index + 1 }}</div>
@@ -51,7 +51,7 @@
             :loading="loading"
             :columns="mortgageColumns"
             :dataSource="mortgageData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <div slot="index" slot-scope="text, record, index">{{ +index + 1 }}</div>

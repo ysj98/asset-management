@@ -89,7 +89,7 @@
             :loading="loading"
             :columns="columnsData"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
             <!-- 是否需协助办证 -->
@@ -131,7 +131,7 @@
             :loading="loading"
             :columns="receivingColumnsData"
             :dataSource="inventoryReportData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
           </a-table>
@@ -148,7 +148,7 @@
           <a-table
             :columns="transferColumns"
             :dataSource="transfertData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
           </a-table>

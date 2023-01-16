@@ -56,7 +56,6 @@
       :pagination="false"
       :scroll="{x: true}"
       :dataSource="dataSource"
-      class="custom-table td-pd10"
       :columns="type == 'Card' ? cardColumns : assetColumns"
       :rowSelection="{
         type: 'radio',

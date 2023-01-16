@@ -85,7 +85,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表Table-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered >
+    <a-table v-bind="tableObj" size="middle" bordered >
       <!-- <template slot="originalValue" slot-scope="text">
         {{ getFormat(text) }}
       </template>

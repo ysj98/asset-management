@@ -66,7 +66,6 @@
           :scroll="{ x: 2000,y:380 }"
           size="small"
           :pagination="false"
-          class="custom-table td-pd10"
           :row-selection="{ selectedRowKeys, onChange: onSelectChange }"
           tableLayout="fixed"
         >

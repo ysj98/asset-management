@@ -181,7 +181,7 @@
     <!--列表Table-->
     <a-table
       v-bind="tableObj"
-      class="custom-table td-pd10"
+      size="middle"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll,
       getCheckboxProps: record => ({
         props: {

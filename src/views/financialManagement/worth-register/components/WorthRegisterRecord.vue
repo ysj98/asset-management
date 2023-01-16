@@ -70,7 +70,7 @@
       </div>
     </search-container>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10"/>
+    <a-table v-bind="tableObj" size="middle"/>
     <no-data-tip v-if="!tableObj.dataSource.length"/>
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
   </div>

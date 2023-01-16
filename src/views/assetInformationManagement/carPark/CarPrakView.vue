@@ -78,7 +78,7 @@
     <!--列表部分-->
     <a-table 
       v-bind="tableObj" 
-      class="custom-table td-pd10"
+      size="middle"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll }">
       <!-- <template slot="buildName" slot-scope="text">
         <tooltip-text :text="text"/>

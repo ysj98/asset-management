@@ -38,7 +38,7 @@
       ></a-input-search>
     </div>
     <a-table
-      class="custom-table"
+      size="middle"
       v-bind="tableOptions"
       :row-selection="{
         selectedRowKeys: selectedRowKeys,

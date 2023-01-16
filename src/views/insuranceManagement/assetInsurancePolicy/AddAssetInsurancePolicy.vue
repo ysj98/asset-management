@@ -172,7 +172,7 @@
     <a-table
       v-bind="tableObj"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-      class="custom-table td-pd10">
+      size="middle">
       <template slot="action" slot-scope="text, record">
         <p @click="deleteAsset(record)" style="color: #40a9ff;cursor: pointer; font-size: 14px;margin-bottom:0;">删除</p>
       </template>

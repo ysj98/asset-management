@@ -155,14 +155,14 @@
     <!--列表Table-->
     <a-table
       v-bind="tableObj"
-      class="custom-table td-pd10"
+      size="middle"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll,
       getCheckboxProps: record => ({
           props: {
             disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
             name: record.assetName,
           },
-        }) }">>
+        }) }">
       <template slot="assetName" slot-scope="text">
         <a-tooltip>
           <template slot="title">

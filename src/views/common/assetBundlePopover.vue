@@ -53,7 +53,7 @@
             :loading="loading"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
           </a-table>

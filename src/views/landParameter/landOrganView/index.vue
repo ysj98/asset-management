@@ -36,7 +36,7 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" size="middle">
       <span slot="action" slot-scope="text, record">
         <span v-if="!record.totalRow" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>

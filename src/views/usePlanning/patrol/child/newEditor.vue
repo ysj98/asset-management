@@ -209,7 +209,7 @@
             :scroll="{y: 450}"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false" >
             <template slot="itemName" slot-scope="text, record">
              <a-input placeholder="请输入检查项名称" :max="50" v-model="record.itemName" />

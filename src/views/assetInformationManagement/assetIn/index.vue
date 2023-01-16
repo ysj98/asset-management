@@ -68,7 +68,7 @@
       <overview-number :numList="numList"/>
     </a-spin>
     <!--列表部分-->
-    <a-table v-bind="tableObj" class="custom-table td-pd10">
+    <a-table v-bind="tableObj" size="middle">
       <template slot="action" slot-scope="text, record">
         <!--['2 待审批', '3 已驳回', '1 已审批', '4 已取消']-->
         <SG-PopoverMore trigger="hover">

@@ -46,7 +46,7 @@
           </div>
           <div class="content-right">
             <div class="content-title">已选字段</div>
-            <a-table class="custom-table" v-bind="tableOptions">
+            <a-table size="middle" v-bind="tableOptions">
               <!--字段名称-->
               <template #fieldName="text, record">
                 {{

@@ -164,7 +164,7 @@
             :scroll="{y: 450}"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <!-- 注销登记 -->

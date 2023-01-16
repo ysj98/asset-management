@@ -210,7 +210,7 @@
             :loading="table.loading"
             :columns="table.columns"
             :dataSource="table.dataSource"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <!-- 处置成本 -->
@@ -253,7 +253,7 @@
           <a-table
             :columns="transferInfo.columns"
             :dataSource="transferInfo.dataSource"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <template slot="operation" slot-scope="text, record, index">
@@ -271,7 +271,7 @@
             :loading="receiving.loading"
             :columns="receiving.columns"
             :dataSource="receiving.dataSource"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <!-- 收付款类型 -->

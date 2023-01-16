@@ -256,7 +256,7 @@
         <div class="assetInfo">
           <!-- 资产表格部分 -->
           <a-table
-            class="custom-table td-pd10"
+            size="middle"
             :loading="loading"
             :pagination="false"
             :columns="columns"

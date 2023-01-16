@@ -94,7 +94,7 @@
       </a-form>
       <!--资产明细-->
     <SG-Title title="资产明细"/>
-    <a-table v-bind="tableObj" class="custom-table td-pd10" bordered>
+    <a-table v-bind="tableObj" size="middle" bordered>
       <!--<span slot="registerOrderId" slot-scope="text, record">-->
         <!--<router-link-->
           <!--class="action_text"-->

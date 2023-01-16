@@ -5,7 +5,7 @@
         <a-table
           rowKey="attrJSON"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          class="custom-table td-pd10"
+          size="middle"
           :loading="table.loading"
           :pagination="false"
           bordered

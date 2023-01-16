@@ -92,7 +92,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table td-pd10"
+        size="middle"
         :scroll="scroll"
         :pagination="false"
         :row-selection="rowSelection"

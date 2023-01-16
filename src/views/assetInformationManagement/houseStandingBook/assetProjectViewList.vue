@@ -43,7 +43,7 @@
       <a-table
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table td-pd10"
+        size="middle"
         :pagination="false"
         :scroll="{ x: 1900, y:400 }">
         <template slot="operation" slot-scope="text, record">

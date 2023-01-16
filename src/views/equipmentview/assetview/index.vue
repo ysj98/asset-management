@@ -116,7 +116,7 @@
     </div>
     <!-- table表格 -->
     <div>
-      <!-- class="custom-table" -->
+      <!-- size="middle" -->
       <a-table
         v-bind="tableOptions"
         :columns="tableOptions.columns"

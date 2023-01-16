@@ -60,7 +60,7 @@
             :loading="loading"
             :columns="receivingColumnsData"
             :dataSource="inventoryReportData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
           </a-table> -->

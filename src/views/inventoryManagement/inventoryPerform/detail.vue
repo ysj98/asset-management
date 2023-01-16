@@ -46,7 +46,7 @@
             :loading="loading"
             :columns="columns"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <template slot="operation" slot-scope="text, record">
@@ -90,7 +90,7 @@
             :loading="tableLoading"
             :columns="exceptionListColumns"
             :dataSource="tableDataList"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
             >
             <template slot="operation" slot-scope="text, record">

@@ -53,7 +53,7 @@
         :loading="loading"
         :columns="columns"
         :dataSource="dataSource"
-        class="custom-table td-pd10"
+        size="middle"
         :pagination="false"
         :scroll="{ x: 2200, y: 'calc(100vh - 337px)' }">
         <template slot="operation" slot-scope="text, record">

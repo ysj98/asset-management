@@ -73,7 +73,7 @@
         :loading="loading"
         :columns="tableInfo.columns"
         :dataSource="tableInfo.tableData"
-        class="custom-table td-pd10"
+        size="middle"
         :pagination="false"
         >
         <div slot="operation"

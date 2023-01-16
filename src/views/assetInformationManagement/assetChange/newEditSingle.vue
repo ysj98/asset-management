@@ -302,7 +302,7 @@
             :scroll="scroll"
             :columns="columnsCom"
             :dataSource="tableData"
-            class="custom-table td-pd10"
+            size="middle"
             :pagination="false"
           >
             <template #newAssetCategoryCode="text,record">

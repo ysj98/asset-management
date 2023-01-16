@@ -75,7 +75,6 @@
               :loading="loading"
               :pagination="false"
               :dataSource="dataSource"
-              class="custom-table td-pd10"
               :scroll="{ x: 600, y: 300 }"
               :rowSelection="{
                 selectedRowKeys,
