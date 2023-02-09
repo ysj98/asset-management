@@ -91,10 +91,7 @@
 
 <script>
 // 获取图片域名
-import configs from "@/config/config.base";
-
-const config = window.__configs
-let hostImg  = config ? config.hostImg : ''
+let hostImg  = window.__configs.hostImg
 import PreviewItem from './PreviewItem'
 import { uploadMultipartImage, uploadMultipartFile } from './api.js'
 export default {
@@ -158,8 +155,6 @@ export default {
       type: Number,
       default: 2000
     },
-    // 图片基础地质，用于拼接展示图片
-    baseImgURL: String,
     errorTips: {
       type: String,
       default: '以下文件上传失败，请重新检查后再上传。'
@@ -168,11 +163,6 @@ export default {
     isCustom: {
       type: Boolean,
       default: false
-    }
-  },
-  provide () {
-    return {
-      hostImg: this.hostImg
     }
   },
   data () {
@@ -198,13 +188,6 @@ export default {
     }
   },
   computed: {
-    // 图片基础地址
-    hostImg () {
-      if (this.baseImgURL === 'off') {
-        return ''
-      }
-      return this.baseImgURL || hostImg
-    },
     // 上传文件可选择类型
     uploadFileType () {
       const Dict = {
@@ -493,10 +476,7 @@ export default {
       this.$previewImages.destroy()
       this.$previewImages.init({
         list: this.imagesList.map(el => {
-          let resUrl = this.hostImg + el.url
-          if (el.fileSources === 0){
-            resUrl = configs.hostImg + el.url
-          }
+          let resUrl = hostImg + el.url
           return resUrl
         }),
         index

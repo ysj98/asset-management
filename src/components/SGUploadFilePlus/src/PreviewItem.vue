@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import configs from "@/config/config.base.js";
+// 获取图片域名
+let hostImg  = window.__configs.hostImg
 export default {
   props: {
     // 是否显示设为封面按钮
@@ -51,23 +52,19 @@ export default {
       default: false
     }
   },
-  inject: ['hostImg'],
   data () {
     return {
       errorStatus: false,
       imgAutoStyle: {
         width: 'auto',
         height: 'auto'
-      }
+      },
     }
   },
   computed: {
     // 图片地址
     FileURL () {
-      let resUrl = this.hostImg + this.item.url
-      if (this.item.fileSources === 0){
-        resUrl = configs.hostImg + this.item.url
-      }
+      let resUrl = hostImg + this.item.url
       return resUrl
     },
     // 扩展名，即文件类型

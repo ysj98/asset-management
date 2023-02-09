@@ -92,7 +92,8 @@
 <script>
 import { getFormat } from '@/utils/utils'
 import Tools from "@/utils/utils";
-import configs from "@/config/config.base.js";
+// 获取图片域名
+let hostImg  = window.__configs.hostImg
 const columns = [
   {
     title: "资产数量(个)",
@@ -207,7 +208,7 @@ export default {
   },
   computed: {
     imgSrc () {
-      return this.detailInfo.picPath ? (configs.hostImg + this.detailInfo.picPath) : ''
+      return this.detailInfo.picPath ? (hostImg + this.detailInfo.picPath) : ''
     }
   },
   filters: {

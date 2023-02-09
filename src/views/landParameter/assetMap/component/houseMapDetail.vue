@@ -105,7 +105,8 @@
 
 <script>
 import Tools, {win} from '@/utils/utils'
-import configs from '@/config/config.base.js'
+// 获取图片域名
+let hostImg  = window.__configs.hostImg
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import { getFormat } from '@/utils/utils'
 const columns = [
@@ -225,7 +226,7 @@ export default {
   },
   computed: {
     imgSrc () {
-      return this.detailInfo.picPath ? (configs.hostImg + this.detailInfo.picPath) : ''
+      return this.detailInfo.picPath ? (hostImg + this.detailInfo.picPath) : ''
     }
   },
   filters: {
