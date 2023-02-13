@@ -1713,7 +1713,14 @@ export const equipmentview = {
   // 项目视图列表统计
   equipmentStatistics:"/ams/asset-equipment/equipmentStatistics",
   // 资产项目详情
-  detailProject:"/ams/asset-equipment/detailProject"
+  detailProject:"/ams/asset-equipment/detailProject",
+  // 查询单个设备的巡检、保养记录
+  getEquipmentRecordTask:"/equipment-openapi/equipmentDtInst/getEquipmentRecordTask",
+  // 查询单个设备某条任务的检查结果详情
+  pageEquipmentDtInstAttr:"/equipment-openapi/equipmentDtInstAttr/pageEquipmentDtInstAttr",
+  // 查询单个设备的报障记录
+  getEquipmentInstRecordOrder:"/equipment-openapi/equipmentDtInst/getEquipmentInstRecordOrder",
+
 }
 // 保险管理
 export const assetInsurance = {

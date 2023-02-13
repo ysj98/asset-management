@@ -17,6 +17,7 @@
           <component
             :is="item.component"
             :assetId="queryParams.assetId"
+            :assetEquipmentId="queryParams.assetEquipmentId"
           ></component>
         </keep-alive>
       </a-tab-pane>
@@ -33,6 +34,8 @@ import BookInformation from "@/views/equipmentview/assetview/components/BookInfo
 import AssetDisposal from "@/views/equipmentview/assetview/components/AssetDisposal";
 import ArchiveFile from "@/views/equipmentview/assetview/components/ArchiveFile";
 import AncillaryPackage from "@/views/equipmentview/assetview/components/AncillaryPackage";
+import DevOps from "@/views/equipmentview/assetview/components/DevOps";
+
 export default {
   name: "assetViewDetail",
   components: {
@@ -166,6 +169,11 @@ export default {
           key: "",
           component: ArchiveFile,
         },
+        eight:{
+          tab: "运维信息",
+          key: "",
+          component: DevOps,
+        }
       },
     };
   },

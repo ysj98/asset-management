@@ -35,3 +35,19 @@ export function equipmentStatistics (data) {
 export function detailProject (data) {
   return axiosGet(equipmentview.detailProject, data, true)
 }
+
+// 查询单个设备的巡检、保养记录
+export function getEquipmentRecordTask (data) {
+  return axiosPost(equipmentview.getEquipmentRecordTask, data, true)
+}
+
+// 查询单个设备某条任务的检查结果详情
+export function pageEquipmentDtInstAttr (data) {
+  return axiosPost(equipmentview.pageEquipmentDtInstAttr, data, true)
+}
+
+// 查询单个设备的报障记录
+export function getEquipmentInstRecordOrder (data) {
+  return axiosPost(equipmentview.getEquipmentInstRecordOrder, data, true)
+}
+

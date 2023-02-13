@@ -169,7 +169,7 @@
             <a-input
               :maxLength="30"
               v-model="queryCondition.name"
-              placeholder="输入资产名称/权利号"
+              placeholder="输入资产名称/权证号"
               :style="allStyle"
             />
             <a-input

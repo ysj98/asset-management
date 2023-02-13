@@ -25,7 +25,7 @@
         <!-- 一项数据 -->
         <div class="body-item">
           <div class="body-item-left">
-            <span class="body-label">权利号：</span>
+            <span class="body-label">权证号：</span>
             <span class="body-content">36847512</span>
           </div>
           <div class="body-item-right">
@@ -80,7 +80,7 @@
         <!-- 一项数据 -->
         <div class="body-item">
           <div class="body-item-left">
-            <span class="body-label">权利号：</span>
+            <span class="body-label">权证号：</span>
             <span class="body-content">36847512</span>
           </div>
           <div class="body-item-right">
@@ -91,7 +91,7 @@
         <!-- 一项数据 -->
         <div class="body-item">
           <div class="body-item-left">
-            <span class="body-label">权利号：</span>
+            <span class="body-label">权证号：</span>
             <span class="body-content">36847512</span>
           </div>
           <div class="body-item-right">
