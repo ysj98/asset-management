@@ -12,6 +12,31 @@
     <meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,height=device-height">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>资产管理</title>
+    <link rel="stylesheet" href="https://useimean.com/sdk/main.css" />
+    <script src="https://useimean.com/sdk/main.js"></script>
+    <script>
+      try {
+        ImeanSDK.init({
+          projectId: '2BOUG3q5ttSYI4ijAjBJ-', // 项目id
+          baseUrl: 'https://useimean.com', // 请求服务器地址
+          onStepChange:function ({
+            recording, // 经验对象
+            currentIndex, // 当前步骤数组下标
+          }) { }, // 引导中步骤变化
+          onFinish:function ({
+            recording, // 经验对象
+          }) { }, // 引导步骤完成
+          onExit:function ({
+            recording, // 经验对象
+          }) { }, // 引导中主动退出
+          identity:function () {
+            return {}
+          }, // 返回用户信息
+          hideHelp: false, // 设置为false即展示帮助中心
+        })
+      } 
+      catch (error) {}
+    </script>
     <% if (process.env.NODE_ENV === 'production') { %>
       <script src="/uhomeccp/configs.js?v=<%=new Date().getTime()%>"></script>
       <script>
