@@ -123,8 +123,8 @@
         :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }"
       >
         <!-- 操作-->
-        <template #action="text, { assetEquipmentId, assetId }">
-          <a @click="goDetail({ assetEquipmentId, assetId })">详情</a>
+        <template #action="text, { assetEquipmentId, assetId, organId }">
+          <a @click="goDetail({ assetEquipmentId, assetId, organId })">详情</a>
         </template>
       </a-table>
     </div>
@@ -631,10 +631,11 @@ export default {
         });
     },
     // 打开详情页
-    goDetail({ assetEquipmentId, assetId }) {
+    goDetail({ assetEquipmentId, assetId, organId }) {
       const queryParams = {
         assetEquipmentId,
         assetId,
+        organId
       };
       console.log({ queryParams });
       this.$router.push({

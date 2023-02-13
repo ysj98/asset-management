@@ -4,6 +4,7 @@ export const Inspection = [
     title: "任务单号",
     dataIndex: "serviceOrderId",
     key: "serviceOrderId",
+    width: 160,
   },
   {
     title: "任务生成时间",
@@ -74,6 +75,8 @@ export const Inspection = [
     title: "操作",
     key: "action",
     scopedSlots: { customRender: "action" },
+    fixed: "right",
+    width: 150,
   },
 ];
 // 保障记录
@@ -82,31 +85,31 @@ export const guarantee = [
     title: "工单号",
     dataIndex: "serviceOrderId",
     key: "serviceOrderId",
+    width: "20%",
   },
   {
     title: "工单生成时间",
     dataIndex: "dtCrtTime",
     key: "dtCrtTime",
+    width: "20%",
   },
   {
     title: "提单人",
     dataIndex: "userName",
     key: "userName",
+    width: "20%",
   },
   {
     title: "处理人",
     dataIndex: "oprUserName",
     key: "oprUserName",
+    width: "20%",
   },
   {
     title: "完成时间",
     dataIndex: "actualTime",
     key: "actualTime",
-  },
-  {
-    title: "操作",
-    key: "action",
-    scopedSlots: { customRender: "action" },
+    width: "20%",
   },
 ];
 

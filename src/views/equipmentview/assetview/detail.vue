@@ -18,6 +18,7 @@
             :is="item.component"
             :assetId="queryParams.assetId"
             :assetEquipmentId="queryParams.assetEquipmentId"
+            :organId="queryParams.organId"
           ></component>
         </keep-alive>
       </a-tab-pane>
@@ -34,7 +35,7 @@ import BookInformation from "@/views/equipmentview/assetview/components/BookInfo
 import AssetDisposal from "@/views/equipmentview/assetview/components/AssetDisposal";
 import ArchiveFile from "@/views/equipmentview/assetview/components/ArchiveFile";
 import AncillaryPackage from "@/views/equipmentview/assetview/components/AncillaryPackage";
-import DevOps from "@/views/equipmentview/assetview/components/DevOps";
+import DevOps from "@/views/equipmentview/assetview/components/DevOps.vue";
 
 export default {
   name: "assetViewDetail",
@@ -46,6 +47,7 @@ export default {
       queryParams: {
         assetEquipmentId: "",
         assetId: "",
+        organId: "",
       },
       basicInfoOptions: {
         data: {},
@@ -208,9 +210,10 @@ export default {
     this.queryDetail();
   },
   created() {
-    const { assetEquipmentId, assetId } = this.$route.query;
+    const { assetEquipmentId, assetId, organId } = this.$route.query;
     this.queryParams.assetEquipmentId = assetEquipmentId;
     this.queryParams.assetId = assetId;
+    this.queryParams.organId = organId;
   },
 };
 </script>
