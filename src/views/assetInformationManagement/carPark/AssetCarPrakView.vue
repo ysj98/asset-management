@@ -320,6 +320,18 @@ const requiredColumn = [
     // { label: "正常", value: 1 },
     // { label: "异常", value: 0 },
   ]
+  // 概览数据，title 标题，value 数值，color 背景色
+  const numList =  [
+    {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
+    {title: '资产面积(㎡)', key: 'totalArea', value: 0, bgColor: '#4BD288'},
+    {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF'},
+    {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6'},
+    {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474'},
+    {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#BBC8D6'},
+    {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288'},
+    {title: '资产原值(元)', key: 'totalOriginalValue', value: 0, bgColor: '#1890FF'},
+    {title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#DD81E6'},
+  ] 
   export default {
     name: 'index',
     components: { 
@@ -404,17 +416,7 @@ const requiredColumn = [
           ]
         },
         key: 0, // 更新Modal包裹的子组件
-        numList: [
-          {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
-          {title: '资产面积(㎡)', key: 'totalArea', value: 0, bgColor: '#4BD288'},
-          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6'},
-          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#BBC8D6'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288'},
-          {title: '资产原值(元)', key: 'totalOriginalValue', value: 0, bgColor: '#1890FF'},
-          {title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#DD81E6'},
-        ], // 概览数据，title 标题，value 数值，color 背景色
+        numList: numList,
         checkedHeaderArr: [], // 格式如['name', 'age']
         // exportHouseBtn: false, // 导出房屋卡片button loading标志
         exportAssetBtn: false, // 导出资产视图button loading标志
@@ -722,9 +724,11 @@ const requiredColumn = [
         this.$api.carPark.parkingArea(form).then(res => {
           if (String(res.data.code) === '0') {
             let data = res.data.data
-            this.numList = this.numList.map(m => {
+            this.numList = numList.map(m => {
               return { ...m, value: data[m.key] }
-            })
+            }).filter((item) => {
+              return item.value + '' !== '0'            
+            });
             for(let key in data){
               data[key] = getFormat(data[key])
             }

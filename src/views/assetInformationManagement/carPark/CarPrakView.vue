@@ -90,7 +90,7 @@
         {{+text===1?'是':'否'}}
       </template> -->
     </a-table>
-    <no-data-tip v-if="!tableObj.dataSource.length"/>
+    <!-- <no-data-tip v-if="!tableObj.dataSource.length"/> -->
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"/>
     <!--编辑资产标签-->
     <SG-Modal
@@ -117,6 +117,16 @@
   const assetLabelOpt = [
     // { label: "全部资产标签  ", value: "" },
   ]
+  // 概览数字数据, title 标题，value 数值，bgColor 背景色
+  const numList =  [
+  {title: '车场数量', key: 'placeNums', value: 0, fontColor: '#324057'}, 
+  {title: '车场总面积(㎡)', key: 'totalArea', value: 0, bgColor: '#FD7474'},
+  {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
+  {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, 
+  {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
+  {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
+  {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288'}
+] 
   export default {
     name: 'index',
     components: { OverviewNumber, NoDataTip, TooltipText, AssetProject, EditTag },
@@ -138,15 +148,7 @@
           placeId: [''],
           statusList: []
         }, // 查询条件-组织机构-资产项目-车场对象
-        numList: [
-          {title: '车场数量', key: 'placeNums', value: 0, fontColor: '#324057'}, 
-          {title: '车场总面积(㎡)', key: 'totalArea', value: 0, bgColor: '#FD7474'},
-          {title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288'},
-          {title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF'}, 
-          {title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6'},
-          {title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474'},
-          {title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288'}
-        ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        numList: numList,
         tableObj: {
           dataSource: [],
           loading: false,
@@ -346,7 +348,7 @@
 
       // 查询车场视图面积概览数据
       queryAreaInfo () {
-        const { organProjectBuildingValue: { organId, projectId: projectIdList }, numList, onlyCurrentOrgan } = this
+        const { organProjectBuildingValue: { organId, projectId: projectIdList }, onlyCurrentOrgan } = this
         // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
         this.overviewNumSpinning = true
         let ids = this.organProjectBuildingValue.placeId
@@ -356,11 +358,14 @@
           this.overviewNumSpinning = false
           let res = r.data
           if (res && String(res.code) === '0') {
-            return this.numList = numList.map(m => {
+            this.numList = numList.map(m => {
               return { ...m, value: res.data[m.key] }
-            })
+            }).filter((item) => {
+              return item.value !== 0            
+            });
+          } else {
+            throw res.message || '查询车场视图面积使用统计出错'
           }
-          throw res.message || '查询车场视图面积使用统计出错'
         }).catch(err => {
           console.log(err)
           this.overviewNumSpinning = false

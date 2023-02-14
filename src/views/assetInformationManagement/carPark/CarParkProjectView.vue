@@ -178,6 +178,16 @@ const columns = [
   }
 ]
 
+// 概览数字数据, title 标题，value 数值，bgColor 背景色
+const numList = [
+  {title: '车场数量',  key: 'placeNum', value: 0, fontColor: '#324057'},
+  {title: '车场总面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#4BD288'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
+  {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
+  {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, 
+  {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}, 
+  {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#1890FF'}, 
+  {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#DD81E6'}, 
+] 
 export default {
   components: {
     TreeSelect, noDataTips, OverviewNumber
@@ -198,15 +208,7 @@ export default {
         { title: '报废', key: '2' }, { title: '已转让', key: '3' }, { title: '报损', key: '4' },
         { title: '入库中', key: '7' }
       ], // 查询条件-资产状态选项
-      numList: [
-        {title: '车场数量',  key: 'placeNum', value: 0, fontColor: '#324057'},
-        {title: '车场总面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#4BD288'}, {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
-        {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'}, {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6'},
-        {title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474'}, 
-        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288'}, 
-        {title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#1890FF'}, 
-        {title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#DD81E6'}, 
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList,
       columns,
       dataSource: [],
       paginator: {
@@ -343,10 +345,12 @@ export default {
         if (res.data.code === '0') {
           let temp = res.data.data || {}
           let {measuredArea} = temp
-          let {numList, dataSource, sumObj} = this
+          let {dataSource, sumObj} = this
           this.numList = numList.map(m => {
             return {...m, value: temp[m.key] ? temp[m.key].toFixed(2) : 0}
-          })
+          }).filter((item) => {
+            return item.value !== 0            
+          });
           Object.keys(sumObj).forEach(key => sumObj[key] = temp[key] ? temp[key].toFixed(2) : 0)
           sumObj.area =  measuredArea ? measuredArea.toFixed(2) : 0
           this.sumObj = sumObj

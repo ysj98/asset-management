@@ -44,7 +44,7 @@
         <span v-if="!record.totalRow" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
     </a-table>
-    <no-data-tip v-if="!tableObj.dataSource.length" />
+    <!-- <no-data-tip v-if="!tableObj.dataSource.length" /> -->
     <SG-FooterPagination
       v-bind="paginationObj"
       @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"
@@ -59,6 +59,30 @@ import {ASSET_MANAGEMENT} from '@/config/config.power'
 import OverviewNumber from "src/views/common/OverviewNumber"
 import { getFormat } from '../../../utils/utils'
 import costInfoVue from '../../reportingManagement/reportingRecordList/costInfo.vue'
+// 概览数字数据, title 标题，value 数值，bgColor 背景色
+const numList =  [
+  { title: "所有资产(㎡)", key: "area", value: 0, fontColor: "#324057" },
+  {
+    title: "运营(㎡)",
+    key: "transferOperationArea",
+    value: 0,
+    bgColor: "#4BD288",
+  },
+  { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
+  {
+    title: "自用(㎡)",
+    key: "selfUserArea",
+    value: 0,
+    bgColor: "#DD81E6",
+  },
+  {
+    title: "占用(㎡)",
+    key: "occupationArea",
+    value: 0,
+    bgColor: "#FD7474",
+  },
+  { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
+] 
 export default {
   name: "index",
   components: { OverviewNumber, NoDataTip, TreeSelect},
@@ -69,29 +93,7 @@ export default {
       organId: "", // 查询条件-组织机构
       exportBtnLoading: false, // 导出按钮loading
       overviewNumSpinning: false, // 查询视图面积概览数据loading
-      numList: [
-        { title: "所有资产(㎡)", key: "area", value: 0, fontColor: "#324057" },
-        {
-          title: "运营(㎡)",
-          key: "transferOperationArea",
-          value: 0,
-          bgColor: "#4BD288",
-        },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
-        {
-          title: "自用(㎡)",
-          key: "selfUserArea",
-          value: 0,
-          bgColor: "#DD81E6",
-        },
-        {
-          title: "占用(㎡)",
-          key: "occupationArea",
-          value: 0,
-          bgColor: "#FD7474",
-        },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList,
       tableObj: {
         dataSource: [],
         loading: false,
@@ -241,7 +243,6 @@ export default {
     queryAreaInfo() {
       let {
         organId,
-        numList,
         tableObj: { dataSource },
         current,
         sumObj,
@@ -274,11 +275,14 @@ export default {
                 organId: Date.now(),
                 totalRow: true
               });
-            return (this.numList = numList.map((m) => {
+           this.numList = numList.map((m) => {
               return { ...m, value: list[m.key] || 0 };
-            }));
+            }).filter((item) => {
+            return item.value !== 0            
+          });
+          } else {
+            throw res.message;
           }
-          throw res.message;
         })
         .catch((err) => {
           this.overviewNumSpinning = false;

@@ -187,7 +187,7 @@
           <span v-if="record.assetName !== '所有页-合计'" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
         </span>
       </a-table>
-      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+      <!-- <no-data-tips v-show="tableData.length === 0"></no-data-tips> -->
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"
@@ -219,7 +219,7 @@
 </template>
 
 <script>
-import { debounce } from '@/utils/utils'
+import { debounce, getFormat} from '@/utils/utils'
 import SearchContainer from '@/views/common/SearchContainer'
 import TreeSelect from '../../common/treeSelect'
 import noDataTips from '@/components/noDataTips'
@@ -227,7 +227,6 @@ import OverviewNumber from 'src/views/common/OverviewNumber'
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict'
 import {querySourceType} from "@/views/common/commonQueryApi";
 import {ASSET_MANAGEMENT} from '@/config/config.power'
-import { getFormat } from "@/utils/utils";
 const judgment = [undefined, null, '']
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
 const columnsData = [
@@ -304,6 +303,15 @@ const queryCondition =  {
 const decimalFormat = (area) => {
   return Math.round(area*10000)/10000
 }
+// 概览数字数据, title 标题，value 数值，bgColor 背景色
+const numList = [
+  {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
+  {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
+  {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
+  {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
+  {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474'},
+  {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
+] 
 export default {
   components: {SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict},
   props: {},
@@ -318,14 +326,7 @@ export default {
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
       scroll: {x: 100, y: 285},
-      numList: [
-        {title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057'},
-        {title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288'},
-        {title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF'},
-        {title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6'},
-        {title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474'},
-        {title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6'}
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList,
       provinces: {
         province: undefined,
         city: undefined,
@@ -673,6 +674,7 @@ export default {
         this.assetViewTotal(obj)
       }
       this.$api.land.assetView(obj).then(res => {
+        this.loading = false
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data
           if (data && data.length > 0) {
@@ -695,6 +697,7 @@ export default {
     },
     // 合计汇总合并
     totalFn : debounce(function (obj) {
+      this.loading = true
       this.$api.land.assetViewListTotal(obj).then(res => {
         if (String(res.data.code) === '0') {
           let data = res.data.data
@@ -730,8 +733,10 @@ export default {
         if (Number(res.data.code) === 0) {
           this.overviewNumSpinning = false
           let data = res.data.data
-          this.numList = this.numList.map(m => {
+          this.numList = numList.map(m => {
             return { ...m, value: data[m.key] ? ['assetCount'].includes(m.key) ? data[m.key] : Math.round(data[m.key]*10000)/10000 : 0 }
+          }).filter((item) => {
+            return item.value !== 0            
           })
         } else {
           this.$message.error(res.data.message)

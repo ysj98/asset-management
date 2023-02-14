@@ -92,7 +92,8 @@ export default {
       columnsPC: [
         { title: "省份", dataIndex: "provinceName", width: 80 },
         { title: "城市", dataIndex: "cityName", width: 80 },
-      ], // 省份城市字段跟随地区展示
+      ], 
+      // 省份城市字段跟随地区展示
       columnsFixed: [
         { title: "资产数量", dataIndex: "assetNum", width: 100 },
         { title: "资产面积(㎡)", dataIndex: "area", scopedSlots: { customRender: "area" }, width: 150 },
@@ -357,10 +358,12 @@ export default {
         .map((m, i) => {
           return {
             ...m,
+            // 合并单元格
             customRender: (value, row) => this.renderCellContent(value, row, m.dataIndex, i, columnsDynamic, gatherInfo),
           };
         })
         .concat(columnsFixed);
+
       // 表格添加合计和小计
       let sumarr = [
         "assetNum",

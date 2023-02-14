@@ -5,16 +5,12 @@
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
         <a-col :span="12">
-          <SG-Button
-            icon="import"
-            type="primary"
-            @click="handleExport"
-            v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT"
-            :loading="exportBtnLoading"
-          >导出组织机构视图</SG-Button>
+          <SG-Button icon="import" type="primary" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT" :loading="exportBtnLoading"
+            >导出组织机构视图</SG-Button
+          >
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%"/>
+          <tree-select @changeTree="changeTree" style="width: 100%" />
         </a-col>
         <a-col :span="5">
           <a-select
@@ -27,7 +23,7 @@
           />
         </a-col>
         <a-col :span="2">
-          <SG-Button icon="search" type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
+          <SG-Button icon="search" type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
         </a-col>
       </a-row>
     </div>
@@ -38,14 +34,11 @@
     <!--列表部分-->
     <a-table v-bind="tableObj" size="middle">
       <span slot="action" slot-scope="text, record">
-        <span v-if="!record.totalRow" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+        <span v-if="!record.totalRow" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
     </a-table>
-    <no-data-tip v-if="!tableObj.dataSource.length" />
-    <SG-FooterPagination
-      v-bind="paginationObj"
-      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"
-    />
+    <!-- <no-data-tip v-if="!tableObj.dataSource.length" /> -->
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
   </div>
 </template>
 
@@ -54,6 +47,30 @@ import { ASSET_MANAGEMENT } from "@/config/config.power";
 import NoDataTip from "src/components/noDataTips";
 import TreeSelect from "src/views/common/treeSelect";
 import OverviewNumber from "src/views/common/OverviewNumber";
+// 概览数字数据, title 标题，value 数值，bgColor 背景色
+const numList = [
+  { title: "全部资产(㎡)", key: "landArea", value: 0, fontColor: "#324057" },
+  {
+    title: "运营(㎡)",
+    key: "transferOperationArea",
+    value: 0,
+    bgColor: "#4BD288",
+  },
+  { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
+  {
+    title: "自用(㎡)",
+    key: "selfUserArea",
+    value: 0,
+    bgColor: "#DD81E6",
+  },
+  {
+    title: "占用(㎡)",
+    key: "occupationArea",
+    value: 0,
+    bgColor: "#FD7474",
+  },
+  { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
+];
 export default {
   name: "index",
   components: { OverviewNumber, NoDataTip, TreeSelect },
@@ -64,31 +81,9 @@ export default {
       organId: "", // 查询条件-组织机构
       exportBtnLoading: false, // 导出按钮loading
       overviewNumSpinning: false, // 查询视图面积概览数据loading
-      numList: [
-        { title: "全部资产(㎡)", key: "landArea", value: 0, fontColor: "#324057" },
-        {
-          title: "运营(㎡)",
-          key: "transferOperationArea",
-          value: 0,
-          bgColor: "#4BD288",
-        },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
-        {
-          title: "自用(㎡)",
-          key: "selfUserArea",
-          value: 0,
-          bgColor: "#DD81E6",
-        },
-        {
-          title: "占用(㎡)",
-          key: "occupationArea",
-          value: 0,
-          bgColor: "#FD7474",
-        },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+      numList: numList,
       tableObj: {
-        scroll: {y: 420},
+        scroll: { y: 420 },
         dataSource: [],
         loading: false,
         pagination: false,
@@ -104,7 +99,7 @@ export default {
           { title: "其它(㎡)", dataIndex: "otherArea" },
           { title: "资产原值", dataIndex: "originalValue" },
           { title: "最新估值", dataIndex: "marketValue" },
-          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60}
+          { title: "操作", key: "action", scopedSlots: { customRender: "action" }, width: 60 },
         ],
       },
       paginationObj: {
@@ -134,7 +129,7 @@ export default {
         { title: "报废", key: "2" },
         { title: "转让", key: "3" },
         { title: "报损", key: "4" },
-        { title: '入库中', key: '7' }
+        { title: "入库中", key: "7" },
       ],
     };
   },
@@ -157,9 +152,9 @@ export default {
     handleViewDetail(record) {
       let query = {
         organId: record.organId,
-        statusList: this.statusList.includes('all') ? [] : this.statusList
-      }
-      this.$router.push({ path: '/landOrganView/detail', query: query || {} });
+        statusList: this.statusList.includes("all") ? [] : this.statusList,
+      };
+      this.$router.push({ path: "/landOrganView/detail", query: query || {} });
     },
 
     // 查询列表数据
@@ -184,28 +179,34 @@ export default {
             let pageSum = {};
             /**
              * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
-             * 数量：landCount, 金额：originalValue marketValue, 
+             * 数量：landCount, 金额：originalValue marketValue,
              */
             data.forEach((item, index) => {
               item.key = index;
-              Object.keys(sumObj).forEach(key => {
-                !pageSum[key] && (pageSum[key] = 0)
-                pageSum[key] += item[key] ?
-                  (['landCount'].includes(key) ?
-                    Number(item[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(item[key]*100)/100 : Math.round(item[key]*10000)/10000)
-                    : 0
+              Object.keys(sumObj).forEach((key) => {
+                !pageSum[key] && (pageSum[key] = 0);
+                pageSum[key] += item[key]
+                  ? ["landCount"].includes(key)
+                    ? Number(item[key])
+                    : ["originalValue", "marketValue"].includes(key)
+                    ? Math.round(item[key] * 100) / 100
+                    : Math.round(item[key] * 10000) / 10000
+                  : 0;
                 if (index === data.length - 1) {
-                  pageSum[key] = ['buildNum'].includes(key) ?
-                    pageSum[key] : ['originalValue', 'marketValue'].includes(key) ? Math.round(pageSum[key]*100)/100 : Math.round(pageSum[key]*10000)/10000
+                  pageSum[key] = ["buildNum"].includes(key)
+                    ? pageSum[key]
+                    : ["originalValue", "marketValue"].includes(key)
+                    ? Math.round(pageSum[key] * 100) / 100
+                    : Math.round(pageSum[key] * 10000) / 10000;
                 }
-              })
+              });
             });
             this.tableObj.dataSource = data.length
               ? data.concat({
                   ...pageSum,
                   organName: "本页合计",
                   organId: "-999",
-                  totalRow: true
+                  totalRow: true,
                 })
               : [];
             // 查询楼栋面积统计数据
@@ -215,7 +216,7 @@ export default {
                   ...sumObj,
                   organName: "全部合计",
                   organId: Date.now(),
-                  totalRow: true
+                  totalRow: true,
                 });
             } else {
               this.queryAreaInfo();
@@ -238,7 +239,6 @@ export default {
     queryAreaInfo() {
       let {
         organId,
-        numList,
         tableObj: { dataSource },
         current,
         sumObj,
@@ -257,10 +257,14 @@ export default {
             let obj = {};
             let list = res.data || {};
             Object.keys(sumObj).forEach(
-              (key) => (obj[key] = list[key] ?
-                (['landCount'].includes(key) ?
-                  list[key] : (['originalValue', 'marketValue'].includes(key) ?
-                    Math.round(list[key]*100)/100 : Math.round(list[key]*10000)/10000)) : 0)
+              (key) =>
+                (obj[key] = list[key]
+                  ? ["landCount"].includes(key)
+                    ? list[key]
+                    : ["originalValue", "marketValue"].includes(key)
+                    ? Math.round(list[key] * 100) / 100
+                    : Math.round(list[key] * 10000) / 10000
+                  : 0)
             );
             this.sumObj = obj;
             dataSource.length &&
@@ -268,13 +272,18 @@ export default {
                 ...obj,
                 organName: "全部合计",
                 organId: Date.now(),
-                totalRow: true
+                totalRow: true,
               });
-            return (this.numList = numList.map((m) => {
-              return { ...m, value: list[m.key] ? Math.round(list[m.key]*10000)/10000 : 0 };
-            }));
+            this.numList = numList
+              .map((m) => {
+                return { ...m, value: list[m.key] ? Math.round(list[m.key] * 10000) / 10000 : 0 };
+              })
+              .filter((item) => {
+                return item.value !== 0;
+              });
+          } else {
+            throw res.message;
           }
-          throw res.message;
         })
         .catch((err) => {
           this.overviewNumSpinning = false;
@@ -324,7 +333,7 @@ export default {
 };
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 .custom-table {
   padding-bottom: 55px;
   /*if you want to set scroll: { x: true }*/
@@ -340,12 +349,12 @@ export default {
   }
 }
 /deep/.ant-table-tbody {
-  tr:nth-last-child(1){
+  tr:nth-last-child(1) {
     position: sticky;
     bottom: 4px;
     background: #fff;
   }
-  tr:nth-last-child(2){
+  tr:nth-last-child(2) {
     position: sticky;
     bottom: 43px;
     background: #fff;
