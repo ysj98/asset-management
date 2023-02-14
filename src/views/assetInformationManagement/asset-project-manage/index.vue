@@ -186,7 +186,7 @@
             { title: '经营单位', dataIndex: 'businessUnit', width: 200 },
             { title: '资产项目编码', dataIndex: 'projectCode', width: 150 },
             { title: '来源方式', dataIndex: 'sourceTypeName' },
-            { title: '来源渠道', dataIndex: 'souceChannelType' },
+            { title: '来源方式说明', dataIndex: 'souceChannelType' },
             { title: '资产数量', dataIndex: 'assetsNum' },
             { title: '是否接管', dataIndex: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
             { title: '接管日期', dataIndex: 'takeOverDate' },

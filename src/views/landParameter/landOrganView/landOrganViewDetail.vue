@@ -87,7 +87,7 @@ let columns = [
     dataIndex: "sourceTypeName",
   },
   {
-    title: "来源渠道",
+    title: "来源方式说明",
     dataIndex: "souceChannelType",
   },
   {

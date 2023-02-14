@@ -146,7 +146,7 @@ let columns = [
     width: 100
   },
   {
-    title: "来源渠道",
+    title: "来源方式说明",
     dataIndex: "souceChannelType",
     width: 100
   },

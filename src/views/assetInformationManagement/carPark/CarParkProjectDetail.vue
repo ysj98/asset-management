@@ -23,7 +23,7 @@
           <span class="label-value">{{detail.sourceTypeName || ''}}</span>
         </div>
         <div class="edit-box-content-item">
-          <span class="label-name">来源渠道：</span>
+          <span class="label-name">来源方式说明：</span>
           <span class="label-value">{{detail.souceChannelType || ''}}</span>
         </div>
         <div class="edit-box-content-item">
