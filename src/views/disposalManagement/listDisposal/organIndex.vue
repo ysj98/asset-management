@@ -107,7 +107,7 @@ import {utils, debounce} from '@/utils/utils.js'
 import {getCurrentDate, getMonthsAgoDate} from '@/utils/formatTime'
 import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'display': 'inline-block'}
-const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'display': 'inline-block'}
+const dateWidth = {width: '360px', 'margin-right': '10px', flex: 1, 'display': 'inline-block', 'vertical-align': 'middle'}
 const columns = [
   {
     title: '所属机构',
@@ -469,8 +469,8 @@ export default {
     flex: 1;
     flex-wrap: wrap;
     text-align: right;
+    padding-top: 14px;
     .ant-select, .sg-datePicker.box {
-      margin-top: 14px;
       .combobox {
         width: 170px;
       }

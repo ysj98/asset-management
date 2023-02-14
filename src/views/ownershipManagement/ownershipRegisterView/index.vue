@@ -56,21 +56,34 @@
             :filterOption="filterOption"
             notFoundContent="没有查询到数据"
           />
-          <!-- 请选择登记状态 -->
-          <a-select
-            showSearch
-            placeholder="请选择登记状态"
-            v-model="queryCondition.approvalStatusList"
-            @change="approvalStatusListSelect"
-            optionFilterProp="children"
-            mode="multiple"
-            :maxTagCount="1"
-            :style="allStyle"
-            :options="$addTitle(approvalStatusListOpt)"
-            :allowClear="false"
-            :filterOption="filterOption"
-            notFoundContent="没有查询到数据"
-          />
+            <!-- 全部资产分类 -->
+            <EquipmentSelectTree
+              :style="allStyle"
+              v-if="isSelectedEquipment"
+              style="width: 300px"
+              :top-organ-id="queryCondition.organId"
+              :multiple="true"
+              v-model="queryCondition.objectTypeList"
+              :options-data-format="(data)=>{
+                 return [{label: '全部资产分类', value: '', isLeaf: true},...data]
+              }"
+              @select="objectTypeListSelect($event,true)"
+            />
+            <a-select
+              v-else
+              showSearch
+              placeholder="请选择资产分类"
+              v-model="queryCondition.objectTypeList"
+              @change="objectTypeListSelect"
+              optionFilterProp="children"
+              mode="multiple"
+              :maxTagCount="1"
+              :style="allStyle "
+              :options="$addTitle(objectTypeListOpt)"
+              :allowClear="false"
+              :filterOption="filterOption"
+              notFoundContent="没有查询到数据"
+            />
           <!-- 资产名称/编码 -->
           <a-input
             :maxLength="30"
@@ -96,34 +109,21 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <!-- 全部资产分类 -->
-            <EquipmentSelectTree
-              :style="allWidth"
-              v-if="isSelectedEquipment"
-              style="width: 300px"
-              :top-organ-id="queryCondition.organId"
-              :multiple="true"
-              v-model="queryCondition.objectTypeList"
-              :options-data-format="(data)=>{
-                 return [{label: '全部资产分类', value: '', isLeaf: true},...data]
-              }"
-              @select="objectTypeListSelect($event,true)"
-            />
-            <a-select
-              v-else
-              showSearch
-              placeholder="请选择资产分类"
-              v-model="queryCondition.objectTypeList"
-              @change="objectTypeListSelect"
-              optionFilterProp="children"
-              mode="multiple"
-              :maxTagCount="1"
-              :style="allWidth"
-              :options="$addTitle(objectTypeListOpt)"
-              :allowClear="false"
-              :filterOption="filterOption"
-              notFoundContent="没有查询到数据"
-            />
+          <!-- 请选择登记状态 -->
+          <a-select
+            showSearch
+            :style="allWidth"
+            placeholder="请选择登记状态"
+            v-model="queryCondition.approvalStatusList"
+            @change="approvalStatusListSelect"
+            optionFilterProp="children"
+            mode="multiple"
+            :maxTagCount="1"
+            :options="$addTitle(approvalStatusListOpt)"
+            :allowClear="false"
+            :filterOption="filterOption"
+            notFoundContent="没有查询到数据"
+          />
             <div class="box">
               <segi-range-picker
                 label="登记日期"
