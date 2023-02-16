@@ -7,73 +7,47 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,height=device-height">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,height=device-height" />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title>资产管理</title>
-    <link rel="stylesheet" href="https://useimean.com/sdk/main.css" />
-    <script src="https://useimean.com/sdk/main.js"></script>
-    <script>
-      try {
-        ImeanSDK.init({
-          projectId: '2BOUG3q5ttSYI4ijAjBJ-', // 项目id
-          baseUrl: 'https://useimean.com', // 请求服务器地址
-          onStepChange:function ({
-            recording, // 经验对象
-            currentIndex, // 当前步骤数组下标
-          }) { }, // 引导中步骤变化
-          onFinish:function ({
-            recording, // 经验对象
-          }) { }, // 引导步骤完成
-          onExit:function ({
-            recording, // 经验对象
-          }) { }, // 引导中主动退出
-          identity:function () {
-            return {}
-          }, // 返回用户信息
-          hideHelp: false, // 设置为false即展示帮助中心
-        })
-      } 
-      catch (error) {}
-    </script>
     <% if (process.env.NODE_ENV === 'production') { %>
-      <script src="/uhomeccp/configs.js?v=<%=new Date().getTime()%>"></script>
-      <script>
-        localStorage.removeItem('lang')
-        /**
-         * 加载 CDN 资源函数
-         * urls: 资源列表
-         * target: CDN 服务器
-         */
-        function loadCdnScript (urls, target) {
-          // 获取配置
-          var configs = window.__configs
-          target = target || configs.cdnURL
-          var unifyContext = configs && configs.unifyContext ? configs.unifyContext : ''
-          // 使用变量防止转义
-          var script = '/script'
-          for (var i = 0; i < urls.length; i++) {
-            // 如果已配置CDN，则使用CDN文件
-            if (configs && configs.cdnURL) {
-              document.write("<script src='" + target + urls[i] + "'><" + script + '>')
+    <script src="/uhomeccp/configs.js?v=<%=new Date().getTime()%>"></script>
+    <script>
+      /**
+       * 加载 CDN 资源函数
+       * urls: 资源列表
+       * target: CDN 服务器
+       */
+      function loadCdnScript(urls, target) {
+        // 获取配置
+        var configs = window.__configs;
+        target = target || configs.cdnURL;
+        var unifyContext = configs && configs.unifyContext ? configs.unifyContext : "";
+        // 使用变量防止转义
+        var script = "/script";
+        for (var i = 0; i < urls.length; i++) {
+          // 如果已配置CDN，则使用CDN文件
+          if (configs && configs.cdnURL) {
+            document.write("<script src='" + target + urls[i] + "'><" + script + ">");
             // 否则使用根目录下的 /lib/ 下的文件
-            } else {
-              document.write("<script src='" + unifyContext + "/lib" + urls[i] + "'><" + script + '>')
-            }
+          } else {
+            document.write("<script src='" + unifyContext + "/lib" + urls[i] + "'><" + script + ">");
           }
         }
-        var SCRS = [
-          '/vue/2.6.14/vue.min.js',
-          '/vue-router/3.0.2/vue-router.min.js',
-          '/vuex/3.0.1/vuex.min.js',
-          '/axios/0.18.0/axios.min.js',
-          '/moment.js/2.24.0/moment.min.js',
-          '/moment.js/2.24.0/locale/zh-cn.js'
-          // '/ant-design-vue/1.7.6/dist/antd.min.js'
-        ]
-        loadCdnScript(SCRS)
-      </script>
+      }
+      var SCRS = [
+        "/vue/2.6.14/vue.min.js",
+        "/vue-router/3.0.2/vue-router.min.js",
+        "/vuex/3.0.1/vuex.min.js",
+        "/axios/0.18.0/axios.min.js",
+        "/moment.js/2.24.0/moment.min.js",
+        "/moment.js/2.24.0/locale/zh-cn.js",
+        // '/ant-design-vue/1.7.6/dist/antd.min.js'
+      ];
+      loadCdnScript(SCRS);
+    </script>
     <% } %>
     <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=qT7Gt3iEPGDpduW64wdaKxMaCwQG3OWx"></script>
     <script src="./static/font/iconfont.js"></script>
@@ -89,5 +63,5 @@
 </html>
 
 <style>
-  @import url('//at.alicdn.com/t/font_885466_y1t2rs80pq.css');
+  @import url("//at.alicdn.com/t/font_885466_y1t2rs80pq.css");
 </style>

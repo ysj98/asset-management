@@ -172,15 +172,22 @@ export default {
     // 返回机构名称
     getOrganName(treeData, key) {
       let organName = [];
-      treeData.forEach((item) => {
-        if (key.includes(item.key)) {
-          organName.push(item.title);
-        }
-        if (item.children && item.children.length > 0) {
-          organName.push(...this.getOrganName(item.children, key));
-        }
-      });
-      return organName;
+      function temp(treeData, key) {
+        treeData.forEach((item) => {
+          if (item.key && key.includes(item.key)) {
+            organName.push(item.title);
+          }
+          if (item.children && item.children.length > 0) {
+            temp(item.children, key);
+          }
+        });
+      }
+      temp(treeData, key);
+      if (organName.length === 1) {
+        return organName[0];
+      } else {
+        return "已选" + organName[0] + "等" + organName.length + "个项目";
+      }
     },
     // 选中树节点
     treeNodeSelect(selectedKeys, e) {
@@ -194,13 +201,12 @@ export default {
         let flag = this.checkedKeys.checked.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
         if (flag.length >= 2) {
           this.$message.info("不能跨物业选择");
-          this.checkedKeys.checked = selectedKeys.slice(0, selectedKeys.length - 1);
+          this.checkedKeys.checked = this.checkedKeys.checked.slice(0, this.checkedKeys.checked.length - 1);
           return;
         }
         this.organId = this.checkedKeys.checked.toString();
         // 选中的组织机构名称
-        // this.organName = this.getOrganName(this.treeData, selectedKeys).toString();
-        this.organName = "";
+        this.organName = this.getOrganName(this.treeData, this.checkedKeys.checked);
       } else {
         this.$refs.select.changeVisible(false);
         this.organId = e.node.dataRef.key;
@@ -334,9 +340,11 @@ export default {
               this.organId = this.treeData.map((item) => {
                 return item.key;
               });
-              this.organName = "";
-              // 默认选择第一个
+              this.checkedKeys.checked = this.organId;
+              // 选中的组织机构名称
+              this.organName = this.getOrganName(this.treeData, this.checkedKeys.checked);
             } else {
+              // 默认选择第一个
               this.organId = this.treeData[0].key;
               this.organName = this.treeData[0].title;
               this.orgtype = this.treeData[0].orgtype;
@@ -414,7 +422,13 @@ export default {
       return result;
     },
   },
-  created() {},
+  created() {
+    if (this.multiple) {
+      this.checkedKeys = { checked: [], halfChecked: [] };
+    } else {
+      this.checkedKeys = null;
+    }
+  },
   mounted() {
     this.organName = this.defaultOrganName;
     if (this.rootData.length) {
