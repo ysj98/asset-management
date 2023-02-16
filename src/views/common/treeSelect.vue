@@ -133,11 +133,10 @@ export default {
       defaultExpandedKeys: [],
       defaultExpandAll: false, // 是否展开所有树节点
       treeData: [],
-      userId: "",
       orgtype: "",
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
       checkedKeys: null, //选中复选框的树节点  多选时 { checked: [], halfChecked: [] }
-      typeFilter: this.TypeFilter,
+      typeFilter: this.TypeFilter, // 过滤参数
     };
   },
   methods: {
@@ -204,7 +203,7 @@ export default {
           this.checkedKeys.checked = this.checkedKeys.checked.slice(0, this.checkedKeys.checked.length - 1);
           return;
         }
-        this.organId = this.checkedKeys.checked.toString();
+        this.organId = this.checkedKeys.checked;
         // 选中的组织机构名称
         this.organName = this.getOrganName(this.treeData, this.checkedKeys.checked);
       } else {
@@ -219,8 +218,8 @@ export default {
         });
       }
       // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
-      this.$textReplace(this.organId);
-      this.$emit("changeTree", this.organId, this.organName, this.orgtype);
+      this.$textReplace(this.organId.toString());
+      this.$emit("changeTree", this.organId.toString(), this.organName, this.orgtype);
     },
     // 下载下级数据
     onLoadData(treeNode) {
@@ -350,8 +349,8 @@ export default {
               this.orgtype = this.treeData[0].orgtype;
             }
             // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
-            this.$emit("changeTree", this.organId, this.organName, this.orgtype);
-            this.$textReplace(this.organId);
+            this.$textReplace(this.organId.toString());
+            this.$emit("changeTree", this.organId.toString(), this.organName, this.orgtype);
           }
         }
       });
