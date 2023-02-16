@@ -65,7 +65,7 @@ export default {
     },
     hostImg: {
       type: String,
-      default: window.__configs ? window.__configs.hostImg : 'http://192.168.1.11:8092'
+      default: window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
     },
     options: {
       type: Object

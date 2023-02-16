@@ -243,7 +243,7 @@
       },
       // 获取图片可展示路径
       getUrl (url) {
-        let urlShow = /^http|https/.test(url) ? url : window.__configs ? (window.__configs.hostImg + url) : ('http://192.168.1.11:8092' + url)
+        let urlShow = /^http|https/.test(url) ? url : window.__configs ? (window.__configs.hostImg + url) : ('https://betapic.uhomecp.com/' + url)
         return urlShow
       },
       // 查看详情

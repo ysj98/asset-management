@@ -65,7 +65,7 @@
 <script>
 import Tools from "@/utils/utils";
 // 获取图片域名
-let hostImg  = window.__configs.hostImg
+let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
 import { getFormat } from '../../../../utils/utils';
 const columns = [
   {

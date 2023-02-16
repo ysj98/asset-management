@@ -120,7 +120,7 @@
 <script>
 import Tools, {win} from '@/utils/utils'
 // 获取图片域名
-let hostImg  = window.__configs.hostImg
+let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
 import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
 import { getFormat } from '@/utils/utils'
 const columns = [

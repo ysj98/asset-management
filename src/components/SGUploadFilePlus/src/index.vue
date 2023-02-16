@@ -91,7 +91,7 @@
 
 <script>
 // 获取图片域名
-let hostImg  = window.__configs.hostImg
+let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
 import PreviewItem from './PreviewItem'
 import { uploadMultipartImage, uploadMultipartFile } from './api.js'
 export default {

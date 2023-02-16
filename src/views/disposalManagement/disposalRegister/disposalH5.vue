@@ -165,7 +165,7 @@ export default {
   },
   methods: {
     download (url) {
-      window.parent.uhomeNativeApi.downloadFile(window.__configs.hostImg + url)
+      window.parent.uhomeNativeApi.downloadFile(window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/' + url)
     },
     async init(){
         const { query: { instId, organId, disposeRegisterOrderId}, path } = this.$route

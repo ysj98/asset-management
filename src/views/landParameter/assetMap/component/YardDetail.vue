@@ -93,7 +93,7 @@
 import { getFormat } from '@/utils/utils'
 import Tools from "@/utils/utils";
 // 获取图片域名
-let hostImg  = window.__configs.hostImg
+let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
 const columns = [
   {
     title: "资产数量(个)",
