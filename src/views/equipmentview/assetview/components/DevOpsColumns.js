@@ -79,7 +79,7 @@ export const Inspection = [
     width: 150,
   },
 ];
-// 保障记录
+// 报障记录
 export const guarantee = [
   {
     title: "工单号",

@@ -73,7 +73,7 @@ export default {
           tab: "保养记录",
         },
         guarantee: {
-          tab: "保障记录",
+          tab: "报障记录",
         },
       },
       loading: false,
