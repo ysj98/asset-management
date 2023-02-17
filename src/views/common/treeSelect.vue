@@ -185,7 +185,7 @@ export default {
       if (organName.length === 1) {
         return organName[0];
       } else {
-        return "已选" + organName[0] + "等" + organName.length + "个项目";
+        return "已选" + organName[0] + "等" + organName.length + "个组织";
       }
     },
     // 选中树节点
