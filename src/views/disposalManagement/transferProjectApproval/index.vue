@@ -1,21 +1,11 @@
 <template>
   <div>
-    <SearchContainer
-      v-model="showSearchContainer"
-      @input="changeSearchContainer"
-    >
+    <SearchContainer v-model="showSearchContainer" @input="changeSearchContainer">
       <div slot="headerBtns">
-        <SG-Button
-          @click="btnAddFn"
-          icon="plus"
-          type="primary"
-          style="margin-right: 8px"
-          v-power="ASSET_MANAGEMENT.ASSET_TRANSFER_ADD"
-        >
-          新增资产转让单
+        <SG-Button @click="btnAddFn" icon="plus" type="primary" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_TRANSFER_ADD_PROJECT">
+          新增资产转让立项
         </SG-Button>
-        <!--TODO: 会议结果导出暂时不做        -->
-        <!--        <SG-Button icon="export" :loading="exportBtnLoading"> 导出 </SG-Button>-->
+        <!-- <SG-Button icon="export" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.ASSET_TRANSFER_EXPORT_PROJECT"> 导出 </SG-Button> -->
       </div>
       <div slot="headerForm">
         <TreeSelect
@@ -56,11 +46,7 @@
             notFoundContent="没有查询到数据"
           />
           <!-- 申请单名称ID -->
-          <a-input
-            style="width: 200px; margin-right: 8px; margin-bottom: 15px;"
-            v-model="queryForm.name"
-            placeholder="申请单名称/申请单ID"
-          />
+          <a-input style="width: 200px; margin-right: 8px; margin-bottom: 15px" v-model="queryForm.name" placeholder="立项单名称/ID" />
           <!-- 提交日期 -->
           <div>
             <SG-DatePicker
@@ -73,23 +59,14 @@
           </div>
         </div>
         <div class="contentForm-btn">
-          <SG-Button
-            @click="doSearch"
-            type="primary"
-            style="margin-right: 10px"
-          >
-            查询
-          </SG-Button>
+          <SG-Button @click="doSearch" type="primary" style="margin-right: 10px"> 查询 </SG-Button>
         </div>
       </div>
     </SearchContainer>
     <div>
       <a-table v-bind="tableOptions">
         <template #operation="text, record">
-          <OperationPopover
-            :operationData="handleActionBtn(record)"
-            @operationFun="operationFun($event, record)"
-          />
+          <OperationPopover :operationData="handleActionBtn(record)" @operationFun="operationFun($event, record)" />
         </template>
       </a-table>
     </div>
@@ -113,11 +90,11 @@ import TreeSelect from "@/views/common/treeSelect";
 import { utils } from "utils/utils";
 import moment from "moment";
 import { getObjectKeyValueByOrganIdFn } from "@/views/disposalManagement/transfer/share";
-import {ASSET_MANAGEMENT} from "@/config/config.power";
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 const projectIdOpt = [{ label: "全部资产项目", value: "" }];
 export default {
-  // 资产转让登记
-  name: "Transfer",
+  // 资产转让立项
+  name: "transferProjectApproval",
   components: {
     SearchContainer,
     TreeSelect,
@@ -174,11 +151,7 @@ export default {
             key: "apprStatus",
             customRender(text, record) {
               const { apprStatus } = record;
-              return handleEnumerationConversion(
-                apprStatus,
-                approvalStatusOpt,
-                ["value", "title"]
-              );
+              return handleEnumerationConversion(apprStatus, approvalStatusOpt, ["value", "title"]);
             },
           },
           {
@@ -224,7 +197,7 @@ export default {
         this.$message.error(message);
       }
     },
-    goAddEdit(applyId){
+    goAddEdit(applyId) {
       this.$router.push({
         path: "/transfer/edit",
         query: {
@@ -232,7 +205,7 @@ export default {
           organId: this.organId,
           organName: this.organName,
         },
-      })
+      });
     },
     /*
      * @desc:跳转详情页面
@@ -306,28 +279,28 @@ export default {
           text: "编辑",
           statusAuth: [0, 3],
           editType: "edit",
-          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_EDIT,
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_EDIT_PROJECT,
         },
         {
           iconType: "check-square",
           text: "审批",
           statusAuth: [2],
           editType: "approve",
-          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_APPROVE,
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_APPROVE_PROJECT,
         },
         {
           iconType: "minus-square",
           text: "反审核",
           statusAuth: [1],
           editType: "antiApprove",
-          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_ANTI_APPROVE,
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_ANTI_APPROVE_PROJECT,
         },
         {
           iconType: "delete",
           text: "删除",
           statusAuth: [0, 3],
           editType: "delete",
-          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_DEL,
+          auth: ASSET_MANAGEMENT.ASSET_TRANSFER_DEL_PROJECT,
         },
         { iconType: "book", text: "详情", editType: "detail" },
       ];
@@ -339,10 +312,7 @@ export default {
         }
       });
       return authRes.filter((ele) => {
-        return (
-          !ele.statusAuth ||
-          (ele.statusAuth.length && ele.statusAuth.includes(apprStatusNum))
-        );
+        return !ele.statusAuth || (ele.statusAuth.length && ele.statusAuth.includes(apprStatusNum));
       });
     },
     /*
@@ -435,7 +405,7 @@ export default {
       const startTime = data.date[0].format("YYYY-MM-DD");
       const endTime = data.date[1].format("YYYY-MM-DD");
       return {
-        type: '1',
+        type: '2',
         organId: this.organId,
         // 为全选 则传空集合
         projectIds: projectIds[0] === "" ? [] : projectIds,
@@ -461,7 +431,7 @@ export default {
       getObjectKeyValueByOrganIdFn({ organId: value }).then((data) => {
         this.projectIdOpt = [...utils.deepClone(projectIdOpt), ...data];
       });
-      this.getTableDataSource()
+      this.getTableDataSource();
     },
     /*
      * 开/关 搜索容器
@@ -476,7 +446,7 @@ export default {
   },
   activated() {
     // TODO:首次加载避免重复调用接口
-    if (this.organId){
+    if (this.organId) {
       this.getTableDataSource();
     }
   },
