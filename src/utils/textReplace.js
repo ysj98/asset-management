@@ -44,12 +44,12 @@ let getResourceConfig = (organIds) => {
             areaUnit: areaUnitId === 1 ? "m²" : "ft²",
           };
           localStorage.setItem("assetManagementLang", JSON.stringify(assetManagementLang));
-          console.log("获取货币单位以及面积单位", "organIds", organIds, "assetManagementLang", assetManagementLang);
+          // console.log("获取货币单位以及面积单位", "organIds", organIds, "assetManagementLang", assetManagementLang);
           resolve();
         }
       });
     } else {
-      console.log("直接改变货币单位以及面积单位");
+      // console.log("直接改变货币单位以及面积单位");
       resolve();
     }
   });
@@ -57,7 +57,7 @@ let getResourceConfig = (organIds) => {
 let textReplace = (organIds) => {
   // 判断是不是改造范围
   if (!langType()) {
-    console.log("非本次改造范围");
+    // console.log("非本次改造范围");
     return;
   }
   getResourceConfig(organIds).then(() => {

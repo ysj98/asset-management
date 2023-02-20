@@ -63,7 +63,7 @@
           >详情</a>
         </template>
       </a-table>
-      <!-- <no-data-tips v-show="showNoDataTips"></no-data-tips> -->
+      <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
     <SG-FooterPagination
       :pageLength="paginator.pageLength"

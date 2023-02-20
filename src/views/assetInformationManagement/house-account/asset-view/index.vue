@@ -544,14 +544,13 @@ export default {
   mounted() {},
   created() {
     //this.initHeader()
-    //this.useForConfig()
     initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   activated() {
     const info = this.$route.query;
-    if (info.organIds) {
+    if (info.organId) {
       this.isSearch = false;
-      this.organProjectBuildingValue.organId = String(info.organIds);
+      this.organProjectBuildingValue.organId = String(info.organId);
       this.organProjectBuildingValue.projectId = [info.projectId];
       this.provinceCityDistrictValue.province = info.province;
       this.provinceCityDistrictValue.city = info.city;
@@ -580,6 +579,7 @@ export default {
                 e.title = item.alias || item.statusName;
               }
             });
+            // 列表设置里面的命名也同步更新
             if (item.code == 1001) {
               this.aliasConfig.transferOperationArea = item.alias || item.statusName;
             }
@@ -595,6 +595,7 @@ export default {
             if (item.code == 1005) {
               this.aliasConfig.otherArea = item.alias || item.statusName;
             }
+            // 隐藏列表设置里面的对应的项
             if (item.isAble === "N") {
               if (item.code == 1001) {
                 this.hiddenConfig.push("transferOperationArea");
@@ -612,6 +613,7 @@ export default {
                 this.hiddenConfig.push("otherArea");
               }
             }
+            // 同步修改表头的字段名称
             this.tableObj.columns.map((m, i) => {
               let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
               let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
