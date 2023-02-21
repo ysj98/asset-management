@@ -160,6 +160,7 @@
           dataSource: [],
           loading: false,
           pagination: false,
+          scroll: {y: "calc(100vh - 380px)"},
           rowKey: 'storeCode',
           columns: [
             { title: '入库单编号', dataIndex: 'storeCode' },

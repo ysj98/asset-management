@@ -101,7 +101,7 @@
           <span v-else >{{text}}</span>
         </template>
       </a-table>
-      <!-- <no-data-tips v-show="tableData.length === 0"></no-data-tips> -->
+      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
         :totalCount="count"

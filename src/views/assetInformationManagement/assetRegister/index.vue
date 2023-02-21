@@ -68,8 +68,14 @@
     <overview-number :numList="numList" />
     <div class="table-layout-fixed">
       <!-- ref="table_box" -->
-      <!-- :scroll="scrollHeight" -->
-      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false">
+      <a-table
+        :loading="loading"
+        :columns="columns"
+        :dataSource="tableData"
+        size="middle"
+        :pagination="false"
+        :scroll="scrollHeight"
+        >
         <template slot="operation" slot-scope="text, record">
           <div class="tab-opt">
             <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)"></OperationPopover>
@@ -181,7 +187,7 @@ export default {
     return {
       checkNick: false,
       toggle: false,
-      // scrollHeight: {y: 0},
+      scrollHeight: {y: "calc(100vh - 480px)"},
       ASSET_MANAGEMENT,
       isChild: false,
       loading: false,
@@ -520,9 +526,6 @@ export default {
         this.query();
       }
     },
-  },
-  mounted() {
-    this.platformDictFn("asset_type");
   },
 };
 </script>

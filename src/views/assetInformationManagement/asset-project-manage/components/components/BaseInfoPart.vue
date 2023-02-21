@@ -6,7 +6,7 @@
     <div :class="{'title_div': !type || type == 'approval'}" style="margin-top: 10px; margin-bottom: 15px">
       <a-row>
         <a-col :span="colSpan">
-          <a-form-item label="管理机构" :label-col="labelCol" :wrapper-col="wrapperCol">
+          <a-form-item label="权属单位" :label-col="labelCol" :wrapper-col="wrapperCol">
             <!-- 公司 -->
             <treeSelect
               v-if="['edit'].includes(type)"
@@ -359,8 +359,8 @@
       attachment: [], // 附件
       businessUnitId: '',
       businessUnit: '',
-      organName: '', // 管理机构
-      organKey: '', // 管理机构
+      organName: '', // 权属单位
+      organKey: '', // 权属单位
       takeOver: '1', // 是否接管，否 0，是 1
       receiver: '', // 接管人
       trusteeshipArea: '', //托管面积
@@ -493,8 +493,8 @@
             actualUsableArea,
             sourceType,
             attachment: attachArr,
-            organKey: String(organId), // 保存管理机构id
-            organName: organName, // 展示管理机构名称
+            organKey: String(organId), // 保存权属单位id
+            organName: organName, // 展示权属单位名称
             businessUnit: businessUnit ? businessUnit : '',
             businessUnitId: businessUnitId ? String(businessUnitId) : ''
           })
@@ -544,7 +544,7 @@
           initialValue: '' // 编辑时不展示‘无’
         })
         if (type == 'add') {
-          // 新增时管理机构名称和Id取自props
+          // 新增时权属单位名称和Id取自props
           this.organName = this.organTitle
           this.organKey = this.organId
           this.getProjectCode()
