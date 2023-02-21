@@ -32,13 +32,7 @@
       </div>
       <div slot="headerForm">
         <div class="headerForm">
-          <tree-select
-            :allowClear="false"
-            @changeTree="changeTree"
-            class="search-item"
-            :multiple="true"
-            :treeCheckable="true"
-          />
+          <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :multiple="true" :treeCheckable="true" />
           <a-select
             v-model="queryForm.projectIdList"
             :options="projectData"
@@ -57,17 +51,8 @@
             class="search-item"
             placeholder="全部资产状态"
           ></a-select>
-          <a-input
-            v-model="queryForm.assetName"
-            class="search-item"
-            placeholder="资产名称/编码"
-          ></a-input>
-          <a-input
-            v-model="queryForm.originSource"
-            class="search-item"
-            :maxLength="100"
-            placeholder="资产原始来源方"
-          ></a-input>
+          <a-input v-model="queryForm.assetName" class="search-item" placeholder="资产名称/编码"></a-input>
+          <a-input v-model="queryForm.originSource" class="search-item" :maxLength="100" placeholder="资产原始来源方"></a-input>
         </div>
       </div>
       <div slot="contentForm">
@@ -81,11 +66,7 @@
             class="search-item"
             placeholder="全部资产分类"
           />
-          <province-city-district
-            class="search-item-address"
-            v-model="provinceCityDistrictValue"
-            @input="handleAddress"
-          />
+          <province-city-district class="search-item-address" v-model="provinceCityDistrictValue" @input="handleAddress" />
           <a-select
             v-model="queryForm.useTypes"
             :options="amsUseDirectionCom"
@@ -117,14 +98,10 @@
     <!-- table表格 -->
     <div>
       <!-- size="middle" -->
-      <a-table
-        v-bind="tableOptions"
-        :columns="tableOptions.columns"
-        :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }"
-      >
+      <a-table v-bind="tableOptions" :columns="tableOptions.columns" :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }">
         <!-- 操作-->
-        <template #action="text, { assetEquipmentId, assetId, organId }">
-          <a @click="goDetail({ assetEquipmentId, assetId, organId })">详情</a>
+        <template #action="text, { assetEquipmentId, assetId, organId, equipmentId }">
+          <a @click="goDetail({ assetEquipmentId, assetId, organId, equipmentId })">详情</a>
         </template>
       </a-table>
     </div>
@@ -142,10 +119,7 @@
       @ok="setAssetLabelPopSave"
     >
       <div v-if="labelOptions.length">
-        <a-checkbox-group
-          v-model="selectedLabel"
-          :options="labelOptions"
-        ></a-checkbox-group>
+        <a-checkbox-group v-model="selectedLabel" :options="labelOptions"></a-checkbox-group>
       </div>
       <div v-else>
         <a-empty />
@@ -169,21 +143,26 @@
         </a-row>
       </a-checkbox-group>
     </SG-Modal> -->
-    <TableHeaderSettings v-if="modalList.setTableHeader.show" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
+    <TableHeaderSettings
+      v-if="modalList.setTableHeader.show"
+      :funType="funType"
+      @cancel="changeListSettingsModal(false)"
+      @success="handleTableHeaderSuccess"
+    />
   </div>
 </template>
 
 <script>
-import {ASSET_MANAGEMENT} from '@/config/config.power'
+import { ASSET_MANAGEMENT } from "@/config/config.power";
 import provinceCityDistrict from "@/views/common/ProvinceCityDistrict";
 import SearchContainer from "@/views/common/SearchContainer";
 import OverviewNumber from "@/views/common/OverviewNumber";
 import TreeSelect from "@/views/common/treeSelect";
 import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
 import { SET_AMS_USE_DIRECTION } from "@/store/types/platformDictTypes";
-import { handleTableScrollHeight,initTableColumns } from "@/utils/share";
+import { handleTableScrollHeight, initTableColumns } from "@/utils/share";
 import { handleDownloadFile } from "utils/utils";
-import TableHeaderSettings from 'src/components/TableHeaderSettings'
+import TableHeaderSettings from "src/components/TableHeaderSettings";
 const detailColumns = [
   {
     title: "资产名称",
@@ -276,7 +255,7 @@ const detailColumns = [
     dataIndex: "originSource",
     width: 120,
   },
-]
+];
 const requiredColumn = [
   {
     title: "操作",
@@ -285,7 +264,7 @@ const requiredColumn = [
     fixed: "right",
     scopedSlots: { customRender: "action" },
   },
-]
+];
 const allColumns = [
   {
     title: "资产名称",
@@ -394,7 +373,7 @@ export default {
     OverviewNumber,
     TreeSelect,
     EquipmentSelectTree,
-    TableHeaderSettings
+    TableHeaderSettings,
   },
   data() {
     return {
@@ -500,11 +479,10 @@ export default {
     };
   },
   watch: {
-    'tableOptions.columns'(val){
-    this.tableOptions.scroll.x = val.length * 150
-    console.log(val)
-     
-    }
+    "tableOptions.columns"(val) {
+      this.tableOptions.scroll.x = val.length * 150;
+      console.log(val);
+    },
   },
   computed: {
     amsUseDirectionCom() {
@@ -518,21 +496,19 @@ export default {
     },
   },
   methods: {
-      handleTableHeaderSuccess () {
-      this.changeListSettingsModal(false)
-      initTableColumns({columns:this.tableOptions.columns,detailColumns, requiredColumn, funType: this.funType})
+    handleTableHeaderSuccess() {
+      this.changeListSettingsModal(false);
+      initTableColumns({ columns: this.tableOptions.columns, detailColumns, requiredColumn, funType: this.funType });
     },
-      changeListSettingsModal (val) {
-        this.modalList.setTableHeader.show = val
-      },
+    changeListSettingsModal(val) {
+      this.modalList.setTableHeader.show = val;
+    },
     // 导出
     handleExport() {
       const otherReq = this.handleQueryTableOptions();
       const req = {
         ...otherReq,
-        display: this.tableOptions.columns
-          .filter((ele) => ele.dataIndex)
-          .map((ele) => ele.dataIndex),
+        display: this.tableOptions.columns.filter((ele) => ele.dataIndex).map((ele) => ele.dataIndex),
       };
       this.exportFlag = true;
       this.$api.equipmentview
@@ -573,17 +549,15 @@ export default {
         assetEquipmentIds: this.selectedRowKeys.join(","),
       };
       console.log({ req });
-      this.$api.equipmentview
-        .updateLabel(req)
-        .then(({ data: { code, message } }) => {
-          if (code === "0") {
-            this.$message.success("操作成功");
-            this.modalList.setAssetLabel.show = false;
-            this.queryTableDataAndTotal(true);
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.equipmentview.updateLabel(req).then(({ data: { code, message } }) => {
+        if (code === "0") {
+          this.$message.success("操作成功");
+          this.modalList.setAssetLabel.show = false;
+          this.queryTableDataAndTotal(true);
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     // 打开 列表设置弹窗
     openSetTableHeaderPop() {
@@ -600,42 +574,35 @@ export default {
     // 获取 资产标签
     getAssetLabel({ organId }) {
       this.$api.publicCode
-        .queryAssetLabelConfig({ organId: organId.split(',')[0] })
-        .then(
-          ({
-            data: {
-              code,
-              message,
-              data,
-            },
-          }) => {
-            if (code === "0") {
-              if (data.data) {
-                this.labelOptions = data.data.map((ele) => {
-                  return {
-                    value: ele.labelValue,
-                    title: ele.labelName,
-                    label: ele.labelName,
-                  };
-                });
-              }
-            } else {
-              console.warn(message)
-              // this.$message.error(message);
+        .queryAssetLabelConfig({ organId: organId.split(",")[0] })
+        .then(({ data: { code, message, data } }) => {
+          if (code === "0") {
+            if (data.data) {
+              this.labelOptions = data.data.map((ele) => {
+                return {
+                  value: ele.labelValue,
+                  title: ele.labelName,
+                  label: ele.labelName,
+                };
+              });
             }
+          } else {
+            console.warn(message);
+            // this.$message.error(message);
           }
-        )
+        })
         .catch((err) => {
           // this.$message.error("系统内部错误，请重载当前页面后重试");
           console.error(err);
         });
     },
     // 打开详情页
-    goDetail({ assetEquipmentId, assetId, organId }) {
+    goDetail({ assetEquipmentId, assetId, organId, equipmentId }) {
       const queryParams = {
         assetEquipmentId,
         assetId,
-        organId
+        organId,
+        equipmentId,
       };
       console.log({ queryParams });
       this.$router.push({
@@ -706,19 +673,17 @@ export default {
     },
     queryTotal(options) {
       this.totalLoadingFlag = true;
-      this.$api.equipmentview
-        .getTotal(options)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            console.log({ data });
-            this.numList.forEach((ele) => {
-              ele.value = Number(data[ele.key] || 0).toLocaleString();
-            });
-            this.totalLoadingFlag = false;
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.equipmentview.getTotal(options).then(({ data: { code, message, data } }) => {
+        if (code === "0") {
+          console.log({ data });
+          this.numList.forEach((ele) => {
+            ele.value = Number(data[ele.key] || 0).toLocaleString();
+          });
+          this.totalLoadingFlag = false;
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     handleQueryTableOptions() {
       const { pageNo, pageLength } = this.paginationObj;
@@ -748,7 +713,7 @@ export default {
   },
   created() {
     handleTableScrollHeight(this.tableOptions.scroll);
-    initTableColumns({columns:this.tableOptions.columns,detailColumns, requiredColumn, funType: this.funType})
+    initTableColumns({ columns: this.tableOptions.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   mounted() {
     this.$store.dispatch("platformDict/getPlatformDict", {
@@ -779,18 +744,17 @@ export default {
 </style>
 <style lang="less" scoped>
 /deep/.ant-table-fixed {
-    td{
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
+  td {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  tr:hover {
+    td {
+      white-space: normal;
+      overflow: auto;
+      text-overflow: clip;
     }
-    tr:hover{
-      td{
-        white-space: normal;
-        overflow: auto;
-        text-overflow: clip;
-      }
-    }
+  }
 }
-
 </style>

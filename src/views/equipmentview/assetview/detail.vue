@@ -8,17 +8,13 @@
     <Information v-bind="attrInfoOptions" />
     <SG-Title title="其他信息" />
     <a-tabs>
-      <a-tab-pane
-        v-for="(item, key) in otherTabOptions"
-        :key="key"
-        :tab="item.tab"
-      >
+      <a-tab-pane v-for="(item, key) in otherTabOptions" :key="key" :tab="item.tab">
         <keep-alive>
           <component
             :is="item.component"
             :assetId="queryParams.assetId"
-            :assetEquipmentId="queryParams.assetEquipmentId"
             :organId="queryParams.organId"
+            :equipmentId="queryParams.equipmentId"
           ></component>
         </keep-alive>
       </a-tab-pane>
@@ -45,9 +41,9 @@ export default {
   data() {
     return {
       queryParams: {
-        assetEquipmentId: "",
         assetId: "",
         organId: "",
+        equipmentId: "",
       },
       basicInfoOptions: {
         data: {},
@@ -171,11 +167,11 @@ export default {
           key: "",
           component: ArchiveFile,
         },
-        eight:{
+        eight: {
           tab: "运维信息",
           key: "",
           component: DevOps,
-        }
+        },
       },
     };
   },
@@ -185,35 +181,31 @@ export default {
       const req = {
         assetEquipmentId,
       };
-      this.$api.equipmentview
-        .getDetail(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            console.log({ data });
-            this.attrInfoOptions.BasicInfoList = (data.attrList || []).map(
-              (ele) => {
-                return {
-                  title: ele.attrName,
-                  value: ele.attrValue,
-                };
-              }
-            );
-            this.basicInfoOptions.data = { ...data };
-            this.spaceInfoOptions.data = { ...data };
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.equipmentview.getDetail(req).then(({ data: { code, message, data } }) => {
+        if (code === "0") {
+          console.log({ data });
+          this.attrInfoOptions.BasicInfoList = (data.attrList || []).map((ele) => {
+            return {
+              title: ele.attrName,
+              value: ele.attrValue,
+            };
+          });
+          this.basicInfoOptions.data = { ...data };
+          this.spaceInfoOptions.data = { ...data };
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
   },
   mounted() {
     this.queryDetail();
   },
   created() {
-    const { assetEquipmentId, assetId, organId } = this.$route.query;
-    this.queryParams.assetEquipmentId = assetEquipmentId;
+    const { assetId, organId, equipmentId } = this.$route.query;
     this.queryParams.assetId = assetId;
     this.queryParams.organId = organId;
+    this.queryParams.equipmentId = equipmentId;
   },
 };
 </script>

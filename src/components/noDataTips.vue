@@ -32,6 +32,7 @@ export default {
 
 <style lang="less" scoped>
 .no-data-tips {
+  display: none;
   padding: 0 0 100px 0;
   img {
     display: block;

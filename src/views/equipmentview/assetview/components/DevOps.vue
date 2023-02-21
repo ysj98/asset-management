@@ -53,7 +53,7 @@ export default {
       type: [String, Number],
       required: true,
     },
-    assetEquipmentId: {
+    equipmentId: {
       type: [String, Number],
       required: true,
     },
@@ -156,7 +156,7 @@ export default {
         pageNo: this.pagination.current,
         pageLength: this.pagination.pageSize,
         organId: this.organId,
-        equipmentInstId: this.assetEquipmentId,
+        equipmentInstId: this.equipmentId,
         beginTime: this.startValue.format("YYYYMMDD"),
         endTime: this.endValue.format("YYYYMMDD"),
       };
