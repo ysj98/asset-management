@@ -44,7 +44,7 @@ export function getList (data) {
   if (!data.assetType) {
     return Promise.reject(new Error('资产类型为空'))
   }
-  // 如果是多选 删除"" 去第一项值
+  // 如果是多选 删除"" 取第一项值
   let assetType = data.assetType.split(',')
   assetType = assetType.filter(item => Boolean(item))
   data.assetType = assetType[0]

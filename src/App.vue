@@ -29,7 +29,7 @@ export default {
   padding-bottom: 68px !important;
 }
 /* 去除table data为空时组件的提示，替换成自己的组件提示 */
-.ant-table-placeholder {
+/* .ant-table-placeholder {
   display: none;
-}
+} */
 </style>
