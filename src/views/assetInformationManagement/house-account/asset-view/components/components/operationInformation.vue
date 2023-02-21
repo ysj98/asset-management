@@ -300,3 +300,12 @@ export default {
   },
 }
 </script>
+<style lang="less" scoped>
+/deep/ .sg-title{
+  justify-content: flex-start;
+  .sg-title-right{
+    margin-left: 10%;
+  }
+}
+</style>
+

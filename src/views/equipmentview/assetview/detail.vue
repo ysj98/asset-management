@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     queryDetail() {
-      const { assetEquipmentId } = this.queryParams;
+      const { assetEquipmentId } = this.$route.query;
       const req = {
         assetEquipmentId,
       };
