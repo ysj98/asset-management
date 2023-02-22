@@ -173,7 +173,6 @@
       v-model="queryCondition.pageNum"
       @change="handleChange"
     />
-
     <SG-Modal
       width="500px"
       v-model="modalShow"
