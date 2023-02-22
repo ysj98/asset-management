@@ -5,35 +5,17 @@
       <div style="width: 100%">
         <a-row>
           <a-col :span="8">
-            <a-form-model-item
-              :style="formItemStyle"
-              label="申请单名称"
-              prop="name"
-              v-bind="formItemLayout"
-            >
-              <a-input
-                v-model="formData.name"
-                placeholer="请输入申请单名称"
-              ></a-input>
+            <a-form-model-item :style="formItemStyle" label="申请单名称" prop="name" v-bind="formItemLayout">
+              <a-input v-model="formData.name" placeholer="请输入申请单名称"></a-input>
             </a-form-model-item>
           </a-col>
-
           <a-col :span="8">
-            <a-form-model-item
-              :style="formItemStyle"
-              label="所属机构"
-              v-bind="formItemLayout"
-            >
+            <a-form-model-item :style="formItemStyle" label="所属机构" v-bind="formItemLayout">
               <span>{{ this.organName }}</span>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item
-              :style="formItemStyle"
-              label="资产项目"
-              prop="projectId"
-              v-bind="formItemLayout"
-            >
+            <a-form-model-item :style="formItemStyle" label="资产项目" prop="projectId" v-bind="formItemLayout">
               <a-select
                 optionFilterProp="children"
                 showSearch
@@ -46,40 +28,29 @@
           </a-col>
         </a-row>
         <a-row style="margin-top: 20px">
-          <a-form-model-item
-            :style="formItemStyle"
-            label="资产类型"
-            prop="assetType"
-            v-bind="formItemLayoutTwo"
-          >
-            <a-select
-              style="width: 200px"
-              v-model="formData.assetType"
-              :options="assetTypeOptions"
-            ></a-select>
-          </a-form-model-item>
+          <a-col :span="8">
+            <a-form-model-item :style="formItemStyle" label="资产类型" prop="assetType" v-bind="formItemLayout">
+              <a-select style="width: 200px" v-model="formData.assetType" :options="assetTypeOptions"></a-select>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item :style="formItemStyle" label="资产转让立项单ID" prop="relId" v-bind="formItemLayout">
+              <span v-if="formData.relId">
+                <span style="color: #0084ff; cursor: pointer">{{ formData.relId }}</span>
+                <a-icon style="margin-left: 10px; cursor: pointer" @click="clearRelId()" type="close-circle" />
+              </span>
+              <a-button v-else type="primary" class="button" @click="showTable"> 关联转让立项单 </a-button>
+            </a-form-model-item>
+          </a-col>
         </a-row>
       </div>
       <SG-Title title="资产明细" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <div
-            style="
-              height: 600px;
-              border: 1px solid #e8e8e8;
-              padding: 0;
-              border-radius: 2px;
-            "
-          >
+          <div style="height: 600px; border: 1px solid #e8e8e8; padding: 0; border-radius: 2px">
             <div style="display: flex; height: 100%">
               <!-- 资产列表 -->
-              <div
-                style="
-                  flex-basis: 300px;
-                  height: 600px;
-                  border-right: 1px solid #e8e8e8;
-                "
-              >
+              <div style="flex-basis: 300px; height: 600px; border-right: 1px solid #e8e8e8">
                 <div
                   style="
                     width: 100%;
@@ -91,12 +62,7 @@
                   "
                 >
                   <span>{{ `已选资产列表 ${selectedList.length}` }}</span>
-                  <SG-Button
-                    @click="changeSelectAssetModalFLag(true)"
-                    type="primary"
-                  >
-                    添加资产
-                  </SG-Button>
+                  <SG-Button @click="changeSelectAssetModalFLag(true)" type="primary"> 添加资产 </SG-Button>
                 </div>
                 <div style="overflow: auto; height: calc(100% - 70px)">
                   <div
@@ -107,74 +73,34 @@
                       'activity-asset': item.assetId === currentSelectAssetId,
                     }"
                   >
-                    <span
-                      @click="getAssetDetail(item)"
-                      style="flex: 1; padding: 8px 0"
-                    >
+                    <span @click="getAssetDetail(item)" style="flex: 1; padding: 8px 0">
                       {{ item.assetName }}
                     </span>
-                    <a-icon
-                      class="asset-item-icon"
-                      v-if="item.assetId === currentSelectAssetId"
-                      type="check"
-                    />
-                    <a-icon
-                      class="asset-item-icon"
-                      @click="handleDelSelectAsset(item)"
-                      v-else
-                      type="close"
-                    />
+                    <a-icon class="asset-item-icon" v-if="item.assetId === currentSelectAssetId" type="check" />
+                    <a-icon class="asset-item-icon" @click="handleDelSelectAsset(item)" v-else type="close" />
                   </div>
                 </div>
               </div>
 
               <!-- 资产详情信息 -->
-              <div
-                style="
-                  flex: 1;
-                  padding: 20px 40px;
-                  height: 100%;
-                  overflow: auto;
-                "
-                v-if="currentSelectAssetId"
-              >
+              <div style="flex: 1; padding: 20px 40px; height: 100%; overflow: auto" v-if="currentSelectAssetId">
                 <div>
-                  <span class="detail-title">
-                    物业名称: {{ `${currentAssetDetail.propertyName}` }}
-                  </span>
+                  <span class="detail-title"> 物业名称: {{ `${currentAssetDetail.propertyName}` }} </span>
                   <div style="margin-bottom: 20px">
-                    <Information
-                      :row-props="{ gutter: 5 }"
-                      :col-props="{ span: 10 }"
-                      v-bind="basicInfoOptions"
-                    ></Information>
+                    <Information :row-props="{ gutter: 5 }" :col-props="{ span: 10 }" v-bind="basicInfoOptions"></Information>
                   </div>
                 </div>
                 <div>
                   <span class="detail-title">拟转让标的历史租赁情况</span>
-                  <a
-                    @click="btnMoreLeaseInfo"
-                    style="margin-left: 20px"
-                    v-if="currentAssetDetail.lease.length > 1"
-                  >
-                    查看更多租赁信息
-                  </a>
+                  <a @click="btnMoreLeaseInfo" style="margin-left: 20px" v-if="currentAssetDetail.lease.length > 1"> 查看更多租赁信息 </a>
                   <div style="margin-bottom: 20px">
-                    <Information
-                      :row-props="{ gutter: 5 }"
-                      :col-props="{ span: 10 }"
-                      v-bind="leasingSituationOptions"
-                    ></Information>
+                    <Information :row-props="{ gutter: 5 }" :col-props="{ span: 10 }" v-bind="leasingSituationOptions"></Information>
                   </div>
                 </div>
                 <div>
                   <span class="detail-title">拟转让标的资产评估情况</span>
                   <div style="margin-bottom: 20px">
-                    <Information
-                      :row-props="{ gutter: 5 }"
-                      :col-props="{ span: 10 }"
-                      v-bind="assessSituationOptions"
-                    ></Information>
+                    <Information :row-props="{ gutter: 5 }" :col-props="{ span: 10 }" v-bind="assessSituationOptions"></Information>
                   </div>
                   <div>
                     <p>选择质押情况（必选）</p>
@@ -186,10 +112,7 @@
                     ></a-select>
                     <div style="height: 20px"></div>
                     <span>其它披露事项(必填):</span>
-                    <a-textarea
-                      v-model="currentSelectAsset.disclosures"
-                      v-bind="textareaProps"
-                    ></a-textarea>
+                    <a-textarea v-model="currentSelectAsset.disclosures" v-bind="textareaProps"></a-textarea>
                   </div>
                 </div>
               </div>
@@ -201,11 +124,7 @@
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="feasibility" label="可行性和必要性分析">
-            <a-textarea
-              v-model="formData.feasibility"
-              v-bind="textareaProps"
-              placeholder="可行性和必要性分析"
-            />
+            <a-textarea v-model="formData.feasibility" v-bind="textareaProps" placeholder="可行性和必要性分析" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -221,11 +140,7 @@
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="compliance" label="重要条款">
-            <a-textarea
-              v-model="formData.compliance"
-              v-bind="textareaProps"
-              placeholder="重要条款"
-            />
+            <a-textarea v-model="formData.compliance" v-bind="textareaProps" placeholder="重要条款" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -284,58 +199,35 @@
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="listingPrice" label="挂牌价格">
-            <a-input-number
-              :min="0"
-              :max="99999999"
-              :precision="2"
-              style="width: 200px"
-              v-model="formData.listingPrice"
-              placeholder="挂牌价格"
-            />
+            <a-input-number :min="0" :max="99999999" :precision="2" style="width: 200px" v-model="formData.listingPrice" placeholder="挂牌价格" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="marketAnalysis" label="市场分析">
-            <a-textarea
-              v-model="formData.marketAnalysis"
-              v-bind="textareaProps"
-              placeholder="市场分析"
-            />
+            <a-textarea v-model="formData.marketAnalysis" v-bind="textareaProps" placeholder="市场分析" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="interestedParty" label="潜在意向方情况">
-            <a-textarea
-              v-model="formData.interestedParty"
-              v-bind="textareaProps"
-              placeholder="潜在意向方情况"
-            />
+            <a-textarea v-model="formData.interestedParty" v-bind="textareaProps" placeholder="潜在意向方情况" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="withdrawalClause" label="退出条款">
-            <a-textarea
-              v-model="formData.withdrawalClause"
-              v-bind="textareaProps"
-              placeholder="退出条款"
-            />
+            <a-textarea v-model="formData.withdrawalClause" v-bind="textareaProps" placeholder="退出条款" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="remark" label="其它说明情况">
-            <a-textarea
-              v-model="formData.remark"
-              v-bind="textareaProps"
-              placeholder="其它说明情况"
-            />
+            <a-textarea v-model="formData.remark" v-bind="textareaProps" placeholder="其它说明情况" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -355,21 +247,8 @@
       </a-row>
     </a-form-model>
     <div class="footer-action">
-      <SG-Button
-        @click="handleSave(0)"
-        type="primary"
-        style="margin-right: 10px"
-      >
-        暂存草稿
-      </SG-Button>
-      <SG-Button
-        @click="handleSave(1)"
-        type="primary"
-        style="margin-right: 10px"
-        class="right-btn"
-      >
-        提交
-      </SG-Button>
+      <SG-Button @click="handleSave(0)" type="primary" style="margin-right: 10px"> 暂存草稿 </SG-Button>
+      <SG-Button @click="handleSave(1)" type="primary" style="margin-right: 10px" class="right-btn"> 提交 </SG-Button>
       <SG-Button class="right-btn" @click="goBack">取消</SG-Button>
     </div>
     <SelectAssetModal
@@ -433,17 +312,22 @@
         <LeaseTable :dataSource="modalList.lease.dataSource" />
       </div>
     </SG-Modal>
+    <transferProjectApprovalTable
+      v-if="ShowTransferProjectApprovalTable"
+      @cancel="showTable"
+      :organId="organId"
+      :projectId="formData.projectId"
+      v-model="formData.relId"
+    ></transferProjectApprovalTable>
   </div>
 </template>
 
 <script>
 import "./addAndEdit.less";
+import transferProjectApprovalTable from "./transferProjectApprovalTable.vue";
 import Information from "@/components/Information";
 import SelectAssetModal from "@/views/disposalManagement/transfer/SelectAssetModal";
-import {
-  getDetail,
-  getObjectKeyValueByOrganIdFn,
-} from "@/views/disposalManagement/transfer/share";
+import { getDetail, getObjectKeyValueByOrganIdFn } from "@/views/disposalManagement/transfer/share";
 import configBase from "@/config/config.base";
 import { SET_AMS_PLEDGE_SITUATION } from "store/types/platformDictTypes";
 import UsageTable from "@/views/disposalManagement/transfer/UsageTable";
@@ -457,6 +341,7 @@ export default {
     UsageTable,
     SelectAssetModal,
     Information,
+    transferProjectApprovalTable,
   },
   data() {
     return {
@@ -521,12 +406,8 @@ export default {
                       },
                       on: {
                         click() {
-                          _this.modalList.warrant.dataSource =
-                            _this.currentAssetDetail.details;
-                          _this.doOpenPop(
-                            "warrant",
-                            _this.currentSelectAsset.assetName
-                          );
+                          _this.modalList.warrant.dataSource = _this.currentAssetDetail.details;
+                          _this.doOpenPop("warrant", _this.currentSelectAsset.assetName);
                         },
                       },
                     },
@@ -569,12 +450,8 @@ export default {
                       },
                       on: {
                         click() {
-                          _this.modalList.usage.dataSource =
-                            _this.currentAssetDetail.resourceList;
-                          _this.doOpenPop(
-                            "usage",
-                            _this.currentSelectAsset.assetName
-                          );
+                          _this.modalList.usage.dataSource = _this.currentAssetDetail.resourceList;
+                          _this.doOpenPop("usage", _this.currentSelectAsset.assetName);
                         },
                       },
                     },
@@ -754,7 +631,7 @@ export default {
       organId: "",
       projectListOptions: [],
       formItemStyle: {
-        width: "100%"
+        width: "100%",
       },
       formItemLayoutTwo: {
         labelCol: {
@@ -791,9 +668,14 @@ export default {
             trigger: "change",
           },
         ],
-        assetType: [
-          { required: true, message: "请选择资产类型", trigger: "change" },
+        relId: [
+          {
+            required: false,
+            message: "请关联资产转让立项单",
+            trigger: "change",
+          },
         ],
+        assetType: [{ required: true, message: "请选择资产类型", trigger: "change" }],
         feasibility: [
           {
             required: true,
@@ -858,7 +740,9 @@ export default {
         interestedParty: "",
         withdrawalClause: "",
         remark: "",
+        relId: "", // 资产转让关联的资产立项单Id
       },
+      ShowTransferProjectApprovalTable: false,
     };
   },
   computed: {
@@ -884,13 +768,42 @@ export default {
         : [];
     },
     isSelectedEquipment() {
-      return (
-        String(this.formData.assetType) ===
-        this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
-      );
+      return String(this.formData.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     },
   },
   methods: {
+    showTable() {
+      if (!this.formData.projectId) {
+        this.$message.error("请选选择资产项目");
+        return;
+      }
+      this.ShowTransferProjectApprovalTable = !this.ShowTransferProjectApprovalTable;
+    },
+    clearRelId() {
+      this.$set(this.formData, "relId", "");
+    },
+    // 获取是否资产转让关联资产转让立项单
+    async getSystemConfig() {
+      let {
+        data: { code, data },
+      } = await this.$api.paramsConfig.queryParamsConfigDetail({
+        // 参考 serviceTypeAll.js 文件
+        serviceType: 1018,
+        organId: this.organId,
+      });
+      if (code === "0") {
+        const { isValid } = data;
+        if (isValid === 1) {
+          this.$set(this.rules, "relId", [
+            {
+              required: true,
+              message: "请关联资产转让立项单",
+              trigger: "change",
+            },
+          ]);
+        }
+      }
+    },
     btnMoreLeaseInfo() {
       this.modalList.lease.dataSource = this.currentAssetDetail.lease;
       this.doOpenPop("lease", this.currentSelectAsset.assetName);
@@ -973,9 +886,10 @@ export default {
             ...this.formData,
             detailReqs,
             attachmentReqDtos,
+            type: 1,
           };
-          if (this.isEdit){
-            req.applyId = this.$route.query.applyId
+          if (this.isEdit) {
+            req.applyId = this.$route.query.applyId;
           }
           console.log("req", req);
           const {
@@ -999,9 +913,7 @@ export default {
         title: "提示",
         content: "确认删除吗？",
         onOk() {
-          _this.selectedList = _this.selectedList.filter(
-            (ele) => ele.assetId !== assetId
-          );
+          _this.selectedList = _this.selectedList.filter((ele) => ele.assetId !== assetId);
         },
       });
     },
@@ -1009,71 +921,50 @@ export default {
       const req = {
         assetId,
       };
-      this.$api.transfer
-        .historicLease(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            console.log("data", data);
-            this.currentAssetDetail.lease = data || [];
-            this.leasingSituationOptions.data =
-              this.currentAssetDetail.lease[0] || {};
-            if (
-              this.leasingSituationOptions.data.rentAveragePrice &&
-              this.leasingSituationOptions.data.unit
-            ) {
-              this.leasingSituationOptions.data.unitRentAveragePrice = `${this.leasingSituationOptions.data.rentAveragePrice} ${this.leasingSituationOptions.data.unit}`;
-            }
-            if (
-              this.leasingSituationOptions.data.startDateFormat &&
-              this.leasingSituationOptions.data.endDateFormat
-            ) {
-              this.leasingSituationOptions.data.startAndEndDateFormat = `${this.leasingSituationOptions.data.startDateFormat}至${this.leasingSituationOptions.data.endDateFormat}`;
-            }
-          } else {
-            this.$message.error(message);
+      this.$api.transfer.historicLease(req).then(({ data: { code, message, data } }) => {
+        if (code === "0") {
+          console.log("data", data);
+          this.currentAssetDetail.lease = data || [];
+          this.leasingSituationOptions.data = this.currentAssetDetail.lease[0] || {};
+          if (this.leasingSituationOptions.data.rentAveragePrice && this.leasingSituationOptions.data.unit) {
+            this.leasingSituationOptions.data.unitRentAveragePrice = `${this.leasingSituationOptions.data.rentAveragePrice} ${this.leasingSituationOptions.data.unit}`;
           }
-        });
+          if (this.leasingSituationOptions.data.startDateFormat && this.leasingSituationOptions.data.endDateFormat) {
+            this.leasingSituationOptions.data.startAndEndDateFormat = `${this.leasingSituationOptions.data.startDateFormat}至${this.leasingSituationOptions.data.endDateFormat}`;
+          }
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     getAssetInfo({ assetId }) {
       const req = {
         assetId,
       };
-      this.$api.transfer
-        .assetDetail(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            this.currentAssetDetail.propertyName = data.propertyName
-            this.currentAssetDetail.details = data.details || [];
-            this.currentAssetDetail.valueInfos = data.valueInfos || {};
-            this.currentAssetDetail.resourceList = data.resourceList || [];
-            this.basicInfoOptions.data =
-              this.currentAssetDetail.details[0] || {};
-            this.assessSituationOptions.data =
-              this.currentAssetDetail.valueInfos;
+      this.$api.transfer.assetDetail(req).then(({ data: { code, message, data } }) => {
+        if (code === "0") {
+          this.currentAssetDetail.propertyName = data.propertyName;
+          this.currentAssetDetail.details = data.details || [];
+          this.currentAssetDetail.valueInfos = data.valueInfos || {};
+          this.currentAssetDetail.resourceList = data.resourceList || [];
+          this.basicInfoOptions.data = this.currentAssetDetail.details[0] || {};
+          this.assessSituationOptions.data = this.currentAssetDetail.valueInfos;
 
-            this.basicInfoOptions.data.sourceModeName = data.sourceModeName;
+          this.basicInfoOptions.data.sourceModeName = data.sourceModeName;
 
-            this.basicInfoOptions.data.usage = this.currentAssetDetail
-              .resourceList[0]
-              ? this.currentAssetDetail.resourceList[0].busiStatus
-              : "--";
+          this.basicInfoOptions.data.usage = this.currentAssetDetail.resourceList[0] ? this.currentAssetDetail.resourceList[0].busiStatus : "--";
 
-            if (
-              this.basicInfoOptions.data.houseStartDate &&
-              this.basicInfoOptions.data.houseEndDate
-            ) {
-              this.basicInfoOptions.data.houseStartAndEndDate = `${this.basicInfoOptions.data.houseStartDate}至${this.basicInfoOptions.data.houseEndDate}`;
-            }
-          } else {
-            this.$message.error(message);
+          if (this.basicInfoOptions.data.houseStartDate && this.basicInfoOptions.data.houseEndDate) {
+            this.basicInfoOptions.data.houseStartAndEndDate = `${this.basicInfoOptions.data.houseStartDate}至${this.basicInfoOptions.data.houseEndDate}`;
           }
-        });
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     async getAssetDetail({ assetId }) {
       this.currentSelectAssetId = assetId;
-      this.currentSelectAsset = this.selectedList.find(
-        (ele) => ele.assetId === assetId
-      );
+      this.currentSelectAsset = this.selectedList.find((ele) => ele.assetId === assetId);
       this.getHistoricLease({ assetId });
       this.getAssetInfo({ assetId });
     },
@@ -1084,11 +975,7 @@ export default {
     },
     handlePopSave(selectedList) {
       this.selectedList = selectedList;
-      const resAssetId = selectedList.find(
-        (ele) => ele.assetId === this.currentSelectAssetId
-      )
-        ? this.currentSelectAssetId
-        : selectedList[0].assetId;
+      const resAssetId = selectedList.find((ele) => ele.assetId === this.currentSelectAssetId) ? this.currentSelectAssetId : selectedList[0].assetId;
       this.getAssetDetail({ assetId: resAssetId });
     },
     changeSelectAssetModalFLag(flag) {
@@ -1101,21 +988,19 @@ export default {
     },
     getEditData({ applyId }) {
       const req = { applyId };
-      this.$api.transfer
-        .feedback(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            console.log("data", data);
-            this.handlePopSave(
-              data.backInfos.map((ele) => ({
-                ...ele,
-                pledge: String(ele.pledge),
-              })) || []
-            );
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.transfer.feedback(req).then(({ data: { code, message, data } }) => {
+        if (code === "0") {
+          console.log("data", data);
+          this.handlePopSave(
+            data.backInfos.map((ele) => ({
+              ...ele,
+              pledge: String(ele.pledge),
+            })) || []
+          );
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     getAllFileData(data) {
       const res = data || [];
@@ -1171,22 +1056,30 @@ export default {
       const applyId = this.$route.query.applyId;
       this.initEditData({ applyId });
     }
+    this.getSystemConfig();
   },
 };
 </script>
 <style lang="less" scoped>
-/deep/ .ant-form-item-label{
-  label{
+/deep/ .ant-form-item-label {
+  label {
     font-size: 13px;
-    color: #959DAB;
+    color: #959dab;
     font-family: "Microsoft Yahei";
   }
 }
-/deep/ .ant-form-item-children{
-  span, input, textarea{
+/deep/ .ant-form-item-children {
+  span,
+  input,
+  textarea {
     font-size: 15px;
-    color: #49505E;
+    color: #49505e;
     font-family: "Microsoft Yahei";
+  }
+  .button {
+    span {
+      color: white;
+    }
   }
 }
 </style>

@@ -143,13 +143,13 @@
         </a-col>
       </a-row>
       <SG-Title title="补充资料" />
-      <a-row>
+      <!-- <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item label="法律意见书">
             <UploadFile v-model="allFile.lawFile.value" />
           </a-form-model-item>
         </a-col>
-      </a-row>
+      </a-row> -->
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item label="合规审查表">
@@ -164,7 +164,7 @@
           </a-form-model-item>
         </a-col>
       </a-row>
-      <a-row>
+      <!-- <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item label="审计报告">
             <UploadFile v-model="allFile.auditFile.value" />
@@ -177,7 +177,7 @@
             <UploadFile v-model="allFile.reportFile.value" />
           </a-form-model-item>
         </a-col>
-      </a-row>
+      </a-row> -->
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item label="其它文档">
@@ -188,8 +188,8 @@
       <SG-Title title="拟转让条件" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <a-form-model-item prop="listingPrice" label="挂牌价格">
-            <a-input-number :min="0" :max="99999999" :precision="2" style="width: 200px" v-model="formData.listingPrice" placeholder="挂牌价格" />
+          <a-form-model-item prop="listingPrice" label="预估转让价格">
+            <a-input-number :min="0" :max="99999999" :precision="2" style="width: 200px" v-model="formData.listingPrice" placeholder="预估转让价格" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -200,20 +200,20 @@
           </a-form-model-item>
         </a-col>
       </a-row>
-      <a-row>
+      <!-- <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="interestedParty" label="潜在意向方情况">
             <a-textarea v-model="formData.interestedParty" v-bind="textareaProps" placeholder="潜在意向方情况" />
           </a-form-model-item>
         </a-col>
-      </a-row>
-      <a-row>
+      </a-row> -->
+      <!-- <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="withdrawalClause" label="退出条款">
             <a-textarea v-model="formData.withdrawalClause" v-bind="textareaProps" placeholder="退出条款" />
           </a-form-model-item>
         </a-col>
-      </a-row>
+      </a-row> -->
       <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item prop="remark" label="其它说明情况">
@@ -221,7 +221,7 @@
           </a-form-model-item>
         </a-col>
       </a-row>
-      <a-row>
+      <!-- <a-row>
         <a-col :offset="2" :span="18">
           <a-form-model-item label="租赁合同模板">
             <UploadFile v-model="allFile.contractFile.value" />
@@ -234,7 +234,7 @@
             <UploadFile v-model="allFile.safeFile.value" />
           </a-form-model-item>
         </a-col>
-      </a-row>
+      </a-row> -->
     </a-form-model>
     <div class="footer-action">
       <SG-Button @click="handleSave(0)" type="primary" style="margin-right: 10px"> 暂存草稿 </SG-Button>
@@ -638,7 +638,7 @@ export default {
         name: [
           {
             required: true,
-            message: "请输入申请单名称",
+            message: "请输入资产转让立项单名称",
             trigger: "blur",
           },
         ],
@@ -667,7 +667,7 @@ export default {
         listingPrice: [
           {
             required: true,
-            message: "请输入挂牌价格",
+            message: "请输入预估转让价格",
             trigger: "blur",
           },
         ],
@@ -678,20 +678,20 @@ export default {
             trigger: "blur",
           },
         ],
-        interestedParty: [
-          {
-            required: true,
-            message: "请输入潜在意向方情况",
-            trigger: "blur",
-          },
-        ],
-        withdrawalClause: [
-          {
-            required: true,
-            message: "请输入退出条款",
-            trigger: "blur",
-          },
-        ],
+        // interestedParty: [
+        //   {
+        //     required: true,
+        //     message: "请输入潜在意向方情况",
+        //     trigger: "blur",
+        //   },
+        // ],
+        // withdrawalClause: [
+        //   {
+        //     required: true,
+        //     message: "请输入退出条款",
+        //     trigger: "blur",
+        //   },
+        // ],
         remark: [
           {
             required: true,
@@ -826,6 +826,7 @@ export default {
             ...this.formData,
             detailReqs,
             attachmentReqDtos,
+            teyp: 2,
           };
           if (this.isEdit) {
             req.applyId = this.$route.query.applyId;

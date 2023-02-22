@@ -98,11 +98,11 @@
 
       <SG-Title title="其他必要资料" id="otherFile" />
       <a-row>
-        <a-col :offset="2" :span="18">
+        <!-- <a-col :offset="2" :span="18">
           <a-form-model-item label="法律意见书">
             <ShowFile v-model="allFile.lawFile.value" />
           </a-form-model-item>
-        </a-col>
+        </a-col> -->
         <a-col :offset="2" :span="18">
           <a-form-model-item label="合规审查表">
             <ShowFile v-model="allFile.reviewFile.value" />
@@ -113,16 +113,16 @@
             <ShowFile v-model="allFile.decisionFile.value" />
           </a-form-model-item>
         </a-col>
-        <a-col :offset="2" :span="18">
+        <!-- <a-col :offset="2" :span="18">
           <a-form-model-item label="审计报告">
             <ShowFile v-model="allFile.auditFile.value" />
           </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
+        </a-col> -->
+        <!-- <a-col :offset="2" :span="18">
           <a-form-model-item label="财务报表">
             <ShowFile v-model="allFile.reportFile.value" />
           </a-form-model-item>
-        </a-col>
+        </a-col> -->
         <a-col :offset="2" :span="18">
           <a-form-model-item label="其它文档">
             <ShowFile v-model="allFile.otherFile.value" />
@@ -134,28 +134,28 @@
         <a-col :offset="2" :span="18">
           <div style="border-top: 1px solid #efefef; border-right: 1px solid #efefef; border-left: 1px solid #efefef">
             <div class="block">
-              <div class="block-title">挂牌价格</div>
+              <div class="block-title">预估转让价格</div>
               <div class="block-content">{{ conditions.listingPrice }}</div>
             </div>
             <div class="block">
               <div class="block-title">市场分析</div>
               <div class="block-content">{{ conditions.marketAnalysis }}</div>
             </div>
-            <div class="block">
+            <!-- <div class="block">
               <div class="block-title">潜在意向方情况</div>
               <div class="block-content">{{ conditions.interestedParty }}</div>
-            </div>
-            <div class="block">
+            </div> -->
+            <!-- <div class="block">
               <div class="block-title">退出条款</div>
               <div class="block-content">{{ conditions.withdrawalClause }}</div>
-            </div>
+            </div> -->
             <div class="block">
               <div class="block-title">其他说明情况</div>
               <div class="block-content">{{ conditions.remark }}</div>
             </div>
           </div>
         </a-col>
-        <a-col :offset="2" :span="18">
+        <!-- <a-col :offset="2" :span="18">
           <a-form-model-item label="租赁合同模板">
             <ShowFile v-model="allFile.contractFile.value" />
           </a-form-model-item>
@@ -164,7 +164,7 @@
           <a-form-model-item label="安全生产管理协议书模板">
             <ShowFile :value="allFile.safeFile.value" />
           </a-form-model-item>
-        </a-col>
+        </a-col> -->
       </a-row>
       <SG-Title title="审批轨迹" id="approvalTrack" />
       <a-row>
@@ -346,7 +346,7 @@ export default {
         formatBasicInfoList: [
           [
             {
-              title: "申请单名称",
+              title: "资产转让立项单名称",
               key: "name",
               colProps: {
                 span: 24,
@@ -355,7 +355,7 @@ export default {
           ],
           [
             {
-              title: "组织机构名称",
+              title: "所属机构",
               key: "organName",
             },
             {
@@ -373,7 +373,7 @@ export default {
               key: "apprStatusStr",
             },
             {
-              title: "申请单ID",
+              title: "立项单ID",
               key: "applyId",
             },
           ],

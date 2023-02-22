@@ -590,22 +590,22 @@ let proRouter = [
   },
   {
     path: "/transferProjectApproval/add",
-    name: "新增资产转让",
+    name: "新增资产转让立项",
     component: () => import("@/views/disposalManagement/transferProjectApproval/createTransfer.vue"),
   },
   {
     path: "/transferProjectApproval/edit",
-    name: "编辑资产转让",
+    name: "编辑资产转让立项",
     component: () => import("@/views/disposalManagement/transferProjectApproval/editTransfer.vue"),
   },
   {
     path: "/transferProjectApproval/detail",
-    name: "资产转让详情",
+    name: "资产转让立项详情",
     component: () => import("@/views/disposalManagement/transferProjectApproval/detailTransfer.vue"),
   },
   {
     path: "/transferProjectApproval/approve",
-    name: "资产转让审批",
+    name: "资产转让立项审批",
     component: () => import("@/views/disposalManagement/transferProjectApproval/approveTransfer.vue"),
   },
   {

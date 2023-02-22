@@ -133,46 +133,47 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
-    <div class="table-layout-fixed">
-      <a-table :scroll="scroll" :loading="loading" :columns="columns" :dataSource="tableData" :pagination="false" size="middle" class="pb70">
-        <template slot="landArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="acreage" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="transferOperationArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="selfUserArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="idleArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="otherArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="originalValue" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="marketValue" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <span slot="action" slot-scope="text, record">
-          <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
-        </span>
-      </a-table>
-      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-      <SG-FooterPagination
-        :pageLength="queryCondition.pageSize"
-        :totalCount="count"
-        :location="location"
-        :noPageTools="noPageTools"
-        v-model="queryCondition.pageNum"
-        @change="handleChange"
-      />
-    </div>
+    <!-- <div class="table-layout-fixed"> -->
+    <a-table :columns="columns" :scroll="scroll" :loading="loading" :data-source="tableData" :pagination="false" size="middle" class="pb70">
+      <template slot="landArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="acreage" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="transferOperationArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="selfUserArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="idleArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="otherArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="originalValue" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="marketValue" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <span slot="action" slot-scope="text, record">
+        <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+      </span>
+    </a-table>
+    <!-- </div> -->
+    <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+    <SG-FooterPagination
+      :pageLength="queryCondition.pageSize"
+      :totalCount="count"
+      :location="location"
+      :noPageTools="noPageTools"
+      v-model="queryCondition.pageNum"
+      @change="handleChange"
+    />
+
     <SG-Modal
       width="500px"
       v-model="modalShow"
@@ -210,7 +211,7 @@ import { ASSET_MANAGEMENT } from "@/config/config.power";
 const judgment = [undefined, null, ""];
 const allWidth = { width: "170px", "margin-right": "10px", flex: 1, "margin-top": "14px", display: "inline-block", "vertical-align": "middle" };
 const columnsData = [
-  { title: "资产名称", dataIndex: "assetName", width: 150, disabled: true, fixed: "left" },
+  { title: "资产名称", dataIndex: "assetName", key: "assetName", width: 150, disabled: true, fixed: "left" },
   { title: "资产编码", dataIndex: "assetCode", width: 150, disabled: true },
   { title: "管理机构", dataIndex: "organName", width: 150, disabled: true },
   { title: "宗地号", dataIndex: "theNo", width: 150 },
@@ -295,6 +296,11 @@ const numList = [
 export default {
   components: { SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict },
   props: {},
+  watch: {
+    toggle(val) {
+      this.$set(this.scroll, "y", val ? "calc(100vh - 481px)" : "calc(100vh - 380px)");
+    },
+  },
   data() {
     return {
       getFormat,
@@ -305,7 +311,7 @@ export default {
       current: "",
       listValue: ["changeOrderDetailId", "assetCode", "assetName"],
       columnsData,
-      scroll: { x: 100, y: 285 },
+      scroll: { x: 1200, y: "calc(100vh - 481px)" },
       numList: numList,
       provinces: {
         province: undefined,
@@ -370,11 +376,6 @@ export default {
     };
   },
   computed: {},
-  watch: {
-    toggle(val) {
-      this.scroll.y = val ? 285 : 425;
-    },
-  },
   methods: {
     // 查询和导出使用
     initQueryReqParams(options) {
@@ -487,8 +488,6 @@ export default {
       });
       this.columns = arr;
       this.scroll = { x: this.columns.length * 150 - 60, y: "calc(100vh - 481px)" };
-      console.log(222222222, this.columns);
-      console.log(222222222, this.scroll);
       this.modalShow = false;
     },
     // 组织机构树
@@ -745,7 +744,6 @@ export default {
   created() {},
   mounted() {
     this.columns = this.columns.filter((ele) => !ele.defaultHide);
-    this.scroll = { x: 1200, y: "calc(100vh - 481px)" };
   },
 };
 </script>

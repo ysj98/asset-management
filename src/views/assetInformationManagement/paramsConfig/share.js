@@ -99,6 +99,11 @@ export const serviceTypeAll = {
     component: null,
     needValidate: false,
   },
+  1018: {
+    serviceTypeText: "资产转让关联资产转让立项单",
+    component: null,
+    needValidate: false,
+  },
 };
 export const columns = [
   {

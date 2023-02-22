@@ -119,7 +119,7 @@ export default {
         rowKey: "applyId",
         columns: [
           {
-            title: "申请单ID",
+            title: "立项单ID",
             dataIndex: "applyId",
           },
           {
@@ -127,7 +127,7 @@ export default {
             dataIndex: "organName",
           },
           {
-            title: "申请单名称",
+            title: "资产转让立项单名称",
             dataIndex: "name",
           },
           {
@@ -135,7 +135,7 @@ export default {
             dataIndex: "projectName",
           },
           {
-            title: "挂牌价格(元)",
+            title: "预估转让价格(元)",
             dataIndex: "listingPrice",
           },
           {
@@ -199,7 +199,7 @@ export default {
     },
     goAddEdit(applyId) {
       this.$router.push({
-        path: "/transfer/edit",
+        path: "/transferProjectApproval/edit",
         query: {
           applyId,
           organId: this.organId,
@@ -213,7 +213,7 @@ export default {
      * */
     goDetail({ applyId, organId }, fromType) {
       this.$router.push({
-        path: "/transfer/detail",
+        path: "/transferProjectApproval/detail",
         query: {
           applyId,
           organId,
@@ -223,7 +223,7 @@ export default {
     },
     btnAddFn() {
       this.$router.push({
-        path: "/transfer/add",
+        path: "/transferProjectApproval/add",
         query: {
           organId: this.organId,
           organName: this.organName,
@@ -405,7 +405,7 @@ export default {
       const startTime = data.date[0].format("YYYY-MM-DD");
       const endTime = data.date[1].format("YYYY-MM-DD");
       return {
-        type: '2',
+        type: "2",
         organId: this.organId,
         // 为全选 则传空集合
         projectIds: projectIds[0] === "" ? [] : projectIds,
