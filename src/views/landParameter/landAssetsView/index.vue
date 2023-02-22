@@ -133,46 +133,46 @@
     <a-spin :spinning="overviewNumSpinning">
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
-    <div class="table-layout-fixed">
-      <a-table :scroll="scroll" :loading="loading" :columns="columns" :dataSource="tableData" :pagination="false" size="middle" class="pb70">
-        <template slot="landArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="acreage" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="transferOperationArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="selfUserArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="idleArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="otherArea" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="originalValue" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <template slot="marketValue" slot-scope="text">
-          <span>{{ getFormat(text) }}</span>
-        </template>
-        <span slot="action" slot-scope="text, record">
-          <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
-        </span>
-      </a-table>
-      <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-      <SG-FooterPagination
-        :pageLength="queryCondition.pageSize"
-        :totalCount="count"
-        :location="location"
-        :noPageTools="noPageTools"
-        v-model="queryCondition.pageNum"
-        @change="handleChange"
-      />
-    </div>
+    <!-- <div class="table-layout-fixed"> -->
+    <a-table :scroll="scroll" :loading="loading" :columns="columns" :dataSource="tableData" :pagination="false" size="middle" class="pb70">
+      <template slot="landArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="acreage" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="transferOperationArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="selfUserArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="idleArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="otherArea" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="originalValue" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="marketValue" slot-scope="text">
+        <span>{{ getFormat(text) }}</span>
+      </template>
+      <span slot="action" slot-scope="text, record">
+        <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+      </span>
+    </a-table>
+    <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+    <SG-FooterPagination
+      :pageLength="queryCondition.pageSize"
+      :totalCount="count"
+      :location="location"
+      :noPageTools="noPageTools"
+      v-model="queryCondition.pageNum"
+      @change="handleChange"
+    />
+    <!-- </div> -->
     <SG-Modal
       width="500px"
       v-model="modalShow"
