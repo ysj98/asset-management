@@ -5,16 +5,12 @@
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
         <a-col :span="12">
-          <SG-Button
-            icon="import"
-            type="primary"
-            @click="handleExport"
-            :loading="exportBtnLoading"
-            v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
-          >导出组织机构视图</SG-Button>
+          <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
+            >导出组织机构视图</SG-Button
+          >
         </a-col>
         <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch='true'/>
+          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch="true" />
         </a-col>
         <a-col :span="5">
           <a-select
@@ -27,7 +23,7 @@
           />
         </a-col>
         <a-col :span="2">
-          <SG-Button icon="search" type="primary" @click="queryTableData({type: 'search'})">查询</SG-Button>
+          <SG-Button icon="search" type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
         </a-col>
       </a-row>
     </div>
@@ -41,22 +37,19 @@
       <!--<span style="color: #0084FF; cursor: pointer">{{text}}</span>-->
       <!--</span>-->
       <span slot="action" slot-scope="text, record">
-        <span v-if="!record.totalRow" style="color: #0084FF; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+        <span v-if="!record.totalRow" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" />
-    <SG-FooterPagination
-      v-bind="paginationObj"
-      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })"
-    />
+    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
   </div>
 </template>
 
 <script>
-import NoDataTip from "src/components/noDataTips"
-import TreeSelect from "src/views/common/treeSelect"
-import {ASSET_MANAGEMENT} from '@/config/config.power'
-import OverviewNumber from "src/views/common/OverviewNumber"
+import NoDataTip from "src/components/noDataTips";
+import TreeSelect from "src/views/common/treeSelect";
+import { ASSET_MANAGEMENT } from "@/config/config.power";
+import OverviewNumber from "src/views/common/OverviewNumber";
 export default {
   name: "index",
   components: { OverviewNumber, NoDataTip, TreeSelect },
@@ -91,7 +84,7 @@ export default {
         { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       tableObj: {
-        scroll: {y: 420},
+        scroll: { y: 420 },
         dataSource: [],
         loading: false,
         pagination: false,
@@ -108,7 +101,7 @@ export default {
           { title: "其它(㎡)", dataIndex: "otherArea" },
           { title: "资产原值(元)", dataIndex: "originalValue" },
           { title: "最新估值(元)", dataIndex: "marketValue" },
-          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90 }
+          { title: "操作", key: "action", scopedSlots: { customRender: "action" }, width: 90 },
         ],
       },
       paginationObj: {
@@ -138,7 +131,7 @@ export default {
         { title: "报废", key: "2" },
         { title: "转让", key: "3" },
         { title: "报损", key: "4" },
-        { title: "入库中", key: "7" }
+        { title: "入库中", key: "7" },
       ],
     };
   },
@@ -154,32 +147,34 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: '' });
+      this.queryTableData({ type: "" });
     },
 
     // 查看组织机构视图详情
     handleViewDetail(record) {
       let query = {
         organId: record.organId,
-        statusList: this.statusList.includes('all') ? [] : this.statusList
-      }
-      this.$router.push({ path: '/organView/detail', query: query || {} });
+        statusList: this.statusList.includes("all") ? [] : this.statusList,
+      };
+      this.$router.push({ path: "/organView/detail", query: query || {} });
     },
 
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
-      const { sumObj, organId, current, statusList } = this
+      const { sumObj, organId, current, statusList } = this;
       if (!organId) {
         return this.$message.info("请选择组织机构");
       }
       this.tableObj.loading = true;
-      this.$api.assets.queryOrganViewList({
-        organIds: organId.toString(),
-        pageSize: pageLength,
-        pageNum: pageNo,
-        flag: current ? current - 1 : "",
-        statusList: statusList.includes("all") ? [] : statusList
-      }).then(({ data: res }) => {
+      this.$api.assets
+        .queryOrganViewList({
+          organIds: organId.toString(),
+          pageSize: pageLength,
+          pageNum: pageNo,
+          flag: current ? current - 1 : "",
+          statusList: statusList.includes("all") ? [] : statusList,
+        })
+        .then(({ data: res }) => {
           this.tableObj.loading = false;
           if (res && String(res.code) === "0") {
             const { count, data } = res.data;
@@ -192,7 +187,7 @@ export default {
               //   pageSum[key] = Number(pageSum[key].toFixed(2));
               // });
             });
-             this.tableObj.dataSource = data.length ? data : []
+            this.tableObj.dataSource = data.length ? data : [];
             // this.tableObj.dataSource = data.length
             //   ? data.concat({
             //       ...pageSum,
@@ -208,7 +203,7 @@ export default {
                   ...sumObj,
                   organName: "全部合计",
                   organId: Date.now(),
-                  totalRow: true
+                  totalRow: true,
                 });
             } else {
               this.queryAreaInfo();
@@ -251,12 +246,16 @@ export default {
             let list = res.data || {};
             /**
              * 面积类最多保留4位小数，金额类、百分数最多保留2位小数，数量类为整数，全都不补零
-             * 数量：buildNum assetNum, 金额：originalValue marketValue, 
+             * 数量：buildNum assetNum, 金额：originalValue marketValue,
              */
             Object.keys(sumObj).forEach(
-              (key) => (obj[key] = list[key] ?
-                (['buildNum', 'assetNum'].includes(key) ?
-                  Number(list[key]) : ['originalValue', 'marketValue'].includes(key) ? Math.round(list[key]*100)/100 : Math.round(list[key]*10000)/10000)
+              (key) =>
+                (obj[key] = list[key]
+                  ? ["buildNum", "assetNum"].includes(key)
+                    ? Number(list[key])
+                    : ["originalValue", "marketValue"].includes(key)
+                    ? Math.round(list[key] * 100) / 100
+                    : Math.round(list[key] * 10000) / 10000
                   : 0)
             );
             this.sumObj = obj;
@@ -265,7 +264,7 @@ export default {
                 ...obj,
                 organName: "全部合计",
                 organId: Date.now(),
-                totalRow: true
+                totalRow: true,
               });
             return (this.numList = numList.map((m) => {
               return { ...m, value: list[m.key] || 0 };
@@ -321,10 +320,10 @@ export default {
 };
 </script>
 
-<style lang='less' scoped>
+<style lang="less" scoped>
 /deep/.ant-table-tbody {
   //padding: 0px 0 15px 0px;
-  tr:nth-last-child(1){
+  tr:nth-last-child(1) {
     position: sticky;
     bottom: 0;
     background: #fff;
@@ -347,19 +346,18 @@ export default {
     tr:nth-last-child(1) {
       font-weight: bold;
     }
-    td{
+    td {
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
     }
-    tr:hover{
-      td{
+    tr:hover {
+      td {
         white-space: normal !important;
         overflow: auto !important;
         text-overflow: clip !important;
       }
     }
   }
-  
 }
 </style>

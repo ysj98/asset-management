@@ -505,7 +505,7 @@ export default {
   watch: {
     "tableObj.columns"(val) {
       this.tableObj.scroll.x = val.length * 120;
-      this.useForConfig();
+      // this.useForConfig();
     },
 
     fold(val) {
@@ -516,15 +516,17 @@ export default {
         this.queryTableData({ type: "search" });
       }
       if (val.organId !== pre.organId) {
-        this.queryCategoryOptions(val.organId);
-        this.getSourceOptions(val.organId);
-        this.organDict("OWNERSHIP_USE", val.organId);
-        this.queryNodesByRootCode(val.organId);
-        if (val.organId.split(",").length === 1) {
+        if (val.organId.split(",").length > 1) {
+          this.configOrganId = val.organId.split(",")[0];
+        } else {
           this.configOrganId = val.organId;
-          this.getAssetLabel(val.organId);
-          this.useForConfig();
         }
+        this.queryCategoryOptions(this.configOrganId);
+        this.getSourceOptions(this.configOrganId);
+        this.organDict("OWNERSHIP_USE", this.configOrganId);
+        this.queryNodesByRootCode(this.configOrganId);
+        this.getAssetLabel(this.configOrganId);
+        this.useForConfig();
       }
     },
 
@@ -565,7 +567,7 @@ export default {
   },
   methods: {
     decimalFormat,
-    // 配置
+    // 数据概览信息配置
     useForConfig() {
       this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.configOrganId }).then((res) => {
         if (res.data.code == 0) {
