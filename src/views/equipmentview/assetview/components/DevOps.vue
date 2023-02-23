@@ -257,7 +257,7 @@ export default {
   padding-bottom: 0px !important;
 }
 /deep/ .preview {
-  margin-left: 54px;
+  margin-left: 54px !important;
   .previewWrap {
     margin: 0;
   }
