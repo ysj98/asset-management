@@ -39,12 +39,18 @@
     </a-tabs>
 
     <a-modal title="检查项列表" :visible="modelVisible" :footer="null" @cancel="modelVisible = false">
-      <a-table :columns="checkColumns" :data-source="checkData" size="small" bordered :scroll="{ x: 400, y: 500 }"> </a-table>
+      <a-table :columns="checkColumns" :data-source="checkData" size="small" bordered :scroll="{ x: 400, y: 500 }">
+        <template slot="attrValueName" slot-scope="text, record">
+          <SGUploadFilePlus v-if="record.attrType === 5 && text.length > 0" :show="true" />
+          <span v-else> {{ text }}</span>
+        </template>
+      </a-table>
     </a-modal>
   </div>
 </template>
 <script>
 import { Inspection, guarantee, checkColumns } from "./DevOpsColumns.js";
+import SGUploadFilePlus from "@/components/SGUploadFilePlus";
 import moment from "moment";
 export default {
   name: "devOps",
@@ -62,6 +68,7 @@ export default {
       required: true,
     },
   },
+  components: { SGUploadFilePlus },
   data() {
     return {
       activeKey: "Inspection", // tabs默认展示 第一项，巡检记录
@@ -160,14 +167,6 @@ export default {
         beginTime: this.startValue.format("YYYYMMDD"),
         endTime: this.endValue.format("YYYYMMDD"),
       };
-      // let parameter = {
-      //   pageNo: this.pagination.current,
-      //   pageLength: this.pagination.pageSize,
-      //   organId: "671024",
-      //   equipmentInstId: "5283",
-      //   beginTime: "20220101",
-      //   endTime: "20221123",
-      // };
       if (this.activeKey !== "guarantee") {
         parameter.dtType = this.activeKey === "Inspection" ? "1000" : "2000"; // 1000：巡检  2000：保养
       }
@@ -235,6 +234,7 @@ export default {
             return {
               key: index,
               ...item,
+              attrValueName: item.attrType === 5 && item.attrValueName ? [{ url: item.attrValueName }] : item.attrValueName,
             };
           });
         } else {

@@ -1,5 +1,5 @@
 <template>
-  <div class="item">
+  <div class="item sg-uploadFile">
     <!-- 内容 -->
     <div class="ItemBox" :class="Ext">
       <a-spin v-if="loading"><a-icon slot="indicator" type="loading" style="font-size: 24px" spin /></a-spin>

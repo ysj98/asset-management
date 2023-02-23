@@ -125,5 +125,6 @@ export const checkColumns = [
     dataIndex: "attrValueName",
     key: "attrValueName",
     align: "center",
+    scopedSlots: { customRender: "attrValueName" },
   },
 ];
