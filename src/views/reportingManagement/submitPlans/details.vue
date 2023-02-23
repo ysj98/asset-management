@@ -352,7 +352,6 @@ export default {
       this.$api.reportManage.queryReportTaskTempPageList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || []
-          console.log(data, '-=-=-=-=-=')
           data.forEach((item, index) => {
             item.key = index
             item.indexs = index
@@ -445,7 +444,6 @@ export default {
       }
       this.$api.reportManage.queryReportPlanDetail(obj).then(res => {
         if (Number(res.data.code) === 0) {
-          console.log(res)
           let data = res.data.data
           // this.particularsData.taskStartTime = `{}`
           this.particularsData = data

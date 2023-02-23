@@ -291,7 +291,6 @@ export default {
               item.assetTypeName = item.assetTypeName || "--";
               item.assetCode = item.assetCode || "--";
               item.location = item.location || "--";
-              console.log('this.type !== "set"',this.type !== "set")
               if (this.type !== "set") {
                 item.remark = item.remark || "--";
                 item.settingMethodName = "不具备办理条件";
@@ -313,7 +312,6 @@ export default {
     },
     // 监听选择框(权属办理设置)变化
     watchSettingMethodChange(e, row) {
-      console.log("记录select=>", e, row);
       let o = {
         supportMaterial: Number(row.supportMaterial),
         settingMethod: Number(e),

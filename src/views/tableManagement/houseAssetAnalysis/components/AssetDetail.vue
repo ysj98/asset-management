@@ -58,7 +58,6 @@ export default {
     // 查询汇总数据
       queryData (form) {
         let { divObj } = this
-        console.log(form)
         if (!form.organId) { return false }
         this.loading = true
         
@@ -70,7 +69,6 @@ export default {
             this.isHasData = true
             this.dataSource = res.data
             this.dataSource.map((m, index) => {
-              console.log(m,index)
               m.index = index + 1
             })
           }
@@ -78,7 +76,6 @@ export default {
           this.isHasData = false
           this.loading = false
           this.$message.error(err || '查询汇总数据出错')
-          console.log(err)
         })
       },
   },

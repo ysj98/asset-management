@@ -340,7 +340,6 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
       }
-      console.log(obj, '-=-=-=-=')
       this.$api.reportManage.queryAssetDeprecitionPageList(obj).then(res => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data || []

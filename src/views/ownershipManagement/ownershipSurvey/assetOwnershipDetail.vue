@@ -373,7 +373,6 @@ export default {
       });
     },
     showCertDetail(warrantNbr, organId) {
-      console.log('拿到产权好', warrantNbr)
       if (!warrantNbr) {
         return
       }

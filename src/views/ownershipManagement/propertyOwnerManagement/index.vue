@@ -142,22 +142,19 @@ export default {
     };
   },
   methods: {
-    organIdChange(value) {
-      console.log(value);
-      this.organName = value.name;
-      this.queryClick();
+    organIdChange (value) {
+      this.organName = value.name
+      this.queryClick()
     },
     // 页码发生变化
-    handlePageChange(page) {
-      console.log(page, "pagepagepage");
-      this.paginator.pageNo = page.pageNo;
-      this.paginator.pageLength = page.pageLength;
-      this.queryList();
+    handlePageChange (page) {
+      this.paginator.pageNo = page.pageNo
+      this.paginator.pageLength = page.pageLength
+      this.queryList()
     },
     // 操作回调
-    operationFun(editType, record) {
-      console.log(editType);
-      console.log(record);
+    operationFun (editType, record) {
+      let self = this;
       switch (editType) {
         case "edit":
           this.modalType = "edit";
@@ -170,7 +167,6 @@ export default {
           this.$refs.handlePropertyOwner.modal.show = true;
           break;
         case "delete":
-          let self = this;
           this.$confirm({
             title: "提示",
             content: "确认要删除该权属人吗？",

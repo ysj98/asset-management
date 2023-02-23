@@ -269,7 +269,6 @@ export default {
         this.$api.tableManage.houseResourceTotal(form).then(({data:{code,message,data}})=>{
           if (code==="0"){
             const temp = this.tableData.pop()
-            console.log(temp, 'temptemp')
             const resData = {
               ...data
             }

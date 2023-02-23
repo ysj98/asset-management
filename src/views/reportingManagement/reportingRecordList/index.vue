@@ -62,7 +62,6 @@ export default {
   },
   methods: {
     tabChange (v) {
-      console.log(v)
       this.showKey = v
     },
   }

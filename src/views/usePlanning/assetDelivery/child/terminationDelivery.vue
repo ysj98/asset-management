@@ -79,7 +79,6 @@ export default {
         cause: '',                // 原因
         endDate: undefined,       // 日期
       }
-      console.log('jinlaima ')
       this.form.setFieldsValue(o)
       this.deliveryId = id
     },
@@ -87,7 +86,6 @@ export default {
     submit () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log(values)
           let obj = {
             deliveryId: this.deliveryId,         // 交付id
             approvalStatus: '',                  // 状态

@@ -302,7 +302,6 @@ export default {
       data.pageSize = 1
       data.assetTypes = this.alljudge(data.assetTypes)
       this.$api.basics.projectExport(data).then((res) => {
-        console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);

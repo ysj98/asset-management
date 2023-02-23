@@ -169,7 +169,6 @@ export default {
         assetNameCode: this.queryCondition.assetNameCode,    // 资产名称/编码
       }
       this.$api.tableManage.detailExport(obj).then(res => {
-        console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
