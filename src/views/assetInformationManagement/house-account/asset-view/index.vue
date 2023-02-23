@@ -573,8 +573,8 @@ export default {
         if (res.data.code == 0) {
           this.hiddenConfig = [];
           let data = res.data.data;
-          data.map((item) => {
-            this.numList.map((e) => {
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
               if (item.code == e.code) {
                 e.bgColor = item.color;
                 e.isAble = item.isAble;
@@ -616,7 +616,7 @@ export default {
               }
             }
             // 同步修改表头的字段名称
-            this.tableObj.columns.map((m, i) => {
+            this.tableObj.columns.forEach((m, i) => {
               let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
               let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
               let isSelfUserArea = item.code == 1003 && m.dataIndex === "selfUserArea";

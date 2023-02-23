@@ -170,14 +170,14 @@ export default {
         statusList: [],
       }, // 查询条件-组织机构-资产项目-楼栋对象
       numList: [
-        { title: "所有资产(㎡)", key: "totalArea", value: 0, fontColor: "#324057" },
-        { title: "运营(㎡)", key: "totalOperationArea", value: 0, bgColor: "#4BD288" },
-        { title: "闲置(㎡)", key: "totalIdleArea", value: 0, bgColor: "#1890FF" },
-        { title: "自用(㎡)", key: "totalSelfUserArea", value: 0, bgColor: "#DD81E6" },
-        { title: "占用(㎡)", key: "totalOccupationArea", value: 0, bgColor: "#FD7474" },
-        { title: "其他(㎡)", key: "totalOtherArea", value: 0, bgColor: "#BBC8D6" },
-        { title: "楼栋面积(㎡)", key: "totalBuildArea", value: 0, fontColor: "#324057" },
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        { title: "所有资产(㎡)", key: "totalArea", value: 0, fontColor: "#324057", code: "1000", isAble: "Y" },
+        { title: "运营(㎡)", key: "totalOperationArea", value: 0, bgColor: "#4BD288", code: "1001", isAble: "Y" },
+        { title: "闲置(㎡)", key: "totalIdleArea", value: 0, bgColor: "#1890FF", code: "1002", isAble: "Y" },
+        { title: "自用(㎡)", key: "totalSelfUserArea", value: 0, bgColor: "#DD81E6", code: "1003", isAble: "Y" },
+        { title: "占用(㎡)", key: "totalOccupationArea", value: 0, bgColor: "#FD7474", code: "1004", isAble: "Y" },
+        { title: "其他(㎡)", key: "totalOtherArea", value: 0, bgColor: "#BBC8D6", code: "1005", isAble: "Y" },
+        { title: "楼栋面积(㎡)", key: "totalBuildArea", value: 0, fontColor: "#324057", code: "1006", isAble: "Y" },
+      ], // 概览数据，title 标题，value 数值，color 背景色
       tableObj: {
         dataSource: [],
         loading: false,
@@ -252,6 +252,43 @@ export default {
     },
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organProjectBuildingValue.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias || item.statusName;
+              }
+            });
+            // 同步修改表头的字段名称
+            this.tableObj.columns.forEach((m, i) => {
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
+              let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === "selfUserArea";
+              let isOccupationArea = item.code == 1004 && m.dataIndex === "occupationArea";
+              let isOthernArea = item.code == 1005 && m.dataIndex === "otherArea";
+              let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
+              if (flag) {
+                m.title = item.alias || item.statusName;
+                if (item.isAble === "N") {
+                  this.tableObj.columns.splice(i, 1);
+                }
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === "Y";
+          });
+        } else {
+          this.$message.error(res.message || "系统内部错误");
+        }
+      });
+    },
     assetLabelFn(value) {
       this.$nextTick(function () {
         this.label = this.handleMultipleSelectValue(value, this.label, this.assetLabelSelect);
@@ -296,7 +333,7 @@ export default {
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys;
     },
-    onSelectAll(selected) {
+    onSelectAll() {
       // console.log(this.selectedRowKeys)
     },
     clickAsset() {
@@ -338,8 +375,8 @@ export default {
     //更改表头
     headModalOk() {
       let list = this.$refs.headRef.checkedList;
-      console.log(list);
-      console.log(this.tableObj.columns);
+      // console.log(list);
+      // console.log(this.tableObj.columns);
       let params = {
         funType: 17,
         chooseList: [],
@@ -369,7 +406,7 @@ export default {
     },
     // 查看楼栋视图详情
     handleViewDetail(record) {
-      console.log("record", record);
+      // console.log("record", record);
       const {
         organProjectBuildingValue: { organId },
       } = this;
@@ -550,7 +587,7 @@ export default {
     },
 
     // 查询一级组织机构
-    queryOrganList(init) {
+    queryOrganList() {
       this.$api.assets
         .queryAsynOrganByUserId({ parentOrganId: "", typeFilter: "" })
         .then((res) => {
@@ -592,7 +629,7 @@ export default {
       //     this.tableObj.columns.splice(index,1)
       //   }
       // })
-      console.log(this.tableObj.columns);
+      // console.log(this.tableObj.columns);
     },
   },
 
@@ -603,7 +640,10 @@ export default {
   watch: {
     organProjectBuildingValue: {
       handler: function (val) {
-        val && val.organId && this.queryTableData({ type: "search" });
+        if (val && val.organId) {
+          this.queryTableData({ type: "search" });
+          this.useForConfig()
+        }
       },
       deep: true,
     },

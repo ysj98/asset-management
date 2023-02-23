@@ -194,13 +194,13 @@ export default {
         { title: "入库中", key: "7" },
       ], // 查询条件-资产状态选项
       numList: [
-        { title: "所有资产(㎡)", key: "measuredArea", value: 0, fontColor: "#324057" },
-        { title: "运营(㎡)", key: "transferOperationArea", value: 0, bgColor: "#4BD288" },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
-        { title: "自用(㎡)", key: "selfUserArea", value: 0, bgColor: "#DD81E6" },
-        { title: "占用(㎡)", key: "occupationArea", value: 0, bgColor: "#FD7474" },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
-      ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
+        { title: "所有资产(㎡)", key: "measuredArea", value: 0, fontColor: "#324057", code: "1000", isAble: "Y" },
+        { title: "运营(㎡)", key: "transferOperationArea", value: 0, bgColor: "#4BD288", code: "1001", isAble: "Y" },
+        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF", code: "1002", isAble: "Y" },
+        { title: "自用(㎡)", key: "selfUserArea", value: 0, bgColor: "#DD81E6", code: "1003", isAble: "Y" },
+        { title: "占用(㎡)", key: "occupationArea", value: 0, bgColor: "#FD7474", code: "1004", isAble: "Y" },
+        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6", code: "1005", isAble: "Y" },
+      ], // 概览数据，title 标题，value 数值，color 背景色
       columns,
       dataSource: [],
       paginator: {
@@ -225,6 +225,43 @@ export default {
     };
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias || item.statusName;
+              }
+            });
+            // 同步修改表头的字段名称
+            this.columns.forEach((m, i) => {
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
+              let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === "selfUserArea";
+              let isOccupationArea = item.code == 1004 && m.dataIndex === "occupationArea";
+              let isOthernArea = item.code == 1005 && m.dataIndex === "otherArea";
+              let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
+              if (flag) {
+                m.title = item.alias || item.statusName;
+                if (item.isAble === "N") {
+                  this.columns.splice(i, 1);
+                }
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === "Y";
+          });
+        } else {
+          this.$message.error(res.message || "系统内部错误");
+        }
+      });
+    },
     // 导出
     handleExport() {
       this.exportBtnLoading = true;
@@ -250,6 +287,7 @@ export default {
       this.organId = value;
       this.getAssetProjectOptions();
       this.queryClick();
+      this.useForConfig();
     },
     // 复选框发生变化
     onOnlyCurrentOrganChange(event) {
