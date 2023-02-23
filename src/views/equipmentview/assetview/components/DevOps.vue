@@ -41,7 +41,7 @@
     <a-modal title="检查项列表" :visible="modelVisible" :footer="null" @cancel="modelVisible = false">
       <a-table :columns="checkColumns" :data-source="checkData" size="small" bordered :scroll="{ x: 400, y: 500 }">
         <template slot="attrValueName" slot-scope="text, record">
-          <SGUploadFilePlus v-if="record.attrType === 5 && text.length > 0" :show="true" />
+          <SGUploadFilePlus v-if="record.attrType === 5 && text.length > 0" :show="true" :files="text" />
           <span v-else> {{ text }}</span>
         </template>
       </a-table>
@@ -255,5 +255,16 @@ export default {
 }
 /deep/ .ant-table-wrapper {
   padding-bottom: 0px !important;
+}
+/deep/ .preview {
+  margin-left: 54px;
+  .previewWrap {
+    margin: 0;
+  }
+}
+
+/deep/ .sg-uploadFile .item {
+  width: 130px;
+  height: 130px;
 }
 </style>
