@@ -207,7 +207,6 @@ export default {
     },
     //获取自定义表头
     getTitle() {
-      console.log(this.titleList);
       this.titleList.forEach((item) => {
         this.columns.forEach((ele) => {
           if (ele.code == item.code) {
@@ -225,7 +224,6 @@ export default {
     // 列表设置Modal保存
     handleModalOk() {
       let { checkedList, options, penetrateValue } = this.$refs["tableHeader"];
-      console.log(this.$refs["tableHeader"]);
       this.penetrateData = penetrateValue;
       this.organQueryType = checkedList.includes("organName") ? penetrateValue : "";
       if (!checkedList.length) {
@@ -268,7 +266,6 @@ export default {
 
     // 按统计维度生成排序算法
     generateSort(columns) {
-      console.log(columns, "dsfsdfds ");
       // 字符串排序利用API referenceStr.localeCompare(compareString[, locales[, options]])
       // 详见https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/localeCompare
       // 这里有个重要前提，已知要排序维度的最大值，该业务场景最大值为 5，厌恶的嵌套，没想到更好地思路
@@ -400,10 +397,8 @@ export default {
         let res = await this.$api.tableManage.pageListStatistics({ ...queryInfo, dimension, organQueryType: this.organQueryType });
         if (res.data.code === "0") {
           this.totalData = res.data.data;
-          console.log(this.totalData);
         }
       } catch (error) {
-        console.log(error);
         this.$message.error(error || "合计查询失败");
       }
       // 处理合计数据

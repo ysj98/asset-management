@@ -3,7 +3,7 @@
  * @Author: chen han
  * @Description: 权属概况->资产项目->有证详情
  -->
- <template>
+<template>
   <!-- 表格部分 -->
   <div class="table-layout-fixed detail-table">
     <a-table
@@ -12,15 +12,15 @@
       :pagination="false"
       :columns="table.columns"
       :dataSource="table.dataSource"
-      :locale="{emptyText: '暂无数据'}"
-      :scroll="{y:500}"
+      :locale="{ emptyText: '暂无数据' }"
+      :scroll="{ y: 500 }"
     >
       <template slot="settingMethod" slot-scope="text, record">
-        <span v-if="type==='detail'">{{record.settingMethodName}}</span>
+        <span v-if="type === 'detail'">{{ record.settingMethodName }}</span>
         <div v-else>
           <a-select
-            :style="{width: '100%'}"
-            @change="watchSettingMethodChange($event,record)"
+            :style="{ width: '100%' }"
+            @change="watchSettingMethodChange($event, record)"
             optionFilterProp="children"
             :options="$addTitle(seletOpt)"
             :allowClear="false"
@@ -29,15 +29,15 @@
         </div>
       </template>
       <template slot="remark" slot-scope="text, record">
-        <span v-if="type==='detail'">{{record.remark}}</span>
+        <span v-if="type === 'detail'">{{ record.remark }}</span>
         <div v-else>
-          <a-input :maxLength="200" @input="watchRemarkChange($event,record)" v-model="record.remark" />
+          <a-input :maxLength="200" @input="watchRemarkChange($event, record)" v-model="record.remark" />
         </div>
       </template>
     </a-table>
     <no-data-tips class="noTipStyle" v-show="table.dataSource.length === 0"></no-data-tips>
     <SG-FooterPagination
-      v-if="$route.query.type==='detail'"
+      v-if="$route.query.type === 'detail'"
       :pageLength="queryCondition.pageSize"
       :totalCount="totalCount"
       location="absolute"
@@ -47,31 +47,38 @@
     />
   </div>
 </template>
- <script>
+<script>
 import noDataTips from "@/components/noDataTips";
-let getUuid = ((uuid = 1) => () => ++uuid)();
+let getUuid = (
+  (uuid = 1) =>
+  () =>
+    ++uuid
+)();
 let queryCondition = {
   pageSize: 10,
   pageNum: 1,
-  ownershipStatus: 1
+  ownershipStatus: 1,
 };
-let seletOpt = [{ label: "无", value: 3 }, { label: "换证", value: 4 }];
+let seletOpt = [
+  { label: "无", value: 3 },
+  { label: "换证", value: 4 },
+];
 // 表格数据
 let columns = [
   {
     title: "资产名称",
     dataIndex: "assetName",
-    width: "20%"
+    width: "20%",
   },
   {
     title: "资产编码",
     dataIndex: "assetCode",
-    width: "15%"
+    width: "15%",
   },
   {
     title: "资产类型",
     dataIndex: "assetTypeName",
-    width: "10%"
+    width: "10%",
   },
   {
     title: "资产分类",
@@ -81,12 +88,12 @@ let columns = [
   {
     title: "资产项目名称",
     dataIndex: "projectName",
-    width: "15%"
+    width: "15%",
   },
   {
     title: "所在位置",
     dataIndex: "location",
-    width: "20%"
+    width: "20%",
   },
   // {
   //   title: "面积(㎡)",
@@ -101,43 +108,43 @@ let columns = [
   {
     title: "权证号",
     dataIndex: "warrantNbr",
-    width: "10%"
+    width: "10%",
   },
   {
     title: "权利人",
     dataIndex: "obligeeName",
-    width: "10%"
+    width: "10%",
   },
   {
     title: "权属办理设置",
     dataIndex: "settingMethod",
     scopedSlots: { customRender: "settingMethod" },
-    width: "120px"
+    width: "120px",
   },
   {
     title: "权属备注",
     dataIndex: "remark",
     scopedSlots: { customRender: "remark" },
-    width: "150px"
-  }
+    width: "150px",
+  },
 ];
 export default {
   components: {
-    noDataTips
+    noDataTips,
   },
   props: {
     type: {
-      default: "detail"
+      default: "detail",
     },
     projectId: {
-      default: ""
+      default: "",
     },
     scrollHeight: {
-      default: () => ({ y: "auto" })
+      default: () => ({ y: "auto" }),
     },
-    totalCount:{
-      default: 0
-    }
+    totalCount: {
+      default: 0,
+    },
     // assetTypes: {
     //   type: Array,
     //   default: () => []
@@ -152,14 +159,14 @@ export default {
         columns,
         dataSource: [],
         loading: false,
-        totalCount: 0
-      }
+        totalCount: 0,
+      },
     };
   },
   mounted() {
-    this.assetTypes = this.$route.query.assetTypes
-    if (this.$route.query.type === 'set'){
-      this.queryCondition.pageSize = 9999
+    this.assetTypes = this.$route.query.assetTypes;
+    if (this.$route.query.type === "set") {
+      this.queryCondition.pageSize = 9999;
     }
     this.query();
   },
@@ -172,13 +179,13 @@ export default {
       };
       this.table.loading = true;
       this.$api.basics.attrList(data).then(
-        res => {
+        (res) => {
           this.table.loading = false;
           if (res.data.code === "0") {
             let result = res.data.data.data || [];
-            this.table.dataSource = result.map(item => {
+            this.table.dataSource = result.map((item) => {
               // item.settingMethod = item.settingMethod || 3; // 默认无
-              item.settingMethod = 3
+              item.settingMethod = 3;
               item.area = item.area || "--";
               item.assetTypeName = item.assetTypeName || "--";
               item.assetCode = item.assetCode || "--";
@@ -192,7 +199,7 @@ export default {
               }
               return {
                 key: getUuid(),
-                ...item
+                ...item,
               };
             });
             this.table.totalCount = res.data.data.count || 0;
@@ -206,35 +213,33 @@ export default {
       );
     },
     // 监听选择框变化
-     watchSettingMethodChange (e, row) {
-      console.log('记录select=>', e, row)
+    watchSettingMethodChange(e, row) {
       let o = {
         settingMethod: Number(e),
-        remark: row.remark || '',
+        remark: row.remark || "",
         assetType: row.assetType,
-        assetObjectId: row.assetHouseId
-      }
-      this.$emit('change', o)
-     },
-     // 监听输入框变化
-     watchRemarkChange (e, row) {
-       console.log('记录input=>', e, row)
-       let o = {
-          settingMethod: Number(row.settingMethod),
-          remark: row.remark || '',
-          assetType: row.assetType,
-          assetObjectId: row.assetHouseId
-        }
-        this.$emit('change', o)
-     },
+        assetObjectId: row.assetHouseId,
+      };
+      this.$emit("change", o);
+    },
+    // 监听输入框变化
+    watchRemarkChange(e, row) {
+      let o = {
+        settingMethod: Number(row.settingMethod),
+        remark: row.remark || "",
+        assetType: row.assetType,
+        assetObjectId: row.assetHouseId,
+      };
+      this.$emit("change", o);
+    },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;
       this.query();
-    }
-  }
+    },
+  },
 };
 </script>
- <style lang="less" scoped>
+<style lang="less" scoped>
 .detail-table {
   position: relative;
   border: 1px solid rgba(238, 242, 245, 1);

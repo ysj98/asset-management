@@ -548,7 +548,6 @@ export default {
     // 确定拿到数据
     status(val, data) {
       this.checkedData = [...val];
-      console.log(val)
       data.forEach((item) => {
         item.key = item.assetId;
         item.deliveryArea = item.assetArea;        // 交付面积默认为资产面积

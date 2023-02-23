@@ -154,7 +154,6 @@ export default {
           this.paginationObj.totalCount = res.data.data.count
         }
       }).catch(err => {
-        console.log(err)
         this.$message.error('查询失败' || err)
       })
     }

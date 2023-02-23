@@ -87,7 +87,6 @@
       //获取自定义表头
       getTitle(val){
         this.$api.houseStatusConfig.querySettingByOrganId({organId: val}).then(res=>{
-          console.log(res)
           if (res.data.code == 0) {
             this.titleList=res.data.data
           }

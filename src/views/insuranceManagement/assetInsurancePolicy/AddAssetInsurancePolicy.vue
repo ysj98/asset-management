@@ -291,7 +291,6 @@ export default {
           this.getDetailAssetInfo(this.$route.query.insuranceId)
         }
       }).catch(err => {
-        console.log(err)      
         this.$message.error('查询失败' || err)  
       })
     }
@@ -332,7 +331,6 @@ export default {
           this.checkedData = this.tableObj.dataSource.map(item => item.assetId)
         }
       }).catch(err => {
-        console.log(err)
         this.$message.error('查询失败' || err)
       })
     },

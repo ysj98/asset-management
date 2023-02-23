@@ -114,7 +114,6 @@
             return this.$nextTick(function () {
               this.renderPieChart('type_statistics', 'useTypeName', list)
               this.renderPieChart('direct_statistics', 'usedName', usedArr)
-              console.log(usedArr)
               this.renderPieChart('ownership_statistics', 'useTypeName', ownershipAreaList || [])
               this.renderRectChart(assetValue)
             })
@@ -124,7 +123,6 @@
           this.isHasData = false
           this.loading = false
           this.$message.error(err || '查询汇总数据出错')
-          console.log(err)
         })
       },
       //获取自定义表头

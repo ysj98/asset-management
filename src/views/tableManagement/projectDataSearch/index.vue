@@ -584,7 +584,6 @@
       queryOwnershipCardTableTotal(form){
         this.$api.tableManage.projectAssetTotal(form).then(({data:{code,message,data}})=>{
           if (code==="0"){
-            console.log({data})
             const temp = this.tableObj.dataSource.pop()
             this.totalField.buildCount = judgment.includes(data.buildCountTotal) ? 0 : data.buildCountTotal          // 楼栋数
             this.totalField.assetBuildCount = judgment.includes(data.assetBuildCountTotal) ? 0 : data.assetBuildCountTotal   // 整栋楼接管数量

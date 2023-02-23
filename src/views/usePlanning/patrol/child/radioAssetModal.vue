@@ -164,7 +164,6 @@ export default {
   },
   watch: {
     organId () {
-      console.log('监听变化')
       this.query()
     },
     projectId () {

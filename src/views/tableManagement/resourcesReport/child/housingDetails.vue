@@ -218,7 +218,6 @@ export default {
       * type 1 楼栋
       * type 2 房屋
       * */
-     console.log(this.record)
       let totalFn = this.$api.building.queryHouseStatisV2
       let apiFn = this.$api.building.queryHouseByPageV2
       if (this.isHouse){

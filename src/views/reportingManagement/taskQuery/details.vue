@@ -222,7 +222,6 @@ export default {
   mounted () {
     this.queryAllReportBill()
     let arr = JSON.parse(this.$route.query.quersData)
-    console.log(arr, '-=-=-=')
     this.reportTaskId = arr[0].reportTaskId
     this.query()
   }

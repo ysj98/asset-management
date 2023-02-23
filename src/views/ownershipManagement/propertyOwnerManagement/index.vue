@@ -138,21 +138,17 @@ export default {
   },
   methods: {
     organIdChange (value) {
-      console.log(value)
       this.organName = value.name
       this.queryClick()
     },
     // 页码发生变化
     handlePageChange (page) {
-      console.log(page, 'pagepagepage')
       this.paginator.pageNo = page.pageNo
       this.paginator.pageLength = page.pageLength
       this.queryList()
     },
     // 操作回调
     operationFun (editType, record) {
-      console.log(editType)
-      console.log(record)
       switch (editType) {
         case 'edit': this.modalType = 'edit'
           this.ownerId = record.obligeeId

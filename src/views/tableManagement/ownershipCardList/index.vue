@@ -179,7 +179,6 @@
       queryOwnershipCardTableTotal(form){
         this.$api.tableManage.queryOwnershipCardTableTotal(form).then(({data:{code,message,data}})=>{
           if (code==="0"){
-            console.log({data})
             const temp = this.tableObj.dataSource.pop()
             this.tableObj.dataSource.push({...temp,...data})
           }else {

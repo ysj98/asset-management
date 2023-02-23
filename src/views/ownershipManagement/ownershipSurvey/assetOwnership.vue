@@ -771,7 +771,6 @@ export default {
       data.pageNum = 1;
       data.pageSize = 1;
       this.$api.basics.assetExport(data).then((res) => {
-        console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -812,7 +811,6 @@ export default {
       this.$api.assets
         .organDict({ code: code, organId: organId })
         .then((res) => {
-          console.log(res);
           if (res.data.code == 0) {
             let data = res.data.data;
             let arr = data.map((item) => ({ label: item.name, ...item }));

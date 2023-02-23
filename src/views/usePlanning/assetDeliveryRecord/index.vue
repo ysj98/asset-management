@@ -284,7 +284,6 @@ export default {
         endDeliveryDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''              // 变更日期结束
       }
       this.$api.delivery.deliveryExportChangeScheduleList(obj).then(res => {
-        console.log(res)
         let blob = new Blob([res.data])
         let a = document.createElement('a')
         a.href = URL.createObjectURL(blob)

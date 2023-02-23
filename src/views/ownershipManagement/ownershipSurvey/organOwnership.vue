@@ -331,7 +331,6 @@ export default {
       delete data.pageNum;
       delete data.pageSize;
       this.$api.ownership.organViewExport(data).then((res) => {
-        console.log(res);
         let blob = new Blob([res.data]);
         let a = document.createElement("a");
         a.href = URL.createObjectURL(blob);

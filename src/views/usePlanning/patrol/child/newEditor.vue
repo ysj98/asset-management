@@ -382,7 +382,6 @@ export default {
     },
     // 资产选择变动
     assetChange (row) {
-      console.log('row', row)
       this.assetName = row.assetName
       this.selectObj = row
     },
@@ -433,7 +432,6 @@ export default {
     },
     // 从新定义检查项的序号
     confirmIndex () {
-      console.log('this.tableData', this.tableData)
       this.tableData.forEach((item, index) => {
         item.index = index + 1
       })
@@ -453,7 +451,6 @@ export default {
               id: key
             })
           }
-          console.log('userIdList', userIdList)
           this.newEditSingleData.remark = obj.remark || ''
           this.selectObj.assetCategoryName = obj.objectTypeName
           this.selectObj.address = obj.position
@@ -475,7 +472,6 @@ export default {
           this.newEditSingleData.afterFiles = obj.rectifyAttachmentList.map(item => {
             return {name: item.oldAttachmentName, url: item.attachmentPath}
           })
-          console.log('this.selectObj', this.selectObj)
         } else {
           this.$message.error(res.data.message)
         }
@@ -567,8 +563,6 @@ export default {
             afterAttachmentList: values.inspectionStatus + '' === '1' ? afterFiles : [], // 整改后图片
             checkItemList: values.inspectionStatus + '' === '1' ? checkItemList : []
           }
-          // console.log('objobjobjobjobj', obj)
-          // return
           let loadingName = this.SG_Loding("保存中...");
           this.$api.useManage.addOrUpdateInspectionRecord(obj).then((res) => {
             if (Number(res.data.code) === 0) {
@@ -658,7 +652,6 @@ export default {
     },
     // 资产项目监听
     projectIdFn (val) {
-      console.log('this.newEditSingleData.projectId', this.newEditSingleData.projectId)
       this.newEditSingleData.projectId = val
       this.removeAsset()
     },
