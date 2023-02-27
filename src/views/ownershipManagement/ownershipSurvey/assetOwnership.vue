@@ -32,6 +32,7 @@
               :allowClear="false"
               :style="allStyle"
               :showSearch='true'
+              :multiple="true"
             ></treeSelect>
             <!-- 资产项目 -->
             <a-select
@@ -59,7 +60,7 @@
             <EquipmentSelectTree
               v-if="isSelectedEquipment"
               :style="allStyle"
-              :top-organ-id="queryCondition.organId"
+              :top-organ-id="queryCondition.organId.split(',')[0]"
               :multiple="true"
               v-model="queryCondition.objectTypes"
               :options-data-format="
@@ -531,6 +532,8 @@ export default {
         province: this.provinces.province,
         flag: "0",
       };
+      data.organIds = data.organId
+      delete data.organId
       data.ownershipStatuss = data.ownershipStatuss.join(",");
       data.kindOfRights = data.kindOfRights.join(",");
       data.statuss = data.statuss.join(",");
@@ -582,6 +585,8 @@ export default {
         province: this.provinces.province,
         flag: "0",
       };
+      data.organIds = data.organId
+      delete data.organId
       data.ownershipStatuss = data.ownershipStatuss.join(",");
       data.kindOfRights = data.kindOfRights.join(",");
       data.statuss = data.statuss.join(",");
@@ -628,7 +633,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: "",
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
@@ -648,7 +653,7 @@ export default {
     },
     // 权属人
     ownerShipUserSelect() {
-      let data = { organId: this.queryCondition.organId };
+      let data = { organId: this.queryCondition.organId.split(',')[0] };
       this.$api.basics.ownerShipUserSelect(data).then((res) => {
         if (res.data.code === "0") {
           let result = res.data.data || [];
@@ -809,7 +814,7 @@ export default {
     // 机构字典获取数据
     organDictFn(code, organId) {
       this.$api.assets
-        .organDict({ code: code, organId: organId })
+        .organDict({ code: code, organId: organId.split(',')[0] })
         .then((res) => {
           if (res.data.code == 0) {
             let data = res.data.data;
@@ -843,7 +848,6 @@ export default {
               },
               ...arr,
             ];
-            this.getListFn();
           }
         } else {
           this.$message.error(res.data.message);
@@ -852,15 +856,12 @@ export default {
     },
     // 获取资产分类列表
     getListFn() {
-      if (!this.queryCondition.organId) {
+      if (!this.queryCondition.organId || this.queryCondition.assetTypes[0] === '') {
         return;
       }
       let obj = {
-        organId: this.queryCondition.organId,
-        assetType:
-          this.queryCondition.assetTypes.length > 0
-            ? this.queryCondition.assetTypes.join(",")
-            : "",
+        organId: this.queryCondition.organId.split(',')[0],
+        assetType: this.queryCondition.assetTypes.join(",")
       };
       this.$api.assets.getList(obj).then((res) => {
         if (res.data.code === "0") {

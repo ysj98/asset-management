@@ -12,7 +12,7 @@
         >导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <tree-select @changeTree="changeTree" style="width: 180px" :showSearch='true'/>
+        <tree-select @changeTree="changeTree" :multiple="true" style="width: 180px" :showSearch='true'/>
         <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 180px; margin: 0 10px"/>
       </div>
       <div slot="contentForm">
@@ -41,7 +41,7 @@
             <EquipmentSelectTree
                 v-if="isSelectedEquipment"
                 style="width: 300px"
-                :top-organ-id="organProjectType.organId"
+                :top-organ-id="organProjectType.organId.split(',')[0]"
                 :multiple="true"
                 v-model="assetCategoryId"
                 :options-data-format="(data)=>{
@@ -204,6 +204,7 @@
 
       // 根据organId查询资产项目
       queryProjectByOrganId (organId) {
+        organId = organId.split(',')[0]
         organId && queryProjectListByOrganId(organId).then(list =>
           list ? this.projectOptions = list : this.$message.error('查询资产项目失败')
         )
@@ -234,6 +235,8 @@
           assetType: (!assetType || assetType.includes('-1')) ? undefined : assetType.join(','),
           assetCategoryId: (!assetCategoryId || assetCategoryId.includes('-1')) ? undefined : assetCategoryId.join(','),
         }
+        form.organIds = form.organId
+        delete form.organId
         if (type === 'export') { return form }
         this.tableObj.loading = true
         this.$api.worthRegister.queryAssetValuePageList(form).then(r => {
@@ -321,7 +324,7 @@
         if (assetType.length>1) {
           return
         }
-        queryCategoryList({ assetType: assetVal, organId }).then(list => {
+        queryCategoryList({ assetType: assetVal, organId: organId.split(',')[0] }).then(list => {
           list ? this.categoryOptions = [{title: '全部资产分类', key: '-1'}].concat(list) : this.$message.error('查询资产分类失败')
         })
       },

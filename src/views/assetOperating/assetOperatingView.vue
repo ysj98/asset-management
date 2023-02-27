@@ -7,7 +7,7 @@
       <div slot="headBtns">
         <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_OPERATING_VIEW_EXPORT_FILE" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
+          <treeSelect @changeTree="changeTree" :multiple="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
           </a-select>
@@ -267,7 +267,7 @@ export default {
     // 运营项目
     getOperatingObj (){
       this.$api.basics
-      .queryCommunityListByOrganId({organId: this.queryCondition.organId})
+      .queryCommunityListByOrganId({organId: this.queryCondition.organId.split(',')[0]})
       .then(res => {
         let {code, data} = res.data
         this.approvalStatusData = [
@@ -290,7 +290,7 @@ export default {
     async getSourceOptions(organId){
       this.sourceOptions = [{ value:'', label: '全部来源方式' }]
       this.queryCondition.sourceModes = ['']
-      querySourceType(organId, this).then(list => {
+      querySourceType(organId.split(',')[0], this).then(list => {
         let listArr = list.map(ele=>({...ele,value:ele.value || ele.key,name:ele.name || ele.title}))
         return this.sourceOptions = [{ value:'', label: '全部来源方式' }].concat(listArr)
       })
@@ -299,7 +299,7 @@ export default {
       let obj = {
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),      // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
+        organIds: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         objectTypeList: this.alljudge(this.queryCondition.assetClassify),  // 资产分类id(多个用，分割)
         assetNameCode: this.queryCondition.assetNameCode,         // 资产名称/编码
@@ -336,7 +336,7 @@ export default {
         pageNum: this.queryCondition.pageNum,                // 当前页
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
+        organIds: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         assetNameOrCode: this.queryCondition.assetNameCode,         // 资产名称/编码
         createTimeStarts: moment(this.defaultValue[0]).format('YYYY-MM-DD'),         // 开始创建日期
@@ -405,7 +405,7 @@ export default {
     // 获取资产分类下拉列表
     getAssetClassifyOptions () {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetType.length === 1 ? this.queryCondition.assetType.join(',') : ''
       }
       if (!obj.assetType) {
@@ -451,7 +451,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn () {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: ''
       }
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {

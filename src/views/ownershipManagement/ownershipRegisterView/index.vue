@@ -11,7 +11,7 @@
           <SG-Button v-if="hasRegisterViewExport" type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10" />导出</SG-Button>
         </div>
         <div slot="headerForm" style="float: right; text-align: left">
-          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
+          <treeSelect @changeTree="changeTree" :multiple="true" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
           <!-- 资产项目 -->
           <a-select
             showSearch
@@ -246,6 +246,8 @@ export default {
       let data = {
         ...this.queryCondition,
       };
+      data.organIds = data.organId
+      delete data.organId
       // 资产类型参数改变
       data.projectIdList = Tools.deepClone(data.projectIdList).filter((item) => item !== "");
       data.assetTypeList = Tools.deepClone(data.assetTypeList).filter((item) => item !== "");
@@ -310,6 +312,8 @@ export default {
       let data = {
         ...this.queryCondition,
       };
+      data.organIds = data.organId
+      delete data.organId
       // 资产类型参数改变
       data.projectIdList = Tools.deepClone(data.projectIdList).filter((item) => item !== "");
       data.assetTypeList = Tools.deepClone(data.assetTypeList).filter((item) => item !== "");
@@ -353,7 +357,7 @@ export default {
     getAssetClassifyOptions() {
       console.log("输出=>", this.queryCondition.assetTypeList);
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetTypeList.join(","),
       };
       this.queryCondition.objectTypeList = [""];
@@ -380,7 +384,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: "",
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {

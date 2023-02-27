@@ -10,7 +10,7 @@
           ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
         >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :multiple="true" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
           <a-select
             :maxTagCount="1"
             mode="multiple"
@@ -324,7 +324,7 @@ export default {
       return {
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus), // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [], // 资产项目Id
-        organId: Number(this.queryCondition.organId), // 组织机构id
+        organIds: this.queryCondition.organId, // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType), // 资产类型id(多个用，分割)
         objectTypeList: this.alljudge(this.queryCondition.assetClassify), // 资产分类id(多个用，分割)
         sourceModeList: this.alljudge(this.queryCondition.sourceModes), // 来源方式
@@ -359,7 +359,7 @@ export default {
       this.queryCondition.pageNum = 1;
       this.queryCondition.projectId = undefined;
       this.getAssetClassifyOptions();
-      this.getSourceOptions(value);
+      this.getSourceOptions(value.split(',')[0]);
       this.query();
       this.getObjectKeyValueByOrganIdFn();
     },
@@ -431,7 +431,7 @@ export default {
     // 获取资产分类下拉列表
     getAssetClassifyOptions() {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetType.length === 1 ? this.queryCondition.assetType.join(",") : "",
       };
       if (!obj.assetType) {
@@ -483,7 +483,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: "",
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {

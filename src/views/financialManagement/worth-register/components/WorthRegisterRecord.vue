@@ -12,7 +12,7 @@
         >导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <tree-select @changeTree="changeTree" style="width: 180px; text-align: left" :showSearch='true'/>
+        <tree-select @changeTree="changeTree" :multiple="true" style="width: 180px; text-align: left" :showSearch='true'/>
         <a-input placeholder="请输入资产名称或编码" @pressEnter="queryTableData" v-model.trim="assetNameCode" style="width: 180px; margin: 0 10px"/>
       </div>
       <div slot="contentForm">
@@ -64,7 +64,7 @@
         </a-row>
         <a-row style="margin-top: 14px">
           <a-col :span="24">
-            <date-method-organ v-model="dateMethodOrgan" :organId="organProjectType.organId"/>
+            <date-method-organ v-model="dateMethodOrgan" :organId="organProjectType.organId.split(',')[0]"/>
           </a-col>
         </a-row>
       </div>
@@ -158,6 +158,7 @@
 
       // 根据organId查询资产项目
       queryProjectByOrganId (organId) {
+        organId = organId.split(',')[0]
         organId && queryProjectListByOrganId(organId).then(list =>
           list ? this.projectOptions = list : this.$message.error('查询资产项目失败')
         )
@@ -202,6 +203,8 @@
           assessmentOrgan: (!assessmentOrgan || assessmentOrgan.includes('-1')) ? undefined : assessmentOrgan.join(','),
           assessmentMethod: (!assessmentMethod || assessmentMethod.includes('-1')) ? undefined : assessmentMethod.join(',')
         }
+        form.organIds = form.organId
+        delete form.organId
         if (type === 'export') { return form }
         this.tableObj.loading = true
         this.$api.worthRegister.queryRecordList(form).then(r => {

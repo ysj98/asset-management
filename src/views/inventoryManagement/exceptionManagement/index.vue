@@ -12,7 +12,7 @@
           v-power="ASSET_MANAGEMENT.EXCEPTION_MANAGE_EXPORT"
         >导出</SG-Button>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
+          <treeSelect @changeTree="changeTree" :multiple="true" placeholder='请选择组织机构' :allowClear="false" :style="allStyle" :showSearch='true'></treeSelect>
           <a-input-search placeholder="资产名称/编码" :style="allStyle" :value="assetName" @change="assetNameChange" @search="queryClick" />
         </div>
       </div>
@@ -58,7 +58,7 @@
         <EquipmentSelectTree
             v-if="isSelectedEquipment"
             style="width: 300px"
-            :top-organ-id="organId"
+            :top-organ-id="organId.split(',')[0]"
             :multiple="true"
             v-model="assetClassify"
             :options-data-format="(data)=>{
@@ -339,11 +339,9 @@ export default {
       this.queryList()
     },
     handleOperation (pageType, record) {
-      this.$router.push({path: '/inventoryManagement/exceptionManagement/' + pageType, query: {pageType: pageType, organId: this.organId, resultId: record.resultId}})
+      this.$router.push({path: '/inventoryManagement/exceptionManagement/' + pageType, query: {pageType: pageType, organId: record.organId, resultId: record.resultId}})
     },
     formatFormArr (arr, type) {
-      console.log(arr)
-      console.log(type)
       if (arr.length === 0 || arr[0] === '') {
         arr = []
         if (type === 1) {
@@ -362,7 +360,7 @@ export default {
     },
     queryList (type) {
       let form = {
-        organId: this.organId,
+        organIds: this.organId,
         checkTimeDateStart: this.beginDate,
         checkTimeDateEnd: this.endDate,
         checkResultList: this.formatFormArr(this.exceptionType, 1),
@@ -401,7 +399,7 @@ export default {
     // 获取资产项目下拉列表
     getAssetProjectOptions () {
       let form = {
-        organId: this.organId
+        organId: this.organId.split(',')[0]
       }
       this.$api.assets.getObjectKeyValueByOrganId(form).then(res => {
         if (res.data.code === '0') {
@@ -465,7 +463,7 @@ export default {
     // 获取资产分类下拉列表
     getAssetClassifyOptions () {
       let obj = {
-        organId: this.organId,
+        organId: this.organId.split(',')[0],
         assetType: this.assetType.length === 1 ? this.assetType.join(',') : ''
       }
       if (!obj.assetType) {

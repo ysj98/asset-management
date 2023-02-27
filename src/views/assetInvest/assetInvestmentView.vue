@@ -11,7 +11,7 @@
       <div slot="headerForm" style="margin-right: 32px; text-align: left">
         <a-row :gutter="8">
           <a-col :span="9" :offset="2">
-            <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
+            <organ-project :multiple="true" v-model="organProjectValue" :isShowBuilding="false" mode="multiple"/>
           </a-col>
           <a-col :span="4">
             <a-select v-model="queryObj.assetTypeList" :options="$addTitle(assetTypeOptions)"
@@ -37,7 +37,7 @@
             <EquipmentSelectTree
               v-if="isSelectedEquipment"
               style="width: 100%;"
-              :top-organ-id="organProjectValue.organId"
+              :top-organ-id="organProjectValue.organId.split(',')[0]"
               :multiple="true"
               v-model="queryObj.objectTypeList"
               :options-data-format="(data)=>{
@@ -180,7 +180,7 @@
         this.queryObj.objectTypeList = ['-1']
         const { organProjectValue: { organId }, queryObj: { assetTypeList } } = this
         if (!organId || !assetTypeList.length || assetTypeList.includes('-1') || assetTypeList.length > 1) { return false }
-        queryCategoryList({ assetType: assetTypeList.join(','), organId }).then(list => {
+        queryCategoryList({ assetType: assetTypeList.join(','), organId: organId.split(',')[0] }).then(list => {
           this.objectTypeOptions = [{title: '全部资产分类', key: '-1'}].concat(list)
         })
       },
@@ -210,7 +210,7 @@
         arr.forEach(k =>
           temp[k] = queryObj[k].filter(n => n !== '-1')
         )
-        let obj = { organId, projectIdList: projectId || [], ...queryObj, ...temp }
+        let obj = { organIds: organId, projectIdList: projectId || [], ...queryObj, ...temp }
         // 用于导出及查询汇总接口入参
         if (actionType) { return obj }
         this.loading = true

@@ -8,7 +8,7 @@
       <div slot="headBtns">
         <div class="box" style="margin-left: 16px"><SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_RETURN_VIEW_EXPORT" @click="exportFn"><segiIcon type="#icon-ziyuan10" class="icon-right"/>导出</SG-Button></div>
         <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
+          <treeSelect @changeTree="changeTree" :multiple="true"  placeholder='请选择组织机构' :allowClear="false" :style="allStyle"></treeSelect>
           <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目" v-model="queryCondition.projectList" :filterOption="filterOption" @select="getObjectKeyValueByOrganIdFn" :getPopupContainer="
           (triggerNode) => {
             return triggerNode.parentNode || document.body
@@ -45,7 +45,7 @@
           v-if="isSelectedEquipment"
           :multiple="true"
           style="width: 190px; margin-right: 10px;"
-          :top-organ-id="queryCondition.organId"
+          :top-organ-id="queryCondition.organId.split(',')[0]"
           v-model="queryCondition.objectTypeList"
           :options-data-format="(data)=>{
             return [{label: '全部资产分类', value: '', isLeaf: true},...data]
@@ -307,7 +307,7 @@ export default {
         returnOrganId: this.alljudge(this.queryCondition.returnOrganId), //领用部门ID
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 领用单状态
         projectIdList: this.queryCondition.projectList ? this.queryCondition.projectList : [],            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
+        organIds: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetTypeList),  // 资产类型id(多个用，分割)
         returnName: this.queryCondition.returnName,         // 归还单名称/编号
         receiveName: this.queryCondition.receiveName,         // 领用单名称/编号
@@ -347,7 +347,7 @@ export default {
         pageSize: this.queryCondition.pageSize,              // 每页显示记录数
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatusList),      // 入库单状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         projectIdList: this.alljudge(this.queryCondition.projectList),            // 资产项目Id
-        organId: Number(this.queryCondition.organId),        // 组织机构id
+        organIds: this.queryCondition.organId,        // 组织机构id
         assetTypeList: this.alljudge(this.queryCondition.assetType),  // 资产类型id(多个用，分割)
         startReturnDate: moment(this.applyValue[0]).format('YYYY-MM-DD'),         // 领用开始日期
         endReturnDate: moment(this.applyValue[1]).format('YYYY-MM-DD'),          // 领用结束日期
@@ -429,7 +429,7 @@ export default {
     // 获取资产分类下拉列表
     getAssetClassifyOptions () {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetType.length === 1 ? this.queryCondition.assetType.join(',') : ''
       }
       if (!obj.assetType) {
@@ -474,7 +474,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn () {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: ''
       }
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {

@@ -42,7 +42,7 @@
             <EquipmentSelectTree
               v-if="isSelectedEquipment"
               :style="allStyle"
-              :top-organ-id="queryCondition.organId"
+              :top-organ-id="queryCondition.organId.split(',')[0]"
               :multiple="true"
               v-model="queryCondition.assetClassify"
               :options-data-format="(data)=>{
@@ -263,7 +263,7 @@ export default {
     downloadFn () {
       let obj = {
         projectId: this.queryCondition.projectId,       // 资产项目Id
-        organId: Number(this.queryCondition.organId),         // 组织机构id
+        organIds:this.queryCondition.organId,         // 组织机构id
         multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
         multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         startCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',       // 创建日期开始日期
@@ -318,7 +318,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn () {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: ''
       }
       this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
@@ -372,7 +372,7 @@ export default {
         return
       }
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : ''
       }
 
@@ -441,11 +441,9 @@ export default {
     },
     // 清空
     eliminateFn () {
-      let organId = this.queryCondition.organId
       this.alterationDate = []
       this.defaultValue = []
       this.queryCondition = {...queryCondition}
-      this.queryCondition.organId = organId
       this.query()
     },
     filterOption(input, option) {
@@ -473,7 +471,7 @@ export default {
       this.loading = true
       let obj = {
         projectId: this.queryCondition.projectId,       // 资产项目Id
-        organId: Number(this.queryCondition.organId),         // 组织机构id
+        organIds: this.queryCondition.organId,         // 组织机构id
         multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
         multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         startCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',       // 创建日期开始日期

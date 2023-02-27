@@ -95,7 +95,7 @@
           <EquipmentSelectTree
             :style="allStyle"
             v-if="isSelectedEquipment"
-            :top-organ-id="queryCondition.organId"
+            :top-organ-id="queryCondition.organId.split(',')[0]"
             :multiple="true"
             v-model="queryCondition.assetClassify"
             :options-data-format="
@@ -592,7 +592,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         projectName: "",
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
@@ -647,7 +647,7 @@ export default {
         return;
       }
       let obj = {
-        organId: this.queryCondition.organId,
+        organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetType,
       };
       this.$api.assets.getList(obj).then(
@@ -768,7 +768,7 @@ export default {
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
-        organId: Number(this.queryCondition.organId), // 组织机构id
+        organIds: this.queryCondition.organId, // 组织机构id
         submitDateStart: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format("YYYY-MM-DD") : "", // 提交时间,开始
         submitDateEnd: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format("YYYY-MM-DD") : "", // 提交时间,结束
         approvalStatusList: this.judgmentMethodFn(this.queryCondition.approvalStatus), // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4

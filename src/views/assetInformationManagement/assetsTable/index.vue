@@ -11,7 +11,7 @@
           >导出</SG-Button
         >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
+          <treeSelect @changeTree="changeTree" :multiple="true" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
           <a-select
             showSearch
             :maxTagCount="1"
@@ -66,7 +66,7 @@
         <EquipmentSelectTree
           v-if="isSelectedEquipment"
           style="width: 300px"
-          :top-organ-id="organId"
+          :top-organ-id="organId.split(',')[0]"
           :multiple="true"
           v-model="queryData.objectTypeList"
           :options-data-format="
@@ -506,7 +506,7 @@ export default {
       const params = {
         ...queryData,
         ...obj,
-        organId: this.organId,
+        organIds: this.organId,
       };
       const params2 = {
         city: this.provinces.city ? this.provinces.city : "", // 市
@@ -555,7 +555,7 @@ export default {
     // 获取资产项目
     getAssetProjectOptions() {
       let form = {
-        organId: this.organId,
+        organId: this.organId.split(',')[0],
       };
       this.$api.assets.getObjectKeyValueByOrganId(form).then((res) => {
         if (res.data.code === "0") {
@@ -612,7 +612,7 @@ export default {
     organDict(code) {
       let form = {
         code,
-        organId: this.organId,
+        organId: this.organId.split(',')[0],
       };
       this.$api.basics.organDict(form).then((res) => {
         if (res.data.code === "0") {
@@ -645,7 +645,7 @@ export default {
       }
       this.queryData.objectTypeList = [""];
       let obj = {
-        organId: this.organId,
+        organId: this.organId.split(',')[0],
         assetType: this.queryData.assetTypeList.length > 0 ? this.queryData.assetTypeList.join(",") : "",
       };
       this.$api.assets

@@ -13,7 +13,7 @@
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zzjgst_dc">导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" style="width: 170px; margin-right: 10px"></treeSelect>
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :multiple="true" :allowClear="false" style="width: 170px; margin-right: 10px"></treeSelect>
         <a-select
           :maxTagCount="1"
           :style="allStyle"
@@ -379,7 +379,7 @@ export default {
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
-        organId: Number(this.queryCondition.organId), // 组织机构id
+        organIds: this.queryCondition.organId, // 组织机构id
         approvalStatusList: this.judgmentMethodFn(this.queryCondition.approvalStatusList), // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
         disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format("YYYY-MM-DD") : "", // 处置日期,开始
         disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format("YYYY-MM-DD") : "", // 处置日期,结束
