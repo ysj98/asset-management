@@ -199,105 +199,105 @@
 </template>
 
 <script>
-import { debounce, getFormat } from "@/utils/utils";
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "../../common/treeSelect";
-import noDataTips from "@/components/noDataTips";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import ProvinceCityDistrict from "../../common/ProvinceCityDistrict";
-import { querySourceType } from "@/views/common/commonQueryApi";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-const judgment = [undefined, null, ""];
-const allWidth = { width: "170px", "margin-right": "10px", flex: 1, "margin-top": "14px", display: "inline-block", "vertical-align": "middle" };
+import { debounce, getFormat } from '@/utils/utils';
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '../../common/treeSelect';
+import noDataTips from '@/components/noDataTips';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import ProvinceCityDistrict from '../../common/ProvinceCityDistrict';
+import { querySourceType } from '@/views/common/commonQueryApi';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+const judgment = [undefined, null, ''];
+const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
 const columnsData = [
-  { title: "资产名称", dataIndex: "assetName", key: "assetName", width: 150, disabled: true, fixed: "left" },
-  { title: "资产编码", dataIndex: "assetCode", width: 150, disabled: true },
-  { title: "管理机构", dataIndex: "organName", width: 150, disabled: true },
-  { title: "宗地号", dataIndex: "theNo", width: 150 },
-  { title: "宗地位置", dataIndex: "location", width: 150 },
-  { title: "土地面积(㎡)", dataIndex: "landArea", width: 150, scopedSlots: { customRender: "landArea" } },
-  { title: "资产项目名称", dataIndex: "projectName", width: 150 },
-  { title: "权属用途", dataIndex: "landCategory", width: 150 },
-  { title: "土地类型", dataIndex: "landType", width: 150 },
-  { title: "土地用途", dataIndex: "landuse", width: 150 },
-  { title: "资产-实际产权单位", dataIndex: "propertyRightUnit", width: 150 },
-  { title: "权证-实际保管单位", dataIndex: "safekeepUnit", width: 150 },
-  { title: "计容面积(㎡)", dataIndex: "acreage", width: 150, scopedSlots: { customRender: "acreage" } },
-  { title: "容积率", dataIndex: "landRate", width: 150 },
-  { title: "权属情况", dataIndex: "ownershipStatusName", width: 150 },
-  { title: "权证号", dataIndex: "warrantNbr", width: 150 },
-  { title: "来源方式", dataIndex: "sourceName", width: 150, defaultHide: true },
-  { title: "使用期限", dataIndex: "validPeriod", width: 150 },
-  { title: "接管日期", dataIndex: "takeOverDate", width: 150 },
-  { title: "运营(㎡)", dataIndex: "transferOperationArea", width: 150, scopedSlots: { customRender: "transferOperationArea" } },
-  { title: "自用(㎡)", dataIndex: "selfUserArea", width: 150, scopedSlots: { customRender: "selfUserArea" } },
-  { title: "闲置(㎡)", dataIndex: "idleArea", width: 150, scopedSlots: { customRender: "idleArea" } },
-  { title: "其他(㎡)", dataIndex: "otherArea", width: 150, scopedSlots: { customRender: "otherArea" } },
-  { title: "财务卡片编码", dataIndex: "cardCode", width: 150 },
-  { title: "资产原值(元)", dataIndex: "originalValue", width: 150, scopedSlots: { customRender: "originalValue" } },
-  { title: "最新估值(元)", dataIndex: "marketValue", width: 150, scopedSlots: { customRender: "marketValue" } },
-  { title: "批准日期", dataIndex: "approvalDate", width: 150 },
-  { title: "资产状态", dataIndex: "statusName", width: 150 },
-  { title: "质押", dataIndex: "pledgeName", width: 100 },
-  { title: "抵押", dataIndex: "mortgageName", width: 100 },
-  { title: "涉诉", dataIndex: "lawsuitName", width: 100 },
-  { title: "涉诉情况", dataIndex: "lawsuitRemark", width: 150 },
-  { title: "地块是否已签订土地交储协议", dataIndex: "isSign", width: 150 },
-  { title: "是否城市更新项目", dataIndex: "cityUpdate", width: 150 },
-  { title: "三旧改造图编号", dataIndex: "transformDrawingNo", width: 150 },
-  { title: "四至范围", dataIndex: "fourToRange", width: 350 },
-  { title: "是否确权", dataIndex: "isRight", width: 150 },
-  { title: "缴纳土地出让金时间", dataIndex: "payAssignmentTime", width: 150 },
-  { title: "资产原始来源方", dataIndex: "originSource", width: 150 },
-  { title: "操作", key: "action", scopedSlots: { customRender: "action" }, width: 90, fixed: "right" },
+  { title: '资产名称', dataIndex: 'assetName', key: 'assetName', width: 150, disabled: true, fixed: 'left' },
+  { title: '资产编码', dataIndex: 'assetCode', width: 150, disabled: true },
+  { title: '管理机构', dataIndex: 'organName', width: 150, disabled: true },
+  { title: '宗地号', dataIndex: 'theNo', width: 150 },
+  { title: '宗地位置', dataIndex: 'location', width: 150 },
+  { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },
+  { title: '资产项目名称', dataIndex: 'projectName', width: 150 },
+  { title: '权属用途', dataIndex: 'landCategory', width: 150 },
+  { title: '土地类型', dataIndex: 'landType', width: 150 },
+  { title: '土地用途', dataIndex: 'landuse', width: 150 },
+  { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 150 },
+  { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 150 },
+  { title: '计容面积(㎡)', dataIndex: 'acreage', width: 150, scopedSlots: { customRender: 'acreage' } },
+  { title: '容积率', dataIndex: 'landRate', width: 150 },
+  { title: '权属情况', dataIndex: 'ownershipStatusName', width: 150 },
+  { title: '权证号', dataIndex: 'warrantNbr', width: 150 },
+  { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
+  { title: '使用期限', dataIndex: 'validPeriod', width: 150 },
+  { title: '接管日期', dataIndex: 'takeOverDate', width: 150 },
+  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
+  { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150, scopedSlots: { customRender: 'selfUserArea' } },
+  { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150, scopedSlots: { customRender: 'idleArea' } },
+  { title: '其他(㎡)', dataIndex: 'otherArea', width: 150, scopedSlots: { customRender: 'otherArea' } },
+  { title: '财务卡片编码', dataIndex: 'cardCode', width: 150 },
+  { title: '资产原值(元)', dataIndex: 'originalValue', width: 150, scopedSlots: { customRender: 'originalValue' } },
+  { title: '最新估值(元)', dataIndex: 'marketValue', width: 150, scopedSlots: { customRender: 'marketValue' } },
+  { title: '批准日期', dataIndex: 'approvalDate', width: 150 },
+  { title: '资产状态', dataIndex: 'statusName', width: 150 },
+  { title: '质押', dataIndex: 'pledgeName', width: 100 },
+  { title: '抵押', dataIndex: 'mortgageName', width: 100 },
+  { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
+  { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 150 },
+  { title: '地块是否已签订土地交储协议', dataIndex: 'isSign', width: 150 },
+  { title: '是否城市更新项目', dataIndex: 'cityUpdate', width: 150 },
+  { title: '三旧改造图编号', dataIndex: 'transformDrawingNo', width: 150 },
+  { title: '四至范围', dataIndex: 'fourToRange', width: 350 },
+  { title: '是否确权', dataIndex: 'isRight', width: 150 },
+  { title: '缴纳土地出让金时间', dataIndex: 'payAssignmentTime', width: 150 },
+  { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
+  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right' },
 ];
 const approvalStatusData = [
-  { name: "全部状态", value: "" },
-  { name: "待入库", value: "0" },
-  { name: "正常", value: "1" },
-  { name: "报废", value: "2" },
-  { name: "转让", value: "3" },
-  { name: "报损", value: "4" },
-  { name: "已出库", value: "5" },
-  { name: "已取消", value: "6" },
-  { name: "入库中", value: "7" },
+  { name: '全部状态', value: '' },
+  { name: '待入库', value: '0' },
+  { name: '正常', value: '1' },
+  { name: '报废', value: '2' },
+  { name: '转让', value: '3' },
+  { name: '报损', value: '4' },
+  { name: '已出库', value: '5' },
+  { name: '已取消', value: '6' },
+  { name: '入库中', value: '7' },
 ];
 const queryCondition = {
-  city: "", // 市
-  province: "", // 省
-  region: "", // 区
-  flag: "", // 类型：0运营；1闲置；2自用；3占用；4其他
-  landName: "", // 资产名称/编码模糊查询
-  objectTypes: "", // 资产分类(多选)
-  organId: "", // 组织机构id
-  projectId: "", //类型：String  必有字段  备注：项目id
-  statuss: ["0", "1", "2", "3", "4", "7"], // 资产状态(多选)
-  useType: "", // 用途
+  city: '', // 市
+  province: '', // 省
+  region: '', // 区
+  flag: '', // 类型：0运营；1闲置；2自用；3占用；4其他
+  landName: '', // 资产名称/编码模糊查询
+  objectTypes: '', // 资产分类(多选)
+  organId: '', // 组织机构id
+  projectId: '', //类型：String  必有字段  备注：项目id
+  statuss: ['0', '1', '2', '3', '4', '7'], // 资产状态(多选)
+  useType: '', // 用途
   pageNum: 1, // 当前页
   pageSize: 10, // 每页显示记录数
-  address: "", // 地理位置
-  originSource: "", // 资产原始来源方
-  landCategory: "",
-  sourceModes: "", // 来源方式
+  address: '', // 地理位置
+  originSource: '', // 资产原始来源方
+  landCategory: '',
+  sourceModes: '', // 来源方式
 };
 const decimalFormat = (area) => {
   return Math.round(area * 10000) / 10000;
 };
 // 概览数字数据, title 标题，value 数值，bgColor 背景色
 const numList = [
-  { title: "资产数量", key: "assetCount", value: 0, fontColor: "#324057" },
-  { title: "土地面积(㎡)", key: "area", value: 0, bgColor: "#4BD288" },
-  { title: "运营(㎡)", key: "transferOperationArea", value: 0, bgColor: "#1890FF" },
-  { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#DD81E6" },
-  { title: "自用(㎡)", key: "selfUserArea", value: 0, bgColor: "#FD7474" },
-  { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
+  { title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057' },
+  { title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288' },
+  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF' },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6' },
+  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474' },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
 ];
 export default {
   components: { SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict },
   props: {},
   watch: {
     toggle(val) {
-      this.$set(this.scroll, "y", val ? "calc(100vh - 481px)" : "calc(100vh - 380px)");
+      this.$set(this.scroll, 'y', val ? 'calc(100vh - 481px)' : 'calc(100vh - 380px)');
     },
   },
   data() {
@@ -307,10 +307,10 @@ export default {
       exportBtnLoading: false,
       modalShow: false,
       overviewNumSpinning: false,
-      current: "",
-      listValue: ["changeOrderDetailId", "assetCode", "assetName"],
+      current: '',
+      listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: { x: 1200, y: "calc(100vh - 481px)" },
+      scroll: { x: 1200, y: 'calc(100vh - 481px)' },
       numList: numList,
       provinces: {
         province: undefined,
@@ -319,57 +319,57 @@ export default {
       },
       loading: false,
       noPageTools: false,
-      location: "absolute",
+      location: 'absolute',
       allStyle: allWidth,
       toggle: true,
       columns: columnsData,
-      organName: "",
-      organId: "",
-      address: "",
-      originSource: "",
+      organName: '',
+      organId: '',
+      address: '',
+      originSource: '',
       tableData: [],
       approvalStatusData: [...approvalStatusData],
       queryCondition: { ...queryCondition },
-      count: "",
+      count: '',
       ownershipStatusObj: {
-        0: "无证",
-        1: "有证",
-        2: "待办",
+        0: '无证',
+        1: '有证',
+        2: '待办',
       },
       sourceOptions: [
         {
-          key: "",
-          title: "全部来源方式",
+          key: '',
+          title: '全部来源方式',
         },
       ],
       projectData: [
         {
-          name: "全部资产项目",
-          value: "",
+          name: '全部资产项目',
+          value: '',
         },
       ],
       // assetTypeData: [],
       assetClassifyData: [
         {
-          name: "全部分类",
-          value: "",
+          name: '全部分类',
+          value: '',
         },
       ],
       useTypeOptions: [
         {
-          name: "全部用途",
-          value: "",
+          name: '全部用途',
+          value: '',
         },
       ],
       totalField: {
-        landArea: "", // 土地面积
-        acreage: "", // 计容面积
-        transferOperationArea: "", // 运营
-        selfUserArea: "", // 自用
-        idleArea: "", // 闲置
-        otherArea: "", // 其他
-        originalValue: "", // 资产原值
-        marketValue: "", // 最新估值
+        landArea: '', // 土地面积
+        acreage: '', // 计容面积
+        transferOperationArea: '', // 运营
+        selfUserArea: '', // 自用
+        idleArea: '', // 闲置
+        otherArea: '', // 其他
+        originalValue: '', // 资产原值
+        marketValue: '', // 最新估值
       },
       listLength: 0,
     };
@@ -382,9 +382,9 @@ export default {
       let obj = {};
       if (options) obj = options;
       return {
-        city: this.provinces.city ? this.provinces.city : "", // 市
-        province: this.provinces.province ? this.provinces.province : "", // 省
-        region: this.provinces.district ? this.provinces.district : "", // 区
+        city: this.provinces.city ? this.provinces.city : '', // 市
+        province: this.provinces.province ? this.provinces.province : '', // 省
+        region: this.provinces.district ? this.provinces.district : '', // 区
         flag: this.current, // 类型：0运营；1闲置；2自用；3占用；4其他
         landName: this.queryCondition.landName, // 资产名称/编码模糊查询
         objectTypes: this.alljudge(this.queryCondition.objectTypes), // 资产分类(多选)
@@ -406,27 +406,27 @@ export default {
       this.exportBtnLoading = true;
       // 这里导出的参数 与搜索条件 实时同步(参照之前的风格)
       let obj = this.initQueryReqParams({
-        display: this.columns.filter((col) => col.key !== "action").map((m) => m.dataIndex),
+        display: this.columns.filter((col) => col.key !== 'action').map((m) => m.dataIndex),
       });
-      let filename = "土地资产视图导出列表";
+      let filename = '土地资产视图导出列表';
       this.$api.land
         .exportAssetLandViewList(obj)
         .then((res) => {
           this.exportBtnLoading = false;
           if (res.status === 200 && res.data && res.data.size) {
-            let a = document.createElement("a");
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([res.data]));
             a.download = `${filename}.xls`;
-            a.style.display = "none";
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             return a.remove();
           }
-          throw res.message || "导出土地资产视图列表失败";
+          throw res.message || '导出土地资产视图列表失败';
         })
         .catch((err) => {
           this.exportBtnLoading = false;
-          this.$message.error(err || "导出土地资产视图列表失败");
+          this.$message.error(err || '导出土地资产视图列表失败');
         });
     },
     // 查看土地资产视图详情
@@ -435,7 +435,7 @@ export default {
         organId: this.queryCondition.organId,
         organName: this.organName,
       };
-      this.$router.push({ path: "landAssetsView/detail", query: { assetLandId, assetId, ...query } });
+      this.$router.push({ path: 'landAssetsView/detail', query: { assetLandId, assetId, ...query } });
     },
     // 点击总览数据块
     // 0运营；1闲置；2自用；3占用；4其他
@@ -443,7 +443,7 @@ export default {
       console.log(i);
       switch (i) {
         case 0: // 资产数量
-          this.current = "";
+          this.current = '';
           break;
         case 1: // 土地面积
           this.current = 4;
@@ -461,10 +461,10 @@ export default {
           this.current = 3;
           break;
         case null:
-          this.current = "";
+          this.current = '';
           break;
       }
-      this.allQuery("asset");
+      this.allQuery('asset');
     },
     // 列表设置
     listSet() {
@@ -486,7 +486,7 @@ export default {
         }
       });
       this.columns = arr;
-      this.scroll = { x: this.columns.length * 150 - 60, y: "calc(100vh - 481px)" };
+      this.scroll = { x: this.columns.length * 150 - 60, y: 'calc(100vh - 481px)' };
       this.modalShow = false;
     },
     // 组织机构树
@@ -494,9 +494,9 @@ export default {
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
-      this.queryCondition.projectId = "";
-      this.queryCondition.objectTypes = "";
-      this.queryCondition.useType = "";
+      this.queryCondition.projectId = '';
+      this.queryCondition.objectTypes = '';
+      this.queryCondition.useType = '';
       this.getObjectKeyValueByOrganIdFn();
       this.getSourceOptions();
       this.getListFn();
@@ -522,7 +522,7 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organIds: this.queryCondition.organId.toString(),
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -534,7 +534,7 @@ export default {
               value: item.projectId,
             });
           });
-          this.projectData = [{ name: "全部资产项目", value: "" }, ...arr];
+          this.projectData = [{ name: '全部资产项目', value: '' }, ...arr];
         } else {
           this.$message.error(res.data.message);
         }
@@ -543,9 +543,9 @@ export default {
     async getSourceOptions() {
       let organId = this.queryCondition.organId.toString();
       this.sourceOptions = [];
-      this.queryCondition.sourceModes = "";
+      this.queryCondition.sourceModes = '';
       querySourceType(organId, this).then((list) => {
-        return (this.sourceOptions = [{ key: "", title: "全部来源方式" }].concat(list));
+        return (this.sourceOptions = [{ key: '', title: '全部来源方式' }].concat(list));
       });
     },
     // 资产分类列表
@@ -554,8 +554,8 @@ export default {
         return;
       }
       let obj = {
-        organId: this.queryCondition.organId.split(",")[0],
-        assetType: "4",
+        organId: this.queryCondition.organId.split(',')[0],
+        assetType: '4',
       };
       this.$api.assets.getList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -567,7 +567,7 @@ export default {
               value: item.professionCode,
             });
           });
-          this.assetClassifyData = [{ name: "全部资产分类", value: "" }, ...arr];
+          this.assetClassifyData = [{ name: '全部资产分类', value: '' }, ...arr];
         }
       });
     },
@@ -604,16 +604,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -631,23 +631,23 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     alljudge(val) {
-      let str = "";
+      let str = '';
       if (val.length !== 0) {
-        if (val[0] === "") {
-          return "";
+        if (val[0] === '') {
+          return '';
         } else {
-          str = val.join(",");
+          str = val.join(',');
           return str;
         }
       } else {
-        return "";
+        return '';
       }
     },
     // 查询
     query(str) {
       this.loading = true;
       let obj = this.initQueryReqParams();
-      if (str !== "asset") {
+      if (str !== 'asset') {
         this.assetViewTotal(obj);
       }
       this.$api.land.assetView(obj).then((res) => {
@@ -657,7 +657,7 @@ export default {
           if (data && data.length > 0) {
             data.forEach((item, index) => {
               item.key = index;
-              item.ownershipStatusName = String(item.ownershipStatus) ? this.ownershipStatusObj[String(item.ownershipStatus)] : "";
+              item.ownershipStatusName = String(item.ownershipStatus) ? this.ownershipStatusObj[String(item.ownershipStatus)] : '';
             });
             this.tableData = [...data];
             this.listLength = data.length;
@@ -676,7 +676,7 @@ export default {
     totalFn: debounce(function (obj) {
       this.loading = true;
       this.$api.land.assetViewListTotal(obj).then((res) => {
-        if (String(res.data.code) === "0") {
+        if (String(res.data.code) === '0') {
           let data = res.data.data;
           this.totalField.landArea = judgment.includes(data.area) ? 0 : decimalFormat(data.area); // 土地面积
           this.totalField.acreage = judgment.includes(data.acreageTotal) ? 0 : decimalFormat(data.acreageTotal); // 计容面积
@@ -686,7 +686,7 @@ export default {
           this.totalField.otherArea = judgment.includes(data.otherArea) ? 0 : decimalFormat(data.otherArea); // 其他
           this.totalField.originalValue = judgment.includes(data.originalValue) ? 0 : Math.round(data.originalValue * 100) / 100; // 资产原值
           this.totalField.marketValue = judgment.includes(data.marketValue) ? 0 : Math.round(data.marketValue * 100) / 100; // 最新估值
-          let obj = { assetName: "所有页-合计", key: "key", ...this.totalField };
+          let obj = { assetName: '所有页-合计', key: 'key', ...this.totalField };
           this.$set(this.tableData, this.listLength, obj);
           for (let key in data) {
             data[key] = getFormat(data[key]);
@@ -712,7 +712,7 @@ export default {
           let data = res.data.data;
           this.numList = numList
             .map((m) => {
-              return { ...m, value: data[m.key] ? (["assetCount"].includes(m.key) ? data[m.key] : Math.round(data[m.key] * 10000) / 10000) : 0 };
+              return { ...m, value: data[m.key] ? (['assetCount'].includes(m.key) ? data[m.key] : Math.round(data[m.key] * 10000) / 10000) : 0 };
             })
             .filter((item) => {
               return item.value !== 0;
@@ -726,16 +726,16 @@ export default {
     // 取全部土地用途
     queryLandUseList() {
       let data = {
-        dictCode: "OCM_LANDUSE",
-        dictFlag: "1",
+        dictCode: 'OCM_LANDUSE',
+        dictFlag: '1',
         groupIds: this.queryCondition.organId[0],
-        code: "OCM_LANDUSE",
+        code: 'OCM_LANDUSE',
         organId: this.queryCondition.organId[0],
       };
       this.$api.basics.organDict(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
-          this.useTypeOptions = [{ name: "全部用途", value: "" }, ...data];
+          this.useTypeOptions = [{ name: '全部用途', value: '' }, ...data];
         }
       });
     },

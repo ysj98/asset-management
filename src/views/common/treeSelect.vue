@@ -49,8 +49,8 @@
 <script>
 export default {
   model: {
-    prop: "value",
-    event: "input",
+    prop: 'value',
+    event: 'input',
   },
   props: {
     // 多选
@@ -69,7 +69,7 @@ export default {
     // 编辑给回来展示的
     defaultOrganName: {
       type: String,
-      default: "",
+      default: '',
     },
     disabled: {
       type: Boolean,
@@ -77,35 +77,35 @@ export default {
     },
     width: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     placeholder: {
       type: String,
-      default: "请输入组织机构名字",
+      default: '请输入组织机构名字',
     },
     // 过滤参数
     TypeFilter: {
       type: String,
-      default: "",
+      default: '',
     },
     size: {
       type: String,
-      default: "small",
+      default: 'small',
     },
     formInputConfig: {
       type: Object,
       default: function () {
         return {
-          label: "所属机构",
+          label: '所属机构',
           required: true,
-          requiredText: "(必选):",
+          requiredText: '(必选):',
         };
       },
     },
     // 新增编辑传form
     formType: {
       type: String,
-      default: "",
+      default: '',
     },
     // 自定义传入的根元素  Array: {organName: '', organId: ''}
     rootData: {
@@ -119,21 +119,21 @@ export default {
     },
     authorizedUserId: {
       type: String || Number,
-      default: "",
+      default: '',
     },
   },
   data() {
     return {
       loading: false,
-      organId: "",
-      organName: "",
-      keywords: "",
+      organId: '',
+      organName: '',
+      keywords: '',
       expandedKeys: [],
       autoExpandParent: true,
       defaultExpandedKeys: [],
       defaultExpandAll: false, // 是否展开所有树节点
       treeData: [],
-      orgtype: "",
+      orgtype: '',
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
       checkedKeys: null, //选中复选框的树节点  多选时 { checked: [], halfChecked: [] }
       typeFilter: this.TypeFilter, // 过滤参数
@@ -185,7 +185,7 @@ export default {
       if (organName.length === 1) {
         return organName[0];
       } else {
-        return "已选" + organName[0] + "等" + organName.length + "个组织";
+        return '已选' + organName[0] + '等' + organName.length + '个组织';
       }
     },
     // 选中树节点
@@ -194,12 +194,12 @@ export default {
       if (this.multiple) {
         this.checkedKeys = selectedKeys;
         if (this.checkedKeys.checked.length === 0) {
-          this.$message.info("请选择组织机构");
+          this.$message.info('请选择组织机构');
           return;
         }
         let flag = this.checkedKeys.checked.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
         if (flag.length >= 2) {
-          this.$message.info("不能跨物业选择");
+          this.$message.info('不能跨物业选择');
           this.checkedKeys.checked = this.checkedKeys.checked.slice(0, this.checkedKeys.checked.length - 1);
           return;
         }
@@ -219,7 +219,7 @@ export default {
       }
       // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
       this.$textReplace(this.organId.toString());
-      this.$emit("changeTree", this.organId.toString(), this.organName, this.orgtype);
+      this.$emit('changeTree', this.organId.toString(), this.organName, this.orgtype);
     },
     // 下载下级数据
     onLoadData(treeNode) {
@@ -234,50 +234,50 @@ export default {
           // 是否过滤经营项目
           this.$api.paramsConfig.queryParamsConfigDetail({ organId: treeNode.dataRef.key, serviceType: 1017 }),
         ]).then((res) => {
-          if (res[0].data.code === "0") {
+          if (res[0].data.code === '0') {
             const { isValid } = res[0].data.data;
             if (Number(isValid) === 1) {
               if (this.typeFilter.length) {
                 // 如果prop传入的过滤参数不包含部门，则加上部门
-                if (!this.typeFilter.includes("7")) {
-                  this.typeFilter = this.typeFilter + ",7";
+                if (!this.typeFilter.includes('7')) {
+                  this.typeFilter = this.typeFilter + ',7';
                 }
               } else {
-                this.typeFilter = "7";
+                this.typeFilter = '7';
               }
             } else {
               // 如果关闭了过滤部门设置 传入prop包含部门也剔除掉
-              if (this.typeFilter.length && this.typeFilter.includes("7")) {
+              if (this.typeFilter.length && this.typeFilter.includes('7')) {
                 this.typeFilter = this.typeFilter
-                  .split(",")
+                  .split(',')
                   .filter((item) => {
-                    return item !== "7";
+                    return item !== '7';
                   })
-                  .join(",");
+                  .join(',');
               }
             }
           }
 
-          if (res[1].data.code === "0") {
+          if (res[1].data.code === '0') {
             const { isValid } = res[1].data.data;
             if (Number(isValid) === 1) {
               if (this.typeFilter.length) {
                 // 如果prop传入的过滤参数不包含经营项目， 则加上经营项目
-                if (!this.typeFilter.includes("6")) {
-                  this.typeFilter = this.typeFilter + ",6";
+                if (!this.typeFilter.includes('6')) {
+                  this.typeFilter = this.typeFilter + ',6';
                 }
               } else {
-                this.typeFilter = "6";
+                this.typeFilter = '6';
               }
             } else {
               // 如果关闭了过滤经营项目设置 传入prop包含经营项目也剔除掉
-              if (this.typeFilter.length && this.typeFilter.includes("6")) {
+              if (this.typeFilter.length && this.typeFilter.includes('6')) {
                 this.typeFilter = this.typeFilter
-                  .split(",")
+                  .split(',')
                   .filter((item) => {
-                    return item !== "6";
+                    return item !== '6';
                   })
-                  .join(",");
+                  .join(',');
               }
             }
           }
@@ -313,7 +313,7 @@ export default {
       this.treeData = [];
       this.expandedKeys = [];
       let form = {
-        parentOrganId: "",
+        parentOrganId: '',
         typeFilter: this.typeFilter,
       };
       this.loading = true;
@@ -350,7 +350,7 @@ export default {
             }
             // 获取货币单位以及面积单位，改变页面的单位显示 (项目信息设置页面根据项目配置)
             this.$textReplace(this.organId.toString());
-            this.$emit("changeTree", this.organId.toString(), this.organName, this.orgtype);
+            this.$emit('changeTree', this.organId.toString(), this.organName, this.orgtype);
           }
         }
       });
@@ -439,7 +439,7 @@ export default {
   watch: {
     organId(nVal, oVal) {
       if (nVal === oVal || !nVal) return;
-      this.$emit("input", nVal);
+      this.$emit('input', nVal);
     },
     defaultOrganName() {
       this.organName = this.defaultOrganName;
@@ -478,7 +478,7 @@ export default {
       position: absolute;
       left: 6px;
       top: 4px;
-      content: "*";
+      content: '*';
       color: #fd7474;
       font-weight: bold;
       z-index: 1;

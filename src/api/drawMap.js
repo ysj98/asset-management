@@ -1,5 +1,5 @@
-import { axiosGet, axiosPost } from "../utils/axios";
-import { drawMap } from "../config/config.url";
+import { axiosGet, axiosPost } from '../utils/axios';
+import { drawMap } from '../config/config.url';
 
 // 上传图层图片
 export function uploadImage(data) {
@@ -64,8 +64,7 @@ export function queryLayerFields(data) {
   return axiosGet(drawMap.queryLayerFields, data);
 }
 export function exportLandDetails(data) {
-  return axiosPost(drawMap.exportLandDetails, data, false, false,{
-    responseType: 'blob'
+  return axiosPost(drawMap.exportLandDetails, data, false, false, {
+    responseType: 'blob',
   });
 }
-

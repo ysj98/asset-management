@@ -2,9 +2,7 @@
   <div class="landMapDetail-page">
     <div class="detail-top-head">
       {{ detailInfo.placeName | filterNullValue }}（车场）
-      <span class="fr pointer" @click="handleSwitch"
-        ><a-icon type="close"
-      /></span>
+      <span class="fr pointer" @click="handleSwitch"><a-icon type="close" /></span>
     </div>
     <div class="detail-page">
       <!-- 详情部分 -->
@@ -14,51 +12,33 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">车场编码：</span
-                  ><span class="detail-main">{{
-                    detailInfo.placeCode | filterNullValue
-                  }}</span>
+                  <span class="detail-label">车场编码：</span><span class="detail-main">{{ detailInfo.placeCode | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">车场面积：</span
-                  ><span class="detail-main">{{
-                    detailInfo.placeArea | filterNullValueSquare
-                  }}</span>
+                  <span class="detail-label">车场面积：</span><span class="detail-main">{{ detailInfo.placeArea | filterNullValueSquare }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">车位数量：</span
-                  ><span class="detail-main">{{
-                    detailInfo.placeNums | filterNullValue
-                  }}</span>
+                  <span class="detail-label">车位数量：</span><span class="detail-main">{{ detailInfo.placeNums | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
                   <!-- TODO:缺少车场类型 -->
-                  <span class="detail-label">车场类型：</span
-                  ><span class="detail-main">{{
-                    detailInfo.typeName | filterNullValue
-                  }}</span>
+                  <span class="detail-label">车场类型：</span><span class="detail-main">{{ detailInfo.typeName | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">地理位置：</span
-                  ><span class="detail-main">{{
-                    detailInfo.position | filterNullValue
-                  }}</span>
+                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">运营项目：</span
-                  ><span class="detail-main">{{
-                    detailInfo.communityName | filterNullValue
-                  }}</span>
+                  <span class="detail-label">运营项目：</span><span class="detail-main">{{ detailInfo.communityName | filterNullValue }}</span>
                 </div>
               </a-col>
             </a-row>
@@ -90,89 +70,89 @@
 </template>
 
 <script>
-import { getFormat } from '@/utils/utils'
-import Tools from "@/utils/utils";
+import { getFormat } from '@/utils/utils';
+import Tools from '@/utils/utils';
 // 获取图片域名
-let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
+let hostImg = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/';
 const columns = [
   {
-    title: "资产数量(个)",
-    dataIndex: "assetNum"
+    title: '资产数量(个)',
+    dataIndex: 'assetNum',
   },
   {
-    title: "资产面积(㎡)",
-    dataIndex: "assetArea"
+    title: '资产面积(㎡)',
+    dataIndex: 'assetArea',
   },
   {
-    title: "资产价值(万元)",
-    dataIndex: "assetValue"
-  }
+    title: '资产价值(万元)',
+    dataIndex: 'assetValue',
+  },
 ];
 
 const columnsTwo = [
   {
-    title: "所有权",
-    dataIndex: "ownerShipPercent"
+    title: '所有权',
+    dataIndex: 'ownerShipPercent',
   },
   {
-    title: "使用权",
-    dataIndex: "onlyUsePercent"
+    title: '使用权',
+    dataIndex: 'onlyUsePercent',
   },
   {
-    title: "有证",
-    dataIndex: "warrantPercent"
+    title: '有证',
+    dataIndex: 'warrantPercent',
   },
   {
-    title: "无证",
-    dataIndex: "noWarrantPercent"
-  }
+    title: '无证',
+    dataIndex: 'noWarrantPercent',
+  },
 ];
 const columnsThree = [
   {
-    title: "运营",
-    dataIndex: "transferOperationAreaPercent"
+    title: '运营',
+    dataIndex: 'transferOperationAreaPercent',
   },
   {
-    title: "自用",
-    dataIndex: "selfUserAreaPercent"
+    title: '自用',
+    dataIndex: 'selfUserAreaPercent',
   },
   {
-    title: "闲置",
-    dataIndex: "idleAreaPercent"
+    title: '闲置',
+    dataIndex: 'idleAreaPercent',
   },
   {
-    title: "占用",
-    dataIndex: "occupationAreaPercent"
+    title: '占用',
+    dataIndex: 'occupationAreaPercent',
   },
   {
-    title: "其他",
-    dataIndex: "otherAreaPercent"
-  }
+    title: '其他',
+    dataIndex: 'otherAreaPercent',
+  },
 ];
 let getDataRow = (obj, columns) => {
-  let keys = columns.map(item => item.dataIndex);
+  let keys = columns.map((item) => item.dataIndex);
   let o = { key: Tools.getUuid() };
-  keys.forEach(item => {
-    if(item === 'assetArea' || item === 'assetValue') {
-      obj[item] = getFormat(obj[item])  
+  keys.forEach((item) => {
+    if (item === 'assetArea' || item === 'assetValue') {
+      obj[item] = getFormat(obj[item]);
     }
     // 给columnsThree中的数据加千分位，由于都有"()"以此判断
-    if(obj[item] && obj[item].toString().includes('(')){
-      let arr = obj[item].split('(')
-      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    if (obj[item] && obj[item].toString().includes('(')) {
+      let arr = obj[item].split('(');
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`;
     }
-    o[item] = obj[item] || "-";
+    o[item] = obj[item] || '-';
   });
   return o;
 };
 export default {
   // 车场详情
-  name: "YardDetail",
+  name: 'YardDetail',
   props: {
     detailInfo: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -195,39 +175,39 @@ export default {
         dataSource: [],
         pagination: false,
       },
-    }
+    };
   },
   watch: {
-    detailInfo (nv) {
+    detailInfo(nv) {
       if (nv) {
-        this.table.dataSource = [getDataRow(nv, columns)]
-        this.tableTwo.dataSource = [getDataRow(nv, columnsTwo)]
-        this.tableThree.dataSource = [getDataRow(nv, columnsThree)]
+        this.table.dataSource = [getDataRow(nv, columns)];
+        this.tableTwo.dataSource = [getDataRow(nv, columnsTwo)];
+        this.tableThree.dataSource = [getDataRow(nv, columnsThree)];
       }
-    }
+    },
   },
   computed: {
-    imgSrc () {
-      return this.detailInfo.picPath ? (hostImg + this.detailInfo.picPath) : ''
-    }
+    imgSrc() {
+      return this.detailInfo.picPath ? hostImg + this.detailInfo.picPath : '';
+    },
   },
   filters: {
-    filterNullValue (val) {
-      return val ? val : '-'
+    filterNullValue(val) {
+      return val ? val : '-';
     },
-    filterNullValueSquare (val) {
-      return val ? (getFormat(val) + '㎡') : '-'
+    filterNullValueSquare(val) {
+      return val ? getFormat(val) + '㎡' : '-';
     },
-    filterNullValueDateRange (detailInfo) {
+    filterNullValueDateRange(detailInfo) {
       if (detailInfo.startDate) {
-        return detailInfo.startDate + '~' + detailInfo.endDate
+        return detailInfo.startDate + '~' + detailInfo.endDate;
       }
-      return '-'
-    }
+      return '-';
+    },
   },
   methods: {
     handleSwitch() {
-      this.$emit("close", "land")
+      this.$emit('close', 'land');
     },
   },
 };
@@ -242,8 +222,8 @@ export default {
   font-size: 13px;
   overflow: hidden;
 }
-.detail-content-right{
-  >img {
+.detail-content-right {
+  > img {
     width: 100%;
     height: auto;
   }

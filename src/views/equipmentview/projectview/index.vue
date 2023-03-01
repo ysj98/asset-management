@@ -15,14 +15,7 @@
       </div>
       <div slot="headerForm">
         <div class="headerForm">
-          <tree-select
-            :allowClear="false"
-            @changeTree="changeTree"
-            class="search-item"
-            :showSearch='true'
-            :multiple="true"
-            :treeCheckable="true"
-          />
+          <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :showSearch="true" :multiple="true" :treeCheckable="true" />
           <a-select
             v-model="queryForm.projectIdList"
             :options="projectData"
@@ -57,91 +50,91 @@
 </template>
 
 <script>
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "@/views/common/treeSelect";
-import OverviewNumber from "@/views/common/OverviewNumber";
-import { handleTableScrollHeight } from "utils/share";
-import { handleDownloadFile } from "utils/utils";
-import {ASSET_MANAGEMENT} from '@/config/config.power'
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '@/views/common/treeSelect';
+import OverviewNumber from '@/views/common/OverviewNumber';
+import { handleTableScrollHeight } from 'utils/share';
+import { handleDownloadFile } from 'utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
 const detailColumns = [
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 250,
-    fixed: "left",
+    fixed: 'left',
   },
   {
-    title: "资产项目编码",
-    dataIndex: "projectCode",
-    width: 250,
-  },
-  {
-    title: "接管机构",
-    dataIndex: "organName",
+    title: '资产项目编码',
+    dataIndex: 'projectCode',
     width: 250,
   },
   {
-    title: "来源方式",
-    dataIndex: "sourceTypeName",
-    width: 150,
-  },
-  {
-    title: "来源方式说明",
-    dataIndex: "souceChannelType",
-    width: 150,
-  },
-  {
-    title: "接管时间",
-    dataIndex: "takeOverDate",
+    title: '接管机构',
+    dataIndex: 'organName',
     width: 250,
   },
   {
-    title: "资产数量",
-    dataIndex: "assetCount",
+    title: '来源方式',
+    dataIndex: 'sourceTypeName',
     width: 150,
   },
   {
-    title: "运营",
-    dataIndex: "operationCount",
+    title: '来源方式说明',
+    dataIndex: 'souceChannelType',
     width: 150,
   },
   {
-    title: "自用",
-    dataIndex: "selfCount",
+    title: '接管时间',
+    dataIndex: 'takeOverDate',
+    width: 250,
+  },
+  {
+    title: '资产数量',
+    dataIndex: 'assetCount',
     width: 150,
   },
   {
-    title: "闲置",
-    dataIndex: "idleCount",
+    title: '运营',
+    dataIndex: 'operationCount',
     width: 150,
   },
   {
-    title: "其他",
-    dataIndex: "otherCount",
+    title: '自用',
+    dataIndex: 'selfCount',
     width: 150,
   },
   {
-    title: "资产原值(元)",
-    dataIndex: "originalValue",
+    title: '闲置',
+    dataIndex: 'idleCount',
     width: 150,
   },
   {
-    title: "最新估值(元)",
-    dataIndex: "marketValue",
+    title: '其他',
+    dataIndex: 'otherCount',
     width: 150,
   },
   {
-    title: "操作",
-    key: "action",
-    fixed: "right",
+    title: '资产原值(元)',
+    dataIndex: 'originalValue',
+    width: 150,
+  },
+  {
+    title: '最新估值(元)',
+    dataIndex: 'marketValue',
+    width: 150,
+  },
+  {
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
     scopedSlots: {
-      customRender: "action",
+      customRender: 'action',
     },
     width: 100,
   },
 ];
 export default {
-  name: "equipmentViewProjectview",
+  name: 'equipmentViewProjectview',
   components: {
     SearchContainer,
     TreeSelect,
@@ -155,9 +148,9 @@ export default {
       isCurrentOrgan: false,
       projectData: [],
       tableOptions: {
-        rowKey: "projectId",
+        rowKey: 'projectId',
         loading: false,
-        scroll: { x: "100%" },
+        scroll: { x: '100%' },
         pagination: false,
         columns: detailColumns,
         dataSource: [],
@@ -166,55 +159,55 @@ export default {
         pageLength: 10,
         pageNo: 1,
         totalCount: 0,
-        location: "fixed",
+        location: 'fixed',
       },
       queryForm: {
-        organId: "",
+        organId: '',
         projectIdList: [],
         current: 0,
       },
       numList: [
         {
-          title: "资产数量",
-          key: "assetCount",
+          title: '资产数量',
+          key: 'assetCount',
           value: 0,
-          fontColor: "#324057",
+          fontColor: '#324057',
         },
         {
-          title: "运营",
-          key: "operationCount",
+          title: '运营',
+          key: 'operationCount',
           value: 0,
-          bgColor: "#4BD288",
+          bgColor: '#4BD288',
         },
         {
-          title: "闲置",
-          key: "idleCount",
+          title: '闲置',
+          key: 'idleCount',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#1890FF',
         },
         {
-          title: "自用",
-          key: "selfCount",
+          title: '自用',
+          key: 'selfCount',
           value: 0,
-          bgColor: "#DD81E6",
+          bgColor: '#DD81E6',
         },
         {
-          title: "其他",
-          key: "otherCount",
+          title: '其他',
+          key: 'otherCount',
           value: 0,
-          bgColor: "#BBC8D6",
+          bgColor: '#BBC8D6',
         },
         {
-          title: "资产原值(元)",
-          key: "originalValue",
+          title: '资产原值(元)',
+          key: 'originalValue',
           value: 0,
-          bgColor: "#FD7474",
+          bgColor: '#FD7474',
         },
         {
-          title: "最新价值(元)",
-          key: "marketValue",
+          title: '最新价值(元)',
+          key: 'marketValue',
           value: 0,
-          bgColor: "#808080",
+          bgColor: '#808080',
         },
       ],
     };
@@ -223,7 +216,7 @@ export default {
     handleQueryTableOptions() {
       return {
         ...this.queryForm,
-        current: Number(this.isCurrentOrgan)
+        current: Number(this.isCurrentOrgan),
       };
     },
     // 导出
@@ -248,12 +241,12 @@ export default {
         .then(async ({ data }) => {
           const { err } = await handleDownloadFile({
             data,
-            fileName: "设备设施资产项目列表.xls",
+            fileName: '设备设施资产项目列表.xls',
           });
           if (err) {
             this.$message.error(err);
           } else {
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           }
         })
         .finally(() => {
@@ -267,7 +260,7 @@ export default {
       };
       console.log({ queryParams });
       this.$router.push({
-        path: "/equipmentprojectview/detail",
+        path: '/equipmentprojectview/detail',
         query: queryParams,
       });
     },
@@ -313,37 +306,33 @@ export default {
     queryTableData(options) {
       const { pageLength, pageNo } = this.paginationObj;
       const req = { ...options, pageNum: pageNo, pageSize: pageLength, organIds: options.organId.toString() };
-      delete req.organId
+      delete req.organId;
       this.tableOptions.loading = true;
-      this.$api.equipmentview
-        .viewProject(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            console.log({ data });
-            this.paginationObj.totalCount = data.count;
-            this.tableOptions.dataSource = data.data || [];
-          } else {
-            this.$message.error(message);
-          }
-          this.tableOptions.loading = false;
-        });
+      this.$api.equipmentview.viewProject(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          console.log({ data });
+          this.paginationObj.totalCount = data.count;
+          this.tableOptions.dataSource = data.data || [];
+        } else {
+          this.$message.error(message);
+        }
+        this.tableOptions.loading = false;
+      });
     },
     queryTotal(options) {
       const req = { ...options, organIds: options.organId.toString() };
-      delete req.organId
+      delete req.organId;
       this.totalLoadingFlag = true;
-      this.$api.equipmentview
-        .equipmentStatistics(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            this.numList.forEach((ele) => {
-              ele.value = Number(data[ele.key] || 0);
-            });
-            this.totalLoadingFlag = false;
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.equipmentview.equipmentStatistics(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          this.numList.forEach((ele) => {
+            ele.value = Number(data[ele.key] || 0);
+          });
+          this.totalLoadingFlag = false;
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     changeTree(organId) {
       this.queryForm.organId = organId;

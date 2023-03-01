@@ -1,6 +1,8 @@
 <template>
   <div class="m-devBreadNav">
-    <div class="toggleMenu"><SG-Button @click="handleToggleMenu" size="small">{{ openMenuStatus ? '收起菜单' : '展开菜单' }}</SG-Button></div>
+    <div class="toggleMenu">
+      <SG-Button @click="handleToggleMenu" size="small">{{ openMenuStatus ? '收起菜单' : '展开菜单' }}</SG-Button>
+    </div>
     <ul class="nav">
       <li v-for="(item, index) in BreadNav" :key="index">
         {{ item }}
@@ -16,26 +18,26 @@
 <script>
 export default {
   computed: {
-    BreadNav () {
-      return this.$store.state.dev.BreadNav
+    BreadNav() {
+      return this.$store.state.dev.BreadNav;
     },
-    openMenuStatus () {
-      return this.$store.state.dev.openMenuStatus
-    }
+    openMenuStatus() {
+      return this.$store.state.dev.openMenuStatus;
+    },
   },
   methods: {
-    handleLogout () {
+    handleLogout() {
       this.$SG_Message.confirmDelete({
         content: '是否退出系统',
         confirmText: '退出',
         onConfirm: () => {
-          this.$store.dispatch('auth/logout')
-        }
-      })
+          this.$store.dispatch('auth/logout');
+        },
+      });
     },
-    handleToggleMenu () {
-      this.$store.commit('dev/updateMenuStatus', !this.openMenuStatus)
-    }
-  }
-}
+    handleToggleMenu() {
+      this.$store.commit('dev/updateMenuStatus', !this.openMenuStatus);
+    },
+  },
+};
 </script>

@@ -7,8 +7,8 @@
  * @FilePath: \asset-management\src\views\inventoryManagement\inventoryPerform\register.vue
  -->
 <script>
-  import detail from './detail'
-  export default {
-    extends: detail
-  }
+import detail from './detail';
+export default {
+  extends: detail,
+};
 </script>

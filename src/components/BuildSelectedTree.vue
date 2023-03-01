@@ -2,7 +2,7 @@
   <a-tree-select
     multiple
     v-model="value"
-    style="width: 200px;"
+    style="width: 200px"
     :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
     :tree-data="treeData"
     :placeholder="placeholder"
@@ -13,32 +13,32 @@
 
 <script>
 export default {
-  name: "BuildSelectedTree",
+  name: 'BuildSelectedTree',
   props: {
     placeholder: {
       type: String,
-      default: "请选择位置"
+      default: '请选择位置',
     },
     // 组织机构 id
     organId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       value: [],
-      treeData: []
+      treeData: [],
     };
   },
   methods: {
-    handleProps:{},
+    handleProps: {},
     onLoadData(treeNode) {
       return new Promise(async (resolve, reject) => {
         const { value } = treeNode;
         try {
           const data = await this.getPositionData({
-            upPositionId: value
+            upPositionId: value,
           });
           treeNode.dataRef.children = this.handlePositionDataToTreeData(data);
           resolve();
@@ -52,15 +52,15 @@ export default {
       return new Promise(async (resolve, reject) => {
         const requestData = {
           organId: this.organId,
-          positionType: "1",
-          upPositionId: "-1"
+          positionType: '1',
+          upPositionId: '-1',
         };
         Object.assign(requestData, options);
         const {
-          data: { code, message, data }
+          data: { code, message, data },
         } = await this.$api.building.positionSelectAsyn(requestData);
-        if (code === "0") {
-          console.log("data", data);
+        if (code === '0') {
+          console.log('data', data);
           resolve(data);
         } else {
           reject(message);
@@ -68,29 +68,29 @@ export default {
       });
     },
     handlePositionDataToTreeData(data) {
-      return data.map(ele => {
+      return data.map((ele) => {
         return {
           value: ele.positionId,
           title: ele.positionName,
           label: ele.positionName,
-          children: []
+          children: [],
         };
       });
     },
     async init() {
       const data = await this.getPositionData();
       this.treeData = this.handlePositionDataToTreeData(data);
-    }
+    },
   },
   mounted() {
     this.init();
   },
-  render(h){
-    const props = this.handleProps()
-    return h('a-tree-select',{
-      props
-    })
-  }
+  render(h) {
+    const props = this.handleProps();
+    return h('a-tree-select', {
+      props,
+    });
+  },
 };
 </script>
 

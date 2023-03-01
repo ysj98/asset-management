@@ -4,8 +4,8 @@
       <span class="section-title blue">权证信息</span>
       <div class="particulars-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8">权证号：{{warrantNbr || '--'}}</a-col>
-          <a-col class="playground-col" :span="8">权证类型：{{kindOfRightName || '--'}}</a-col>
+          <a-col class="playground-col" :span="8">权证号：{{ warrantNbr || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">权证类型：{{ kindOfRightName || '--' }}</a-col>
         </a-row>
       </div>
     </div>
@@ -13,55 +13,37 @@
       <span class="section-title blue">修改的基础信息</span>
       <div class="particulars-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :loading="loading"
-            :columns="basicColumns"
-            :dataSource="basicData"
-            size="middle"
-            :pagination="false"
-            >
+          <a-table :loading="loading" :columns="basicColumns" :dataSource="basicData" size="middle" :pagination="false">
             <div slot="index" slot-scope="text, record, index">{{ +index + 1 }}</div>
-            <div slot="code" slot-scope="text" >{{basicObj[text]}}</div>
+            <div slot="code" slot-scope="text">{{ basicObj[text] }}</div>
           </a-table>
         </div>
       </div>
       <span class="section-title blue">修改的权属人信息</span>
       <div class="particulars-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :loading="loading"
-            :columns="obligeeColumns"
-            :dataSource="obligeeData"
-            size="middle"
-            :pagination="false"
-            >
+          <a-table :loading="loading" :columns="obligeeColumns" :dataSource="obligeeData" size="middle" :pagination="false">
             <div slot="index" slot-scope="text, record, index">{{ +index + 1 }}</div>
-            <div slot="obligeeName" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="certificateTypeName" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="certificateNo" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="percent" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="type" slot-scope="text" >{{typeArr[text]}}</div>
+            <div slot="obligeeName" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="certificateTypeName" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="certificateNo" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="percent" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="type" slot-scope="text">{{ typeArr[text] }}</div>
           </a-table>
         </div>
       </div>
       <span class="section-title blue">修改的抵押信息</span>
       <div class="particulars-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :loading="loading"
-            :columns="mortgageColumns"
-            :dataSource="mortgageData"
-            size="middle"
-            :pagination="false"
-            >
+          <a-table :loading="loading" :columns="mortgageColumns" :dataSource="mortgageData" size="middle" :pagination="false">
             <div slot="index" slot-scope="text, record, index">{{ +index + 1 }}</div>
-            <div slot="mortgageAmount" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="pledgee" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="mortgageBank" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="mortgageYear" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="mortgageName" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="loanContractName" slot-scope="text,record" :class="markRed(text, record.type)">{{text}}</div>
-            <div slot="type" slot-scope="text" >{{typeArr[text]}}</div>
+            <div slot="mortgageAmount" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="pledgee" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="mortgageBank" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="mortgageYear" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="mortgageName" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="loanContractName" slot-scope="text, record" :class="markRed(text, record.type)">{{ text }}</div>
+            <div slot="type" slot-scope="text">{{ typeArr[text] }}</div>
           </a-table>
         </div>
       </div>
@@ -75,114 +57,114 @@ const basicColumns = [
   {
     title: '序号',
     dataIndex: 'index',
-    scopedSlots: {customRender: 'index'},
-    width: 70
+    scopedSlots: { customRender: 'index' },
+    width: 70,
   },
   {
     title: '字段名称',
     dataIndex: 'code',
-    scopedSlots: {customRender: 'code'},
-    width: 120
+    scopedSlots: { customRender: 'code' },
+    width: 120,
   },
   {
     title: '修改前内容',
     dataIndex: 'oldValue',
-    width: 120
+    width: 120,
   },
   {
     title: '修改后内容',
     dataIndex: 'newValue',
-    width: 120
+    width: 120,
   },
-]
+];
 const obligeeColumns = [
   {
     title: '序号',
     dataIndex: 'index',
-    scopedSlots: {customRender: 'index'},
-    width: 70
+    scopedSlots: { customRender: 'index' },
+    width: 70,
   },
   {
     title: '姓名',
     dataIndex: 'obligeeName',
-    scopedSlots: {customRender: 'obligeeName'},
-    width: 120
+    scopedSlots: { customRender: 'obligeeName' },
+    width: 120,
   },
   {
     title: '证件种类',
     dataIndex: 'certificateTypeName',
-    scopedSlots: {customRender: 'certificateTypeName'},
-    width: 120
+    scopedSlots: { customRender: 'certificateTypeName' },
+    width: 120,
   },
   {
     title: '证件号',
     dataIndex: 'certificateNo',
-    scopedSlots: {customRender: 'certificateNo'},
-    width: 120
+    scopedSlots: { customRender: 'certificateNo' },
+    width: 120,
   },
   {
     title: '占用比例（%）',
     dataIndex: 'percent',
-    scopedSlots: {customRender: 'percent'},
-    width: 120
+    scopedSlots: { customRender: 'percent' },
+    width: 120,
   },
   {
     title: '操作类型',
     dataIndex: 'type',
     width: 100,
-    scopedSlots: {customRender: 'type'},
+    scopedSlots: { customRender: 'type' },
   },
-]
+];
 const mortgageColumns = [
   {
     title: '序号',
     dataIndex: 'index',
-    scopedSlots: {customRender: 'index'},
-    width: 70
+    scopedSlots: { customRender: 'index' },
+    width: 70,
   },
   {
     title: '抵押金额（元）',
     dataIndex: 'mortgageAmount',
-    scopedSlots: {customRender: 'mortgageAmount'},
-    width: 120
+    scopedSlots: { customRender: 'mortgageAmount' },
+    width: 120,
   },
   {
     title: '抵押权人',
     dataIndex: 'pledgee',
-    scopedSlots: {customRender: 'pledgee'},
-    width: 120
+    scopedSlots: { customRender: 'pledgee' },
+    width: 120,
   },
   {
     title: '抵押银行',
     dataIndex: 'mortgageBank',
-    scopedSlots: {customRender: 'mortgageBank'},
-    width: 120
+    scopedSlots: { customRender: 'mortgageBank' },
+    width: 120,
   },
   {
     title: '抵押年限',
     dataIndex: 'mortgageYear',
-    scopedSlots: {customRender: 'mortgageYear'},
-    width: 120
+    scopedSlots: { customRender: 'mortgageYear' },
+    width: 120,
   },
   {
     title: '抵押物名称',
     dataIndex: 'mortgageName',
-    scopedSlots: {customRender: 'mortgageName'},
-    width: 120
+    scopedSlots: { customRender: 'mortgageName' },
+    width: 120,
   },
   {
     title: '借款合同编号',
     dataIndex: 'loanContractName',
-    scopedSlots: {customRender: 'loanContractName'},
-    width: 120
+    scopedSlots: { customRender: 'loanContractName' },
+    width: 120,
   },
   {
     title: '操作类型',
     dataIndex: 'type',
     width: 100,
-    scopedSlots: {customRender: 'type'},
+    scopedSlots: { customRender: 'type' },
   },
-]
+];
 const basicObj = {
   rigthTypeName: '权利类型',
   warrantId: '权证id',
@@ -234,11 +216,11 @@ const basicObj = {
   houseStartDate: '房产证起始日期',
   houseEndDate: '房产证截止日期',
   landUse: '土地用途',
-}
+};
 export default {
   components: {},
   props: {},
-  data () {
+  data() {
     return {
       typeArr: ['删除', '新增', '编辑'],
       basicObj,
@@ -254,64 +236,61 @@ export default {
       mortgageData: [],
       obligeeData: [],
       location: '',
-      noPageTools: false
-    }
+      noPageTools: false,
+    };
   },
-  computed: {
-  },
-  watch: {
-  },
+  computed: {},
+  watch: {},
   methods: {
-    markRed (name, type) {
-      return (name.includes('->') || type != 2) ? 'red' : ''
+    markRed(name, type) {
+      return name.includes('->') || type != 2 ? 'red' : '';
     },
     // 查询详情
-    query () {
+    query() {
       let obj = {
-        logId: this.$route.query.logId
-      }
-      this.$api.ownership.logDetail(obj).then(res => {
+        logId: this.$route.query.logId,
+      };
+      this.$api.ownership.logDetail(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.basicData = data.ownershipWarrantLog.filter(item => {
-            return this.basicObj[item.code]
-          })
-          console.log(this.basicData)
-          this.obligeeData = data.obligeeLogList
-          this.mortgageData = data.mortgageLogList
+          let data = res.data.data;
+          this.basicData = data.ownershipWarrantLog.filter((item) => {
+            return this.basicObj[item.code];
+          });
+          console.log(this.basicData);
+          this.obligeeData = data.obligeeLogList;
+          this.mortgageData = data.mortgageLogList;
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
   },
-  created () {
+  created() {},
+  mounted() {
+    this.warrantNbr = this.$route.query.warrantNbr;
+    this.kindOfRightName = this.$route.query.kindOfRightName;
+    this.query();
   },
-  mounted () {
-    this.warrantNbr = this.$route.query.warrantNbr
-    this.kindOfRightName = this.$route.query.kindOfRightName
-    this.query()
-  }
-}
+};
 </script>
 <style lang="less" scoped>
 .particulars {
-  .particulars-nav{
-      padding: 42px 126px 20px 70px;
-      .particulars-obj {
-        padding: 20px 0 20px 40px;
-        .playground-row {
-          .playground-col {
-            // height: 40px;
-            line-height: 40px;
-            font-size: 12px;
-          }
+  .particulars-nav {
+    padding: 42px 126px 20px 70px;
+    .particulars-obj {
+      padding: 20px 0 20px 40px;
+      .playground-row {
+        .playground-col {
+          // height: 40px;
+          line-height: 40px;
+          font-size: 12px;
         }
       }
-      .correspondingTask {
-        margin:35px 40px 0 40px;
-        border: 1px solid #F0F2F5;
-      }
+    }
+    .correspondingTask {
+      margin: 35px 40px 0 40px;
+      border: 1px solid #f0f2f5;
+    }
   }
   .nav-box {
     padding-bottom: 100px;
@@ -319,12 +298,11 @@ export default {
   .file {
     margin: 20px 0 0 40px;
   }
-  
 }
 .red {
-    color: red !important
-  }
- /deep/td {
-    white-space: normal !important
-  }
+  color: red !important;
+}
+/deep/td {
+  white-space: normal !important;
+}
 </style>

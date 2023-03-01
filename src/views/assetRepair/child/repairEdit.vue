@@ -5,11 +5,7 @@
       <SG-Title title="基础信息" />
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="维修单名称"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="维修单名称" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
               placeholder="请输入申请单名称"
               @change="nameChange"
@@ -26,20 +22,12 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="所属组织机构"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="所属组织机构" :label-col="labelCol" :wrapper-col="wrapperCol">
             {{ organName }}
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="资产项目"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="资产项目" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               showSearch
               style="width: 100%"
@@ -47,30 +35,20 @@
               placeholder="请选择资产项目"
               :filterOption="filterOption"
               @change="projectSelect"
-              v-decorator="[
-                'projectId',
-                { rules: [{ required: true, message: '请选择资产项目' }] },
-              ]"
+              v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
             />
           </a-form-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="资产类型"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="资产类型" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               style="width: 100%"
               placeholder="请选择资产类型"
               :options="$addTitle(typeOptions)"
               @change="assetTypeSelect"
-              v-decorator="[
-                'assetType',
-                { rules: [{ required: true, message: '请选择资产类型' }] },
-              ]"
+              v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
             />
           </a-form-item>
         </a-col>
@@ -84,87 +62,48 @@
             :validate-status="validateRent ? 'error' : ''"
           >
             <span>
-              <a-tag
-                closable
-                v-for="m in selectedList"
-                :key="m.assetId"
-                style="background: #fff"
-                @close="handleAsset(m)"
-              >
+              <a-tag closable v-for="m in selectedList" :key="m.assetId" style="background: #fff" @close="handleAsset(m)">
                 {{ m.assetName }}
               </a-tag>
-              <a-tag
-                color="#108ee9"
-                @click="handleAsset('')"
-                v-if="selectedList.length !== 1"
-              >
+              <a-tag color="#108ee9" @click="handleAsset('')" v-if="selectedList.length !== 1">
                 <a-icon type="home" style="margin-right: 3px" />选择
               </a-tag>
             </span>
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="资产编码"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
-            <span v-if="selectedList.length > 0">{{
-              selectedList[0].assetCode
-            }}</span>
+          <a-form-item label="资产编码" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <span v-if="selectedList.length > 0">{{ selectedList[0].assetCode }}</span>
             <span v-else>- -</span>
           </a-form-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="资产分类"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
-            <span v-if="selectedList.length > 0">{{
-              selectedList[0].assetCategoryName
-            }}</span>
+          <a-form-item label="资产分类" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <span v-if="selectedList.length > 0">{{ selectedList[0].assetCategoryName }}</span>
             <span v-else>- -</span>
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="资产位置"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
-            <span v-if="selectedList.length > 0">{{
-              selectedList[0].address
-            }}</span>
+          <a-form-item label="资产位置" :label-col="labelCol" :wrapper-col="wrapperCol">
+            <span v-if="selectedList.length > 0">{{ selectedList[0].address }}</span>
             <span v-else>- -</span>
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="维修人（单位）"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="维修人（单位）" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input placeholder="请输入维修人名称" v-model="fixMan" />
           </a-form-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="开始日期"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="开始日期" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :style="allWidth"
               placeholder="请选择开始日期"
-              v-decorator="[
-                'startDate',
-                { rules: [{ required: true, message: '请选择开始日期' }] },
-              ]"
+              v-decorator="['startDate', { rules: [{ required: true, message: '请选择开始日期' }] }]"
               v-model="startDate"
               @openChange="handleStartOpenChange"
               :disabled-date="disabledStartDate"
@@ -172,18 +111,11 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="完成日期"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="完成日期" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :style="allWidth"
               placeholder="请选择完成日期"
-              v-decorator="[
-                'endDate',
-                { rules: [{ required: true, message: '请选择完成日期' }] },
-              ]"
+              v-decorator="['endDate', { rules: [{ required: true, message: '请选择完成日期' }] }]"
               :open="endOpen"
               v-model="endDate"
               @openChange="handleEndOpenChange"
@@ -192,11 +124,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="维修费用（元）"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="维修费用（元）" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
               placeholder="请输入维修费用"
               v-model="fixPayment"
@@ -243,9 +171,10 @@
         <a-col :span="24">
           <a-form-item :colon="false" v-bind="formItemTextarea">
             <label slot="label">附&emsp;&emsp;件：</label>
-            <UploadFile type="all" v-model="uploadList" :maxSize="10240" >
+            <UploadFile type="all" v-model="uploadList" :maxSize="10240">
               <div slot="tips">
-                上传的文件最多为 5 个，单文件大小最大为 10M，支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。
+                上传的文件最多为 5 个，单文件大小最大为 10M，支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt,
+                pdf。
               </div>
             </UploadFile>
           </a-form-item>
@@ -255,23 +184,12 @@
       <a-form-item label="">
         <div class="assetInfo">
           <!-- 资产表格部分 -->
-          <a-table
-            size="middle"
-            :loading="loading"
-            :pagination="false"
-            :columns="columns"
-            :dataSource="dataSource"
-            :bordered="true"
-          >
+          <a-table size="middle" :loading="loading" :pagination="false" :columns="columns" :dataSource="dataSource" :bordered="true">
             <template slot="payee">
               <div class="icon-red">收款人(单位)</div>
             </template>
             <template slot="payee" slot-scope="text, record">
-              <a-input
-                placeholder="请输入收款人（单位）"
-                v-model="record.payee"
-                :maxLength="200"
-              />
+              <a-input placeholder="请输入收款人（单位）" v-model="record.payee" :maxLength="200" />
             </template>
             <template slot="costId" slot-scope="text, record">
               <a-select
@@ -289,11 +207,7 @@
               <span class="icon-red">付款金额(元)</span>
             </template>
             <template slot="paymentAmount" slot-scope="text, record">
-              <a-input
-                placeholder="请输入付款金额"
-                v-model="record.paymentAmount"
-                :maxLength="13"
-              />
+              <a-input placeholder="请输入付款金额" v-model="record.paymentAmount" :maxLength="13" />
             </template>
             <template slot="paymentDate">
               <span class="icon-red">付款时间</span>
@@ -302,27 +216,17 @@
               <a-date-picker v-model="record.paymentDate" />
             </template>
             <template slot="followUpUser" slot-scope="text, record">
-              <a-input
-                placeholder="请输入跟进人"
-                v-model="record.followUpUser"
-                :maxLength="30"
-              />
+              <a-input placeholder="请输入跟进人" v-model="record.followUpUser" :maxLength="30" />
             </template>
             <template slot="remark" slot-scope="text, record">
-              <a-input
-                placeholder="请输入备注"
-                :maxLength="200"
-                v-model="record.remark"
-              />
+              <a-input placeholder="请输入备注" :maxLength="200" v-model="record.remark" />
             </template>
             <template slot="operation" slot-scope="text, record, index">
               <a style="color: #ff0000" @click="removeRent(index)">删除</a>
             </template>
           </a-table>
           <div class="mt15 tc">
-            <a-button icon="plus" type="dashed" block @click="pushTableLine"
-              >添加付款计划</a-button
-            >
+            <a-button icon="plus" type="dashed" block @click="pushTableLine">添加付款计划</a-button>
           </div>
         </div>
       </a-form-item>
@@ -331,95 +235,78 @@
     <FormFooter style="border: none" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交审批</SG-Button>
-        <SG-Button
-          style="margin-left: 12px"
-          type="primary"
-          weaken
-          @click="save()"
-          >保存草稿</SG-Button
-        >
+        <SG-Button style="margin-left: 12px" type="primary" weaken @click="save()">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
 
     <!-- 资产列表组件 -->
-    <assetModal
-      ref="AssetListMoal"
-      :proId="projectId"
-      :assetType="assetType"
-      :organId="organId"
-      :queryType="6"
-      @getAsset="getAsset"
-    ></assetModal>
+    <assetModal ref="AssetListMoal" :proId="projectId" :assetType="assetType" :organId="organId" :queryType="6" @getAsset="getAsset"></assetModal>
   </a-spin>
 </template>
 
 <script>
 const columns = [
   {
-    title: "编号",
-    dataIndex: "order",
-    align: "center",
-    width: "7%",
+    title: '编号',
+    dataIndex: 'order',
+    align: 'center',
+    width: '7%',
   },
   {
-    slots: { title: "payee" },
-    dataIndex: "payee",
-    scopedSlots: { customRender: "payee" },
-    align: "center",
-    width: "15%",
+    slots: { title: 'payee' },
+    dataIndex: 'payee',
+    scopedSlots: { customRender: 'payee' },
+    align: 'center',
+    width: '15%',
   },
   {
-    title: "费用科目",
-    dataIndex: "costId",
-    scopedSlots: { customRender: "costId" },
-    align: "center",
-    width: "13%",
+    title: '费用科目',
+    dataIndex: 'costId',
+    scopedSlots: { customRender: 'costId' },
+    align: 'center',
+    width: '13%',
   },
   {
-    slots: { title: "paymentAmount" },
-    scopedSlots: { customRender: "paymentAmount" },
-    dataIndex: "paymentAmount",
-    align: "center",
-    width: "10%",
+    slots: { title: 'paymentAmount' },
+    scopedSlots: { customRender: 'paymentAmount' },
+    dataIndex: 'paymentAmount',
+    align: 'center',
+    width: '10%',
   },
   {
-    slots: { title: "paymentDate" },
-    scopedSlots: { customRender: "paymentDate" },
-    dataIndex: "paymentDate",
-    align: "center",
-    width: "17%",
+    slots: { title: 'paymentDate' },
+    scopedSlots: { customRender: 'paymentDate' },
+    dataIndex: 'paymentDate',
+    align: 'center',
+    width: '17%',
   },
   {
-    title: "跟进人",
-    dataIndex: "followUpUser",
-    scopedSlots: { customRender: "followUpUser" },
-    align: "center",
-    width: "10%",
+    title: '跟进人',
+    dataIndex: 'followUpUser',
+    scopedSlots: { customRender: 'followUpUser' },
+    align: 'center',
+    width: '10%',
   },
   {
-    title: "备注",
-    dataIndex: "remark",
-    scopedSlots: { customRender: "remark" },
-    align: "center",
+    title: '备注',
+    dataIndex: 'remark',
+    scopedSlots: { customRender: 'remark' },
+    align: 'center',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    align: "center",
-    width: "7%",
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
+    align: 'center',
+    width: '7%',
   },
 ];
-import {
-  queryProjectListByOrganId,
-  filterOption,
-  queryAssetTypeList,
-} from "src/views/common/commonQueryApi";
-import assetModal from "./assetModal";
-import moment from "moment";
-import FormFooter from "@/components/FormFooter.vue";
-import { utils } from "@/utils/utils";
+import { queryProjectListByOrganId, filterOption, queryAssetTypeList } from 'src/views/common/commonQueryApi';
+import assetModal from './assetModal';
+import moment from 'moment';
+import FormFooter from '@/components/FormFooter.vue';
+import { utils } from '@/utils/utils';
 export default {
   components: { assetModal, FormFooter },
   data() {
@@ -435,33 +322,33 @@ export default {
           sm: { span: 3 },
         },
       },
-      repairFormName: "", // 维修单名称
-      organName: "", // 所属组织机构
+      repairFormName: '', // 维修单名称
+      organName: '', // 所属组织机构
       projectOptions: [], // 资产项目
-      projectId: "", // 资产项目ID
-      assetType: "", // 资产类型
+      projectId: '', // 资产项目ID
+      assetType: '', // 资产类型
       typeOptions: [], // 资产类型选项
       validateRent: false, // 自定义校验auditUsers标志
       rentList: [],
-      fixMan: "", // 维修人名称
-      fixPayment: "", // 维修费用
-      allWidth: "width: 214px",
+      fixMan: '', // 维修人名称
+      fixPayment: '', // 维修费用
+      allWidth: 'width: 214px',
       endOpen: false,
       startDate: null, // 开始时间
       endDate: null, // 结束时间
-      explain: "", // 维修说明
+      explain: '', // 维修说明
       uploadList: [], // 上传列表
       loading: false,
       dataSource: [
         {
-          payee: "",
+          payee: '',
           costId: undefined,
-          paymentAmount: "",
+          paymentAmount: '',
           paymentDate: moment(Date.now()),
-          followUpUser: "",
-          remark: "",
+          followUpUser: '',
+          remark: '',
           order: 1,
-          remark: "",
+          remark: '',
         },
       ],
       selectedList: [],
@@ -481,57 +368,55 @@ export default {
     filterOption,
     getMaintainInfo() {
       if (this.maintainId) {
-        this.$api.assetRent
-          .getMaintainInfo({ maintainId: this.maintainId })
-          .then((res) => {
-            if (+res.data.code === 0) {
-              let r = res.data.data;
-              this.form.setFieldsValue({
-                repairFormName: r.maintainName,
-                projectId: r.projectId,
-                assetType: r.assetTypeName,
-                startDate: r.startDate ? moment(r.startDate) : "",
-                endDate: r.completeDate ? moment(r.completeDate) : "",
-                explain: r.remark,
-              });
-              this.organName = r.organName;
-              this.repairFormName = r.maintainName;
-              this.projectId = r.projectId;
-              this.assetType = r.assetType;
-              this.selectedList = [
-                {
-                  assetId: r.assetId,
-                  assetName: r.assetName,
-                  assetCode: r.assetCode,
-                  assetCategoryName: r.objectTypeName,
-                  address: r.address,
-                  assetObjectId: r.assetObjectId,
-                },
-              ];
-              this.fixMan = r.maintainUserId;
-              this.startDate = r.startDate;
-              this.endDate = r.completeDate;
-              this.fixPayment = r.maintainCost;
-              this.explain = r.remark;
-              // 附件列表处理
-              let attachment = [];
-              r.attachmentList.forEach((item) => {
-                let obj = {
-                  url: item.attachmentPath,
-                  name: item.newAttachmentName,
-                };
-                attachment.push(obj);
-                this.uploadList = attachment;
-              });
-              this.dataSource = utils.deepClone(r.detailList);
-              this.dataSource.forEach((item) => {
-                item.paymentDate = moment(item.paymentDate);
-                item.order = 1;
-              });
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
+        this.$api.assetRent.getMaintainInfo({ maintainId: this.maintainId }).then((res) => {
+          if (+res.data.code === 0) {
+            let r = res.data.data;
+            this.form.setFieldsValue({
+              repairFormName: r.maintainName,
+              projectId: r.projectId,
+              assetType: r.assetTypeName,
+              startDate: r.startDate ? moment(r.startDate) : '',
+              endDate: r.completeDate ? moment(r.completeDate) : '',
+              explain: r.remark,
+            });
+            this.organName = r.organName;
+            this.repairFormName = r.maintainName;
+            this.projectId = r.projectId;
+            this.assetType = r.assetType;
+            this.selectedList = [
+              {
+                assetId: r.assetId,
+                assetName: r.assetName,
+                assetCode: r.assetCode,
+                assetCategoryName: r.objectTypeName,
+                address: r.address,
+                assetObjectId: r.assetObjectId,
+              },
+            ];
+            this.fixMan = r.maintainUserId;
+            this.startDate = r.startDate;
+            this.endDate = r.completeDate;
+            this.fixPayment = r.maintainCost;
+            this.explain = r.remark;
+            // 附件列表处理
+            let attachment = [];
+            r.attachmentList.forEach((item) => {
+              let obj = {
+                url: item.attachmentPath,
+                name: item.newAttachmentName,
+              };
+              attachment.push(obj);
+              this.uploadList = attachment;
+            });
+            this.dataSource = utils.deepClone(r.detailList);
+            this.dataSource.forEach((item) => {
+              item.paymentDate = moment(item.paymentDate);
+              item.order = 1;
+            });
+          } else {
+            this.$message.error(res.data.message);
+          }
+        });
       }
     },
     // 维修单名称
@@ -540,12 +425,7 @@ export default {
     },
     // 根据organId查询资产项目
     queryProjectByOrganId(organId) {
-      organId &&
-        queryProjectListByOrganId(organId).then((list) =>
-          list
-            ? (this.projectOptions = list)
-            : this.$message.error("查询资产项目失败")
-        );
+      organId && queryProjectListByOrganId(organId).then((list) => (list ? (this.projectOptions = list) : this.$message.error('查询资产项目失败')));
     },
     // 资产项目选择
     projectSelect(val) {
@@ -560,26 +440,22 @@ export default {
     // 查询资产类型--平台字典
     queryAssetType() {
       queryAssetTypeList().then((list) => {
-        list
-          ? (this.typeOptions = list)
-          : this.$message.error("查询资产类型失败");
+        list ? (this.typeOptions = list) : this.$message.error('查询资产类型失败');
       });
     },
     // 删除、选择资产
     handleAsset(m) {
       if (m) {
         let arr = [];
-        this.selectedList = this.selectedList.filter(
-          (v) => v.assetId !== m.assetId
-        );
+        this.selectedList = this.selectedList.filter((v) => v.assetId !== m.assetId);
         this.selectedList.forEach((j) => {
           arr.push(j.assetId);
         });
       } else {
         // this.close = true;
         if (!this.projectId && !this.assetType) {
-          this.form.validateFieldsAndScroll(["projectId", "assetType"], () => {
-            this.$message.warn("请先选择数据");
+          this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
+            this.$message.warn('请先选择数据');
             return;
           });
         } else {
@@ -627,13 +503,13 @@ export default {
     // 删除付款计划
     removeRent(index) {
       if (this.dataSource.length === 1) {
-        this.$message.error("请至少保留一行数据!");
+        this.$message.error('请至少保留一行数据!');
         return;
       }
       this.$SG_Modal.confirm({
         content: `确认要删除吗？?`,
-        okText: "确定",
-        cancelText: "再想想",
+        okText: '确定',
+        cancelText: '再想想',
         onOk: () => {
           this.dataSource.splice(index, 1);
         },
@@ -661,12 +537,12 @@ export default {
       let o = {
         key: Date.now(),
         order: this.dataSource.length + 1,
-        payee: "",
+        payee: '',
         costId: undefined,
-        paymentAmount: "",
+        paymentAmount: '',
         paymentDate: moment(Date.now()),
-        followUpUser: "",
-        remark: "",
+        followUpUser: '',
+        remark: '',
       };
       this.dataSource.push(o);
     },
@@ -675,9 +551,7 @@ export default {
       let flag = true;
       utils.each(this.dataSource, (item, i) => {
         if (!item.payee) {
-          this.$message.error(
-            `请填写付款计划第 ${item.order} 行，收款人（单位）!`
-          );
+          this.$message.error(`请填写付款计划第 ${item.order} 行，收款人（单位）!`);
           flag = false;
           return false;
         }
@@ -716,7 +590,7 @@ export default {
       });
       let arr = utils.deepClone(this.dataSource);
       arr.forEach((item) => {
-        item.paymentDate = moment(item.paymentDate).format("YYYY-MM-DD");
+        item.paymentDate = moment(item.paymentDate).format('YYYY-MM-DD');
       });
       let obj = {
         maintainId: this.maintainId,
@@ -728,19 +602,17 @@ export default {
         assetId: this.selectedList[0].assetId,
         maintainUserId: this.fixMan,
         maintainCost: Number(this.fixPayment),
-        startDate: moment(this.startDate).format("YYYY-MM-DD"),
-        completeDate: moment(this.endDate).format("YYYY-MM-DD"),
+        startDate: moment(this.startDate).format('YYYY-MM-DD'),
+        completeDate: moment(this.endDate).format('YYYY-MM-DD'),
         remark: this.explain,
-        saveType: val === "submit" ? 1 : 0,
+        saveType: val === 'submit' ? 1 : 0,
         attachmentList: upList,
         detailList: arr,
       };
       this.$api.assetRent.submitMaintain(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          this.$message.success(
-            `${val === "submit" ? "提交审批" : "保存草稿"}成功`
-          );
-          this.$router.push("/repairRegister");
+          this.$message.success(`${val === 'submit' ? '提交审批' : '保存草稿'}成功`);
+          this.$router.push('/repairRegister');
         } else {
           this.$message.error(res.data.message);
         }
@@ -754,7 +626,7 @@ export default {
             if (!this.validateFrom(values)) {
               return;
             }
-            this.submitMaintain("submit");
+            this.submitMaintain('submit');
           }
         });
       } else {
@@ -764,13 +636,13 @@ export default {
             if (!this.validateFrom(values)) {
               return;
             }
-            this.submitMaintain("");
+            this.submitMaintain('');
           }
         });
       }
     },
     cancel() {
-      this.$router.push("/repairRegister");
+      this.$router.push('/repairRegister');
     },
   },
   created() {
@@ -808,9 +680,8 @@ export default {
       }
     }
   }
-  
 }
 /deep/.sg-uploadFile {
-    max-width: 100% !important;
-  }
+  max-width: 100% !important;
+}
 </style>

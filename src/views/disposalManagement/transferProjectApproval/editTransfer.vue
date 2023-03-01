@@ -1,6 +1,6 @@
 <script>
-import "./addAndEdit.less";
-import createTransfer from "./createTransfer";
+import './addAndEdit.less';
+import createTransfer from './createTransfer';
 export default {
   extends: createTransfer,
 };
@@ -11,7 +11,7 @@ export default {
   label {
     font-size: 13px;
     color: #959dab;
-    font-family: "Microsoft Yahei";
+    font-family: 'Microsoft Yahei';
   }
 }
 /deep/ .ant-form-item-children {
@@ -20,7 +20,7 @@ export default {
   textarea {
     font-size: 15px;
     color: #49505e;
-    font-family: "Microsoft Yahei";
+    font-family: 'Microsoft Yahei';
   }
 }
 </style>

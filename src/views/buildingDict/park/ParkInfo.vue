@@ -8,24 +8,13 @@
       <!-- 搜索框 -->
       <div class="top-search-one">
         <div>
-          <SG-Button
-            v-if="createPower"
-            @click="goPage('create')"
-            class="mr10"
-            icon="plus"
-            type="primary"
-          >新增</SG-Button>
-          <SG-Button
-              v-if="hasPowerExport && false"
-              @click="exportList"
-              class="mr10">
-            <segiIcon type="#icon-ziyuan10" class="mr10" />导出
-          </SG-Button>
+          <SG-Button v-if="createPower" @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
+          <SG-Button v-if="hasPowerExport && false" @click="exportList" class="mr10"> <segiIcon type="#icon-ziyuan10" class="mr10" />导出 </SG-Button>
         </div>
 
         <div style="overflow: visible">
           <!-- 全部运营项目-->
-<!--            mode="multiple"-->
+          <!--            mode="multiple"-->
           <a-select
             showSearch
             placeholder="请选择运营项目"
@@ -46,8 +35,8 @@
             menu-code="PARKING_PLACE_RESOURCE_TYPE"
             v-model="queryCondition.typeId"
           />
-           <!-- 是否登记资产 -->
-           <a-select
+          <!-- 是否登记资产 -->
+          <a-select
             placeholder="是否登记资产"
             v-model="queryCondition.amsAsset"
             :style="allWidth"
@@ -57,12 +46,7 @@
             notFoundContent="没有查询到数据"
           />
           <!-- 资产名称或编码 -->
-          <a-input
-            :maxLength="30"
-            placeholder="车场名称/编码"
-            v-model="queryCondition.nameOrCode"
-            :style="allStyle"
-          />
+          <a-input :maxLength="30" placeholder="车场名称/编码" v-model="queryCondition.nameOrCode" :style="allStyle" />
           <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
         </div>
       </div>
@@ -74,17 +58,14 @@
           :pagination="false"
           :columns="table.columns"
           :dataSource="table.dataSource"
-          :locale="{emptyText: '暂无数据'}"
-          :scroll="{x: 1200}"
+          :locale="{ emptyText: '暂无数据' }"
+          :scroll="{ x: 1200 }"
         >
           <template slot="matchingName" slot-scope="text, record">
-            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+            <span class="nav_name" @click="goPage('detail', record)">{{ text }}</span>
           </template>
           <template slot="operation" slot-scope="text, record">
-            <OperationPopover
-              :operationData="record.operationDataBtn"
-              @operationFun="operationFun($event, record)"
-            ></OperationPopover>
+            <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -100,24 +81,16 @@
   </div>
 </template>
 <script>
-import noDataTips from "@/components/noDataTips";
-import TreeSelect from "@/views/common/treeSelect";
-import segiIcon from "@/components/segiIcon.vue";
-import { utils, getFormat } from "@/utils/utils";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OperationPopover from "@/components/OperationPopover";
+import noDataTips from '@/components/noDataTips';
+import TreeSelect from '@/views/common/treeSelect';
+import segiIcon from '@/components/segiIcon.vue';
+import { utils, getFormat } from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OperationPopover from '@/components/OperationPopover';
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
-import {
-  operationTypes,
-  allStyle,
-  columns,
-  queryCondition,
-  communityIdOpt,
-  parkTypeOpt,
-  registerList
-} from "./dict.js";
-import DictSelect from "../../common/DictSelect";
-const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
+import { operationTypes, allStyle, columns, queryCondition, communityIdOpt, parkTypeOpt, registerList } from './dict.js';
+import DictSelect from '../../common/DictSelect';
+const allWidth = { width: '170px', 'margin-right': '10px', 'margin-top': '14px' };
 export default {
   components: {
     DictSelect,
@@ -130,7 +103,7 @@ export default {
     organIdInfo: {
       type: Object,
       default: () => {
-        return ({})
+        return {};
       },
     },
     isCurrent: {
@@ -162,27 +135,23 @@ export default {
   },
   watch: {
     $route() {
-      if (
-        this.$route.path === "/buildingDict" &&
-        this.$route.query.refresh &&
-        this.$route.query.showKey === "park"
-      ) {
+      if (this.$route.path === '/buildingDict' && this.$route.query.refresh && this.$route.query.showKey === 'park') {
         this.queryCondition.pageNo = 1;
         this.queryCondition.pageLength = 10;
         this.query();
       }
     },
     organIdInfo: {
-      handler({organId, organName}) {
+      handler({ organId, organName }) {
         if (organId) {
-          this.organIdChange(organId, organName)
+          this.organIdChange(organId, organName);
         }
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
     isCurrent() {
-      this.queryCondition.onlyCurrentNode = this.isCurrent
+      this.queryCondition.onlyCurrentNode = this.isCurrent;
     },
   },
   mounted() {
@@ -196,33 +165,34 @@ export default {
         // communityId: this.queryCondition.communityId.join(","),
       };
       this.table.loading = true;
-      this.$api.building.parkApiList(data).then(({data: res}) => {
-        this.table.dataSource = []
-        this.table.totalCount = 0
+      this.$api.building.parkApiList(data).then(({ data: res }) => {
+        this.table.dataSource = [];
+        this.table.totalCount = 0;
         this.table.loading = false;
-        if (res.code === "0") {
+        if (res.code === '0') {
           let result = res.data.resultList || [];
           let btnArr = this.createOperationBtn();
           this.table.dataSource = result.map((item) => {
             return {
               key: utils.getUuid(),
               ...item,
-              placeArea: getFormat(item.placeArea, '') || "-",
-              placeNums: getFormat(item.placeNums, '') || "-",
+              placeArea: getFormat(item.placeArea, '') || '-',
+              placeNums: getFormat(item.placeNums, '') || '-',
               operationDataBtn: btnArr,
             };
           });
           this.table.totalCount = res.data.Paginator.totalCount || 0;
-          this.table.dataSource.length && this.table.dataSource.push({
-            placeId: '合计',
-            placeArea: getFormat(res.data.dataTotal.placeAreaTotal, '') || "-",
-            placeNums: getFormat(res.data.dataTotal.placeNumsTotal, '') || "-",
-          })
+          this.table.dataSource.length &&
+            this.table.dataSource.push({
+              placeId: '合计',
+              placeArea: getFormat(res.data.dataTotal.placeAreaTotal, '') || '-',
+              placeNums: getFormat(res.data.dataTotal.placeNumsTotal, '') || '-',
+            });
         } else {
           this.$message.error(res.message);
           this.table.loading = false;
         }
-      })
+      });
     },
     // 重置分页查询
     searchQuery() {
@@ -234,7 +204,7 @@ export default {
         organId: this.queryCondition.organId,
       };
       this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let resultArr = result.map((item) => {
             return {
@@ -243,64 +213,57 @@ export default {
               ...item,
             };
           });
-          this.communityIdOpt = [
-            ...utils.deepClone(communityIdOpt),
-            ...resultArr,
-          ];
+          this.communityIdOpt = [...utils.deepClone(communityIdOpt), ...resultArr];
         }
       });
     },
     // orangId改变
-    organIdChange(organId,organName) {
-      console.log("一级物业改变", organId);
+    organIdChange(organId, organName) {
+      console.log('一级物业改变', organId);
       this.organName = organName;
       if (!organId) {
         return;
       }
-      this.queryCondition.organId = organId
-      this.queryCondition.communityId = "" // [""]
+      this.queryCondition.organId = organId;
+      this.queryCondition.communityId = ''; // [""]
       this.queryCommunityListByOrganId();
       // 异步接口
       this.searchQuery();
     },
     communityIdSelect(value) {
       this.$nextTick(function () {
-        this.queryCondition.communityId = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.communityId,
-          this.communityIdSelect
-        );
+        this.queryCondition.communityId = this.handleMultipleSelectValue(value, this.queryCondition.communityId, this.communityIdSelect);
       });
     },
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      let hasAll = data.indexOf("") !== -1;
+      let hasAll = data.indexOf('') !== -1;
       let len = data.length;
       // 如果点击全选或者取消全选
-      if (data[len - 1] === "" || len === 0) {
-        return (data = [""].join(","));
+      if (data[len - 1] === '' || len === 0) {
+        return (data = [''].join(','));
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === dataOptions.length - 1) {
-        return (data = [""].join(","));
+        return (data = [''].join(','));
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
-        data.splice(data.indexOf(""), 1);
+        data.splice(data.indexOf(''), 1);
       }
-      return data.join(",");
+      return data.join(',');
     },
     // 生成操作按钮
     createOperationBtn() {
       // 审批状态
       let arr = [];
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_PARK_EDIT)) {
-        arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+        arr.push({ iconType: 'edit', text: '编辑', editType: 'edit' });
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_PARK_DELETE)) {
-        arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+        arr.push({ iconType: 'delete', text: '删除', editType: 'delete' });
       }
-      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      arr.push({ iconType: 'file-text', text: '详情', editType: 'detail' });
       return arr;
     },
     // 处理按钮权限
@@ -309,48 +272,48 @@ export default {
         this.createPower = true;
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
-        this.hasPowerExport = true
+        this.hasPowerExport = true;
       }
     },
     exportList() {
       let data = {
         ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(","),
+        communityId: this.queryCondition.communityId.join(','),
       };
       delete data.pageNo;
       delete data.pageLength;
       this.$api.building.blankApiExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
-        let a = document.createElement("a");
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `楼盘字典车场信息.xls`;
-        a.style.display = "none";
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
       });
     },
-    importList () {},
+    importList() {},
     // 操作事件函数
     operationFun(type, record) {
-      console.log("操作事件", type, record);
-      if (["edit", "detail"].includes(type)) {
+      console.log('操作事件', type, record);
+      if (['edit', 'detail'].includes(type)) {
         this.goPage(type, record);
       }
-      if (["delete"].includes(type)) {
+      if (['delete'].includes(type)) {
         this.$SG_Modal.confirm({
           content: `确定要删除该车场信息吗?`,
-          okText: "确定",
-          cancelText: "关闭",
+          okText: '确定',
+          cancelText: '关闭',
           onOk: () => {
             let data = {
               organId: this.queryCondition.organId,
               placeId: record.placeId,
             };
             this.$api.building.parkApiDelete(data).then((res) => {
-              if (res.data.code === "0") {
-                this.$message.success("删除成功!");
+              if (res.data.code === '0') {
+                this.$message.success('删除成功!');
                 this.query();
               } else {
                 this.$message.error(res.data.message);
@@ -369,7 +332,7 @@ export default {
           type,
         }
       );
-      if (["edit", "detail"].includes(type)) {
+      if (['edit', 'detail'].includes(type)) {
         Object.assign(query, {
           placeId: record.placeId,
         });
@@ -383,11 +346,7 @@ export default {
     },
     // 搜索
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
   },
 };
@@ -399,4 +358,3 @@ export default {
   justify-content: space-between;
 }
 </style>
-

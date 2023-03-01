@@ -9,22 +9,17 @@
         {{ allData.assetName }}
       </div>
       <div class="wrapper">
-        <Information
-          style="width: 96%"
-          :row-props="{ gutter: 5 }"
-          :col-props="{ span: 24 }"
-          :basic-info-list="informationList"
-        />
+        <Information style="width: 96%" :row-props="{ gutter: 5 }" :col-props="{ span: 24 }" :basic-info-list="informationList" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { allBaseFields } from "@/views/mapDrawLand/share";
-import Information from "components/Information";
+import { allBaseFields } from '@/views/mapDrawLand/share';
+import Information from 'components/Information';
 export default {
-  name: "SimpleAssetLandInfo",
+  name: 'SimpleAssetLandInfo',
   components: {
     Information,
   },
@@ -66,7 +61,7 @@ export default {
           },
         }) => {
           this.loading = false;
-          if (code === "0") {
+          if (code === '0') {
             this.init(landInfo || {});
           } else {
             this.$message.error(message);
@@ -95,8 +90,8 @@ export default {
       if (item) {
         return item.key;
       } else {
-        console.error("根据基础属性名称 匹配基础字段出错");
-        return "";
+        console.error('根据基础属性名称 匹配基础字段出错');
+        return '';
       }
     },
     getValueByAssetAttrDtos({ str }) {
@@ -104,8 +99,8 @@ export default {
       if (res) {
         return res.attrValue;
       } else {
-        console.warn("当前资产未匹配到业务属性信息");
-        return "";
+        console.warn('当前资产未匹配到业务属性信息');
+        return '';
       }
     },
     init(data) {
@@ -130,13 +125,11 @@ export default {
             sort: ele.fieldSort,
           };
         });
-      this.informationList = [...baseRes, ...otherRes].sort(
-        (x, y) => x.sort - y.sort
-      );
+      this.informationList = [...baseRes, ...otherRes].sort((x, y) => x.sort - y.sort);
     },
   },
   mounted() {
-    console.log("assetId", this.assetId);
+    console.log('assetId', this.assetId);
     this.getLandBusinessDetail();
   },
 };
@@ -165,7 +158,7 @@ export default {
   color: #959dab;
 }
 .title-left::after {
-  content: ":";
+  content: ':';
   color: #959dab;
 }
 .content-right {

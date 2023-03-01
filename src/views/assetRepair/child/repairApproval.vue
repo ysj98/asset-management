@@ -69,12 +69,7 @@
       <a-col :span="22" :offset="2">
         <div>
           附件：
-          <UploadFile
-            type="all"
-            v-model="uploadList"
-            :show="true"
-            class="mt20"
-          />
+          <UploadFile type="all" v-model="uploadList" :show="true" class="mt20" />
         </div>
       </a-col>
     </a-row>
@@ -101,54 +96,54 @@
 <script>
 const columns = [
   {
-    title: "编号",
-    align: "center",
+    title: '编号',
+    align: 'center',
     customRender: (text, record, index) => `${index + 1}`,
     width: 70,
   },
   {
-    title: "收款人（单位）",
-    dataIndex: "payee",
-    align: "center",
-    width: "15%",
+    title: '收款人（单位）',
+    dataIndex: 'payee',
+    align: 'center',
+    width: '15%',
   },
   {
-    title: "费用科目",
-    dataIndex: "costName",
-    align: "center",
-    width: "13%",
+    title: '费用科目',
+    dataIndex: 'costName',
+    align: 'center',
+    width: '13%',
   },
   {
-    title: "付款金额（元）",
-    dataIndex: "paymentAmount",
-    align: "center",
-    width: "13%",
+    title: '付款金额（元）',
+    dataIndex: 'paymentAmount',
+    align: 'center',
+    width: '13%',
   },
   {
-    title: "付款时间",
-    dataIndex: "paymentDate",
-    align: "center",
-    width: "13%",
+    title: '付款时间',
+    dataIndex: 'paymentDate',
+    align: 'center',
+    width: '13%',
   },
   {
-    title: "跟进人",
-    dataIndex: "followUpUser",
-    align: "center",
-    width: "10%",
+    title: '跟进人',
+    dataIndex: 'followUpUser',
+    align: 'center',
+    width: '10%',
   },
   {
-    title: "备注",
-    dataIndex: "remark",
-    align: "center",
+    title: '备注',
+    dataIndex: 'remark',
+    align: 'center',
   },
 ];
-import FormFooter from "@/components/FormFooter";
+import FormFooter from '@/components/FormFooter';
 export default {
   data() {
     return {
       columns,
       dataSource: [],
-      maintainId: "",
+      maintainId: '',
       uploadList: [],
       repairInfo: {},
     };
@@ -157,43 +152,39 @@ export default {
   methods: {
     getMaintainInfo() {
       if (this.maintainId) {
-        this.$api.assetRent
-          .getMaintainInfo({ maintainId: this.maintainId })
-          .then((res) => {
-            if (+res.data.code === 0) {
-              this.repairInfo = res.data.data;
-              this.dataSource = res.data.data.detailList;
-              this.dataSource.forEach((item, index) => {
-                item.key = item.costId;
-              });
-              // 附件列表处理
-              let attachment = [];
-              res.data.data.attachmentList.forEach((item) => {
-                let obj = {
-                  url: item.attachmentPath,
-                  name: item.oldAttachmentName,
-                };
-                attachment.push(obj);
-                this.uploadList = attachment;
-              });
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
+        this.$api.assetRent.getMaintainInfo({ maintainId: this.maintainId }).then((res) => {
+          if (+res.data.code === 0) {
+            this.repairInfo = res.data.data;
+            this.dataSource = res.data.data.detailList;
+            this.dataSource.forEach((item, index) => {
+              item.key = item.costId;
+            });
+            // 附件列表处理
+            let attachment = [];
+            res.data.data.attachmentList.forEach((item) => {
+              let obj = {
+                url: item.attachmentPath,
+                name: item.oldAttachmentName,
+              };
+              attachment.push(obj);
+              this.uploadList = attachment;
+            });
+          } else {
+            this.$message.error(res.data.message);
+          }
+        });
       }
     },
     // 审批/驳回请求
     approveMaintain(type) {
       let obj = {
         maintainId: this.maintainId,
-        approvalStatus: type === "reject" ? 3 : 1,
+        approvalStatus: type === 'reject' ? 3 : 1,
       };
       this.$api.assetRent.approveMaintain(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          this.$message.success(
-            `${type === "reject" ? "驳回成功！" : "审批通过！"}`
-          );
-          this.$router.push("/repairRegister");
+          this.$message.success(`${type === 'reject' ? '驳回成功！' : '审批通过！'}`);
+          this.$router.push('/repairRegister');
         } else {
           this.$message.error(res.data.message);
         }
@@ -201,7 +192,7 @@ export default {
     },
     // 审批通过 / 驳回
     approval(type) {
-      if (type === "") {
+      if (type === '') {
         this.approveMaintain(type);
       } else {
         this.approveMaintain(type);
@@ -232,6 +223,6 @@ export default {
   }
 }
 /deep/.sg-uploadFile {
-    max-width: 100% !important;
-  }
+  max-width: 100% !important;
+}
 </style>

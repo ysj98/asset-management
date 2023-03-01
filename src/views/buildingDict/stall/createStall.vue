@@ -13,11 +13,7 @@
           <div class="form-content">
             <a-row>
               <a-col :span="8">
-                <a-form-model-item
-                  :required="true"
-                  label="所属机构"
-                  prop="organId"
-                >
+                <a-form-model-item :required="true" label="所属机构" prop="organId">
                   <treeSelect
                     ref="organTopRef"
                     :defaultDisplay="false"
@@ -33,11 +29,7 @@
                 </a-form-model-item>
               </a-col>
               <a-col :span="8">
-                <a-form-model-item
-                  label="车场名称"
-                  :required="true"
-                  prop="placeId"
-                >
+                <a-form-model-item label="车场名称" :required="true" prop="placeId">
                   <a-select
                     show-search
                     :style="allWidth"
@@ -65,22 +57,12 @@
             <a-row>
               <a-col :span="8">
                 <a-form-model-item label="车位名称" :required="true" prop="name">
-                  <a-input
-                    :style="allWidth"
-                    :maxLength="64"
-                    placeholder="请输入车位名称"
-                    v-model="formInfo.name"
-                  />
+                  <a-input :style="allWidth" :maxLength="64" placeholder="请输入车位名称" v-model="formInfo.name" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="8">
                 <a-form-model-item label="车位编码" :required="true" prop="code">
-                  <a-input
-                    :style="allWidth"
-                    placeholder="请输入车位编码"
-                    :maxLength="64"
-                    v-model="formInfo.code"
-                  />
+                  <a-input :style="allWidth" placeholder="请输入车位编码" :maxLength="64" v-model="formInfo.code" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="8">
@@ -123,81 +105,55 @@
               </a-col>
               <a-col :span="8" v-if="carType">
                 <a-form-model-item label="车位状态" :required="true" prop="objStatus">
-                  <dict-select
-                    placeholder="请选择车位状态"
-                    :style="allWidth"
-                    :menu-code="carType"
-                    v-model="formInfo.objStatus"
-                  />
+                  <dict-select placeholder="请选择车位状态" :style="allWidth" :menu-code="carType" v-model="formInfo.objStatus" />
                 </a-form-model-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
                 <a-form-model-item label="建筑面积(㎡)" prop="floorArea">
-                  <a-input-number
-                    :min="0"
-                    placeholder="请输入建筑面积"
-                    :max="999999.9999"
-                    :style="allWidth"
-                    v-model="formInfo.floorArea"
-                  />
+                  <a-input-number :min="0" placeholder="请输入建筑面积" :max="999999.9999" :style="allWidth" v-model="formInfo.floorArea" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="8">
                 <a-form-model-item label="使用面积(㎡)" prop="useArea">
-                  <a-input-number
-                    :min="0"
-                    placeholder="请输入使用面积"
-                    :max="999999.9999"
-                    :style="allWidth"
-                    v-model="formInfo.useArea"
-                  />
+                  <a-input-number :min="0" placeholder="请输入使用面积" :max="999999.9999" :style="allWidth" v-model="formInfo.useArea" />
                 </a-form-model-item>
               </a-col>
               <a-col :span="8">
                 <a-form-model-item label="公摊面积(㎡)" prop="shareArea">
-                  <a-input-number
-                    :min="0"
-                    placeholder="请输入公摊面积"
-                    :max="999999.9999"
-                    :style="allWidth"
-                    v-model="formInfo.shareArea"
-                  />
+                  <a-input-number :min="0" placeholder="请输入公摊面积" :max="999999.9999" :style="allWidth" v-model="formInfo.shareArea" />
                 </a-form-model-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="24" style="display: flex">
                 <!-- 文本框 -->
-                <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">备注:</div>
+                <div style="width: 7%; text-align: right; line-height: 40px; padding-right: 10px; font-size: 12px; color: rgba(0, 0, 0, 0.85)">
+                  备注:
+                </div>
                 <div style="width: 86%">
-                <a-textarea
-                  :maxLength="128"
-                  v-model="formInfo.description"
-                />
+                  <a-textarea :maxLength="128" v-model="formInfo.description" />
                 </div>
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="24" style="display: flex;margin-top: 20px">
-                <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">图片:</div>
+              <a-col :span="24" style="display: flex; margin-top: 20px">
+                <div style="width: 7%; text-align: right; line-height: 40px; padding-right: 10px; font-size: 12px; color: rgba(0, 0, 0, 0.85)">
+                  图片:
+                </div>
                 <div style="width: 86%">
-                  <SG-UploadFile
-                    :customDownload="customDownload"
-                    :customUpload="customUpload"
-                    v-model="formInfo.parkingImg"
-                    :max="1"
-                    :maxSize="2048"
-                  >
-                  <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M)</span>
+                  <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="formInfo.parkingImg" :max="1" :maxSize="2048">
+                    <span slot="tips">(注：上传的图片最多为 1 张,且图片大小小于2M)</span>
                   </SG-UploadFile>
                 </div>
               </a-col>
             </a-row>
             <a-row>
-              <a-col :span="24" style="display: flex;margin-top: 20px">
-                <div style="width: 7%;text-align: right; line-height: 40px; padding-right: 10px;font-size: 12px;color: rgba(0, 0, 0, 0.85);">附件:</div>
+              <a-col :span="24" style="display: flex; margin-top: 20px">
+                <div style="width: 7%; text-align: right; line-height: 40px; padding-right: 10px; font-size: 12px; color: rgba(0, 0, 0, 0.85)">
+                  附件:
+                </div>
                 <div style="width: 86%">
                   <SG-UploadFile
                     type="all"
@@ -215,45 +171,45 @@
         </div>
       </a-form-model>
     </div>
-    <FormFooter style="border:none;">
+    <FormFooter style="border: none">
       <SG-Button class="mr2" @click="handleSave" type="primary">提交</SG-Button>
       <SG-Button @click="handleCancel">取消</SG-Button>
     </FormFooter>
   </div>
 </template>
 <script>
-import FormFooter from "@/components/FormFooter.vue";
-import dictMixin from "../dictMixin.js";
-import TreeSelect from "@/views/common/treeSelect";
-import { typeFilter } from "@/views/buildingDict/buildingDictConfig";
-import { carTypeMenu, parkingUsageOption, parkTypeOpt } from "./dict";
-import DictSelect from "../../common/DictSelect";
-import { stallApiDetail } from "../../../api/building";
+import FormFooter from '@/components/FormFooter.vue';
+import dictMixin from '../dictMixin.js';
+import TreeSelect from '@/views/common/treeSelect';
+import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
+import { carTypeMenu, parkingUsageOption, parkTypeOpt } from './dict';
+import DictSelect from '../../common/DictSelect';
+import { stallApiDetail } from '../../../api/building';
 
-const allWidth = { width: "100%" };
-const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" };
-const allWidth2 = { width: "250px", flex: 1 };
+const allWidth = { width: '100%' };
+const allWidth1 = { width: '100px', marginRight: '10px', flex: '0 0 120px' };
+const allWidth2 = { width: '250px', flex: 1 };
 
 export default {
   components: {
     DictSelect,
     FormFooter,
-    TreeSelect
+    TreeSelect,
   },
   mixins: [dictMixin],
   data() {
     return {
-      bussType: "stallDir",
+      bussType: 'stallDir',
       parkingUsageOption,
       parkTypeOpt, // 全部车场
       carTypeMenu, // 车位类型列表
       carType: undefined, // 车位类型
       carTypeDisabledList: [], // 车位筛选列表
-      carTypeMarketList: [3 , '3'], // 销售类型
-      carTypePropertyList:[0, 1, 2, '0', '1', '2'], // 产权类型
+      carTypeMarketList: [3, '3'], // 销售类型
+      carTypePropertyList: [0, 1, 2, '0', '1', '2'], // 产权类型
       carTypeRefresh: 0, // 车位手动刷新列表
-      organId: "",
-      organName: "",
+      organId: '',
+      organName: '',
       formInfo: {
         // 表单
         organId: undefined, // '机构Id',
@@ -270,48 +226,28 @@ export default {
         floorArea: undefined, // '产权面积',
         parkingImg: [],
         parkingDoc: [],
-        description: undefined // '备注',
+        description: undefined, // '备注',
         // parkingAreaUnits: '' // '面积单位'
       },
-      rules:{
-        organId: [
-          { required: true, message: '请选择所属机构' },
-        ],
-        placeId:[
-          { required: true, message: '请选择车场名称' },
-        ],
-        parkingAreaId:[
-          { required: true, message: '请选择区域名称' },
-        ],
-        parkingUsage:[
-          { required: true, message: '请输入车位用途' },
-        ],
-        name:[
-          { required: true, message: '请输入车位名称' },
-        ],
-        code:[
-          { required: true, message: '请输入车位编码' },
-        ],
-        objType:[
-          { required: true, message: '请输入车位类型' },
-        ],
-        objStatus:[
-          { required: true, message: '请输入车位状态' },
-        ],
-        useArea: [
-          {pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
-        ],
-        shareArea: [
-          {pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
-        ],
-        floorArea:[
+      rules: {
+        organId: [{ required: true, message: '请选择所属机构' }],
+        placeId: [{ required: true, message: '请选择车场名称' }],
+        parkingAreaId: [{ required: true, message: '请选择区域名称' }],
+        parkingUsage: [{ required: true, message: '请输入车位用途' }],
+        name: [{ required: true, message: '请输入车位名称' }],
+        code: [{ required: true, message: '请输入车位编码' }],
+        objType: [{ required: true, message: '请输入车位类型' }],
+        objStatus: [{ required: true, message: '请输入车位状态' }],
+        useArea: [{ pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值' }],
+        shareArea: [{ pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值' }],
+        floorArea: [
           { required: true, message: '请输入建筑面积' },
-          {required: true, pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值'}
+          { required: true, pattern: new RegExp(/^\d{1,10}(?:\.\d{1,4})?$/), message: '请输入小于10位整数，小于4位精度的数值' },
         ],
       },
       placeArr: [], // 车场列表
       placeAreaArr: [], // 区域列表
-      allStyle: "width: 100%;",
+      allStyle: 'width: 100%;',
       typeFilter,
       allWidth,
       allWidth1,
@@ -319,13 +255,13 @@ export default {
       communityIdOpt: [], // 选择项目
       routeQuery: {
         // 路由传入数据
-        type: "create", // 页面类型
-        placeId: "", // 车场Id
-        parkingId: "", // 车位Id
-        organName: "",
-        organId: ""
+        type: 'create', // 页面类型
+        placeId: '', // 车场Id
+        parkingId: '', // 车位Id
+        organName: '',
+        organId: '',
       },
-      loadingFlag: false
+      loadingFlag: false,
     };
   },
   beforeCreate() {
@@ -335,7 +271,7 @@ export default {
   mounted() {
     let { organName, organId, type, placeId, parkingId } = this.$route.query;
     Object.assign(this, {
-      routeQuery: { organName, organId, type, placeId, parkingId }
+      routeQuery: { organName, organId, type, placeId, parkingId },
     });
     this.init();
   },
@@ -345,45 +281,43 @@ export default {
       this.organName = title;
       this.parkApiList({ organId: value });
       this.placeAreaArr = []; // 清空区域
-      this.formInfo.placeId=
-      this.formInfo.parkingAreaId= undefined
+      this.formInfo.placeId = this.formInfo.parkingAreaId = undefined;
     },
     beforeSubmit(value) {
       const result = {
         ...value,
-        useArea: [null,undefined].includes(value.useArea) ? '' : String(value.useArea),
-        floorArea: [null,undefined].includes(value.floorArea) ? '' : String(value.floorArea),
-        shareArea: [null,undefined].includes(value.shareArea) ? '' : String(value.shareArea),
-        parkingImg: (this.formInfo.parkingImg|| []).map(node => node.url).join(","),
-        parkingDoc: (this.formInfo.parkingDoc|| []).map(node => node.url).join(",")
-      }
+        useArea: [null, undefined].includes(value.useArea) ? '' : String(value.useArea),
+        floorArea: [null, undefined].includes(value.floorArea) ? '' : String(value.floorArea),
+        shareArea: [null, undefined].includes(value.shareArea) ? '' : String(value.shareArea),
+        parkingImg: (this.formInfo.parkingImg || []).map((node) => node.url).join(','),
+        parkingDoc: (this.formInfo.parkingDoc || []).map((node) => node.url).join(','),
+      };
       // 删除掉 值为null和空串的字段
-      Object.keys(result).forEach(ele=>{
-        if ([null,''].includes(result[ele])){
-          delete result[ele]
+      Object.keys(result).forEach((ele) => {
+        if ([null, ''].includes(result[ele])) {
+          delete result[ele];
         }
-      })
-      return result
-
+      });
+      return result;
     },
     // 确定
     handleSave() {
       this.$refs.form.validate(async (validate) => {
-        if(validate) {
-        const data = this.beforeSubmit(this.formInfo);
-        if (this.routeQuery.type === "create") {
-          this.stallApiInsert(data);
-        } else if (this.routeQuery.type === "edit") {
-          this.stallApiEdit(data);
-        }
+        if (validate) {
+          const data = this.beforeSubmit(this.formInfo);
+          if (this.routeQuery.type === 'create') {
+            this.stallApiInsert(data);
+          } else if (this.routeQuery.type === 'edit') {
+            this.stallApiEdit(data);
+          }
         } else {
-          return false
+          return false;
         }
       });
     },
     // 取消
     handleCancel() {
-      this.$router.push({ path: "/buildingDict", query: { showKey: "stall" } });
+      this.$router.push({ path: '/buildingDict', query: { showKey: 'stall' } });
     },
     // 车场搜索
     handleSearch(key) {
@@ -393,32 +327,32 @@ export default {
     handleParkChange(ev) {
       const params = {
         placeId: ev,
-        organId: this.organId
+        organId: this.organId,
       };
-      this.formInfo.parkingAreaId= undefined
+      this.formInfo.parkingAreaId = undefined;
       this.placeAreaArr = [];
       this.parkAreaApiList(params);
     },
     // 车位用途发生变化
-    handleCarStallUsage (ev) {
-      console.log(ev)
+    handleCarStallUsage(ev) {
+      console.log(ev);
       if (this.loadingFlag) {
-        this.formInfo.objType = undefined
-        this.formInfo.objStatus = undefined
+        this.formInfo.objType = undefined;
+        this.formInfo.objStatus = undefined;
       }
       switch (ev) {
         case 1: // 运营车位
         case '1':
         case '运营车位':
-          this.carTypeDisabledList = this.carTypeMarketList
+          this.carTypeDisabledList = this.carTypeMarketList;
           break;
         case 2: // 销售车位
         case '2':
         case '销售车位':
-          this.carTypeDisabledList = this.carTypePropertyList
+          this.carTypeDisabledList = this.carTypePropertyList;
           break;
       }
-      this.carTypeRefresh = Math.random()
+      this.carTypeRefresh = Math.random();
     },
     // 车位类型变化
     handleCarTypeChange(ev) {
@@ -442,63 +376,65 @@ export default {
     // 请求项目
     queryCommunityListByOrganId(organTopId) {
       let data = {
-        organId: organTopId
+        organId: organTopId,
       };
-      this.$api.basics.queryCommunityListByOrganId(data).then(res => {
-        if (res.data.code === "0") {
+      this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
-          let resultArr = result.map(item => {
+          let resultArr = result.map((item) => {
             return {
               label: item.name,
               value: item.communityId,
-              ...item
+              ...item,
             };
           });
           this.communityIdOpt = resultArr;
         }
       });
     },
-    customUploadFile(value){
-      return this.customUpload(value,this.$api.building.parkFileUpload,(data)=>{
-        console.log(data.docName.split('/').pop())
-        return {url:data.docPath, name: data.docName.split('/').pop()}
-      })
+    customUploadFile(value) {
+      return this.customUpload(value, this.$api.building.parkFileUpload, (data) => {
+        console.log(data.docName.split('/').pop());
+        return { url: data.docPath, name: data.docName.split('/').pop() };
+      });
     },
     // 文件上传
-    customUpload (list = [],apiFn = this.$api.building.parkUploadPicFile,callback) {
-      if(!this.formInfo.organId) {
-        this.$message.error("请选择所属机构")
-        return Promise.resolve({lists: []})
+    customUpload(list = [], apiFn = this.$api.building.parkUploadPicFile, callback) {
+      if (!this.formInfo.organId) {
+        this.$message.error('请选择所属机构');
+        return Promise.resolve({ lists: [] });
       }
-      let files = Array.from(list)
-      let lists = []
-      let errorLists = []
+      let files = Array.from(list);
+      let lists = [];
+      let errorLists = [];
       // 由于基础数据上传接口不是多文件上传
-      let requestList = files.map(file => {
-        let fileData = new FormData()
-        fileData.append('file', file)
-        errorLists.push({ url: file.name, name: file.name  })
-        fileData.append('organId', this.formInfo.organId)
-        return apiFn(fileData)
-      })
-      let requestAll = Promise.all(requestList)
-      return requestAll.then(res => {
-        res.map(item => {
-          if (item.data.code === '0' && item.data.data) {
-            if (typeof callback === 'function'){
-              lists.push(callback(item.data.data))
-            }else {
-              let url = item.data.data.imgPath;
-              lists.push({url, name: url.substring(url.lastIndexOf('/')+1)})
+      let requestList = files.map((file) => {
+        let fileData = new FormData();
+        fileData.append('file', file);
+        errorLists.push({ url: file.name, name: file.name });
+        fileData.append('organId', this.formInfo.organId);
+        return apiFn(fileData);
+      });
+      let requestAll = Promise.all(requestList);
+      return requestAll
+        .then((res) => {
+          res.map((item) => {
+            if (item.data.code === '0' && item.data.data) {
+              if (typeof callback === 'function') {
+                lists.push(callback(item.data.data));
+              } else {
+                let url = item.data.data.imgPath;
+                lists.push({ url, name: url.substring(url.lastIndexOf('/') + 1) });
+              }
+            } else {
+              this.$SG_Message.error(item.data.message);
             }
-          } else {
-            this.$SG_Message.error(item.data.message)
-          }
+          });
+          return { lists };
         })
-        return {lists}
-      }).catch(() => {
-        return {lists: [], errorLists}
-      })
+        .catch(() => {
+          return { lists: [], errorLists };
+        });
     },
     getPopupContainer(e) {
       return e.parentElement;
@@ -510,13 +446,13 @@ export default {
       this.$nextTick(() => {
         this.form.setFieldsValue(this.formInfo);
       });
-      if (this.routeQuery.type === "create") {
-         this.loadingFlag = true
+      if (this.routeQuery.type === 'create') {
+        this.loadingFlag = true;
       }
-      if (this.routeQuery.type === "edit") {
+      if (this.routeQuery.type === 'edit') {
         await this.stallApiDetail({
           placeId: this.routeQuery.placeId,
-          parkingId: this.routeQuery.parkingId
+          parkingId: this.routeQuery.parkingId,
         });
       }
     },
@@ -524,7 +460,7 @@ export default {
     // 查询 车场列表
     async parkApiList(data) {
       if (!this.organId) {
-        this.$message.error("请选择所属机构");
+        this.$message.error('请选择所属机构');
         return;
       }
       this.placeArr = [];
@@ -533,78 +469,80 @@ export default {
         onlyCurrentNode: 1,
         organId: this.organId,
         pageNo: 1,
-        pageLength: 999
+        pageLength: 999,
       };
-      const {data: res} = await this.$api.building.parkApiList(params)
-        if (String(res.code) === "0") {
-          let result = res.data.resultList || [];
-          this.placeArr = result.map(item => ({
-            value: item.placeId,
-            label: item.placeName
-          }));
-        } else {
-          this.$message.error(res.data.message);
-        }
+      const { data: res } = await this.$api.building.parkApiList(params);
+      if (String(res.code) === '0') {
+        let result = res.data.resultList || [];
+        this.placeArr = result.map((item) => ({
+          value: item.placeId,
+          label: item.placeName,
+        }));
+      } else {
+        this.$message.error(res.data.message);
+      }
     },
     // 查询 区域
     async parkAreaApiList(data) {
-      const {data: res} = await this.$api.building.parkApiDetail(data)
-        if (String(res.code) === "0") {
-          this.placeAreaArr = (res.data.areaArray || []).map(item => ({
-            value: item.parkingAreaId,
-            label: item.areaName
-          }));
-        } else {
-          this.$message.error(res.message);
-        }
+      const { data: res } = await this.$api.building.parkApiDetail(data);
+      if (String(res.code) === '0') {
+        this.placeAreaArr = (res.data.areaArray || []).map((item) => ({
+          value: item.parkingAreaId,
+          label: item.areaName,
+        }));
+      } else {
+        this.$message.error(res.message);
+      }
     },
     // 查询 车位详情
     async stallApiDetail(data) {
       const params = {
-        ...data
+        ...data,
       };
-      let loadingName = this.SG_Loding("加载中...");
+      let loadingName = this.SG_Loding('加载中...');
       try {
         const { data: res } = await stallApiDetail(params);
-        if (res.code === "0") {
-          this.$textReplace(res.data.organId)
+        if (res.code === '0') {
+          this.$textReplace(res.data.organId);
           this.formInfo = await this.afterStallApiList(res.data);
-          this.$nextTick(()=>{
-            this.handleCarStallUsage(this.formInfo.parkingUsage || '')
-          })
+          this.$nextTick(() => {
+            this.handleCarStallUsage(this.formInfo.parkingUsage || '');
+          });
         }
       } finally {
         this.DE_Loding(loadingName);
-        this.$nextTick(()=>{
-          this.loadingFlag = true
-        })
+        this.$nextTick(() => {
+          this.loadingFlag = true;
+        });
       }
     },
     async afterStallApiList(data) {
-      const parkingImg = (data.parkingImg || "")
-        .split(",")
-        .filter(item => item)
-        .map(item => ({
+      const parkingImg = (data.parkingImg || '')
+        .split(',')
+        .filter((item) => item)
+        .map((item) => ({
           url: item,
-          name: item.split("/").pop()
+          name: item.split('/').pop(),
         }));
 
-      const parkingDoc = (data.parkingDoc || "")
-        .split(",")
-        .filter(item => item)
-        .map(item => ({
+      const parkingDoc = (data.parkingDoc || '')
+        .split(',')
+        .filter((item) => item)
+        .map((item) => ({
           url: item,
-          name: item.split("/").pop()
+          name: item.split('/').pop(),
         }));
       this.organName = data.organName;
       this.organId = data.organId;
-      { // 获取车场
+      {
+        // 获取车场
         this.parkApiList({ organId: data.organId });
       }
-      { // 获取区域
+      {
+        // 获取区域
         const params = {
           placeId: data.placeId,
-          organId: data.organId
+          organId: data.organId,
         };
         await this.parkAreaApiList(params);
       }
@@ -621,17 +559,17 @@ export default {
     },
     stallApiInsert(data) {
       const params = {
-        ...data
+        ...data,
       };
-      let loadingName = this.SG_Loding("新增中...");
+      let loadingName = this.SG_Loding('新增中...');
       this.$api.building.stallApiInsert(params).then(
-        res => {
+        (res) => {
           this.DE_Loding(loadingName).then(() => {
-            if (res.data.code === "0") {
-              this.$SG_Message.success("新增车位成功");
+            if (res.data.code === '0') {
+              this.$SG_Message.success('新增车位成功');
               this.$router.push({
-                path: "/buildingDict",
-                query: { showKey: "stall", refresh: true }
+                path: '/buildingDict',
+                query: { showKey: 'stall', refresh: true },
               });
             } else {
               this.$message.error(res.data.message);
@@ -640,7 +578,7 @@ export default {
         },
         () => {
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.error("新增失败！");
+            this.$SG_Message.error('新增失败！');
           });
         }
       );
@@ -648,17 +586,17 @@ export default {
     stallApiEdit(data) {
       const params = {
         ...data,
-        parkingId: this.routeQuery.parkingId
+        parkingId: this.routeQuery.parkingId,
       };
-      let loadingName = this.SG_Loding("编辑中...");
+      let loadingName = this.SG_Loding('编辑中...');
       this.$api.building.stallApiEdit(params).then(
-        res => {
+        (res) => {
           this.DE_Loding(loadingName).then(() => {
-            if (res.data.code === "0") {
-              this.$SG_Message.success("编辑车位成功");
+            if (res.data.code === '0') {
+              this.$SG_Message.success('编辑车位成功');
               this.$router.push({
-                path: "/buildingDict",
-                query: { showKey: "stall", refresh: true }
+                path: '/buildingDict',
+                query: { showKey: 'stall', refresh: true },
               });
             } else {
               this.$message.error(res.data.message);
@@ -667,12 +605,12 @@ export default {
         },
         () => {
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.error("编辑失败！");
+            this.$SG_Message.error('编辑失败！');
           });
         }
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less" scoped>

@@ -3,13 +3,7 @@
     <div class="top-action">
       <div class="left">
         <div class="place-block"></div>
-        <SG-Button
-          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_ADD_METHOD"
-          @click="openAddMethodPop"
-          type="primary"
-          icon="edit"
-          text
-        >
+        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_ADD_METHOD" @click="openAddMethodPop" type="primary" icon="edit" text>
           新增方案
         </SG-Button>
         <div class="place-block"></div>
@@ -24,13 +18,7 @@
           上传背景图
         </SG-Button>
         <div class="place-block"></div>
-        <SG-Button
-          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_SET_CENTER"
-          class="right-block"
-          icon="plus"
-          text
-          @click="jumpDefaultLatLng"
-        >
+        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_SET_CENTER" class="right-block" icon="plus" text @click="jumpDefaultLatLng">
           设置中心点
         </SG-Button>
         <div class="place-block"></div>
@@ -45,35 +33,14 @@
           删除绘制
         </SG-Button>
         <div class="place-block"></div>
-        <SG-Button
-          v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_POPUP_SETTINGS"
-          class="right-block"
-          icon="setting"
-          text
-          @click="btnClickPopInfoSetting"
-        >
+        <SG-Button v-power="ASSET_MANAGEMENT.DRAW_LAND_MAP_POPUP_SETTINGS" class="right-block" icon="setting" text @click="btnClickPopInfoSetting">
           浮层设定
         </SG-Button>
       </div>
       <div class="right">
-        <TopOrganByUser
-          type="segiSelect"
-          @change="changeTopOrganId"
-          :hasAll="false"
-          :selectFirst="true"
-        />
-        <SG-Select
-          v-model="layerSchemeId"
-          class="right-block"
-          placeholder="请选择方案"
-          @change="changeMethod"
-        >
-          <SG-Option
-            v-for="item in methodOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></SG-Option>
+        <TopOrganByUser type="segiSelect" @change="changeTopOrganId" :hasAll="false" :selectFirst="true" />
+        <SG-Select v-model="layerSchemeId" class="right-block" placeholder="请选择方案" @change="changeMethod">
+          <SG-Option v-for="item in methodOptions" :key="item.value" :label="item.label" :value="item.value"></SG-Option>
         </SG-Select>
       </div>
     </div>
@@ -96,13 +63,8 @@
       <!--        <button @click="getAll">获取所有图形</button>-->
       <!--        <button @click="tempInit">初始化图形</button>-->
       <!--      </div>-->
-      <div
-        class="item"
-        v-for="item in operationModeList"
-        :key="item.modeOperId"
-      >
-        <span class="color-block" :style="{ backgroundColor: item.modeColour }">
-        </span>
+      <div class="item" v-for="item in operationModeList" :key="item.modeOperId">
+        <span class="color-block" :style="{ backgroundColor: item.modeColour }"> </span>
         <span>{{ item.modeOperName }}</span>
       </div>
     </div>
@@ -124,43 +86,31 @@
       }"
     />
     <!-- 上传背景图 -->
-    <input
-      style="display: none"
-      type="file"
-      id="background"
-      @change="handleUploadBackground"
-    />
+    <input style="display: none" type="file" id="background" @change="handleUploadBackground" />
   </div>
 </template>
 
 <script>
-import {
-  arrayToObj,
-  generatePathStyle,
-  getOffsetNum,
-  initMap,
-  jumpMapLand,
-  markerIcon,
-} from "@/views/mapDrawLand/share";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
-import CenterText from "@/views/mapDrawLand/components/CenterText";
-import AssetLandList from "@/views/mapDrawLand/AssetLandList";
-import AddMethodsModal from "@/views/mapDrawLand/AddMethodsModal";
-import PopupParamsConfigModal from "@/views/mapDrawLand/PopupParamsConfigModal";
-import TopOrganByUser from "@/views/common/topOrganByUser";
-import Leaflet from "leaflet";
-import "@geoman-io/leaflet-geoman-free";
-import "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css";
-import "leaflet/dist/leaflet.css";
-import Vue from "vue";
-import { queryLayerById } from "./share";
+import { arrayToObj, generatePathStyle, getOffsetNum, initMap, jumpMapLand, markerIcon } from '@/views/mapDrawLand/share';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import SimpleAssetLandInfo from '@/views/mapDrawLand/components/SimpleAssetLandInfo';
+import CenterText from '@/views/mapDrawLand/components/CenterText';
+import AssetLandList from '@/views/mapDrawLand/AssetLandList';
+import AddMethodsModal from '@/views/mapDrawLand/AddMethodsModal';
+import PopupParamsConfigModal from '@/views/mapDrawLand/PopupParamsConfigModal';
+import TopOrganByUser from '@/views/common/topOrganByUser';
+import Leaflet from 'leaflet';
+import '@geoman-io/leaflet-geoman-free';
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
+import 'leaflet/dist/leaflet.css';
+import Vue from 'vue';
+import { queryLayerById } from './share';
 
 export default {
   /*
    * 土地地图绘制
    * */
-  name: "mapDrawLand",
+  name: 'mapDrawLand',
   components: {
     TopOrganByUser,
     AddMethodsModal,
@@ -169,7 +119,7 @@ export default {
   },
   data() {
     return {
-      centralName: "",
+      centralName: '',
       centerMarker: null,
       popupDataSource: [],
       selectedLayerInfo: {},
@@ -181,24 +131,24 @@ export default {
       operationModeList: [],
       // 地图是否加载
       mapFlag: false,
-      currentAssetId: "",
+      currentAssetId: '',
       mockAssetLandInfo: {},
       modalList: {
         addMethod: {
           show: false,
-          modalName: "addMethod",
-          title: "图层方案",
+          modalName: 'addMethod',
+          title: '图层方案',
           payload: {
-            organId: "",
+            organId: '',
           },
         },
         popupParamsConfig: {
           show: false,
-          modalName: "popupParamsConfig",
-          title: "浮层展示定义",
+          modalName: 'popupParamsConfig',
+          title: '浮层展示定义',
           payload: {
-            organId: "",
-            organName: "",
+            organId: '',
+            organName: '',
           },
         },
       },
@@ -207,11 +157,11 @@ export default {
       mapLayers: {},
       jsonData: {},
       organInfo: {
-        organId: "",
-        organName: "",
+        organId: '',
+        organName: '',
       },
-      layerSchemeId: "",
-      organIdByMethod: "",
+      layerSchemeId: '',
+      organIdByMethod: '',
       methodOptions: [],
       isCanUpload: false,
     };
@@ -219,9 +169,9 @@ export default {
   computed: {
     errorText() {
       if (!this.layerSchemeId) {
-        return "请先选择方案";
+        return '请先选择方案';
       } else {
-        return "当前方案不存在背景图";
+        return '当前方案不存在背景图';
       }
     },
   },
@@ -231,10 +181,10 @@ export default {
      * */
     btnClickPopInfoSetting() {
       if (!this.organInfo.organId) {
-        this.$message.error("请先选择所属机构");
+        this.$message.error('请先选择所属机构');
         return null;
       }
-      this.doOpenPop("popupParamsConfig");
+      this.doOpenPop('popupParamsConfig');
       const { organId, organName } = this.organInfo;
       this.modalList.popupParamsConfig.payload = {
         organId,
@@ -245,7 +195,7 @@ export default {
       let res = true;
       if (!this.mapInstance) {
         res = false;
-        this.$message.warn("请先选择方案");
+        this.$message.warn('请先选择方案');
       }
       return res;
     },
@@ -279,8 +229,8 @@ export default {
         };
         this.$api.drawMap.updateLayerScheme(req).then(
           ({ data: { code, message } }) => {
-            if (code === "0") {
-              this.$message.success("中心点变更成功");
+            if (code === '0') {
+              this.$message.success('中心点变更成功');
               this.defaultLatLng = latlng;
               resolve(latlng);
             } else {
@@ -301,31 +251,31 @@ export default {
     initCenterMarker({ marker, latlng }) {
       this.centerMarker = marker;
       // this.mapInstance.pm.disableGlobalEditMode() 函数会 dragging.disable()
-      marker.on("mouseover", () => {
+      marker.on('mouseover', () => {
         marker.dragging.enable();
       });
-      marker.on("dragend", (e) => {
+      marker.on('dragend', (e) => {
         const zIndex = this.mapInstance.getZoom();
         const latlng = e.target._latlng;
         this.submitCenterInfo({ latlng, zIndex }).catch((reason) => {
           console.error(reason);
         });
       });
-      marker.on("popupopen", () => {
+      marker.on('popupopen', () => {
         // 创建实例之前 如果已经创建则销毁
         marker._vuePopup && marker._vuePopup.$destroy();
         this.$nextTick(() => {
           let Profile = Vue.extend(CenterText);
           const resVue = new Profile({
             propsData: {
-              defaultCentralName: this.centralName || "",
+              defaultCentralName: this.centralName || '',
               layerId: this.selectedLayerInfo.layerId,
               organId: this.selectedLayerInfo.organId,
             },
-          }).$mount("#center-container");
-          resVue.$on("saveSuccess", (value) => {
-            console.log("value", value);
-            this.centralName = value || "";
+          }).$mount('#center-container');
+          resVue.$on('saveSuccess', (value) => {
+            console.log('value', value);
+            this.centralName = value || '';
           });
           marker._vuePopup = resVue;
         });
@@ -362,11 +312,11 @@ export default {
       let Profile = Vue.extend(SimpleAssetLandInfo);
       new Profile({
         propsData: { popupDataSource: this.popupDataSource, assetId },
-      }).$mount("#mapDialog-container");
+      }).$mount('#mapDialog-container');
     },
     generatePop(layer) {
       const _this = this;
-      layer.on("click", (e) => {
+      layer.on('click', (e) => {
         setTimeout(() => {
           const width = 260;
           const height = 214;
@@ -377,7 +327,7 @@ export default {
             height: height,
           });
           const popup = Leaflet.popup({
-            className: "custom-popup",
+            className: 'custom-popup',
             minWidth: width,
             maxHeight: height,
             autoPan: false,
@@ -428,29 +378,28 @@ export default {
     btnUpload() {
       const id = this.layerSchemeId;
       if (!id) {
-        this.$SG_Message.error("请先选择方案");
+        this.$SG_Message.error('请先选择方案');
         return null;
       } else {
         if (!this.methodOptions.filter((e) => e.value === id).length) {
-          this.$SG_Message.error("当前所选方案不存在");
+          this.$SG_Message.error('当前所选方案不存在');
           return null;
         }
       }
-      const inputEle = document.getElementById("background");
+      const inputEle = document.getElementById('background');
       // 清空数据,保证change事件触发
       inputEle.value = null;
       inputEle.click();
     },
     handleInitMap(options) {
-      const { layerPath, imgWidth, imgHeight, defaultZoom, defaultLatLng } =
-        options;
-      const temp = layerPath.split("/");
+      const { layerPath, imgWidth, imgHeight, defaultZoom, defaultLatLng } = options;
+      const temp = layerPath.split('/');
       const obj = {
-        id: "leaflet-map",
+        id: 'leaflet-map',
         imgWidth: imgWidth,
         imgHeight: imgHeight,
         layerPath: temp[temp.length - 1],
-        mapInstanceKeyName: "mapInstance",
+        mapInstanceKeyName: 'mapInstance',
         defaultZoom,
         defaultLatLng,
       };
@@ -461,7 +410,7 @@ export default {
         this.$nextTick(() => {
           this.generateCenterMarker({ latlng: this.defaultLatLng });
         });
-        this.mapInstance.pm.setLang("zh");
+        this.mapInstance.pm.setLang('zh');
       });
     },
     // 上传背景图 后对应事件
@@ -482,16 +431,14 @@ export default {
         Object.keys(r).forEach((ele) => {
           req.append(ele, r[ele]);
         });
-        this.$api.drawMap
-          .uploadImage(req)
-          .then(({ data: { data, code, message } }) => {
-            if (code === "0") {
-              this.$SG_Message.success(data);
-              this.isCanUpload = false;
-            } else {
-              this.$SG_Message.error(message);
-            }
-          });
+        this.$api.drawMap.uploadImage(req).then(({ data: { data, code, message } }) => {
+          if (code === '0') {
+            this.$SG_Message.success(data);
+            this.isCanUpload = false;
+          } else {
+            this.$SG_Message.error(message);
+          }
+        });
       };
     },
     initAssetLayers(assetList) {
@@ -506,17 +453,15 @@ export default {
           return {
             assetId: ele.assetId,
             layerDetailId: ele.layerSchemeDetailVo.layerDetailId,
-            type: "Feature",
+            type: 'Feature',
             properties: {
               style: {
                 color: ele.modeColour,
               },
             },
             geometry: {
-              type: "Polygon",
-              coordinates: [
-                arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1),
-              ],
+              type: 'Polygon',
+              coordinates: [arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1)],
             },
           };
         });
@@ -527,15 +472,15 @@ export default {
     tempInit() {
       const geoJsonData = [
         {
-          type: "Feature",
+          type: 'Feature',
           properties: {
             style: {
-              color: "black",
+              color: 'black',
             },
           },
           assetId: 3,
           geometry: {
-            type: "Polygon",
+            type: 'Polygon',
             coordinates: [
               [
                 [16.75, -73.25],
@@ -547,14 +492,14 @@ export default {
           },
         },
         {
-          type: "Feature",
+          type: 'Feature',
           properties: {
             style: {
-              color: "red",
+              color: 'red',
             },
           },
           geometry: {
-            type: "Polygon",
+            type: 'Polygon',
             coordinates: [
               [
                 [126, -67.75],
@@ -568,14 +513,14 @@ export default {
           assetId: 2,
         },
         {
-          type: "Feature",
+          type: 'Feature',
           properties: {
             style: {
-              color: "yellow",
+              color: 'yellow',
             },
           },
           geometry: {
-            type: "Polygon",
+            type: 'Polygon',
             coordinates: [
               [
                 [45.125, -13.125],
@@ -601,7 +546,7 @@ export default {
     },
     getAll() {
       const res = this.mapInstance.pm.getGeomanDrawLayers();
-      console.log("res", res);
+      console.log('res', res);
     },
     // 开启单个图形绘制
     enableDraw(layer) {
@@ -614,12 +559,12 @@ export default {
     },
     // 初始化 图块事件
     initLayerEvent(layer) {
-      layer.addEventListener("click", (e) => {
+      layer.addEventListener('click', (e) => {
         Leaflet.DomEvent.stop(e);
         this.handleLayerClick(layer);
         this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
       });
-      layer.on("pm:update", (e) => {
+      layer.on('pm:update', (e) => {
         const res = e.layer.toGeoJSON();
         res.assetId = this.currentAssetId;
         res.properties || (res.properties = {});
@@ -635,32 +580,20 @@ export default {
     },
     async changeMethod(value) {
       try {
-        this.selectedLayerInfo = this.methodOptions.find(
-          (ele) => ele.layerId === value
-        );
+        this.selectedLayerInfo = this.methodOptions.find((ele) => ele.layerId === value);
         this.initStore();
         this.mapFlag = false;
         this.isCanUpload = false;
         // const res = this.methodOptions.filter((e) => e.value === value)[0];
         const res = await queryLayerById({ layerId: value });
-        console.log("res", res);
-        const {
-          organId,
-          layerPath,
-          width,
-          height,
-          isgenerate,
-          centralX,
-          centralY,
-          centralLevel,
-          centralName,
-        } = res;
-        this.centralName = centralName
+        console.log('res', res);
+        const { organId, layerPath, width, height, isgenerate, centralX, centralY, centralLevel, centralName } = res;
+        this.centralName = centralName;
         //   0: "未生成",
         //   1: "生成中",
         //   2: "已生成",
         if (isgenerate === 1) {
-          this.$SG_Message.error("当前方案最新背景图正在生成中");
+          this.$SG_Message.error('当前方案最新背景图正在生成中');
           return null;
         } else if (isgenerate === 0) {
           this.isCanUpload = true;
@@ -670,16 +603,14 @@ export default {
           if (organId && layerPath && width && height) {
             this.mapFlag = true;
             this.$nextTick(() => {
-              const temp = layerPath.split("/");
+              const temp = layerPath.split('/');
               const options = {
-                id: "leaflet-map",
+                id: 'leaflet-map',
                 imgWidth: width,
                 imgHeight: height,
                 layerPath: temp[temp.length - 1],
-                mapInstanceKeyName: "mapInstance",
-                defaultZoom: [null, ""].includes(centralLevel)
-                  ? 4
-                  : centralLevel,
+                mapInstanceKeyName: 'mapInstance',
+                defaultZoom: [null, ''].includes(centralLevel) ? 4 : centralLevel,
                 defaultLatLng: { lat: centralX, lng: centralY },
                 centralName,
               };
@@ -692,18 +623,18 @@ export default {
             });
           } else {
             this.mapFlag = false;
-            console.warn("初始化地图失败,缺少必要数据");
+            console.warn('初始化地图失败,缺少必要数据');
           }
         }
       } catch (error) {
-        console.log("test");
+        console.log('test');
         console.error(error);
         this.$SG_Message.error(error);
       }
     },
     initControls() {
       this.mapInstance.pm.addControls({
-        position: "bottomright",
+        position: 'bottomright',
         drawMarker: false,
         drawCircle: false,
         drawPolygon: false,
@@ -731,7 +662,7 @@ export default {
           message,
         },
       } = await this.$api.drawMap.queryLayerPageList(req);
-      if (code === "0") {
+      if (code === '0') {
         this.methodOptions = (data || []).map((ele) => {
           return {
             ...ele,
@@ -778,15 +709,13 @@ export default {
       const {
         data: { code, message },
       } = await this.$api.drawMap.deleteLayerDetails(res);
-      if (code !== "0") {
+      if (code !== '0') {
         this.$SG_Message.error(message);
       } else {
         this.mapInstance.closePopup();
-        this.$message.success("删除成功");
+        this.$message.success('删除成功');
         this.mapInstance.removeLayer(this.currentSelectLayer);
-        this.createLayerArr = this.createLayerArr.filter(
-          (ele) => ele._assetId !== this.currentSelectLayer._assetId
-        );
+        this.createLayerArr = this.createLayerArr.filter((ele) => ele._assetId !== this.currentSelectLayer._assetId);
         this.currentSelectLayer = null;
         delete this.jsonData[assetId];
         delete this.mapLayers[assetId];
@@ -808,10 +737,10 @@ export default {
       const {
         data: { code, message },
       } = await this.$api.drawMap.updateLayerDetails(res);
-      if (code !== "0") {
+      if (code !== '0') {
         this.$SG_Message.error(message);
       } else {
-        this.$message.success("编辑成功");
+        this.$message.success('编辑成功');
       }
     },
     /*
@@ -832,11 +761,11 @@ export default {
         const {
           data: { code, message, data },
         } = await this.$api.drawMap.addLayerDetails(res);
-        if (code !== "0") {
+        if (code !== '0') {
           this.$SG_Message.error(message);
           reject(message);
         } else {
-          this.$message.success("保存成功");
+          this.$message.success('保存成功');
           resolve(data);
           this.$refs.AssetLandListRef.setAssetDrawFlag({ assetId, flag: true });
         }
@@ -847,7 +776,7 @@ export default {
     },
     openDraw({ modeColour }) {
       const style = generatePathStyle({ color: modeColour });
-      this.mapInstance.pm.enableDraw("Polygon", {
+      this.mapInstance.pm.enableDraw('Polygon', {
         snappable: true,
         snapDistance: 2,
         hintlineStyle: { color: modeColour, dashArray: [5, 5] },
@@ -869,16 +798,14 @@ export default {
       const req = {
         topOrganId: this.organInfo.organId,
       };
-      this.$api.drawMap
-        .queryLayerFields(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            this.popupDataSource = data;
-          } else {
-            this.$message.error(message);
-            this.popupDataSource = [];
-          }
-        });
+      this.$api.drawMap.queryLayerFields(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          this.popupDataSource = data;
+        } else {
+          this.$message.error(message);
+          this.popupDataSource = [];
+        }
+      });
     },
     /*
      * 浮层设定保存成功回调
@@ -891,7 +818,7 @@ export default {
     },
     openAddMethodPop() {
       this.modalList.addMethod.payload.organId = this.organInfo.organId;
-      this.doOpenPop("addMethod");
+      this.doOpenPop('addMethod');
     },
     initStore() {
       if (this.mapInstance) {
@@ -916,7 +843,7 @@ export default {
           data: { data },
         },
       } = await this.$api.assetOperationMode.queryAssetAttrConfig(req);
-      if (code === "0") {
+      if (code === '0') {
         this.operationModeList = data;
       } else {
         this.$SG_Message.error(message);
@@ -937,18 +864,18 @@ export default {
         _this.mapInstance.pm.disableGlobalEditMode();
         _this.currentSelectLayer = null;
       }
-      this.mapInstance.on("click", onClickFn);
-      this.mapInstance.on("pm:drawstart", () => {
-        this.mapInstance.off("click", onClickFn);
+      this.mapInstance.on('click', onClickFn);
+      this.mapInstance.on('pm:drawstart', () => {
+        this.mapInstance.off('click', onClickFn);
         this.centerMarker.setOpacity(0.2);
       });
-      this.mapInstance.on("pm:drawend", () => {
-        this.mapInstance.on("click", onClickFn);
+      this.mapInstance.on('pm:drawend', () => {
+        this.mapInstance.on('click', onClickFn);
         this.centerMarker.setOpacity(1);
       });
       // 监听绘制图形完成后 事件
-      this.mapInstance.on("pm:create", (e) => {
-        console.log("e", e);
+      this.mapInstance.on('pm:create', (e) => {
+        console.log('e', e);
         this.createLayerArr.push(e.layer);
         const res = e.layer.toGeoJSON();
         res.assetId = this.currentAssetId;
@@ -970,7 +897,7 @@ export default {
           this.initLayerEvent(e.layer);
         });
       });
-      this.mapInstance.on("pm:remove", (e) => {
+      this.mapInstance.on('pm:remove', (e) => {
         this.delPolygon({
           layerDetailId: e.target._layerDetailId,
           assetId: e.target._assetId,

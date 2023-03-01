@@ -17,38 +17,32 @@
 </template>
 
 <script>
-import AssetsRegistration from './assetsRegistration'
-import ScheduleChanges from './scheduleChanges'
+import AssetsRegistration from './assetsRegistration';
+import ScheduleChanges from './scheduleChanges';
 export default {
-  components: {AssetsRegistration, ScheduleChanges},
+  components: { AssetsRegistration, ScheduleChanges },
   props: {},
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     callback(key) {
       console.log(key);
-    }
+    },
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (to.path.indexOf(from.path) === -1) {
       let o = {
         key: from.path,
-        data: {}
-      }
-      this.$store.commit('pro/SET_ROUTE_QUERY', o)
+        data: {},
+      };
+      this.$store.commit('pro/SET_ROUTE_QUERY', o);
     }
-    next()
+    next();
   },
-  created () {
-  },
-  mounted () {
-  }
-}
+  created() {},
+  mounted() {},
+};
 </script>
-<style lang="less" scoped>
-</style>
- 
+<style lang="less" scoped></style>

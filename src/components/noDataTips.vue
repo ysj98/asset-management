@@ -11,7 +11,7 @@ export default {
   props: {
     noDataTips: {
       type: String,
-      default: "暂无数据",
+      default: '暂无数据',
     },
     showBtn: {
       type: Boolean,
@@ -19,12 +19,12 @@ export default {
     },
     operationName: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   methods: {
     noDataOperation() {
-      this.$emit("noDataOperation");
+      this.$emit('noDataOperation');
     },
   },
 };

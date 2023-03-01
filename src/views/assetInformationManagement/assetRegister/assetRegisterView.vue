@@ -10,7 +10,14 @@
           ><segiIcon type="#icon-ziyuan10" class="icon-right" />导出</SG-Button
         >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :multiple="true" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
+          <treeSelect
+            @changeTree="changeTree"
+            placeholder="请选择组织机构"
+            :multiple="true"
+            :allowClear="false"
+            :style="allStyle"
+            :showSearch="true"
+          ></treeSelect>
           <a-select
             :maxTagCount="1"
             mode="multiple"
@@ -143,7 +150,7 @@
         </template>
         <!-- 资产面积 -->
         <template #area="text, record">
-          {{ record.assetTypeName === "设备设施" ? "/" : record.area }}
+          {{ record.assetTypeName === '设备设施' ? '/' : record.area }}
         </template>
       </a-table>
     </div>
@@ -161,51 +168,51 @@
 </template>
 
 <script>
-import TableHeaderSettings from "@/components/TableHeaderSettings";
-import ProvinceCityDistrict from "@/views/common/ProvinceCityDistrict";
-import TreeSelect from "../../common/treeSelect";
-import segiIcon from "@/components/segiIcon.vue";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import noDataTips from "@/components/noDataTips";
-import moment from "moment";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { querySourceType } from "@/views/common/commonQueryApi";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import { getTableHeaders } from "utils/share";
+import TableHeaderSettings from '@/components/TableHeaderSettings';
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict';
+import TreeSelect from '../../common/treeSelect';
+import segiIcon from '@/components/segiIcon.vue';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import noDataTips from '@/components/noDataTips';
+import moment from 'moment';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { querySourceType } from '@/views/common/commonQueryApi';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+import { getTableHeaders } from 'utils/share';
 
 const approvalStatusData = [
   {
-    name: "全部状态",
-    value: "",
+    name: '全部状态',
+    value: '',
   },
   {
-    name: "未核实",
-    value: "0",
+    name: '未核实',
+    value: '0',
   },
   {
-    name: "待入库",
-    value: "1",
+    name: '待入库',
+    value: '1',
   },
   {
-    name: "已入库",
-    value: "2",
+    name: '已入库',
+    value: '2',
   },
 ];
 
 const detailColumns = [
   {
-    title: "资产面积(㎡)",
-    key: "area",
+    title: '资产面积(㎡)',
+    key: 'area',
     scopedSlots: {
-      customRender: "area",
+      customRender: 'area',
     },
   },
 ];
 const requiredColumn = [
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 export default {
@@ -219,48 +226,48 @@ export default {
         city: undefined,
         district: undefined,
       },
-      sourceOptions: [{ value: "", label: "全部来源方式" }],
+      sourceOptions: [{ value: '', label: '全部来源方式' }],
       ASSET_MANAGEMENT,
       toggle: false,
       loading: false,
       columns: [],
-      organName: "",
-      organId: "",
-      allStyle: "width: 150px; margin-right: 10px;",
+      organName: '',
+      organId: '',
+      allStyle: 'width: 150px; margin-right: 10px;',
       approvalStatusData: [...approvalStatusData],
       defaultValue: [null, null],
       tableData: [],
-      count: "",
+      count: '',
       noPageTools: false,
       queryCondition: {
         pageNum: 1, // 当前页
         pageSize: 10, // 每页显示记录数
         projectId: undefined, // 资产项目Id
         organId: 1, // 组织机构id
-        assetType: [""], // 资产类型id(多个用，分割)
-        approvalStatus: "", // 状态
-        address: "", //详细地址
-        assetNameCode: "", // 资产名称/编码
-        assetClassify: [""], // 资产分类
-        registerOrderNameOrId: "", // 登记单编号
-        sourceModes: [""], // 来源方式
-        originSource: "", // 资产原始来源方
+        assetType: [''], // 资产类型id(多个用，分割)
+        approvalStatus: '', // 状态
+        address: '', //详细地址
+        assetNameCode: '', // 资产名称/编码
+        assetClassify: [''], // 资产分类
+        registerOrderNameOrId: '', // 登记单编号
+        sourceModes: [''], // 来源方式
+        originSource: '', // 资产原始来源方
       },
       numList: [
-        { title: "全部", key: "whole", value: 0, fontColor: "#324057" },
-        { title: "未核实", key: "notVerified", value: 0, bgColor: "#FD7474" },
-        { title: "待入库", key: "waitStorage", value: 0, bgColor: "#1890FF" },
-        { title: "已入库", key: "alreadyStorage", value: 0, bgColor: "#DD81E6" },
+        { title: '全部', key: 'whole', value: 0, fontColor: '#324057' },
+        { title: '未核实', key: 'notVerified', value: 0, bgColor: '#FD7474' },
+        { title: '待入库', key: 'waitStorage', value: 0, bgColor: '#1890FF' },
+        { title: '已入库', key: 'alreadyStorage', value: 0, bgColor: '#DD81E6' },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      assetClassifyOptions: [{ label: "全部资产分类", value: "" }],
+      assetClassifyOptions: [{ label: '全部资产分类', value: '' }],
       assetTypeData: [
         {
-          name: "全部资产类型",
-          value: "",
+          name: '全部资产类型',
+          value: '',
         },
       ],
       projectData: [],
-      scrollHeight: {y: "calc(100vh - 470px)"}
+      scrollHeight: { y: 'calc(100vh - 470px)' },
     };
   },
   computed: {
@@ -270,14 +277,14 @@ export default {
     },
   },
   watch: {
-    "queryCondition.assetType"() {
-      console.log("queryCondition.assetType", this.queryCondition.assetType);
+    'queryCondition.assetType'() {
+      console.log('queryCondition.assetType', this.queryCondition.assetType);
       this.getAssetClassifyOptions();
     },
   },
   mounted() {
     this.initTableColumns();
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
   },
   methods: {
     async initTableColumns() {
@@ -313,11 +320,11 @@ export default {
     },
     // 根据organId查询来源方式
     async getSourceOptions(organId) {
-      this.sourceOptions = [{ value: "", label: "全部来源方式" }];
-      this.queryCondition.sourceModes = [""];
+      this.sourceOptions = [{ value: '', label: '全部来源方式' }];
+      this.queryCondition.sourceModes = [''];
       querySourceType(organId, this).then((list) => {
         let listArr = list.map((ele) => ({ ...ele, value: ele.value || ele.key, name: ele.name || ele.title }));
-        return (this.sourceOptions = [{ value: "", label: "全部来源方式" }].concat(listArr));
+        return (this.sourceOptions = [{ value: '', label: '全部来源方式' }].concat(listArr));
       });
     },
     handleSearchReq() {
@@ -329,14 +336,14 @@ export default {
         objectTypeList: this.alljudge(this.queryCondition.assetClassify), // 资产分类id(多个用，分割)
         sourceModeList: this.alljudge(this.queryCondition.sourceModes), // 来源方式
         assetNameCode: this.queryCondition.assetNameCode, // 资产名称/编码
-        createTimeStart: this.defaultValue[0] ? moment(this.defaultValue[0]).format("YYYY-MM-DD") : "", // 开始创建日期
-        createTimeEnd: this.defaultValue[1] ? moment(this.defaultValue[1]).format("YYYY-MM-DD") : "", // 结束创建日期
+        createTimeStart: this.defaultValue[0] ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '', // 开始创建日期
+        createTimeEnd: this.defaultValue[1] ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '', // 结束创建日期
         registerOrderNameOrId: this.queryCondition.registerOrderNameOrId, // 登记单编码
-        city: this.provinces.city ? this.provinces.city : "", // 市
-        province: this.provinces.province ? this.provinces.province : "", // 省
-        region: this.provinces.district ? this.provinces.district : "", // 区
-        address: this.queryCondition.address ? this.queryCondition.address : "", // 区
-        originSource: this.queryCondition.originSource ? this.queryCondition.originSource : "", // 资产原始来源方
+        city: this.provinces.city ? this.provinces.city : '', // 市
+        province: this.provinces.province ? this.provinces.province : '', // 省
+        region: this.provinces.district ? this.provinces.district : '', // 区
+        address: this.queryCondition.address ? this.queryCondition.address : '', // 区
+        originSource: this.queryCondition.originSource ? this.queryCondition.originSource : '', // 资产原始来源方
       };
     },
     exportFn() {
@@ -344,10 +351,10 @@ export default {
       this.$api.assets.assetRegListPageExport(obj).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
-        let a = document.createElement("a");
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = "资产登记一览表.xls";
-        a.style.display = "none";
+        a.download = '资产登记一览表.xls';
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -395,7 +402,7 @@ export default {
     },
     alljudge(val) {
       if (val.length !== 0) {
-        if (val[0] === "") {
+        if (val[0] === '') {
           return [];
         } else {
           return val;
@@ -416,7 +423,7 @@ export default {
         .assetRegSta(form)
         .then((r) => {
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             let { numList } = this;
             return (this.numList = numList.map((m) => {
               return { ...m, value: (res.data || {})[m.key] };
@@ -425,23 +432,23 @@ export default {
           throw res.message;
         })
         .catch((err) => {
-          this.$message.error(err || "查询统计信息出错");
+          this.$message.error(err || '查询统计信息出错');
         });
     },
     // 获取资产分类下拉列表
     getAssetClassifyOptions() {
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        assetType: this.queryCondition.assetType.length === 1 ? this.queryCondition.assetType.join(",") : "",
+        assetType: this.queryCondition.assetType.length === 1 ? this.queryCondition.assetType.join(',') : '',
       };
       if (!obj.assetType) {
-        this.queryCondition.assetClassify = [""];
-        this.assetClassifyOptions = [{ label: "全部资产分类", value: "" }];
+        this.queryCondition.assetClassify = [''];
+        this.assetClassifyOptions = [{ label: '全部资产分类', value: '' }];
         return;
       }
       this.$api.assets.getList(obj).then((res) => {
-        if (res.data.code === "0") {
-          let arr = [{ label: "全部资产分类", value: "" }];
+        if (res.data.code === '0') {
+          let arr = [{ label: '全部资产分类', value: '' }];
           res.data.data.forEach((item) => {
             let obj = {
               label: item.professionName,
@@ -484,7 +491,7 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -510,8 +517,8 @@ export default {
       this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
+          if (str === 'asset_type') {
+            this.assetTypeData = [{ name: '全部资产类型', value: '' }, ...data];
           }
         } else {
           this.$message.error(res.data.message);
@@ -521,16 +528,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }

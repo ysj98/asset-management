@@ -7,72 +7,55 @@
   this.$refs.assetBundlePopover.show = true    // 弹窗控制
 -->
 <template>
-  <SG-Modal
-    class="assetBundlePopover assetBundlePopover-nav"
-    width="1030px"
-    v-model="show"
-    title="选择权证"
-    @ok="statusFn"
-    @cancel="handleCancel"
-  >
+  <SG-Modal class="assetBundlePopover assetBundlePopover-nav" width="1030px" v-model="show" title="选择权证" @ok="statusFn" @cancel="handleCancel">
     <div>
       <a-tabs @change="changeTab" type="card" v-model="defaultActiveKey" :tabBarGutter="10">
         <a-tab-pane tab="待选权证" key="1">
           <div class="tab-container">
-          <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
-            <div slot="col-r">
-            <a-select :style="allStyle" placeholder="全部权证类型" v-model="selecData.kindOfRights">
-              <a-select-option :title="item.name" v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码"/>
-            <SG-Button type="primary" @click="query">查询</SG-Button>
-            </div>
-          </Cephalosome>
-          <div class="tab-nav">
-            <div class="table-border table-layout-fixed">
-              <a-table
-                :rowSelection="rowSelection"
-                :loading="loading"
-                :columns="columns"
-                :dataSource="tableData"
-                size="middle"
-                :pagination="false"
-                >
-                <template slot="obligeeName" slot-scope="text, record">
-                  <span>{{record.obligeeName || '--'}}</span>
-                </template>
-                <template slot="qualityOfRightName" slot-scope="text, record">
-                  <span>{{record.qualityOfRightName || '--'}}</span>
-                </template>
-              </a-table>
-              <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-              <SG-FooterPagination
-                class="sg-footer"
-                :pageLength="selecData.pageSize"
-                :totalCount="count"
-                :noPageTools="noPageTools"
-                v-model="selecData.pageNum"
-                @change="handleChange"
-              />
+            <Cephalosome :rightCol="23" :leftCol="1" class="Cephalosome" rowHeight="48px">
+              <div slot="col-r">
+                <a-select :style="allStyle" placeholder="全部权证类型" v-model="selecData.kindOfRights">
+                  <a-select-option :title="item.name" v-for="(item, index) in kindOfRightsData" :key="index" :value="item.value">{{
+                    item.name
+                  }}</a-select-option>
+                </a-select>
+                <a-input :style="allStyle" v-model="selecData.warrantNbr" placeholder="权证号码" />
+                <SG-Button type="primary" @click="query">查询</SG-Button>
+              </div>
+            </Cephalosome>
+            <div class="tab-nav">
+              <div class="table-border table-layout-fixed">
+                <a-table :rowSelection="rowSelection" :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false">
+                  <template slot="obligeeName" slot-scope="text, record">
+                    <span>{{ record.obligeeName || '--' }}</span>
+                  </template>
+                  <template slot="qualityOfRightName" slot-scope="text, record">
+                    <span>{{ record.qualityOfRightName || '--' }}</span>
+                  </template>
+                </a-table>
+                <no-data-tips v-show="tableData.length === 0"></no-data-tips>
+                <SG-FooterPagination
+                  class="sg-footer"
+                  :pageLength="selecData.pageSize"
+                  :totalCount="count"
+                  :noPageTools="noPageTools"
+                  v-model="selecData.pageNum"
+                  @change="handleChange"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </a-tab-pane>
+        </a-tab-pane>
         <a-tab-pane tab="已选权证" key="2">
           <div class="tab-container" style="margin-top: 20px">
             <div class="tab-nav">
               <div class="table-border table-layout-fixed">
-                <a-table
-                  :columns="chosenColumns"
-                  :dataSource="chosenDataSource"
-                  size="middle"
-                  :pagination="false"
-                >
+                <a-table :columns="chosenColumns" :dataSource="chosenDataSource" size="middle" :pagination="false">
                   <template slot="obligeeName" slot-scope="text, record">
-                    <span>{{record.obligeeName || '--'}}</span>
+                    <span>{{ record.obligeeName || '--' }}</span>
                   </template>
                   <template slot="qualityOfRightName" slot-scope="text, record">
-                    <span>{{record.qualityOfRightName || '--'}}</span>
+                    <span>{{ record.qualityOfRightName || '--' }}</span>
                   </template>
                   <template slot="operation" slot-scope="text, record">
                     <a class="operation-btn" @click="deleteRecord(record)">删除</a>
@@ -89,17 +72,17 @@
 </template>
 
 <script>
-import Cephalosome from '@/components/Cephalosome'
-import {utils} from '@/utils/utils.js'
-import noDataTips from '@/components/noDataTips'
+import Cephalosome from '@/components/Cephalosome';
+import { utils } from '@/utils/utils.js';
+import noDataTips from '@/components/noDataTips';
 const columns = [
   {
     title: '权证号码',
-    dataIndex: 'warrantNbr'
+    dataIndex: 'warrantNbr',
   },
   {
     title: '权证类型',
-    dataIndex: 'kindOfRightName'
+    dataIndex: 'kindOfRightName',
   },
   {
     title: '权属人',
@@ -108,15 +91,15 @@ const columns = [
   },
   {
     title: '丘地号/不动产单元号',
-    dataIndex: 'lotNoEstateUnitCode'
+    dataIndex: 'lotNoEstateUnitCode',
   },
   {
     title: '面积',
-    dataIndex: 'buildArea'
+    dataIndex: 'buildArea',
   },
   {
     title: '坐落位置',
-    dataIndex: 'seatingPosition'
+    dataIndex: 'seatingPosition',
   },
   {
     title: '权利性质',
@@ -125,22 +108,22 @@ const columns = [
   },
   {
     title: '登记日期',
-    dataIndex: 'rigisterDate'
-  }
-]
+    dataIndex: 'rigisterDate',
+  },
+];
 export default {
-  components: {Cephalosome, noDataTips},
+  components: { Cephalosome, noDataTips },
   props: {
     organId: {
       type: [String, Number],
-      default: ''
+      default: '',
     },
     queryType: {
       type: [String, Number],
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
       selectKey: '',
       firstCall: true,
@@ -154,12 +137,12 @@ export default {
       show: false,
       selecData: {
         warrantNbr: '',
-        assetType: '',   // 资产类型
-        objectType: '',  // 资产类别
-        queryType: this.queryType,   // 查询类型 1 资产变动，2 资产清理 3权属登记
-        projectId: '',  // 资产项目ID
+        assetType: '', // 资产类型
+        objectType: '', // 资产类别
+        queryType: this.queryType, // 查询类型 1 资产变动，2 资产清理 3权属登记
+        projectId: '', // 资产项目ID
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
       },
       tableData: [],
       chosenColumns: [],
@@ -167,18 +150,18 @@ export default {
       selectedRowKeys: [],
       overallData: [],
       defaultActiveKey: '1',
-    }
+    };
   },
   computed: {
-    rowSelection () {
-      const { selectedRowKeys } = this
+    rowSelection() {
+      const { selectedRowKeys } = this;
       return {
         selectedRowKeys,
         onChange: this.onSelectChange,
         hideDefaultSelections: true,
-        onSelection: this.onSelection
-      }
-    }
+        onSelection: this.onSelection,
+      };
+    },
   },
   // watch: {
   //   'selectedData.projectId' () {
@@ -188,181 +171,180 @@ export default {
   //   }
   // },
   methods: {
-    changeTab (value) {
+    changeTab(value) {
       if (+value === 2) {
-        let rowsData = []
-        this.selectedRowKeys.forEach(item => {
+        let rowsData = [];
+        this.selectedRowKeys.forEach((item) => {
           this.overallData.forEach((element, index) => {
             if (item === element.warrantId) {
-              rowsData.push(element)
+              rowsData.push(element);
             }
-          })
-        })
+          });
+        });
         rowsData.forEach((list, index) => {
-          list.key = index
-        })
-        this.chosenDataSource = rowsData
+          list.key = index;
+        });
+        this.chosenDataSource = rowsData;
       }
     },
     // 删除选中的权证
-    deleteRecord (record) {
+    deleteRecord(record) {
       this.chosenDataSource.forEach((item, index) => {
         if (item.warrantId === record.warrantId) {
-          this.chosenDataSource.splice(index, 1)
+          this.chosenDataSource.splice(index, 1);
         }
-      })
+      });
       this.selectedRowKeys.forEach((item, index) => {
         if (record.warrantId === item) {
-          this.selectedRowKeys.splice(index, 1)
+          this.selectedRowKeys.splice(index, 1);
         }
-      })
+      });
     },
     // 选中的
-    onSelectChange (selectedRowKeys) {
+    onSelectChange(selectedRowKeys) {
       if (selectedRowKeys.length > 5) {
-        this.$message.info('权证号最多只能选择5个！')
+        this.$message.info('权证号最多只能选择5个！');
       } else {
-        this.selectedRowKeys = selectedRowKeys
+        this.selectedRowKeys = selectedRowKeys;
       }
     },
     // 提交返回数据
-    statusFn () {
+    statusFn() {
       if (this.selectedRowKeys.length <= 0) {
-        this.$message.info('请选择权证')
-        return
+        this.$message.info('请选择权证');
+        return;
       }
-      let checkedData = []
-      let rowsData = []
-      let roeNameData = []
-      console.log(this.selectedRowKeys, '选中的')
-      console.log(this.overallData, '总的')
-      this.selectedRowKeys.forEach(item => {
+      let checkedData = [];
+      let rowsData = [];
+      let roeNameData = [];
+      console.log(this.selectedRowKeys, '选中的');
+      console.log(this.overallData, '总的');
+      this.selectedRowKeys.forEach((item) => {
         this.overallData.forEach((element, index) => {
           if (item === element.warrantId) {
-            checkedData.push(element.warrantId)
-            rowsData.push(element)
-            roeNameData.push(element.warrantNbr)
+            checkedData.push(element.warrantId);
+            rowsData.push(element);
+            roeNameData.push(element.warrantNbr);
           }
-        })
-      })
-      this.$emit('status', checkedData, rowsData, roeNameData, this.selectKey)
+        });
+      });
+      this.$emit('status', checkedData, rowsData, roeNameData, this.selectKey);
     },
     // 外面删除了后剩下给回来的数据
-    redactCheckedDataFn (redactChecked, overallData, selectKey) {
-      console.log(redactChecked, '外面给回来拿到的数据')
+    redactCheckedDataFn(redactChecked, overallData, selectKey) {
+      console.log(redactChecked, '外面给回来拿到的数据');
       // overallData 给回来的数据合并在去重
       if (overallData && overallData.length !== 0) {
-        let arrData = [...this.overallData, ...overallData]
-        let hash = {}
+        let arrData = [...this.overallData, ...overallData];
+        let hash = {};
         arrData = arrData.reduce((preVal, curVal) => {
-          hash[curVal.warrantId] ? '' : hash[curVal.warrantId] = true && preVal.push(curVal)
-          return preVal
-        }, [])
+          hash[curVal.warrantId] ? '' : (hash[curVal.warrantId] = true && preVal.push(curVal));
+          return preVal;
+        }, []);
         // 存着全部数据
-        this.overallData = arrData
+        this.overallData = arrData;
       }
       this.$nextTick(() => {
-        this.selectedRowKeys = redactChecked
-      })
+        this.selectedRowKeys = redactChecked;
+      });
       if (selectKey !== this.selectKey) {
-        this.defaultActiveKey = '1'
+        this.defaultActiveKey = '1';
       }
-      this.selectKey = selectKey   // 外面列表选择的第几个
+      this.selectKey = selectKey; // 外面列表选择的第几个
       // 第一次进来调一下接口
       // if (this.firstCall) {
       //   this.query()
       //   this.firstCall = false
       // }
       // 因为有权证新增每次进来都调一次
-      this.selecData.pageSize = 10
-      this.selecData.pageNum = 1
-      this.selecData.warrantNbr = ''
-      this.selecData.kindOfRights = ''
-      this.query()
+      this.selecData.pageSize = 10;
+      this.selecData.pageNum = 1;
+      this.selecData.warrantNbr = '';
+      this.selecData.kindOfRights = '';
+      this.query();
     },
     // 关闭弹窗
-    handleCancel () {
-      this.show = false
+    handleCancel() {
+      this.show = false;
     },
     // 平台字典获取变动类型
-    platformDictFn (str) {
+    platformDictFn(str) {
       let obj = {
-        code: str
-      }
-      this.$api.assets.platformDict(obj).then(res => {
+        code: str,
+      };
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data;
           if (str === 'AMS_KIND_OF_RIGHT') {
-            this.kindOfRightsData = [{name: '全部权证类型', value: ''}, ...data]
+            this.kindOfRightsData = [{ name: '全部权证类型', value: '' }, ...data];
           }
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
-    query () {
-      this.loading = true
+    query() {
+      this.loading = true;
       let obj = {
-        organId: this.organId,         // 组织机构
-        kindOfRights: this.selecData.kindOfRights,              // 权证类型(多选)
-        obligeeId: '',                 // 权属人
-        status: '1',                    // 权证状态
-        warrantNbr: this.selecData.warrantNbr,                // 权证号
+        organId: this.organId, // 组织机构
+        kindOfRights: this.selecData.kindOfRights, // 权证类型(多选)
+        obligeeId: '', // 权属人
+        status: '1', // 权证状态
+        warrantNbr: this.selecData.warrantNbr, // 权证号
         pageSize: this.selecData.pageSize,
-        pageNum: this.selecData.pageNum
-      }
-      this.$api.ownership.warrantList(obj).then(res => {
+        pageNum: this.selecData.pageNum,
+      };
+      this.$api.ownership.warrantList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = res.data.data.data;
           if (data) {
-            let arrData = utils.deepClone(this.overallData)
+            let arrData = utils.deepClone(this.overallData);
             data.forEach((element, index) => {
-              element.lotNoEstateUnitCode = `${element.lotNo || '--'}/${element.estateUnitCode || '--'}`
-              element.key = element.warrantId
-              arrData.push(element)
-            })
-            this.tableData = data
-            this.count = res.data.data.count
+              element.lotNoEstateUnitCode = `${element.lotNo || '--'}/${element.estateUnitCode || '--'}`;
+              element.key = element.warrantId;
+              arrData.push(element);
+            });
+            this.tableData = data;
+            this.count = res.data.data.count;
             // 遍历相同的对象
             this.$nextTick(() => {
-              let hash = {}
+              let hash = {};
               arrData = arrData.reduce((preVal, curVal) => {
-                hash[curVal.warrantId] ? '' : hash[curVal.warrantId] = true && preVal.push(curVal)
-                return preVal
-              }, [])
+                hash[curVal.warrantId] ? '' : (hash[curVal.warrantId] = true && preVal.push(curVal));
+                return preVal;
+              }, []);
               // 存着全部数据
-              this.overallData = arrData
-            })
+              this.overallData = arrData;
+            });
           } else {
-            this.data = []
+            this.data = [];
           }
-          this.loading = false
+          this.loading = false;
         } else {
-          this.$message.error(res.data.message)
-          this.loading = false
+          this.$message.error(res.data.message);
+          this.loading = false;
         }
-      })
+      });
     },
     // 分页查询
-    handleChange (data) {
-      this.selecData.pageNum = data.pageNo
-      this.selecData.pageSize = data.pageLength
-      this.query()
-    }
+    handleChange(data) {
+      this.selecData.pageNum = data.pageNo;
+      this.selecData.pageSize = data.pageLength;
+      this.query();
+    },
   },
-  created () {
-  },
-  mounted () {
-    this.chosenColumns = utils.deepClone(columns)
+  created() {},
+  mounted() {
+    this.chosenColumns = utils.deepClone(columns);
     this.chosenColumns.push({
       title: '操作',
       dataIndex: 'operation',
-      scopedSlots: { customRender: 'operation' }
-    })
+      scopedSlots: { customRender: 'operation' },
+    });
     // 资产类型
-    this.platformDictFn('AMS_KIND_OF_RIGHT')
-  }
-}
+    this.platformDictFn('AMS_KIND_OF_RIGHT');
+  },
+};
 </script>
 <style lang="less" scoped>
 .assetBundlePopover {

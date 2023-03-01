@@ -34,30 +34,30 @@
 </template>
 
 <script>
-import { calc } from './../../utils/utils'
+import { calc } from './../../utils/utils';
 export default {
-  data () {
+  data() {
     return {
       calc,
       add: {
         l1: 0.1,
-        l2: 0.2
+        l2: 0.2,
       },
       minus: {
         l1: 0.3,
-        l2: 0.1
+        l2: 0.1,
       },
       multiply: {
         l1: 0.1,
-        l2: 0.2
+        l2: 0.2,
       },
       divide: {
         l1: 0.3,
-        l2: 0.1
-      }
-    }
-  }
-}
+        l2: 0.1,
+      },
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -4,28 +4,28 @@
  * 工作方式：通过获取存在货币单位，面积到位的dom，遍历dom，通过innerText拿到文本值通过replace去改变
  */
 // 有一个文件没有调用属于直接写了方法  asset-management\src\views\landParameter\assetMap\component\suspensionRightBlock.vue
-import * as paramsConfig from "@/api/paramsConfig";
+import * as paramsConfig from '@/api/paramsConfig';
 // 判断是不是改造范围
 let langType = () => {
   // 香港需求资本改造页面第一期范围
   let routerList = [
-    "assetRegister", // 资产登记
-    "authorityCardManagement", // 权证管理
-    "ownershipSurvey", // 权属概况
-    "ownershipRegistration", // 权属登记
-    "assetChangeRegister", // 资产变更单
-    "assetChangeView", // 资产变更一览表
-    "buildingDict", // 楼盘字典
-    "assetMap", // 资产地图
-    "worthRegister", // 价值登记
-    "assetView", // 房屋资产视图
-    "landAssetsView", // 土地资产视图
-    "assetCarPrakView", // 车场资产视图
-    "ownershipCardList", // 权属证件一览表
+    'assetRegister', // 资产登记
+    'authorityCardManagement', // 权证管理
+    'ownershipSurvey', // 权属概况
+    'ownershipRegistration', // 权属登记
+    'assetChangeRegister', // 资产变更单
+    'assetChangeView', // 资产变更一览表
+    'buildingDict', // 楼盘字典
+    'assetMap', // 资产地图
+    'worthRegister', // 价值登记
+    'assetView', // 房屋资产视图
+    'landAssetsView', // 土地资产视图
+    'assetCarPrakView', // 车场资产视图
+    'ownershipCardList', // 权属证件一览表
   ];
   var flag = false;
   routerList.forEach((url) => {
-    if (location.hash.split("/")[1].indexOf(url) !== -1) {
+    if (location.hash.split('/')[1].indexOf(url) !== -1) {
       flag = true;
     }
   });
@@ -37,13 +37,13 @@ let getResourceConfig = (organIds) => {
     if (organIds) {
       paramsConfig.getResourceConfig({ organIds: organIds }).then((result) => {
         const { code, data } = result.data;
-        if (code === "0") {
+        if (code === '0') {
           const { currencyId, areaUnitId } = data;
           const assetManagementLang = {
-            monetaryUnit: currencyId === 1 ? "元" : "港元",
-            areaUnit: areaUnitId === 1 ? "m²" : "ft²",
+            monetaryUnit: currencyId === 1 ? '元' : '港元',
+            areaUnit: areaUnitId === 1 ? 'm²' : 'ft²',
           };
-          localStorage.setItem("assetManagementLang", JSON.stringify(assetManagementLang));
+          localStorage.setItem('assetManagementLang', JSON.stringify(assetManagementLang));
           // console.log("获取货币单位以及面积单位", "organIds", organIds, "assetManagementLang", assetManagementLang);
           resolve();
         }
@@ -61,31 +61,31 @@ let textReplace = (organIds) => {
     return;
   }
   getResourceConfig(organIds).then(() => {
-    let assetManagementLang = localStorage.getItem("assetManagementLang") || {
-      monetaryUnit: "元",
-      areaUnit: "m²",
+    let assetManagementLang = localStorage.getItem('assetManagementLang') || {
+      monetaryUnit: '元',
+      areaUnit: 'm²',
     };
-    if (typeof assetManagementLang === "string") {
+    if (typeof assetManagementLang === 'string') {
       assetManagementLang = JSON.parse(assetManagementLang);
     }
     // 考虑到性能问题，对可能含有货币单位，面积单位的dom类型进行总结
     let body = document.body;
     const domList = {
-      ".ant-table-thead": ["span"],
-      ".ant-table-tbody": ["span"],
-      ".particulars": ["span"],
-      ".overview_num": ["div"],
-      ".ant-modal-body": ["label", "div", "span"],
-      ".page-detail-item": ["span"],
-      ".createBuilding-page": ["label"],
-      ".createHouse-page": ["label"],
-      ".landInfo-create-page": ["label", "span"],
-      ".detailHouse-page": ["div"],
-      ".detailLand-page": ["div"],
-      ".necessaryCaaessories": ["span"],
-      ".valueToRegister": ["span"],
-      ".basicDownload": ["label"],
-      ".asset_view": ["span"],
+      '.ant-table-thead': ['span'],
+      '.ant-table-tbody': ['span'],
+      '.particulars': ['span'],
+      '.overview_num': ['div'],
+      '.ant-modal-body': ['label', 'div', 'span'],
+      '.page-detail-item': ['span'],
+      '.createBuilding-page': ['label'],
+      '.createHouse-page': ['label'],
+      '.landInfo-create-page': ['label', 'span'],
+      '.detailHouse-page': ['div'],
+      '.detailLand-page': ['div'],
+      '.necessaryCaaessories': ['span'],
+      '.valueToRegister': ['span'],
+      '.basicDownload': ['label'],
+      '.asset_view': ['span'],
     };
     Object.keys(domList).forEach((node) => {
       let doms = body.querySelectorAll(node);
@@ -95,7 +95,12 @@ let textReplace = (organIds) => {
           let nodes = dom.querySelectorAll(nodeType);
           // console.log(nodes, "nodes");
           Array.from(nodes).forEach((node) => {
-            if (node.childNodes.length === 1 && node.childNodes[0].nodeType === 3 && node.innerText.search(/单元/g) === -1 && node.innerText.search(/元|港元/g) !== -1) {
+            if (
+              node.childNodes.length === 1 &&
+              node.childNodes[0].nodeType === 3 &&
+              node.innerText.search(/单元/g) === -1 &&
+              node.innerText.search(/元|港元/g) !== -1
+            ) {
               // console.log(node);
               node.innerText = node.innerText.replace(/元|港元/g, assetManagementLang.monetaryUnit);
             }
@@ -107,7 +112,7 @@ let textReplace = (organIds) => {
         });
       });
     });
-    Array.from(document.querySelectorAll("input")).forEach((dom) => {
+    Array.from(document.querySelectorAll('input')).forEach((dom) => {
       if (dom.placeholder.search(/元|港元/g) !== -1) {
         dom.placeholder = dom.placeholder.replace(/元|港元/g, assetManagementLang.monetaryUnit);
       }

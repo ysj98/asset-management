@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "WarrantTable",
+  name: 'WarrantTable',
   props: {
     dataSource: {
       type: Array,
@@ -48,61 +48,61 @@ export default {
         scroll: { y: 500, x: 600 },
         columns: [
           {
-            title: "序号",
+            title: '序号',
             width: 80,
             customRender: (text, record, index) => {
               return (this.pageInfo.pageNum - 1) * 10 + 1 + index;
             },
           },
           {
-            title: "权证号",
+            title: '权证号',
             width: 100,
-            dataIndex: "warrantNbr",
+            dataIndex: 'warrantNbr',
           },
           {
-            title: "权证类型",
+            title: '权证类型',
             width: 100,
-            dataIndex: "kindOfRightName",
+            dataIndex: 'kindOfRightName',
           },
           {
-            title: "权证有效期",
+            title: '权证有效期',
             width: 200,
-            key: "houseStartAndEndDate",
+            key: 'houseStartAndEndDate',
             customRender(text, record) {
               if (record.houseStartDate && record.houseEndDate) {
                 return `${record.houseStartDate}至${record.houseEndDate}`;
               } else {
-                return "--";
+                return '--';
               }
             },
           },
           {
-            title: "证载用途",
+            title: '证载用途',
             width: 100,
-            dataIndex: "ownershipUse",
+            dataIndex: 'ownershipUse',
           },
           {
-            title: "建筑面积(㎡)",
+            title: '建筑面积(㎡)',
             width: 100,
-            dataIndex: "buildArea",
+            dataIndex: 'buildArea',
           },
           {
-            title: "土地面积(㎡)",
+            title: '土地面积(㎡)',
             width: 100,
-            dataIndex: "landArea",
+            dataIndex: 'landArea',
           },
           {
-            title: "权属单位",
+            title: '权属单位',
             width: 200,
-            dataIndex: "obligeeName",
+            dataIndex: 'obligeeName',
           },
           {
-            title: "权属人股权构成",
+            title: '权属人股权构成',
             width: 200,
-            dataIndex: "equityComposition",
+            dataIndex: 'equityComposition',
           },
         ],
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
       },
     };

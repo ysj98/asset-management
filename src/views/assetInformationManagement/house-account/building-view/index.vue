@@ -86,7 +86,7 @@
         <span style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
       <template slot="fireMaterial" slot-scope="text">
-        {{ +text === 1 ? "是" : "否" }}
+        {{ +text === 1 ? '是' : '否' }}
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" />
@@ -102,52 +102,52 @@
 </template>
 
 <script>
-import NoDataTip from "src/components/noDataTips";
-import TooltipText from "src/views/common/TooltipText";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import EditTag from "./editTag";
-import HeaderTag from "./headerTag";
-import { queryAssetLabelConfig } from "@/api/publicCode.js";
-import { throttle } from "@/utils/utils";
-import { getTableHeaders } from "@/utils/share.js";
+import NoDataTip from 'src/components/noDataTips';
+import TooltipText from 'src/views/common/TooltipText';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import EditTag from './editTag';
+import HeaderTag from './headerTag';
+import { queryAssetLabelConfig } from '@/api/publicCode.js';
+import { throttle } from '@/utils/utils';
+import { getTableHeaders } from '@/utils/share.js';
 // import OrganProjectBuilding from 'src/views/common/OrganProjectBuilding'
 const assetLabelOpt = [
   // { label: "全部资产标签  ", value: "" },
 ];
 const defaultHeader = [
-  { title: "楼栋名称", dataIndex: "buildName", scopedSlots: { customRender: "buildName" }, fixed: "left", width: 250 },
-  { title: "楼栋编号", dataIndex: "buildCode", width: 200 },
-  { title: "资产项目名称", dataIndex: "projectName", width: 200 },
-  { title: "资产数量", dataIndex: "assetNum", scopedSlots: { customRender: "assetNum" }, width: 150 },
-  { title: "是否有消防验收材料", dataIndex: "fireMaterial", width: 150, scopedSlots: { customRender: "fireMaterial" } },
-  { title: "操作", key: "action", scopedSlots: { customRender: "action" }, width: 150, fixed: "right" },
+  { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
+  { title: '楼栋编号', dataIndex: 'buildCode', width: 200 },
+  { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
+  { title: '资产数量', dataIndex: 'assetNum', scopedSlots: { customRender: 'assetNum' }, width: 150 },
+  { title: '是否有消防验收材料', dataIndex: 'fireMaterial', width: 150, scopedSlots: { customRender: 'fireMaterial' } },
+  { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' },
 ];
 const chooseHeader = [
-  { title: "宗地号", dataIndex: "addressNo", width: 150 },
-  { title: "建筑年代", dataIndex: "years", width: 150 },
-  { title: "资产-实际产权单位", dataIndex: "propertyRightUnit", width: 200 },
-  { title: "权证-实际保管单位", dataIndex: "safekeepUnit", width: 200 },
-  { title: "楼栋建筑面积(㎡)", dataIndex: "buildBuiltArea", width: 150 },
-  { title: "房屋建筑面积(㎡)", dataIndex: "area", width: 150 },
-  { title: "楼高", dataIndex: "buildHeight", width: 150 },
-  { title: "层数", dataIndex: "floorNum", width: 150 },
-  { title: "地上层数", dataIndex: "upFloorNum", width: 150 },
-  { title: "地下层数", dataIndex: "downFloorNum", width: 150 },
-  { title: "运营(㎡)", dataIndex: "transferOperationArea", width: 150 },
-  { title: "自用(㎡)", dataIndex: "selfUserArea", width: 150 },
-  { title: "闲置(㎡)", dataIndex: "idleArea", width: 150 },
-  { title: "占用(㎡)", dataIndex: "occupationArea", width: 150 },
-  { title: "其它(㎡)", dataIndex: "otherArea", width: 150 },
-  { title: "资产原值(元)", dataIndex: "originalValue", width: 150 },
-  { title: "最新估值(元)", dataIndex: "marketValue", width: 150 },
-  { title: "资产标签", dataIndex: "label", width: 150 },
+  { title: '宗地号', dataIndex: 'addressNo', width: 150 },
+  { title: '建筑年代', dataIndex: 'years', width: 150 },
+  { title: '资产-实际产权单位', dataIndex: 'propertyRightUnit', width: 200 },
+  { title: '权证-实际保管单位', dataIndex: 'safekeepUnit', width: 200 },
+  { title: '楼栋建筑面积(㎡)', dataIndex: 'buildBuiltArea', width: 150 },
+  { title: '房屋建筑面积(㎡)', dataIndex: 'area', width: 150 },
+  { title: '楼高', dataIndex: 'buildHeight', width: 150 },
+  { title: '层数', dataIndex: 'floorNum', width: 150 },
+  { title: '地上层数', dataIndex: 'upFloorNum', width: 150 },
+  { title: '地下层数', dataIndex: 'downFloorNum', width: 150 },
+  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150 },
+  { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 150 },
+  { title: '闲置(㎡)', dataIndex: 'idleArea', width: 150 },
+  { title: '占用(㎡)', dataIndex: 'occupationArea', width: 150 },
+  { title: '其它(㎡)', dataIndex: 'otherArea', width: 150 },
+  { title: '资产原值(元)', dataIndex: 'originalValue', width: 150 },
+  { title: '最新估值(元)', dataIndex: 'marketValue', width: 150 },
+  { title: '资产标签', dataIndex: 'label', width: 150 },
 ];
 // const optionHeader =[
 //   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
 // ]
 export default {
-  name: "index",
+  name: 'index',
   components: { OverviewNumber, NoDataTip, TooltipText, EditTag, HeaderTag },
   data() {
     return {
@@ -156,8 +156,8 @@ export default {
       label: [],
       funType: 17,
       selectedRowKeys: [],
-      modalObj: { title: "资产设置", status: false, okText: "确定", width: 605 },
-      modalHead: { title: "表头设置", status: false, okText: "确定", width: 605 },
+      modalObj: { title: '资产设置', status: false, okText: '确定', width: 605 },
+      modalHead: { title: '表头设置', status: false, okText: '确定', width: 605 },
       ASSET_MANAGEMENT, // 权限对象
       overviewNumSpinning: false, // 查询视图面积概览数据loading
       exportBtnLoading: false, // 导出按钮loading
@@ -170,20 +170,20 @@ export default {
         statusList: [],
       }, // 查询条件-组织机构-资产项目-楼栋对象
       numList: [
-        { title: "所有资产(㎡)", key: "totalArea", value: 0, fontColor: "#324057", code: "1000", isAble: "Y" },
-        { title: "运营(㎡)", key: "totalOperationArea", value: 0, bgColor: "#4BD288", code: "1001", isAble: "Y" },
-        { title: "闲置(㎡)", key: "totalIdleArea", value: 0, bgColor: "#1890FF", code: "1002", isAble: "Y" },
-        { title: "自用(㎡)", key: "totalSelfUserArea", value: 0, bgColor: "#DD81E6", code: "1003", isAble: "Y" },
-        { title: "占用(㎡)", key: "totalOccupationArea", value: 0, bgColor: "#FD7474", code: "1004", isAble: "Y" },
-        { title: "其他(㎡)", key: "totalOtherArea", value: 0, bgColor: "#BBC8D6", code: "1005", isAble: "Y" },
-        { title: "楼栋面积(㎡)", key: "totalBuildArea", value: 0, fontColor: "#324057", code: "1006", isAble: "Y" },
+        { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
+        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
+        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
+        { title: '楼栋面积(㎡)', key: 'totalBuildArea', value: 0, fontColor: '#324057', code: '1006', isAble: 'Y' },
       ], // 概览数据，title 标题，value 数值，color 背景色
       tableObj: {
         dataSource: [],
         loading: false,
         scroll: { x: 2500 },
         pagination: false,
-        rowKey: "buildId",
+        rowKey: 'buildId',
         columns: [
           // { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, fixed: 'left', width: 250 },
           // { title: '楼栋编号', dataIndex: 'buildCode', width: 200},
@@ -211,15 +211,15 @@ export default {
           // { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 150, fixed: 'right' }
         ],
       },
-      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: "absolute" },
+      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
       current: null, // 当前选中的概览区域下标，与后台入参一一对应
       statusListOpt: [
-        { title: "全部状态", key: "all" },
-        { title: "待入库", key: "0" },
-        { title: "正常", key: "1" },
-        { title: "报废", key: "2" },
-        { title: "转让", key: "3" },
-        { title: "报损", key: "4" },
+        { title: '全部状态', key: 'all' },
+        { title: '待入库', key: '0' },
+        { title: '正常', key: '1' },
+        { title: '报废', key: '2' },
+        { title: '转让', key: '3' },
+        { title: '报损', key: '4' },
       ],
       options: [],
     };
@@ -234,11 +234,11 @@ export default {
           cur.label = item.title;
           cur.value = item.dataIndex;
           if (
-            item.dataIndex == "buildName" ||
-            item.dataIndex == "buildCode" ||
-            item.dataIndex == "projectName" ||
-            item.dataIndex == "assetNum" ||
-            item.dataIndex == "fireMaterial"
+            item.dataIndex == 'buildName' ||
+            item.dataIndex == 'buildCode' ||
+            item.dataIndex == 'projectName' ||
+            item.dataIndex == 'assetNum' ||
+            item.dataIndex == 'fireMaterial'
           ) {
             cur.disabled = true;
           }
@@ -267,25 +267,25 @@ export default {
             });
             // 同步修改表头的字段名称
             this.tableObj.columns.forEach((m, i) => {
-              let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
-              let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
-              let isSelfUserArea = item.code == 1003 && m.dataIndex === "selfUserArea";
-              let isOccupationArea = item.code == 1004 && m.dataIndex === "occupationArea";
-              let isOthernArea = item.code == 1005 && m.dataIndex === "otherArea";
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
               let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
               if (flag) {
                 m.title = item.alias || item.statusName;
-                if (item.isAble === "N") {
+                if (item.isAble === 'N') {
                   this.tableObj.columns.splice(i, 1);
                 }
               }
             });
           });
           this.numList = this.numList.filter((i) => {
-            return i.isAble === "Y";
+            return i.isAble === 'Y';
           });
         } else {
-          this.$message.error(res.message || "系统内部错误");
+          this.$message.error(res.message || '系统内部错误');
         }
       });
     },
@@ -297,16 +297,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -317,16 +317,16 @@ export default {
         .then((res) => {
           let { data, code } = res.data;
           if (!data) this.assetLabelOpt = [];
-          if (code === "0") {
+          if (code === '0') {
             this.assetLabelOpt = data.data.map((item) => {
               return { label: item.labelName, value: item.labelValue };
             });
-            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: "全部资产标签", value: "" }, ...this.assetLabelOpt] : undefined;
-            this.label = this.assetLabelOpt.length > 0 ? "" : undefined;
+            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: '全部资产标签', value: '' }, ...this.assetLabelOpt] : undefined;
+            this.label = this.assetLabelOpt.length > 0 ? '' : undefined;
           }
         })
         .catch((err) => {
-          this.$message.error(err || "当前组织机构下无资产标签");
+          this.$message.error(err || '当前组织机构下无资产标签');
         });
     },
     // 多选
@@ -337,7 +337,7 @@ export default {
       // console.log(this.selectedRowKeys)
     },
     clickAsset() {
-      if (this.assetLabelOpt.length === 0) return this.$message.error("该组织机构下暂无资产标签");
+      if (this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签');
       // if(this.selectedRowKeys.length <= 0) return this.$message.error('请选择要操作的楼栋')
       this.modalObj.status = true;
     },
@@ -355,17 +355,17 @@ export default {
     handleModalOk: throttle(function () {
       let arr = this.$refs.editTagRef.checkedList;
       if (this.selectedRowKeys.length <= 0) {
-        return this.$message.error("请选择需要设置标签的楼栋");
+        return this.$message.error('请选择需要设置标签的楼栋');
       }
       let data = {
-        buildIds: this.selectedRowKeys.join(","),
-        labelCode: arr.join("、"),
+        buildIds: this.selectedRowKeys.join(','),
+        labelCode: arr.join('、'),
       };
       if (!data.labelCode) delete data.labelCode;
       this.$api.assets.updateAssetLabelConfig(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           this.selectedRowKeys = [];
-          this.queryTableData({ type: "" });
+          this.queryTableData({ type: '' });
           this.$refs.editTagRef.checkedList = [];
           this.$refs.editTagRef.change();
         }
@@ -393,7 +393,7 @@ export default {
         });
       });
       this.$api.global.addCustomShowV2(params).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           this.getChoosedList();
           this.modalHead.status = false;
         }
@@ -402,7 +402,7 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: "" });
+      this.queryTableData({ type: '' });
     },
     // 查看楼栋视图详情
     handleViewDetail(record) {
@@ -411,30 +411,30 @@ export default {
         organProjectBuildingValue: { organId },
       } = this;
       const resObj = this.organOptions.filter((ele) => (ele.vaslukeye = organId))[0];
-      const organName = resObj ? resObj.title : "";
+      const organName = resObj ? resObj.title : '';
       record.buildId &&
         this.$router.push({
-          path: "/buildingView/buildingViewDetail",
+          path: '/buildingView/buildingViewDetail',
           query: { organId, assetIds: record.assetIds, buildId: record.buildId, organName: organName },
         });
     },
 
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
-      let labelName = "";
+      let labelName = '';
       if (this.label.length > 0 && this.assetLabelSelect.length > 0) {
         labelName = this.label.map((item) => {
           return this.assetLabelSelect.find((sub) => sub.value === item).title;
         });
-        labelName = labelName.length > 0 ? labelName.join("、") : "";
+        labelName = labelName.length > 0 ? labelName.join('、') : '';
       }
       const {
         organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
         current,
       } = this;
-      let statusList = this.organProjectBuildingValue.statusList.includes("all") ? [] : this.organProjectBuildingValue.statusList;
+      let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList;
       if (!organId) {
-        return this.$message.info("请选择组织机构");
+        return this.$message.info('请选择组织机构');
       }
       this.tableObj.loading = true;
       let data = {
@@ -445,9 +445,9 @@ export default {
         pageSize: pageLength,
         label: labelName,
         pageNum: pageNo,
-        flag: current ? current - 1 : "",
+        flag: current ? current - 1 : '',
       };
-      if (labelName === "全部资产标签" || !labelName) {
+      if (labelName === '全部资产标签' || !labelName) {
         delete data.label;
       }
       this.$api.assets
@@ -455,7 +455,7 @@ export default {
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             this.tableObj.dataSource = data;
             Object.assign(this.paginationObj, {
@@ -465,14 +465,14 @@ export default {
             });
             return false;
           }
-          throw res.message || "查询资产项目接口出错";
+          throw res.message || '查询资产项目接口出错';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询资产项目接口出错");
+          this.$message.error(err || '查询资产项目接口出错');
         });
       // 查询楼栋面积统计数据
-      if (type === "search") {
+      if (type === 'search') {
         this.queryAreaInfo();
       }
     },
@@ -483,38 +483,38 @@ export default {
         organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
         numList,
       } = this;
-      let statusList = this.organProjectBuildingValue.statusList.includes("all") ? [] : this.organProjectBuildingValue.statusList;
+      let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList;
       this.overviewNumSpinning = true;
       this.$api.assets
         .queryBuildingViewFloorArea({ organId, statusList, buildIdList, projectIdList })
         .then((r) => {
           this.overviewNumSpinning = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             return (this.numList = numList.map((m) => {
               res.data[m.key] = Math.round(res.data[m.key] * 10000) / 10000;
               return { ...m, value: res.data[m.key] };
             }));
           }
-          throw res.message || "查询楼栋视图面积使用统计出错";
+          throw res.message || '查询楼栋视图面积使用统计出错';
         })
         .catch((err) => {
           this.overviewNumSpinning = false;
-          this.$message.error(err || "查询楼栋视图面积使用统计出错");
+          this.$message.error(err || '查询楼栋视图面积使用统计出错');
         });
     },
 
     // 导出数据
     handleExport() {
       if (!this.tableObj.dataSource.length) {
-        return this.$message.info("无可导出数据");
+        return this.$message.info('无可导出数据');
       }
-      let labelName = "";
+      let labelName = '';
       if (this.label.length > 0 && this.assetLabelSelect.length > 0) {
         labelName = this.label.map((item) => {
           return this.assetLabelSelect.find((sub) => sub.value === item).title;
         });
-        labelName = labelName.length > 0 ? labelName.join("、") : "";
+        labelName = labelName.length > 0 ? labelName.join('、') : '';
       }
 
       this.exportBtnLoading = true;
@@ -522,9 +522,9 @@ export default {
         organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
         current,
       } = this;
-      let statusList = this.organProjectBuildingValue.statusList.includes("all") ? [] : this.organProjectBuildingValue.statusList;
-      let data = { organId, buildIdList, projectIdList, statusList, label: labelName, flag: current ? current - 1 : "" };
-      if (labelName === "全部资产标签" || !labelName) {
+      let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList;
+      let data = { organId, buildIdList, projectIdList, statusList, label: labelName, flag: current ? current - 1 : '' };
+      if (labelName === '全部资产标签' || !labelName) {
         delete data.label;
       }
       this.$api.assets
@@ -532,19 +532,19 @@ export default {
         .then((res) => {
           this.exportBtnLoading = false;
           if (res.status === 200 && res.data && res.data.size) {
-            let a = document.createElement("a");
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([res.data]));
-            a.download = "楼栋视图导出列表.xls";
-            a.style.display = "none";
+            a.download = '楼栋视图导出列表.xls';
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             return a.remove();
           }
-          throw res.message || "导出楼栋视图失败";
+          throw res.message || '导出楼栋视图失败';
         })
         .catch((err) => {
           this.exportBtnLoading = false;
-          this.$message.error(err || "导出楼栋视图失败");
+          this.$message.error(err || '导出楼栋视图失败');
         });
     },
 
@@ -560,7 +560,7 @@ export default {
       } = this;
       // 清空组织机构，重置楼栋选项
       if (!organId) {
-        return this.$message.warn("组织机构不存在");
+        return this.$message.warn('组织机构不存在');
       }
       this.buildingOptions = [];
       this.organProjectBuildingValue.buildingId = undefined;
@@ -570,7 +570,7 @@ export default {
         .queryBuildingByOrganId({ organId })
         .then((r) => {
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             this.buildingOptions = (res.data || []).map((item) => {
               return {
                 key: item.buildId,
@@ -579,17 +579,17 @@ export default {
             });
             return false;
           }
-          throw res.message || "查询楼栋失败";
+          throw res.message || '查询楼栋失败';
         })
         .catch((err) => {
-          this.$message.error(err || "查询楼栋失败");
+          this.$message.error(err || '查询楼栋失败');
         });
     },
 
     // 查询一级组织机构
     queryOrganList() {
       this.$api.assets
-        .queryAsynOrganByUserId({ parentOrganId: "", typeFilter: "" })
+        .queryAsynOrganByUserId({ parentOrganId: '', typeFilter: '' })
         .then((res) => {
           if (Number(res.data.code) === 0) {
             let list = res.data.data || [];
@@ -606,10 +606,10 @@ export default {
             });
             return false;
           }
-          throw res.message || "查询组织机构失败";
+          throw res.message || '查询组织机构失败';
         })
         .catch((err) => {
-          this.$message.error(err || "查询组织机构失败");
+          this.$message.error(err || '查询组织机构失败');
         });
     },
     //获取选中的表头
@@ -641,8 +641,8 @@ export default {
     organProjectBuildingValue: {
       handler: function (val) {
         if (val && val.organId) {
-          this.queryTableData({ type: "search" });
-          this.useForConfig()
+          this.queryTableData({ type: 'search' });
+          this.useForConfig();
         }
       },
       deep: true,

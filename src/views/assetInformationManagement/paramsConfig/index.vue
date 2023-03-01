@@ -47,13 +47,13 @@
   </div>
 </template>
 <script>
-import SystemSetting from "./SystemSetting";
-import ApprovalSetting from "@/views/assetInformationManagement/paramsConfig/ApprovalSetting";
-import OrganTree from "./components/OrganTree";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { getTypeKey } from "utils/utils";
+import SystemSetting from './SystemSetting';
+import ApprovalSetting from '@/views/assetInformationManagement/paramsConfig/ApprovalSetting';
+import OrganTree from './components/OrganTree';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { getTypeKey } from 'utils/utils';
 export default {
-  name: "paramsConfig",
+  name: 'paramsConfig',
   components: {
     OrganTree,
     SystemSetting,
@@ -67,26 +67,26 @@ export default {
       currentTabKey: 1,
       loadingFlag: true,
       systemSettingServiceType: [1001],
-      organId: "",
+      organId: '',
       tabArr: [
         {
           key: 1,
-          title: "系统设置",
+          title: '系统设置',
           component: SystemSetting,
         },
         {
           key: 2,
-          title: "审批设置",
+          title: '审批设置',
           component: ApprovalSetting,
         },
       ],
       ASSET_MANAGEMENT,
-      activeType: "", // -2楼栋列表，0楼栋, 1单元, 2楼层
-      pageType: "", // create新增， edit编辑，
-      createType: "", // unit新建单元，build新建楼栋，floor新建楼层
+      activeType: '', // -2楼栋列表，0楼栋, 1单元, 2楼层
+      pageType: '', // create新增， edit编辑，
+      createType: '', // unit新建单元，build新建楼栋，floor新建楼层
       activeItem: {},
-      childNodeType: "", // 0可新建楼栋, 1单元， 2楼层
-      upErrorInfo: "",
+      childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
+      upErrorInfo: '',
     };
   },
   mounted() {
@@ -97,12 +97,12 @@ export default {
       const {
         data: { data, code, message },
       } = await this.$api.paramsConfig.getDataFromBpmWorkFlow({
-        url: "/eip-portal/sys/sysType/v1/getTypesByKey",
-        param: "typeKey=FLOW_TYPE",
+        url: '/eip-portal/sys/sysType/v1/getTypesByKey',
+        param: 'typeKey=FLOW_TYPE',
         isPost: false,
       });
-      if (code === "0") {
-        let list = getTypeKey(JSON.parse(data || "[]"), "x_ams");
+      if (code === '0') {
+        let list = getTypeKey(JSON.parse(data || '[]'), 'x_ams');
         this.approvalOptions = list.map((element) => {
           return {
             name: element.name,
@@ -111,7 +111,7 @@ export default {
             title: element.name,
           };
         });
-      } else if (code === "-1") {
+      } else if (code === '-1') {
         this.approvalOptions = [];
       } else {
         this.$message.error(message);
@@ -122,7 +122,7 @@ export default {
       let responseData = await this.$api.paramsConfig.querySysSet({
         organId: this.organId,
       });
-      console.log("responseData", responseData);
+      console.log('responseData', responseData);
       // 只显示当前tab页面所要展示的项
       this.tabDataSource = responseData.data.data;
       this.loadingFlag = false;
@@ -142,7 +142,7 @@ export default {
       } catch (error) {
         console.error(error);
       }
-      console.log("tempArr", tempArr);
+      console.log('tempArr', tempArr);
       // 保证每一个子组件都通过校验并返回了数据
       if (tempArr.every((ele) => ele)) {
         requestData.paramList = tempArr.flat();
@@ -152,10 +152,10 @@ export default {
       let {
         data: { code, message },
       } = await this.$api.paramsConfig.paramsSave(requestData);
-      if (code === "0") {
-        this.$message.success("保存成功");
+      if (code === '0') {
+        this.$message.success('保存成功');
       } else {
-        this.$message.error(message || "保存失败");
+        this.$message.error(message || '保存失败');
       }
     },
     // 点击树节点改变
@@ -184,7 +184,7 @@ export default {
     height: 100%;
     border-right: 1px solid rgba(238, 242, 245, 1);
     .tree-content {
-      height: calc(~"100% - 69px");
+      height: calc(~'100% - 69px');
       overflow: auto;
       padding-left: 20px;
     }

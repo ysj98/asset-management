@@ -5,12 +5,7 @@
         <!--  导出 批量导入      -->
       </div>
       <div>
-        <TopOrganByUser
-          @change="changeTopOrganId"
-          :hasAll="false"
-          :selectFirst="true"
-          style="width: 300px;"
-        />
+        <TopOrganByUser @change="changeTopOrganId" :hasAll="false" :selectFirst="true" style="width: 300px" />
       </div>
     </div>
     <div class="content">
@@ -44,78 +39,77 @@
 </template>
 
 <script>
-import Information from "@/components/Information";
-import EquipmentTree from "@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/EquipmentTree";
-import SubEquipmentCategoryTable from "@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/SubEquipmentCategoryTable";
-import TopOrganByUser from "@/views/common/topOrganByUser";
+import Information from '@/components/Information';
+import EquipmentTree from '@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/EquipmentTree';
+import SubEquipmentCategoryTable from '@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/SubEquipmentCategoryTable';
+import TopOrganByUser from '@/views/common/topOrganByUser';
 export default {
   /*
    * 设备 设施分类
    * */
-  name: "EquipmentKind",
+  name: 'EquipmentKind',
   components: {
     Information,
     EquipmentTree,
     TopOrganByUser,
-    SubEquipmentCategoryTable
+    SubEquipmentCategoryTable,
   },
   data() {
     return {
-      selectedKeysDefault:[],
-      expandedKeysDefault:[],
+      selectedKeysDefault: [],
+      expandedKeysDefault: [],
       modalList: {
         CategoryAttrModal: {
-          modalName: "CategoryAttrModal",
-          title: "分类属性",
-          payload: {}
-        }
+          modalName: 'CategoryAttrModal',
+          title: '分类属性',
+          payload: {},
+        },
       },
-      currentTopOrganId: "",
+      currentTopOrganId: '',
       selectedKind: {
-        equipmentName: "--",
-        equipmentId: "",
-        value: ""
+        equipmentName: '--',
+        equipmentId: '',
+        value: '',
       },
       kindInfoListOptions: {
         data: {},
         formatBasicInfoList: [
           [
             {
-              title: "分类名称",
-              key: "equipmentName"
+              title: '分类名称',
+              key: 'equipmentName',
             },
             {
-              title: "分类ID",
-              key: "equipmentId"
-            }
+              title: '分类ID',
+              key: 'equipmentId',
+            },
           ],
           [
             {
-              title: "台帐属性(0)",
-              key: "attrNames",
+              title: '台帐属性(0)',
+              key: 'attrNames',
               colProps: {
-                span: 24
-              }
-            }
-          ]
+                span: 24,
+              },
+            },
+          ],
         ],
-        colProps: { span: 8 }
-      }
+        colProps: { span: 8 },
+      },
     };
   },
   methods: {
-    handleActionSuccess(){
-      this.$refs.refEquipmentTree.resetLoad()
+    handleActionSuccess() {
+      this.$refs.refEquipmentTree.resetLoad();
     },
     setKindAttrNum(num) {
-      this.kindInfoListOptions.formatBasicInfoList[1][0].title = `台帐属性(${num ||
-        0})`;
+      this.kindInfoListOptions.formatBasicInfoList[1][0].title = `台帐属性(${num || 0})`;
     },
     async handleSelect(dataRef) {
       this.selectedKind = dataRef;
       if (this.selectedKind.value === -1) {
         this.selectedKind.equipmentId = -1;
-        this.selectedKind.equipmentName = "";
+        this.selectedKind.equipmentName = '';
         return null;
       }
       const attrs = await this.getKindAttrs(dataRef);
@@ -124,10 +118,10 @@ export default {
     },
     changeTopOrganId({ value }) {
       this.currentTopOrganId = value;
-      this.handleSelect({ equipmentName: "", equipmentId: -1, value: -1 });
+      this.handleSelect({ equipmentName: '', equipmentId: -1, value: -1 });
     },
     handleKindInfoList({ dataRef, attrs }) {
-      const attrNames = attrs.map(e => e.attrName).join("、");
+      const attrNames = attrs.map((e) => e.attrName).join('、');
       this.kindInfoListOptions.data = { ...dataRef, attrNames };
     },
     async getKindAttrs(kindData) {
@@ -135,14 +129,14 @@ export default {
         const { equipmentId } = kindData;
         const requestData = {
           organId: this.currentTopOrganId,
-          equipmentId
+          equipmentId,
         };
         const {
           data: {
             code,
             message,
-            data: { resultList }
-          }
+            data: { resultList },
+          },
         } = await this.$api.assets.getInfoAttrListByEquipmentId(requestData);
         if (code === 0) {
           resolve(resultList);
@@ -150,8 +144,8 @@ export default {
           reject(message);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

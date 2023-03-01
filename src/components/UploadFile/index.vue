@@ -17,7 +17,7 @@
       <!-- 提示语自定义 -->
       <div class="tips">
         <slot name="tips">
-          注：上传的文件最多为 {{ max === 0 ? "不限" : `${max} 张` }}，文件大小最多为 {{ maxSize === 0 ? "不限" : `${maxSize / 1024} M。` }}
+          注：上传的文件最多为 {{ max === 0 ? '不限' : `${max} 张` }}，文件大小最多为 {{ maxSize === 0 ? '不限' : `${maxSize / 1024} M。` }}
           <!-- 支持文件格式包括{{ uploadFileType }} -->
         </slot>
       </div>
@@ -49,11 +49,20 @@
         </template>
       </div>
       <div class="previewPages" v-if="previewLen / previewStep > 1">
-        <div class="previewPrev" :class="{ disabled: this.previewActive === 0 }" @click="handlePrev"><SG-IconExt type="icon-arrow-left"></SG-IconExt></div>
+        <div class="previewPrev" :class="{ disabled: this.previewActive === 0 }" @click="handlePrev">
+          <SG-IconExt type="icon-arrow-left"></SG-IconExt>
+        </div>
         <ul>
-          <li v-for="index in previewLen / previewStep" :key="index" :class="{ active: index === previewActive + 1 }" @click="previewActive = index - 1"></li>
+          <li
+            v-for="index in previewLen / previewStep"
+            :key="index"
+            :class="{ active: index === previewActive + 1 }"
+            @click="previewActive = index - 1"
+          ></li>
         </ul>
-        <div class="previewNext" :class="{ disabled: this.previewActive === previewLen / previewStep - 1 }" @click="handleNext"><SG-IconExt type="icon-arrow-right"></SG-IconExt></div>
+        <div class="previewNext" :class="{ disabled: this.previewActive === previewLen / previewStep - 1 }" @click="handleNext">
+          <SG-IconExt type="icon-arrow-right"></SG-IconExt>
+        </div>
       </div>
     </div>
     <div class="notData" v-if="lists.length === 0 && showNotdata">暂无</div>
@@ -64,7 +73,14 @@
       </div>
     </SG-Modal>
     <!-- 弹窗展示上传失败文件 -->
-    <SG-Modal v-model="showErrorStatus" title="上传失败" :footer="null" :width="908" :maskClosable="false" wrapClassName="uploadFile-showUpload error">
+    <SG-Modal
+      v-model="showErrorStatus"
+      title="上传失败"
+      :footer="null"
+      :width="908"
+      :maskClosable="false"
+      wrapClassName="uploadFile-showUpload error"
+    >
       <div class="itemBox">
         <div class="errorTips">{{ errorTips }}</div>
         <PreviewItem v-for="(item, index) in errorLists" :key="index" :item="item" :loading="false" noOperation />
@@ -75,14 +91,14 @@
 
 <script>
 // 获取图片域名
-import configs from "@/config/config.base";
-import PreviewItem from "./PreviewItem";
-import * as apiOwnership from "@/api/ownership";
+import configs from '@/config/config.base';
+import PreviewItem from './PreviewItem';
+import * as apiOwnership from '@/api/ownership';
 export default {
-  name: "UploadFile",
+  name: 'UploadFile',
   model: {
-    prop: "files",
-    event: "input",
+    prop: 'files',
+    event: 'input',
   },
   components: {
     PreviewItem,
@@ -96,7 +112,7 @@ export default {
     // 文件上传类型，可以是图片和文件 image/file/all
     type: {
       type: String,
-      default: "all",
+      default: 'all',
     },
     // 自定义上传文件类型 doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。
     accept: String,
@@ -127,15 +143,15 @@ export default {
     },
     errorTips: {
       type: String,
-      default: "以下文件上传失败，请重新检查后再上传。",
+      default: '以下文件上传失败，请重新检查后再上传。',
     },
   },
   data() {
     return {
       // 文件类型
-      fileExt: ["doc", "docx", "ppt", "pptx", "txt", "pdf", "xls", "xlsx", "acd", "zip", "rar", "gz", "7z"],
+      fileExt: ['doc', 'docx', 'ppt', 'pptx', 'txt', 'pdf', 'xls', 'xlsx', 'acd', 'zip', 'rar', 'gz', '7z'],
       // 图片类型
-      imageExt: ["jpg", "gif", "png", "jpeg", "bmp"],
+      imageExt: ['jpg', 'gif', 'png', 'jpeg', 'bmp'],
       // 图片列表
       lists: [],
       // 弹窗展示上传状态
@@ -160,16 +176,16 @@ export default {
     // 上传文件可选择类型
     uploadFileType() {
       const Dict = {
-        image: "image/png, image/jpg, image/jpeg",
-        file: this.fileExt.join(",."),
-        all: "image/*,." + this.fileExt.join(",."),
+        image: 'image/png, image/jpg, image/jpeg',
+        file: this.fileExt.join(',.'),
+        all: 'image/*,.' + this.fileExt.join(',.'),
       };
       return this.accept ? this.accept : Dict[this.type];
     },
     // 预览列表宽度
     wrapStyle() {
       return {
-        width: this.previewLen * 172 + "px",
+        width: this.previewLen * 172 + 'px',
         transform: `translateX(-${this.previewActive * this.previewStep * 172}px)`,
       };
     },
@@ -191,7 +207,7 @@ export default {
     imagesList() {
       let imageExt = this.imageExt;
       return this.fileLists.filter((el) => {
-        const ext = el.url && el.url.split(".").pop().toLocaleLowerCase();
+        const ext = el.url && el.url.split('.').pop().toLocaleLowerCase();
         return imageExt.includes(ext);
       });
     },
@@ -199,7 +215,7 @@ export default {
     imagesListIndex() {
       let len = 0;
       return this.lists.map((el) => {
-        const ext = el.url && el.url.split(".").pop().toLocaleLowerCase();
+        const ext = el.url && el.url.split('.').pop().toLocaleLowerCase();
         if (this.imageExt.includes(ext)) {
           len += 1;
           return len - 1;
@@ -220,17 +236,17 @@ export default {
   methods: {
     // 自定义下载
     customDownload(file) {
-      let loadingName = this.SG_Loding("下载中...");
+      let loadingName = this.SG_Loding('下载中...');
       // 新文件下载
-      if (file.url.split("/")[0].indexOf("group") !== -1) {
+      if (file.url.split('/')[0].indexOf('group') !== -1) {
         apiOwnership.downLoadAnnex({ attachmentPath: file.url, fileName: file.name }).then(
           (res) => {
             this.DE_Loding(loadingName).then(() => {
               let blob = new Blob([res.data]);
-              let a = document.createElement("a");
+              let a = document.createElement('a');
               a.href = URL.createObjectURL(blob);
               a.download = file.name;
-              a.style.display = "none";
+              a.style.display = 'none';
               document.body.appendChild(a);
               a.click();
               a.remove();
@@ -238,7 +254,7 @@ export default {
           },
           () => {
             this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.error("下载失败！");
+              this.$SG_Message.error('下载失败！');
             });
           }
         );
@@ -246,12 +262,12 @@ export default {
         this.DE_Loding(loadingName).then(() => {
           // 兼容老文件
           // let host = window.__configs && window.__configs.hostImg;
-          let host = "https://pic.uhomecp.com";
-          let a = document.createElement("a");
+          let host = 'https://pic.uhomecp.com';
+          let a = document.createElement('a');
           a.href = host + file.url;
-          a.download = "";
-          a.target = "_blank";
-          a.style.display = "none";
+          a.download = '';
+          a.target = '_blank';
+          a.style.display = 'none';
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -270,7 +286,7 @@ export default {
       let errorLists = [];
       let requestList = files.map((file) => {
         let fileData = new FormData();
-        fileData.append("file", file);
+        fileData.append('file', file);
         errorLists.push({ url: file.name, name: file.name });
         return apiOwnership.uploadAnnex(fileData);
       });
@@ -278,7 +294,7 @@ export default {
       return requestAll
         .then((res) => {
           res.map((item) => {
-            if (item.data.code === "0" && item.data.data) {
+            if (item.data.code === '0' && item.data.data) {
               let data = item.data.data;
               lists.push({
                 url: data.attachmentPath,
@@ -307,7 +323,7 @@ export default {
     async handleUpload() {
       // 将文件列表转换为数组
       let files = Array.from(this.$refs.file.files);
-      this.$refs.file.value = "";
+      this.$refs.file.value = '';
       // 判断是否是否选择超出数量的文件
       const maxLen = this.max - this.lists.length;
       if (files.length > maxLen && this.max !== 0) {
@@ -325,7 +341,7 @@ export default {
       const customUpload = this.customUpload(files);
       // 判断是否返回 Promise 对象
       if (!customUpload || !customUpload.then) {
-        this.$SG_Message.error("自定义上传需返回 Promise 对象");
+        this.$SG_Message.error('自定义上传需返回 Promise 对象');
         return;
       }
 
@@ -343,7 +359,7 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          this.$SG_Message.error("上传失败");
+          this.$SG_Message.error('上传失败');
         });
     },
     // 初始化上传列表
@@ -393,9 +409,9 @@ export default {
       // 推入list列表
       this.lists.push(...newList);
       // 触发 input 事件，供 v-model 更新数据，返回所有的文件数据
-      this.$emit("input", this.lists);
+      this.$emit('input', this.lists);
       // 触发 update 事件，只返回当前更新的数据
-      this.$emit("update", newList);
+      this.$emit('update', newList);
       // 关闭上传中弹窗，延迟关闭，避免上传完成一闪而过
       setTimeout(() => {
         this.showUploadStatus = false;
@@ -426,8 +442,8 @@ export default {
     handleDelete(index) {
       const { name, url } = this.lists[index];
       this.lists.splice(index, 1);
-      this.$emit("input", this.lists);
-      this.$emit("delete", { index, name, url });
+      this.$emit('input', this.lists);
+      this.$emit('delete', { index, name, url });
       // 如果删除后有页数变化，则跳转上一页
       this.$nextTick().then(() => {
         if (this.previewAllPage === this.previewActive) {
@@ -437,7 +453,7 @@ export default {
     },
     // 设为封面
     handleCover(index) {
-      this.$emit("cover", index);
+      this.$emit('cover', index);
     },
     // 预览
     handlePreview(index) {
@@ -446,12 +462,12 @@ export default {
         .init({
           list: this.imagesList.map((el) => {
             let resUrl;
-            if (el.url.split("/")[0].indexOf("group") !== -1) {
+            if (el.url.split('/')[0].indexOf('group') !== -1) {
               resUrl = this.hostImg + el.url;
             } else {
               // 兼容老文件
               // let host = window.__configs && window.__configs.hostImg;
-              let host = "https://pic.uhomecp.com";
+              let host = 'https://pic.uhomecp.com';
               resUrl = host + el.url;
             }
             // if (el.fileSources === 0) {
@@ -462,7 +478,7 @@ export default {
           index,
         })
         .view(index);
-      const saveDom = document.querySelector(".segi-toolbar-right").querySelector(".save");
+      const saveDom = document.querySelector('.segi-toolbar-right').querySelector('.save');
       if (saveDom) saveDom.remove();
     },
     // 下载文件

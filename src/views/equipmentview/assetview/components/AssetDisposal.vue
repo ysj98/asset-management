@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import Information from "@/components/Information";
+import Information from '@/components/Information';
 export default {
   // 资产处置
-  name: "AssetDisposal",
+  name: 'AssetDisposal',
   components: {
     Information,
   },
@@ -22,20 +22,20 @@ export default {
   data() {
     return {
       tableOptions: {
-        rowKey: "disposeRegisterOrderId",
-        scroll: { x: "100%", y: 600 },
+        rowKey: 'disposeRegisterOrderId',
+        scroll: { x: '100%', y: 600 },
         dataSource: [],
         columns: [
-          { title: "处理单编号", dataIndex: "disposeRegisterOrderId" },
+          { title: '处理单编号', dataIndex: 'disposeRegisterOrderId' },
           // { title: "处置名称", dataIndex: "disposeName" },
-          { title: "处置类型", dataIndex: "disposeTypeName" },
-          { title: "处置方式", dataIndex: "disposeModeName" },
-          { title: "处置日期", dataIndex: "disposeDate" },
-          { title: "负责人", dataIndex: "assetReceiver" },
-          { title: "相关人(机构)", dataIndex: "organName" },
-          { title: "处置成本(元)", dataIndex: "disposeCost" },
-          { title: "处置收入(元)", dataIndex: "disposeReceive" },
-          { title: "备注", dataIndex: "remark" },
+          { title: '处置类型', dataIndex: 'disposeTypeName' },
+          { title: '处置方式', dataIndex: 'disposeModeName' },
+          { title: '处置日期', dataIndex: 'disposeDate' },
+          { title: '负责人', dataIndex: 'assetReceiver' },
+          { title: '相关人(机构)', dataIndex: 'organName' },
+          { title: '处置成本(元)', dataIndex: 'disposeCost' },
+          { title: '处置收入(元)', dataIndex: 'disposeReceive' },
+          { title: '备注', dataIndex: 'remark' },
         ],
         pagination: false,
       },
@@ -44,16 +44,16 @@ export default {
         formatBasicInfoList: [
           [
             {
-              title: "清理单编号",
-              key: "cleaningOrderId",
+              title: '清理单编号',
+              key: 'cleaningOrderId',
             },
             {
-              title: "清理时间",
-              key: "createTime",
+              title: '清理时间',
+              key: 'createTime',
             },
             {
-              title: "清理原因",
-              key: "cleanupTypeName",
+              title: '清理原因',
+              key: 'cleanupTypeName',
             },
           ],
         ],
@@ -66,22 +66,20 @@ export default {
       const req = {
         assetId: this.assetId,
       };
-      this.$api.assets
-        .queryAssetViewDisposeDetail(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            console.log({ data });
-            const { cleaningOrderId, createTime, cleanupTypeName, list } = data;
-            this.infoOptions.data = {
-              cleaningOrderId,
-              createTime,
-              cleanupTypeName,
-            };
-            this.tableOptions.dataSource = list || [];
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.assets.queryAssetViewDisposeDetail(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          console.log({ data });
+          const { cleaningOrderId, createTime, cleanupTypeName, list } = data;
+          this.infoOptions.data = {
+            cleaningOrderId,
+            createTime,
+            cleanupTypeName,
+          };
+          this.tableOptions.dataSource = list || [];
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
   },
   mounted() {

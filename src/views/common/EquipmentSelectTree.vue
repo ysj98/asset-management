@@ -1,9 +1,9 @@
 <template>
-  <div class="select-container" :style="{width: width}">
+  <div class="select-container" :style="{ width: width }">
     <a-tree-select
       :size="size"
       class="tree-select"
-      :class="{'have-default-name': showDefaultOrganName && defaultName}"
+      :class="{ 'have-default-name': showDefaultOrganName && defaultName }"
       :multiple="multiple"
       v-model="valueCom"
       :allowClear="allowClear"
@@ -16,75 +16,74 @@
       @select="handleSelect"
       :maxTagCount="maxTagCount"
     />
-    <div class="default-name" v-show="showDefaultOrganName && defaultName">{{defaultName}}</div>
+    <div class="default-name" v-show="showDefaultOrganName && defaultName">{{ defaultName }}</div>
   </div>
 </template>
 
 <script>
-
-import {queryTopOrganByOrganID} from "../buildingDict/publicFn";
+import { queryTopOrganByOrganID } from '../buildingDict/publicFn';
 
 export default {
-  name: "EquipmentSelectTree",
+  name: 'EquipmentSelectTree',
   props: {
-    size:{
-      type:String,
-      default:'default'
+    size: {
+      type: String,
+      default: 'default',
     },
-    maxTagCount:{
-      type:Number,
-      default: 1
+    maxTagCount: {
+      type: Number,
+      default: 1,
     },
     placeholder: {
       type: String,
-      default: "请选择分类"
+      default: '请选择分类',
     },
     // 组织机构 id
     topOrganId: {
       type: [String, Number],
-      required: true
+      required: true,
     },
     // 是否开启顶级机构Id反查
-    isTopOrganId:{
-      default: true
+    isTopOrganId: {
+      default: true,
     },
     // 默认不支持清空
     allowClear: {
-      default: false
+      default: false,
     },
     value: {
       type: [Number, Array, String],
-      default: undefined
+      default: undefined,
     },
-    width:{
+    width: {
       type: String,
-      default: '200px'
+      default: '200px',
     },
     multiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    defaultName : {
+    defaultName: {
       type: String,
-      default: ''
+      default: '',
     },
     optionsDataFormat: {
       type: Function,
-      default(data){
-        return data
-      }
-    }
+      default(data) {
+        return data;
+      },
+    },
   },
   model: {
-    event: "change",
-    prop: "value"
+    event: 'change',
+    prop: 'value',
   },
   data() {
     return {
       // 一级机构 id
-      oneOrganId:'',
+      oneOrganId: '',
       treeData: [],
-      showDefaultOrganName: true // 显示默认值
+      showDefaultOrganName: true, // 显示默认值
     };
   },
   computed: {
@@ -94,55 +93,55 @@ export default {
       },
       set(value) {
         // ant-design-vue bug https://github.com/vueComponent/ant-design-vue/pull/1551 #1551
-        const res = typeof value === 'number' ? String(value) : value
-        this.$emit("change", res);
-      }
-    }
+        const res = typeof value === 'number' ? String(value) : value;
+        this.$emit('change', res);
+      },
+    },
   },
   watch: {
     topOrganId: {
-      handler: async function(newValue) {
-        console.log('topOrganID', newValue)
+      handler: async function (newValue) {
+        console.log('topOrganID', newValue);
         if (newValue) {
-          if (this.isTopOrganId){
-            this.oneOrganId = await this.getTopOrganId({nOrganId:newValue,nOrgId:newValue})
+          if (this.isTopOrganId) {
+            this.oneOrganId = await this.getTopOrganId({ nOrganId: newValue, nOrgId: newValue });
           }
           this.init();
         }
       },
-      immediate: true
+      immediate: true,
     },
     defaultName: function () {
-      this.showDefaultOrganName = true
-    }
+      this.showDefaultOrganName = true;
+    },
   },
   methods: {
-    handleSelect(...argus){
-      this.$emit('select',...argus)
+    handleSelect(...argus) {
+      this.$emit('select', ...argus);
     },
-    handleChange () {
-      this.showDefaultOrganName = false
+    handleChange() {
+      this.showDefaultOrganName = false;
     },
     //  获取 一级机构 id
-    async getTopOrganId({nOrgId,nOrganId}){
+    async getTopOrganId({ nOrgId, nOrganId }) {
       return new Promise(async (resolve) => {
-        const params = { nOrgId, nOrganId }
-        let data = await queryTopOrganByOrganID(params)
-        resolve(data.organId)
-      })
+        const params = { nOrgId, nOrganId };
+        let data = await queryTopOrganByOrganID(params);
+        resolve(data.organId);
+      });
     },
     onLoadData(treeNode) {
-      console.log("treeNode", treeNode);
+      console.log('treeNode', treeNode);
       return new Promise(async (resolve, reject) => {
         const { value } = treeNode;
-        let organId = this.topOrganId
+        let organId = this.topOrganId;
         if (this.isTopOrganId) {
-          organId = this.oneOrganId
+          organId = this.oneOrganId;
         }
         try {
           const data = await this.getPositionData({
             organId: organId,
-            upEquipmentId: value
+            upEquipmentId: value,
           });
           treeNode.dataRef.children = this.handlePositionDataToTreeData(data);
           resolve();
@@ -153,22 +152,20 @@ export default {
       });
     },
     async getPositionData(options = {}) {
-      let organId = this.topOrganId
+      let organId = this.topOrganId;
       if (this.isTopOrganId) {
-        organId = this.oneOrganId
+        organId = this.oneOrganId;
       }
-      console.log('organId', organId)
+      console.log('organId', organId);
       return new Promise(async (resolve, reject) => {
         const requestData = {
           organId: organId,
-          upEquipmentId: "-1"
+          upEquipmentId: '-1',
         };
         Object.assign(requestData, options);
         const {
-          data: { code, message, data }
-        } = await this.$api.building.getEquipmentListByUpEquipmentId(
-          requestData
-        );
+          data: { code, message, data },
+        } = await this.$api.building.getEquipmentListByUpEquipmentId(requestData);
         if (code === 0) {
           resolve(data.resultList);
         } else {
@@ -177,21 +174,21 @@ export default {
       });
     },
     handlePositionDataToTreeData(data) {
-      return data.map(ele => {
+      return data.map((ele) => {
         return {
           ...ele,
           value: ele.equipmentId,
           title: ele.equipmentName,
           label: ele.equipmentName,
-          children: []
+          children: [],
         };
       });
     },
     async init() {
       const data = await this.getPositionData();
       this.treeData = this.handlePositionDataToTreeData(data);
-    }
-  }
+    },
+  },
 };
 </script>
 

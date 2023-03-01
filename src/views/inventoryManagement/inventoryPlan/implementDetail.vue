@@ -3,8 +3,8 @@
  * @Description: 盘点单详情
  -->
 <script>
-  import detail from '../inventoryPerform/detail'
-  export default {
-    extends: detail
-  }
+import detail from '../inventoryPerform/detail';
+export default {
+  extends: detail,
+};
 </script>

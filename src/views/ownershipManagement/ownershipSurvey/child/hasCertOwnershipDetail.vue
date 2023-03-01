@@ -48,7 +48,7 @@
   </div>
 </template>
 <script>
-import noDataTips from "@/components/noDataTips";
+import noDataTips from '@/components/noDataTips';
 let getUuid = (
   (uuid = 1) =>
   () =>
@@ -60,40 +60,40 @@ let queryCondition = {
   ownershipStatus: 1,
 };
 let seletOpt = [
-  { label: "无", value: 3 },
-  { label: "换证", value: 4 },
+  { label: '无', value: 3 },
+  { label: '换证', value: 4 },
 ];
 // 表格数据
 let columns = [
   {
-    title: "资产名称",
-    dataIndex: "assetName",
-    width: "20%",
+    title: '资产名称',
+    dataIndex: 'assetName',
+    width: '20%',
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
-    width: "15%",
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    width: '15%',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    width: "10%",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: '10%',
   },
   {
-    title: "资产分类",
-    dataIndex: "objectTypeName",
-    width: "10%",
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
+    width: '10%',
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
-    width: "15%",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
+    width: '15%',
   },
   {
-    title: "所在位置",
-    dataIndex: "location",
-    width: "20%",
+    title: '所在位置',
+    dataIndex: 'location',
+    width: '20%',
   },
   // {
   //   title: "面积(㎡)",
@@ -101,31 +101,31 @@ let columns = [
   //   width: "10%"
   // },
   {
-    title: "权属类型",
-    dataIndex: "kindOfRightName",
-    width: "10%",
+    title: '权属类型',
+    dataIndex: 'kindOfRightName',
+    width: '10%',
   },
   {
-    title: "权证号",
-    dataIndex: "warrantNbr",
-    width: "10%",
+    title: '权证号',
+    dataIndex: 'warrantNbr',
+    width: '10%',
   },
   {
-    title: "权利人",
-    dataIndex: "obligeeName",
-    width: "10%",
+    title: '权利人',
+    dataIndex: 'obligeeName',
+    width: '10%',
   },
   {
-    title: "权属办理设置",
-    dataIndex: "settingMethod",
-    scopedSlots: { customRender: "settingMethod" },
-    width: "120px",
+    title: '权属办理设置',
+    dataIndex: 'settingMethod',
+    scopedSlots: { customRender: 'settingMethod' },
+    width: '120px',
   },
   {
-    title: "权属备注",
-    dataIndex: "remark",
-    scopedSlots: { customRender: "remark" },
-    width: "150px",
+    title: '权属备注',
+    dataIndex: 'remark',
+    scopedSlots: { customRender: 'remark' },
+    width: '150px',
   },
 ];
 export default {
@@ -134,13 +134,13 @@ export default {
   },
   props: {
     type: {
-      default: "detail",
+      default: 'detail',
     },
     projectId: {
-      default: "",
+      default: '',
     },
     scrollHeight: {
-      default: () => ({ y: "auto" }),
+      default: () => ({ y: 'auto' }),
     },
     totalCount: {
       default: 0,
@@ -165,7 +165,7 @@ export default {
   },
   mounted() {
     this.assetTypes = this.$route.query.assetTypes;
-    if (this.$route.query.type === "set") {
+    if (this.$route.query.type === 'set') {
       this.queryCondition.pageSize = 9999;
     }
     this.query();
@@ -181,21 +181,21 @@ export default {
       this.$api.basics.attrList(data).then(
         (res) => {
           this.table.loading = false;
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map((item) => {
               // item.settingMethod = item.settingMethod || 3; // 默认无
               item.settingMethod = 3;
-              item.area = item.area || "--";
-              item.assetTypeName = item.assetTypeName || "--";
-              item.assetCode = item.assetCode || "--";
-              item.location = item.location || "--";
-              item.warrantNbr = item.warrantNbr || "--";
-              item.obligeeName = item.obligeeName || "--";
-              if (this.type !== "set") {
-                item.remark = item.remark || "--";
+              item.area = item.area || '--';
+              item.assetTypeName = item.assetTypeName || '--';
+              item.assetCode = item.assetCode || '--';
+              item.location = item.location || '--';
+              item.warrantNbr = item.warrantNbr || '--';
+              item.obligeeName = item.obligeeName || '--';
+              if (this.type !== 'set') {
+                item.remark = item.remark || '--';
                 // item.settingMethodName = item.settingMethodName || "无";
-                item.settingMethodName = "无";
+                item.settingMethodName = '无';
               }
               return {
                 key: getUuid(),
@@ -216,21 +216,21 @@ export default {
     watchSettingMethodChange(e, row) {
       let o = {
         settingMethod: Number(e),
-        remark: row.remark || "",
+        remark: row.remark || '',
         assetType: row.assetType,
         assetObjectId: row.assetHouseId,
       };
-      this.$emit("change", o);
+      this.$emit('change', o);
     },
     // 监听输入框变化
     watchRemarkChange(e, row) {
       let o = {
         settingMethod: Number(row.settingMethod),
-        remark: row.remark || "",
+        remark: row.remark || '',
         assetType: row.assetType,
         assetObjectId: row.assetHouseId,
       };
-      this.$emit("change", o);
+      this.$emit('change', o);
     },
     handleChange(data) {
       this.queryCondition.pageNum = data.pageNo;

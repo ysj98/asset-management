@@ -19,7 +19,14 @@
               </span>
             </template>
           </a-table>
-          <SG-FooterPagination v-if="false" :pageLength="allPageObj.assetDetail.pageSize" :totalCount="allTableTotal.assetDetail" :noPageTools="true" v-model="allPageObj.assetDetail.pageNum" @change="changePage($event, 'assetDetail')" />
+          <SG-FooterPagination
+            v-if="false"
+            :pageLength="allPageObj.assetDetail.pageSize"
+            :totalCount="allTableTotal.assetDetail"
+            :noPageTools="true"
+            v-model="allPageObj.assetDetail.pageNum"
+            @change="changePage($event, 'assetDetail')"
+          />
         </a-col>
       </a-row>
       <SG-Title title="租赁信息" id="leaseInfo" />
@@ -31,14 +38,28 @@
               <span v-else>--</span>
             </template>
           </a-table>
-          <SG-FooterPagination v-if="false" :pageLength="allPageObj.lease.pageSize" :totalCount="allTableTotal.lease" :noPageTools="true" v-model="allPageObj.lease.pageNum" @change="changePage($event, 'lease')" />
+          <SG-FooterPagination
+            v-if="false"
+            :pageLength="allPageObj.lease.pageSize"
+            :totalCount="allTableTotal.lease"
+            :noPageTools="true"
+            v-model="allPageObj.lease.pageNum"
+            @change="changePage($event, 'lease')"
+          />
         </a-col>
       </a-row>
       <SG-Title title="资产评估信息" id="evaluateInfo" />
       <a-row>
         <a-col :offset="2" :span="18">
           <a-table v-bind="tableEvaluate"></a-table>
-          <SG-FooterPagination v-if="false" :pageLength="allPageObj.evaluate.pageSize" :totalCount="allTableTotal.evaluate" :noPageTools="true" v-model="allPageObj.evaluate.pageNum" @change="changePage($event, 'evaluate')" />
+          <SG-FooterPagination
+            v-if="false"
+            :pageLength="allPageObj.evaluate.pageSize"
+            :totalCount="allTableTotal.evaluate"
+            :noPageTools="true"
+            v-model="allPageObj.evaluate.pageNum"
+            @change="changePage($event, 'evaluate')"
+          />
         </a-col>
       </a-row>
       <SG-Title title="可行性和必要性分析" id="feasibility" />
@@ -177,7 +198,7 @@
         :title="modalList.usage.title"
         @cancel="
           () => {
-            doClosePop('usage')
+            doClosePop('usage');
           }
         "
       >
@@ -194,7 +215,7 @@
         :title="modalList.lease.title"
         @cancel="
           () => {
-            doClosePop('lease')
+            doClosePop('lease');
           }
         "
       >
@@ -210,19 +231,19 @@
 </template>
 
 <script>
-import FloatAnchor from '@/views/common/FloatAnchor'
-import LeaseTable from '@/views/disposalManagement/transfer/LeaseTable'
-import UsageTable from '@/views/disposalManagement/transfer/UsageTable'
-import FormFooter from '@/components/FormFooter'
-import ShowFile from '@/views/disposalManagement/transfer/ShowFile'
-import Information from '@/components/Information'
-import Step from '@/components/step'
-import moment from 'moment'
-import { getDetail } from './share'
+import FloatAnchor from '@/views/common/FloatAnchor';
+import LeaseTable from '@/views/disposalManagement/transfer/LeaseTable';
+import UsageTable from '@/views/disposalManagement/transfer/UsageTable';
+import FormFooter from '@/components/FormFooter';
+import ShowFile from '@/views/disposalManagement/transfer/ShowFile';
+import Information from '@/components/Information';
+import Step from '@/components/step';
+import moment from 'moment';
+import { getDetail } from './share';
 
-const PAGE_ASSET_DETAIL = 'assetDetail'
-const PAGE_LEASE = 'lease'
-const PAGE_EVALUATE = 'evaluate'
+const PAGE_ASSET_DETAIL = 'assetDetail';
+const PAGE_LEASE = 'lease';
+const PAGE_EVALUATE = 'evaluate';
 
 export default {
   name: 'detailTransfer',
@@ -233,7 +254,7 @@ export default {
     UsageTable,
     LeaseTable,
     FloatAnchor,
-    Step
+    Step,
   },
   data() {
     return {
@@ -364,7 +385,7 @@ export default {
           {
             title: '序号',
             customRender: (text, record, index) => {
-              return this.generateNum(index, PAGE_ASSET_DETAIL)
+              return this.generateNum(index, PAGE_ASSET_DETAIL);
             },
           },
           {
@@ -403,7 +424,7 @@ export default {
           {
             title: '序号',
             customRender: (text, record, index) => {
-              return this.generateNum(index, PAGE_ASSET_DETAIL)
+              return this.generateNum(index, PAGE_ASSET_DETAIL);
             },
           },
           {
@@ -420,9 +441,9 @@ export default {
             key: 'startAndEndDateFormat',
             customRender(text, record) {
               if (record.startDateFormat && record.endDateFormat) {
-                return `${record.startDateFormat}至${record.endDateFormat}`
+                return `${record.startDateFormat}至${record.endDateFormat}`;
               } else {
-                return ''
+                return '';
               }
             },
           },
@@ -454,7 +475,7 @@ export default {
             align: 'center',
             width: 100,
             customRender: (text, record, index) => {
-              return this.generateNum(index, PAGE_ASSET_DETAIL)
+              return this.generateNum(index, PAGE_ASSET_DETAIL);
             },
           },
           {
@@ -469,7 +490,7 @@ export default {
             width: 200,
             key: 'obligeeName',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, 'obligeeName')
+              return this.generateTableItem(record.details, 'obligeeName');
             },
           },
           {
@@ -478,7 +499,7 @@ export default {
             width: 300,
             key: 'equityComposition',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, 'equityComposition')
+              return this.generateTableItem(record.details, 'equityComposition');
             },
           },
           {
@@ -487,7 +508,7 @@ export default {
             width: 200,
             key: 'warrantNbr',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, 'warrantNbr')
+              return this.generateTableItem(record.details, 'warrantNbr');
             },
           },
           {
@@ -496,10 +517,10 @@ export default {
             key: 'houseStartAndEndDate',
             width: 260,
             customRender: (text, record) => {
-              record.details.forEach(ele => {
-                ele.houseStartAndEndDate = ele.houseStartDate && ele.houseEndDate ? `${ele.houseStartDate}~${ele.houseEndDate}` : ''
-              })
-              return this.generateTableItem(record.details, 'houseStartAndEndDate')
+              record.details.forEach((ele) => {
+                ele.houseStartAndEndDate = ele.houseStartDate && ele.houseEndDate ? `${ele.houseStartDate}~${ele.houseEndDate}` : '';
+              });
+              return this.generateTableItem(record.details, 'houseStartAndEndDate');
             },
           },
           {
@@ -517,7 +538,7 @@ export default {
             width: 200,
             key: 'ownershipUse',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, 'ownershipUse')
+              return this.generateTableItem(record.details, 'ownershipUse');
             },
           },
           {
@@ -526,7 +547,7 @@ export default {
             width: 200,
             key: 'buildArea',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, 'buildArea')
+              return this.generateTableItem(record.details, 'buildArea');
             },
           },
           {
@@ -535,7 +556,7 @@ export default {
             width: 200,
             key: 'landArea',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, 'landArea')
+              return this.generateTableItem(record.details, 'landArea');
             },
           },
           {
@@ -592,79 +613,77 @@ export default {
           dataSource: [],
         },
       },
-    }
+    };
   },
   methods: {
     isMobile() {
-      let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|ios/i.test(navigator.userAgent)
-      return flag
+      let flag = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|ios/i.test(navigator.userAgent);
+      return flag;
     },
     btnMoreLease(row) {
-      this.modalList.lease.dataSource = row.historicLeaseResps
-      this.doOpenPop('lease', row.propertyName || '')
+      this.modalList.lease.dataSource = row.historicLeaseResps;
+      this.doOpenPop('lease', row.propertyName || '');
     },
     btnMoreUsage(row) {
-      this.modalList.usage.dataSource = row.resourceList
-      this.doOpenPop('usage', row.propertyName || '')
+      this.modalList.usage.dataSource = row.resourceList;
+      this.doOpenPop('usage', row.propertyName || '');
     },
     doClosePop(modal) {
-      this.modalList[modal].show = false
+      this.modalList[modal].show = false;
     },
     doOpenPop(modal, title) {
-      this.modalList[modal].show = true
+      this.modalList[modal].show = true;
       if (title) {
-        this.modalList[modal].title = title
+        this.modalList[modal].title = title;
       }
     },
     //审批流程获取文件
-    getFile(item){
-      console.log(item)
-       this.$api.approve.getFile({fileId:item.fileID}).then((res) => {
-         let blob = new Blob([res.data])
-       const fileName = decodeURIComponent(
-             res.headers["content-disposition"].split(";")[1].split("filename=")[1]
-        );
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = fileName
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      });;
+    getFile(item) {
+      console.log(item);
+      this.$api.approve.getFile({ fileId: item.fileID }).then((res) => {
+        let blob = new Blob([res.data]);
+        const fileName = decodeURIComponent(res.headers['content-disposition'].split(';')[1].split('filename=')[1]);
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
     },
     // 按钮操作
     handleBtn(operResult) {
       if (operResult === 0) {
         if (!this.advice) {
-          this.$message.error('驳回必填审核意见')
-          return null
+          this.$message.error('驳回必填审核意见');
+          return null;
         }
       }
       let req = {
         apprId: this.apprId,
         operResult,
         operOpinion: this.advice,
-      }
+      };
       this.$api.approve
         .uniformSubmit(req)
         .then(({ data: res }) => {
           if (res && String(res.code) === '0') {
-            this.$message.success(operResult ? '审批成功' : '驳回成功')
+            this.$message.success(operResult ? '审批成功' : '驳回成功');
             // 跳回列表路由
-            this.$router.go(-1)
+            this.$router.go(-1);
           } else {
-            throw res.message
+            throw res.message;
           }
         })
-        .catch(err => {
-          console.error(err)
-          this.$message.error(err || `${operResult ? '审批失败' : '驳回失败'}`)
-        })
+        .catch((err) => {
+          console.error(err);
+          this.$message.error(err || `${operResult ? '审批失败' : '驳回失败'}`);
+        });
     },
     generateTableItem(details, keyStr) {
-      const _h = this.$createElement
-      const children = (details || []).map(ele =>
+      const _h = this.$createElement;
+      const children = (details || []).map((ele) =>
         _h(
           'div',
           {
@@ -675,8 +694,8 @@ export default {
           },
           [ele[keyStr]]
         )
-      )
-      return _h('div', {}, children)
+      );
+      return _h('div', {}, children);
     },
     generateNum(index, type) {
       return this.$createElement(
@@ -685,113 +704,115 @@ export default {
           class: 'custom_height',
         },
         [(this.allPageObj[type].pageNum - 1) * 10 + 1 + index]
-      )
+      );
     },
     changePage({ pageNo, pageLength }, type) {
-      this.allPageObj[type].pageNum = pageNo
-      this.allPageObj[type].pageSize = pageLength
+      this.allPageObj[type].pageNum = pageNo;
+      this.allPageObj[type].pageSize = pageLength;
     },
     getTableAssetDetail(data) {
-      this.tableAssetDetail.dataSource = data.map(ele => ({
+      this.tableAssetDetail.dataSource = data.map((ele) => ({
         ...ele,
         details: ele.details || [],
         _key: Math.random(),
-      }))
+      }));
     },
     getTableLease({ assetIds }) {
       this.$api.transfer.leaseBatchQuery(assetIds).then(({ data: { code, message, data } }) => {
         if (code === '0') {
-          console.log('data', data)
-          this.tableLease.dataSource = (data || []).map(ele => {
+          console.log('data', data);
+          this.tableLease.dataSource = (data || []).map((ele) => {
             // 如果ele.historicLeaseResps只有一个 则把其中的一个元素中的属性加载到外层
-            const childRes = ele.historicLeaseResps && ele.historicLeaseResps.length > 1 ? {} : ele.historicLeaseResps ? { ...ele.historicLeaseResps[0] } : {}
+            const childRes =
+              ele.historicLeaseResps && ele.historicLeaseResps.length > 1 ? {} : ele.historicLeaseResps ? { ...ele.historicLeaseResps[0] } : {};
 
             return {
               _key: Math.random(),
               ...ele,
               ...childRes,
-            }
-          })
+            };
+          });
         } else {
-          this.$message.error(message)
+          this.$message.error(message);
         }
-      })
+      });
     },
     getTableEvaluate(data) {
-      const res = data || []
-      this.tableEvaluate.dataSource = res.map(ele => ({
+      const res = data || [];
+      this.tableEvaluate.dataSource = res.map((ele) => ({
         ...ele,
         _key: Math.random(),
-      }))
+      }));
     },
     getAllFileData(data) {
-      const res = data || []
-      res.forEach(ele => {
-        Object.keys(this.allFile).forEach(e => {
-          const item = this.allFile[e]
+      const res = data || [];
+      res.forEach((ele) => {
+        Object.keys(this.allFile).forEach((e) => {
+          const item = this.allFile[e];
           if (item.subType === ele.subType) {
             item.value.push({
               name: ele.oldAttachmentName,
               url: ele.attachmentPath,
               attachmentId: ele.attachmentId,
-            })
+            });
           }
-        })
-      })
+        });
+      });
     },
     getOtherInfo(data) {
       this.otherInfo = {
         compliance: data.compliance,
         feasibility: data.feasibility,
-      }
+      };
     },
     getConditions(data) {
-      this.conditions = data
+      this.conditions = data;
     },
     getBasicInfo(data) {
-      this.basicInfoOptions.data = Object.assign(data || {}, {})
+      this.basicInfoOptions.data = Object.assign(data || {}, {});
     },
     queryApprovalRecordByBus() {
       const req = {
         busType: 1007,
         busId: this.applyId,
         // organId: this.organId,
-      }
+      };
       this.$api.approve.queryApprovalRecordByBus(req).then(({ data: { code, message, data } }) => {
         if (code === '0') {
           if (message === '审批单不存在') {
             if (this.fromType === 'approve') {
-              this.isApprove = true
+              this.isApprove = true;
             }
           } else {
-            this.apprId = data.amsApprovalResDto.apprId
-            this.stepList = (data.approvalRecordResDtos || []).map(ele => {
+            this.apprId = data.amsApprovalResDto.apprId;
+            this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
               return {
-                      date: ele.operDateStr
-                        ? moment(ele.operDateStr)
-                        : moment(),
-                      title: ele.operOpinion,
-                      desc: "",
-                      isDone: false,
-                      operation: ele.files&&ele.files.length>0?JSON.parse(ele.files).map(ele=>{
-                        return{
-                          buttonName:ele.name,
-                          funcName:'getFile',
-                          fileID:ele.id,
-                          fileName:ele.name
-                        }
-                      }):[],
-                    };
-            })
-            this.stepList.length && (this.stepList[0].isDone = true)
+                date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
+                title: ele.operOpinion,
+                desc: '',
+                isDone: false,
+                operation:
+                  ele.files && ele.files.length > 0
+                    ? JSON.parse(ele.files).map((ele) => {
+                        return {
+                          buttonName: ele.name,
+                          funcName: 'getFile',
+                          fileID: ele.id,
+                          fileName: ele.name,
+                        };
+                      })
+                    : [],
+              };
+            });
+            this.stepList.length && (this.stepList[0].isDone = true);
             if (this.fromType === 'approve') {
-              this.isApprove = data.amsApprovalResDto.isAbRole === 1
+              this.isApprove = data.amsApprovalResDto.isAbRole === 1;
             }
           }
         } else {
-          this.$message.error(message)
+          this.$message.error(message);
         }
-      })
+      });
     },
     async initData() {
       // 支持两种方式打开详情页面
@@ -799,68 +820,68 @@ export default {
       // /asset-management/#/transfer/detail?instId=1583291911515570176
       const {
         query: { instId },
-      } = this.$route
+      } = this.$route;
       if (instId) {
-        this.$route.meta.noShowProBreadNav = true
+        this.$route.meta.noShowProBreadNav = true;
         const req = {
           serviceOrderId: instId,
-        }
+        };
         const {
           data: { code, message, data },
-        } = await this.$api.approve.getApprByServiceOrderId(req)
+        } = await this.$api.approve.getApprByServiceOrderId(req);
         if (code === '0') {
-          this.applyId = data.busId
+          this.applyId = data.busId;
         } else {
-          this.$message.error(message)
+          this.$message.error(message);
         }
       } else {
-        this.$route.meta.noShowProBreadNav = false
-        this.applyId = this.$route.query.applyId
+        this.$route.meta.noShowProBreadNav = false;
+        this.applyId = this.$route.query.applyId;
       }
       // 移动端打开详情页不会带上fromType=detail 参数
-      this.fromType = this.$route.query.fromType || 'detail'
+      this.fromType = this.$route.query.fromType || 'detail';
       // this.organId = this.$route.query.organId;
-      const data = await getDetail({ applyId: this.applyId })
-      this.getTableAssetDetail(data.assetDetails)
-      this.getTableEvaluate(data.valueInfos)
-      this.getAllFileData(data.attachments)
-      this.getBasicInfo(data.baseInfo)
-      this.getOtherInfo(data)
-      this.getConditions(data.conditions)
+      const data = await getDetail({ applyId: this.applyId });
+      this.getTableAssetDetail(data.assetDetails);
+      this.getTableEvaluate(data.valueInfos);
+      this.getAllFileData(data.attachments);
+      this.getBasicInfo(data.baseInfo);
+      this.getOtherInfo(data);
+      this.getConditions(data.conditions);
 
-      const assetIds = (data.assetDetails || []).map(ele => ele.assetId)
-      this.getTableLease({ assetIds })
+      const assetIds = (data.assetDetails || []).map((ele) => ele.assetId);
+      this.getTableLease({ assetIds });
       if (['detail', 'approve'].includes(this.fromType)) {
-        this.queryApprovalRecordByBus()
+        this.queryApprovalRecordByBus();
       }
     },
   },
   mounted() {
-    this.initData()
+    this.initData();
     if (this.isMobile()) {
-      this.isMobileStatus = true
+      this.isMobileStatus = true;
       // 修改body样式
-      document.querySelector('body').style = 'min-width: auto !important;'
+      document.querySelector('body').style = 'min-width: auto !important;';
       // 关闭导航栏
-      this.$route.meta.noShowProBreadNav = true
+      this.$route.meta.noShowProBreadNav = true;
       // 关闭侧边菜单栏
-      this.$store.commit('dev/updateMenuStatus', false)
-      const docEl = window.document.documentElement
+      this.$store.commit('dev/updateMenuStatus', false);
+      const docEl = window.document.documentElement;
       if (docEl.querySelector('head')) {
-        docEl.querySelector('head').querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width,initial-scale=1')
+        docEl.querySelector('head').querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width,initial-scale=1');
       }
     }
   },
   beforeRouteEnter(to, from, next) {
-    to.meta.noShowProBreadNav = from.path === '/approve'
-    next(vm => {
+    to.meta.noShowProBreadNav = from.path === '/approve';
+    next((vm) => {
       const {
         params: { fromBpmApprove },
-      } = from
-      vm.isApprove = fromBpmApprove || false
-    })
+      } = from;
+      vm.isApprove = fromBpmApprove || false;
+    });
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

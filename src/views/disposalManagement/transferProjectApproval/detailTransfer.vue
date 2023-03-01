@@ -15,7 +15,7 @@
             <template #resourceList="text, record">
               <a v-if="record.resourceList.length > 1" @click="btnMoreUsage(record)">查看更多</a>
               <span v-else>
-                {{ record.resourceList[0] ? record.resourceList[0].busiStatus : "--" }}
+                {{ record.resourceList[0] ? record.resourceList[0].busiStatus : '--' }}
               </span>
             </template>
           </a-table>
@@ -231,22 +231,22 @@
 </template>
 
 <script>
-import FloatAnchor from "@/views/common/FloatAnchor";
-import LeaseTable from "@/views/disposalManagement/transfer/LeaseTable";
-import UsageTable from "@/views/disposalManagement/transfer/UsageTable";
-import FormFooter from "@/components/FormFooter";
-import ShowFile from "@/views/disposalManagement/transfer/ShowFile";
-import Information from "@/components/Information";
-import Step from "@/components/step";
-import moment from "moment";
-import { getDetail } from "./share";
+import FloatAnchor from '@/views/common/FloatAnchor';
+import LeaseTable from '@/views/disposalManagement/transfer/LeaseTable';
+import UsageTable from '@/views/disposalManagement/transfer/UsageTable';
+import FormFooter from '@/components/FormFooter';
+import ShowFile from '@/views/disposalManagement/transfer/ShowFile';
+import Information from '@/components/Information';
+import Step from '@/components/step';
+import moment from 'moment';
+import { getDetail } from './share';
 
-const PAGE_ASSET_DETAIL = "assetDetail";
-const PAGE_LEASE = "lease";
-const PAGE_EVALUATE = "evaluate";
+const PAGE_ASSET_DETAIL = 'assetDetail';
+const PAGE_LEASE = 'lease';
+const PAGE_EVALUATE = 'evaluate';
 
 export default {
-  name: "detailTransfer",
+  name: 'detailTransfer',
   components: {
     ShowFile,
     Information,
@@ -260,35 +260,35 @@ export default {
     return {
       isMobileStatus: false,
       anchorList: [
-        { title: "基本信息", id: "baseInfo" },
-        { title: "资产明细", id: "assetDetail" },
-        { title: "租赁信息", id: "leaseInfo" },
-        { title: "资产评估信息", id: "evaluateInfo" },
-        { title: "可行性和必要性分析", id: "feasibility" },
-        { title: "经营测算", id: "operation" },
-        { title: "合规性条文", id: "clause" },
-        { title: "其他必要资料", id: "otherFile" },
-        { title: "拟转让条件", id: "conditions" },
-        { title: "审批轨迹", id: "approvalTrack" },
+        { title: '基本信息', id: 'baseInfo' },
+        { title: '资产明细', id: 'assetDetail' },
+        { title: '租赁信息', id: 'leaseInfo' },
+        { title: '资产评估信息', id: 'evaluateInfo' },
+        { title: '可行性和必要性分析', id: 'feasibility' },
+        { title: '经营测算', id: 'operation' },
+        { title: '合规性条文', id: 'clause' },
+        { title: '其他必要资料', id: 'otherFile' },
+        { title: '拟转让条件', id: 'conditions' },
+        { title: '审批轨迹', id: 'approvalTrack' },
       ],
-      apprId: "",
-      advice: "",
-      fromType: "",
+      apprId: '',
+      advice: '',
+      fromType: '',
       isApprove: false,
       stepList: [],
       // 拟转让
       conditions: {
-        interestedParty: "",
-        listingPrice: "",
-        marketAnalysis: "",
-        remark: "",
-        withdrawalClause: "",
+        interestedParty: '',
+        listingPrice: '',
+        marketAnalysis: '',
+        remark: '',
+        withdrawalClause: '',
       },
       otherInfo: {
-        feasibility: "",
-        compliance: "",
+        feasibility: '',
+        compliance: '',
       },
-      applyId: "",
+      applyId: '',
       allFile: {
         // 经营测算
         operationFile: {
@@ -346,8 +346,8 @@ export default {
         formatBasicInfoList: [
           [
             {
-              title: "资产转让立项单名称",
-              key: "name",
+              title: '资产转让立项单名称',
+              key: 'name',
               colProps: {
                 span: 24,
               },
@@ -355,26 +355,26 @@ export default {
           ],
           [
             {
-              title: "所属机构",
-              key: "organName",
+              title: '所属机构',
+              key: 'organName',
             },
             {
-              title: "资产项目",
-              key: "projectName",
+              title: '资产项目',
+              key: 'projectName',
             },
             {
-              title: "资产类型",
-              key: "assetTypeName",
+              title: '资产类型',
+              key: 'assetTypeName',
             },
           ],
           [
             {
-              title: "状态",
-              key: "apprStatusStr",
+              title: '状态',
+              key: 'apprStatusStr',
             },
             {
-              title: "立项单ID",
-              key: "applyId",
+              title: '立项单ID',
+              key: 'applyId',
             },
           ],
         ],
@@ -383,87 +383,87 @@ export default {
       tableEvaluate: {
         columns: [
           {
-            title: "序号",
+            title: '序号',
             customRender: (text, record, index) => {
               return this.generateNum(index, PAGE_ASSET_DETAIL);
             },
           },
           {
-            title: "物业名称",
+            title: '物业名称',
             width: 300,
-            dataIndex: "propertyName",
+            dataIndex: 'propertyName',
           },
           {
-            title: "评估机构",
-            dataIndex: "assessmentOrganName",
+            title: '评估机构',
+            dataIndex: 'assessmentOrganName',
           },
           {
-            title: "评估号",
-            dataIndex: "assessmentNum",
+            title: '评估号',
+            dataIndex: 'assessmentNum',
           },
           {
-            title: "评估基准日",
-            dataIndex: "assessmenBaseDate",
+            title: '评估基准日',
+            dataIndex: 'assessmenBaseDate',
           },
           {
-            title: "评估有效期",
-            dataIndex: "assessmentValidDate",
+            title: '评估有效期',
+            dataIndex: 'assessmentValidDate',
           },
           {
-            title: "评估价值（元）",
-            dataIndex: "assessmentValue",
+            title: '评估价值（元）',
+            dataIndex: 'assessmentValue',
           },
         ],
         dataSource: [],
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
         scroll: { x: 1200, y: 600 },
       },
       tableLease: {
         columns: [
           {
-            title: "序号",
+            title: '序号',
             customRender: (text, record, index) => {
               return this.generateNum(index, PAGE_ASSET_DETAIL);
             },
           },
           {
-            title: "物业名称",
+            title: '物业名称',
             width: 300,
-            dataIndex: "propertyName",
+            dataIndex: 'propertyName',
           },
           {
-            title: "历史承租人",
-            dataIndex: "secondName",
+            title: '历史承租人',
+            dataIndex: 'secondName',
           },
           {
-            title: "承租时间",
-            key: "startAndEndDateFormat",
+            title: '承租时间',
+            key: 'startAndEndDateFormat',
             customRender(text, record) {
               if (record.startDateFormat && record.endDateFormat) {
                 return `${record.startDateFormat}至${record.endDateFormat}`;
               } else {
-                return "";
+                return '';
               }
             },
           },
           {
-            title: "承租金额（元）",
-            dataIndex: "allRent",
+            title: '承租金额（元）',
+            dataIndex: 'allRent',
           },
           {
-            title: "承租单价（元）",
-            dataIndex: "rentAveragePrice",
+            title: '承租单价（元）',
+            dataIndex: 'rentAveragePrice',
           },
           {
-            title: "操作",
+            title: '操作',
             scopedSlots: {
-              customRender: "action",
+              customRender: 'action',
             },
           },
         ],
         dataSource: [],
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
         scroll: { x: 1200, y: 600 },
       },
@@ -471,115 +471,115 @@ export default {
         scroll: { x: 1200, y: 600 },
         columns: [
           {
-            title: "序号",
-            align: "center",
+            title: '序号',
+            align: 'center',
             width: 100,
             customRender: (text, record, index) => {
               return this.generateNum(index, PAGE_ASSET_DETAIL);
             },
           },
           {
-            title: "物业名称",
-            align: "center",
+            title: '物业名称',
+            align: 'center',
             width: 300,
-            dataIndex: "propertyName",
+            dataIndex: 'propertyName',
           },
           {
-            title: "权属单位",
-            align: "center",
+            title: '权属单位',
+            align: 'center',
             width: 200,
-            key: "obligeeName",
+            key: 'obligeeName',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, "obligeeName");
+              return this.generateTableItem(record.details, 'obligeeName');
             },
           },
           {
-            title: "权属人股权构成",
-            align: "center",
+            title: '权属人股权构成',
+            align: 'center',
             width: 300,
-            key: "equityComposition",
+            key: 'equityComposition',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, "equityComposition");
+              return this.generateTableItem(record.details, 'equityComposition');
             },
           },
           {
-            title: "产权证号",
-            align: "center",
+            title: '产权证号',
+            align: 'center',
             width: 200,
-            key: "warrantNbr",
+            key: 'warrantNbr',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, "warrantNbr");
+              return this.generateTableItem(record.details, 'warrantNbr');
             },
           },
           {
-            title: "权证有效期",
-            align: "center",
-            key: "houseStartAndEndDate",
+            title: '权证有效期',
+            align: 'center',
+            key: 'houseStartAndEndDate',
             width: 260,
             customRender: (text, record) => {
               record.details.forEach((ele) => {
-                ele.houseStartAndEndDate = ele.houseStartDate && ele.houseEndDate ? `${ele.houseStartDate}~${ele.houseEndDate}` : "";
+                ele.houseStartAndEndDate = ele.houseStartDate && ele.houseEndDate ? `${ele.houseStartDate}~${ele.houseEndDate}` : '';
               });
-              return this.generateTableItem(record.details, "houseStartAndEndDate");
+              return this.generateTableItem(record.details, 'houseStartAndEndDate');
             },
           },
           {
-            title: "目前使用状况",
-            align: "center",
+            title: '目前使用状况',
+            align: 'center',
             width: 200,
-            key: "resourceList",
+            key: 'resourceList',
             scopedSlots: {
-              customRender: "resourceList",
+              customRender: 'resourceList',
             },
           },
           {
-            title: "证载用途",
-            align: "center",
+            title: '证载用途',
+            align: 'center',
             width: 200,
-            key: "ownershipUse",
+            key: 'ownershipUse',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, "ownershipUse");
+              return this.generateTableItem(record.details, 'ownershipUse');
             },
           },
           {
-            title: "建筑面积(㎡)",
-            align: "center",
+            title: '建筑面积(㎡)',
+            align: 'center',
             width: 200,
-            key: "buildArea",
+            key: 'buildArea',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, "buildArea");
+              return this.generateTableItem(record.details, 'buildArea');
             },
           },
           {
-            title: "土地面积(㎡)",
-            align: "center",
+            title: '土地面积(㎡)',
+            align: 'center',
             width: 200,
-            key: "landArea",
+            key: 'landArea',
             customRender: (text, record) => {
-              return this.generateTableItem(record.details, "landArea");
+              return this.generateTableItem(record.details, 'landArea');
             },
           },
           {
-            title: "获得来源",
-            align: "center",
+            title: '获得来源',
+            align: 'center',
             width: 200,
-            dataIndex: "sourceType",
+            dataIndex: 'sourceType',
           },
           {
-            title: "质押情况",
-            align: "center",
+            title: '质押情况',
+            align: 'center',
             width: 200,
-            dataIndex: "pledgeStr",
+            dataIndex: 'pledgeStr',
           },
           {
-            title: "其他披露事项",
-            align: "center",
+            title: '其他披露事项',
+            align: 'center',
             width: 200,
-            dataIndex: "disclosures",
+            dataIndex: 'disclosures',
           },
         ],
         dataSource: [],
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
       },
       allPageObj: {
@@ -604,12 +604,12 @@ export default {
       modalList: {
         usage: {
           show: false,
-          title: "",
+          title: '',
           dataSource: [],
         },
         lease: {
           show: false,
-          title: "",
+          title: '',
           dataSource: [],
         },
       },
@@ -622,11 +622,11 @@ export default {
     },
     btnMoreLease(row) {
       this.modalList.lease.dataSource = row.historicLeaseResps;
-      this.doOpenPop("lease", row.propertyName || "");
+      this.doOpenPop('lease', row.propertyName || '');
     },
     btnMoreUsage(row) {
       this.modalList.usage.dataSource = row.resourceList;
-      this.doOpenPop("usage", row.propertyName || "");
+      this.doOpenPop('usage', row.propertyName || '');
     },
     doClosePop(modal) {
       this.modalList[modal].show = false;
@@ -642,11 +642,11 @@ export default {
       console.log(item);
       this.$api.approve.getFile({ fileId: item.fileID }).then((res) => {
         let blob = new Blob([res.data]);
-        const fileName = decodeURIComponent(res.headers["content-disposition"].split(";")[1].split("filename=")[1]);
-        let a = document.createElement("a");
+        const fileName = decodeURIComponent(res.headers['content-disposition'].split(';')[1].split('filename=')[1]);
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = fileName;
-        a.style.display = "none";
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -656,7 +656,7 @@ export default {
     handleBtn(operResult) {
       if (operResult === 0) {
         if (!this.advice) {
-          this.$message.error("驳回必填审核意见");
+          this.$message.error('驳回必填审核意见');
           return null;
         }
       }
@@ -668,8 +668,8 @@ export default {
       this.$api.approve
         .uniformSubmit(req)
         .then(({ data: res }) => {
-          if (res && String(res.code) === "0") {
-            this.$message.success(operResult ? "审批成功" : "驳回成功");
+          if (res && String(res.code) === '0') {
+            this.$message.success(operResult ? '审批成功' : '驳回成功');
             // 跳回列表路由
             this.$router.go(-1);
           } else {
@@ -678,16 +678,16 @@ export default {
         })
         .catch((err) => {
           console.error(err);
-          this.$message.error(err || `${operResult ? "审批失败" : "驳回失败"}`);
+          this.$message.error(err || `${operResult ? '审批失败' : '驳回失败'}`);
         });
     },
     generateTableItem(details, keyStr) {
       const _h = this.$createElement;
       const children = (details || []).map((ele) =>
         _h(
-          "div",
+          'div',
           {
-            class: "table-content-item",
+            class: 'table-content-item',
             attrs: {
               title: ele[keyStr],
             },
@@ -695,13 +695,13 @@ export default {
           [ele[keyStr]]
         )
       );
-      return _h("div", {}, children);
+      return _h('div', {}, children);
     },
     generateNum(index, type) {
       return this.$createElement(
-        "div",
+        'div',
         {
-          class: "custom_height",
+          class: 'custom_height',
         },
         [(this.allPageObj[type].pageNum - 1) * 10 + 1 + index]
       );
@@ -719,8 +719,8 @@ export default {
     },
     getTableLease({ assetIds }) {
       this.$api.transfer.leaseBatchQuery(assetIds).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
-          console.log("data", data);
+        if (code === '0') {
+          console.log('data', data);
           this.tableLease.dataSource = (data || []).map((ele) => {
             // 如果ele.historicLeaseResps只有一个 则把其中的一个元素中的属性加载到外层
             const childRes =
@@ -778,9 +778,9 @@ export default {
         // organId: this.organId,
       };
       this.$api.approve.queryApprovalRecordByBus(req).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
-          if (message === "审批单不存在") {
-            if (this.fromType === "approve") {
+        if (code === '0') {
+          if (message === '审批单不存在') {
+            if (this.fromType === 'approve') {
               this.isApprove = true;
             }
           } else {
@@ -789,14 +789,14 @@ export default {
               return {
                 date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                 title: ele.operOpinion,
-                desc: "",
+                desc: '',
                 isDone: false,
                 operation:
                   ele.files && ele.files.length > 0
                     ? JSON.parse(ele.files).map((ele) => {
                         return {
                           buttonName: ele.name,
-                          funcName: "getFile",
+                          funcName: 'getFile',
                           fileID: ele.id,
                           fileName: ele.name,
                         };
@@ -805,7 +805,7 @@ export default {
               };
             });
             this.stepList.length && (this.stepList[0].isDone = true);
-            if (this.fromType === "approve") {
+            if (this.fromType === 'approve') {
               this.isApprove = data.amsApprovalResDto.isAbRole === 1;
             }
           }
@@ -829,7 +829,7 @@ export default {
         const {
           data: { code, message, data },
         } = await this.$api.approve.getApprByServiceOrderId(req);
-        if (code === "0") {
+        if (code === '0') {
           this.applyId = data.busId;
         } else {
           this.$message.error(message);
@@ -839,7 +839,7 @@ export default {
         this.applyId = this.$route.query.applyId;
       }
       // 移动端打开详情页不会带上fromType=detail 参数
-      this.fromType = this.$route.query.fromType || "detail";
+      this.fromType = this.$route.query.fromType || 'detail';
       // this.organId = this.$route.query.organId;
       const data = await getDetail({ applyId: this.applyId });
       this.getTableAssetDetail(data.assetDetails);
@@ -851,7 +851,7 @@ export default {
 
       const assetIds = (data.assetDetails || []).map((ele) => ele.assetId);
       this.getTableLease({ assetIds });
-      if (["detail", "approve"].includes(this.fromType)) {
+      if (['detail', 'approve'].includes(this.fromType)) {
         this.queryApprovalRecordByBus();
       }
     },
@@ -861,19 +861,19 @@ export default {
     if (this.isMobile()) {
       this.isMobileStatus = true;
       // 修改body样式
-      document.querySelector("body").style = "min-width: auto !important;";
+      document.querySelector('body').style = 'min-width: auto !important;';
       // 关闭导航栏
       this.$route.meta.noShowProBreadNav = true;
       // 关闭侧边菜单栏
-      this.$store.commit("dev/updateMenuStatus", false);
+      this.$store.commit('dev/updateMenuStatus', false);
       const docEl = window.document.documentElement;
-      if (docEl.querySelector("head")) {
-        docEl.querySelector("head").querySelector('meta[name="viewport"]').setAttribute("content", "width=device-width,initial-scale=1");
+      if (docEl.querySelector('head')) {
+        docEl.querySelector('head').querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width,initial-scale=1');
       }
     }
   },
   beforeRouteEnter(to, from, next) {
-    to.meta.noShowProBreadNav = from.path === "/approve";
+    to.meta.noShowProBreadNav = from.path === '/approve';
     next((vm) => {
       const {
         params: { fromBpmApprove },

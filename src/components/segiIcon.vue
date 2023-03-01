@@ -14,13 +14,13 @@ export default {
   props: {
     type: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
-    return {}
-  }
-}
+  data() {
+    return {};
+  },
+};
 </script>
 <style lang="less" scoped>
 .icon {
@@ -31,4 +31,3 @@ export default {
   overflow: hidden;
 }
 </style>
-

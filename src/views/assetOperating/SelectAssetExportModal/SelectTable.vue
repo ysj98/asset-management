@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import { columns } from "./share.js";
-import { handleDownloadFile } from "utils/utils";
+import { columns } from './share.js';
+import { handleDownloadFile } from 'utils/utils';
 export default {
-  name: "SelectTable",
-  inject: ["sonData"],
+  name: 'SelectTable',
+  inject: ['sonData'],
   props: {
     selectTableData: {
       type: Array,
@@ -32,9 +32,9 @@ export default {
         columns: [
           ...columns,
           {
-            title: "操作",
+            title: '操作',
             scopedSlots: {
-              customRender: "action",
+              customRender: 'action',
             },
           },
         ],
@@ -64,37 +64,33 @@ export default {
   },
   methods: {
     async handleExport() {
-      if (!(this.selectTableData&&this.selectTableData.length)){
-        this.$message.warn('请选择资产')
-        return null
+      if (!(this.selectTableData && this.selectTableData.length)) {
+        this.$message.warn('请选择资产');
+        return null;
       }
       const assetIds = this.selectTableData.map((ele) => ele.assetId);
       const req = {
-        assetIds: assetIds.join(","),
-        transferOperationNameList: this.customParamsCom.map(
-          (ele) => ele.transferOperationName
-        ),
+        assetIds: assetIds.join(','),
+        transferOperationNameList: this.customParamsCom.map((ele) => ele.transferOperationName),
       };
       const responseData = await this.$api.toOperation.exportAsset(req);
-      if (responseData.data.type === "application/json") {
-        const enc = new TextDecoder("utf-8");
+      if (responseData.data.type === 'application/json') {
+        const enc = new TextDecoder('utf-8');
         responseData.data.arrayBuffer().then((buffer) => {
           let data = JSON.parse(enc.decode(new Uint8Array(buffer))) || {};
-          console.log("data", data);
+          console.log('data', data);
           this.$SG_Message.error(data.message);
         });
       } else {
         handleDownloadFile({
           data: responseData.data,
-          fileName: "资产转运营模板.xls",
+          fileName: '资产转运营模板.xls',
         });
       }
     },
     handleDel(record) {
-      const selectTableData = this.selectTableData.filter(
-        (ele) => ele.assetId !== record.assetId
-      );
-      this.$emit("update:selectTableData", selectTableData);
+      const selectTableData = this.selectTableData.filter((ele) => ele.assetId !== record.assetId);
+      this.$emit('update:selectTableData', selectTableData);
     },
     intiTableData() {
       this.tableOptions.dataSource = this.selectTableData;

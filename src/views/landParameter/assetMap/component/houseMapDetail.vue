@@ -6,10 +6,8 @@
 <template>
   <div class="landMapDetail-page">
     <div class="detail-top-head">
-      {{detailInfo.buildName | filterNullValue}}（楼栋）
-      <span class="fr pointer" @click="handleSwitch"
-        ><a-icon type="close"
-      /></span>
+      {{ detailInfo.buildName | filterNullValue }}（楼栋）
+      <span class="fr pointer" @click="handleSwitch"><a-icon type="close" /></span>
     </div>
     <div class="detail-page">
       <!-- 详情部分 -->
@@ -19,71 +17,60 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">宗地号：</span
-                  ><span class="detail-main">{{detailInfo.addressNo | filterNullValue}}</span>
+                  <span class="detail-label">宗地号：</span><span class="detail-main">{{ detailInfo.addressNo | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">总层数：</span
-                  ><span class="detail-main">{{detailInfo.buildFloor | filterNullValue}}</span>
+                  <span class="detail-label">总层数：</span><span class="detail-main">{{ detailInfo.buildFloor | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">房屋数量：</span
-                  ><span class="detail-main">{{detailInfo.houseNum | filterNullValue}}</span>
+                  <span class="detail-label">房屋数量：</span><span class="detail-main">{{ detailInfo.houseNum | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑面积：</span
-                  ><span class="detail-main">{{detailInfo.builtArea | filterNullValue}}</span>
+                  <span class="detail-label">建筑面积：</span><span class="detail-main">{{ detailInfo.builtArea | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">楼栋类型：</span
-                  ><span class="detail-main">{{detailInfo.buildType | filterNullValue}}</span>
+                  <span class="detail-label">楼栋类型：</span><span class="detail-main">{{ detailInfo.buildType | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">用途：</span
-                  ><span class="detail-main">{{detailInfo.useType | filterNullValue}}</span>
+                  <span class="detail-label">用途：</span><span class="detail-main">{{ detailInfo.useType | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑年代：</span
-                  ><span class="detail-main">{{detailInfo.builtAge | filterNullValue}}</span>
+                  <span class="detail-label">建筑年代：</span><span class="detail-main">{{ detailInfo.builtAge | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑结构：</span
-                  ><span class="detail-main">{{detailInfo.buildStruct | filterNullValue}}</span>
+                  <span class="detail-label">建筑结构：</span><span class="detail-main">{{ detailInfo.buildStruct | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">地理位置：</span
-                  ><span class="detail-main"
-                    >{{detailInfo.position | filterNullValue}}
-                  </span>
+                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position | filterNullValue }} </span>
                 </div>
               </a-col>
             </a-row>
           </div>
           <div class="detail-content-right pt10">
-            <img v-if="imgSrc" :src="imgSrc" alt="">
-            <img v-else src="../images/default_house.png">
+            <img v-if="imgSrc" :src="imgSrc" alt="" />
+            <img v-else src="../images/default_house.png" />
           </div>
         </div>
       </div>
       <!-- 表格部分 -->
       <div class="detail-table">
-        <div style="text-align: center;padding: 20px 20px 0;">
+        <div style="text-align: center; padding: 20px 20px 0">
           <a @click="goDetail">查看资产详情</a>
         </div>
         <div class="pb10 pt10">
@@ -104,92 +91,92 @@
 </template>
 
 <script>
-import Tools, {win} from '@/utils/utils'
+import Tools, { win } from '@/utils/utils';
 // 获取图片域名
-let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
-import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
-import { getFormat } from '@/utils/utils'
+let hostImg = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/';
+import { queryTopOrganByOrganID } from '@/views/buildingDict/publicFn';
+import { getFormat } from '@/utils/utils';
 const columns = [
   {
-    title: "资产数量(个)",
-    dataIndex: "assetNum",
+    title: '资产数量(个)',
+    dataIndex: 'assetNum',
   },
   {
-    title: "资产面积(㎡)",
-    dataIndex: "assetArea",
+    title: '资产面积(㎡)',
+    dataIndex: 'assetArea',
   },
-   {
-    title: "资产价值(万元)",
-    dataIndex: "assetValue",
+  {
+    title: '资产价值(万元)',
+    dataIndex: 'assetValue',
   },
-]
+];
 
 const columnsTwo = [
   {
-    title: "所有权",
-    dataIndex: "ownerShipPercent",
+    title: '所有权',
+    dataIndex: 'ownerShipPercent',
   },
   {
-    title: "使用权",
-    dataIndex: "onlyUsePercent",
+    title: '使用权',
+    dataIndex: 'onlyUsePercent',
   },
   {
-    title: "有证",
-    dataIndex: "warrantPercent",
+    title: '有证',
+    dataIndex: 'warrantPercent',
   },
   {
-    title: "无证",
-    dataIndex: "noWarrantPercent",
-  }
-]
+    title: '无证',
+    dataIndex: 'noWarrantPercent',
+  },
+];
 const columnsThree = [
   {
-    title: "运营",
-    dataIndex: "transferOperationAreaPercent",
+    title: '运营',
+    dataIndex: 'transferOperationAreaPercent',
   },
   {
-    title: "自用",
-    dataIndex: "selfUserAreaPercent",
+    title: '自用',
+    dataIndex: 'selfUserAreaPercent',
   },
   {
-    title: "闲置",
-    dataIndex: "idleAreaPercent",
+    title: '闲置',
+    dataIndex: 'idleAreaPercent',
   },
   {
-    title: "占用",
-    dataIndex: "occupationAreaPercent",
+    title: '占用',
+    dataIndex: 'occupationAreaPercent',
   },
   {
-    title: "其他",
-    dataIndex: "otherAreaPercent",
+    title: '其他',
+    dataIndex: 'otherAreaPercent',
   },
-]
+];
 let getDataRow = (obj, columns) => {
-  let keys = columns.map(item => item.dataIndex)
-  let o = {key: Tools.getUuid()}
-  keys.forEach(item => {
-    if(item === 'assetArea' || item === 'assetValue') {
-      obj[item] = getFormat(obj[item])  
+  let keys = columns.map((item) => item.dataIndex);
+  let o = { key: Tools.getUuid() };
+  keys.forEach((item) => {
+    if (item === 'assetArea' || item === 'assetValue') {
+      obj[item] = getFormat(obj[item]);
     }
     // 给columnsThree中的数据加千分位，由于都有"()"以此判断
-    if(obj[item] && obj[item].toString().includes('(')){
-      let arr = obj[item].split('(')
-      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    if (obj[item] && obj[item].toString().includes('(')) {
+      let arr = obj[item].split('(');
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`;
     }
-    o[item] = obj[item] || '-'
-  })
-  return o
-}
+    o[item] = obj[item] || '-';
+  });
+  return o;
+};
 export default {
-  name: "landMapDetail",
+  name: 'landMapDetail',
   props: {
     detailInfo: {
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
-    organId:{
-      default:''
-    }
+    organId: {
+      default: '',
+    },
   },
   data() {
     return {
@@ -211,50 +198,50 @@ export default {
         dataSource: [],
         pagination: false,
       },
-    }
+    };
   },
   watch: {
-    detailInfo (nv) {
+    detailInfo(nv) {
       if (nv) {
-        let obj = Object.keys(nv).filter(item => item === 'builtArea')
-        nv[obj[0]] = getFormat(nv[obj[0]])
-        this.table.dataSource = [getDataRow(nv, columns)]
-        this.tableTwo.dataSource = [getDataRow(nv, columnsTwo)]
-        this.tableThree.dataSource = [getDataRow(nv, columnsThree)]
+        let obj = Object.keys(nv).filter((item) => item === 'builtArea');
+        nv[obj[0]] = getFormat(nv[obj[0]]);
+        this.table.dataSource = [getDataRow(nv, columns)];
+        this.tableTwo.dataSource = [getDataRow(nv, columnsTwo)];
+        this.tableThree.dataSource = [getDataRow(nv, columnsThree)];
       }
-    }
+    },
   },
   computed: {
-    imgSrc () {
-      return this.detailInfo.picPath ? (hostImg + this.detailInfo.picPath) : ''
-    }
+    imgSrc() {
+      return this.detailInfo.picPath ? hostImg + this.detailInfo.picPath : '';
+    },
   },
   filters: {
-    filterNullValue (val) {
-      return val ? val : '-'
+    filterNullValue(val) {
+      return val ? val : '-';
     },
-    filterNullValueSquare (val) {
-      return val ? (val + '㎡') : '-'
+    filterNullValueSquare(val) {
+      return val ? val + '㎡' : '-';
     },
-    filterNullValueDateRange (detailInfo) {
+    filterNullValueDateRange(detailInfo) {
       if (detailInfo.startDate) {
-       return detailInfo.startDate + '~' + detailInfo.endDate
+        return detailInfo.startDate + '~' + detailInfo.endDate;
       }
-      return '-'
-    }
+      return '-';
+    },
   },
   methods: {
-    async goDetail(){
-      const {organId:resOrganId} = await queryTopOrganByOrganID({nOrganId:this.organId,nOrgId:this.organId})
-      const  tabUrl  = `/asset-management/#/buildingView/buildingViewDetail?buildId=${this.detailInfo.buildId}&organId=${resOrganId}`
-      const tabTitle = '楼栋视图详情'
-      win.openPortalMenu(tabUrl,tabTitle)
+    async goDetail() {
+      const { organId: resOrganId } = await queryTopOrganByOrganID({ nOrganId: this.organId, nOrgId: this.organId });
+      const tabUrl = `/asset-management/#/buildingView/buildingViewDetail?buildId=${this.detailInfo.buildId}&organId=${resOrganId}`;
+      const tabTitle = '楼栋视图详情';
+      win.openPortalMenu(tabUrl, tabTitle);
     },
     handleSwitch() {
-      this.$emit("close", "land")
+      this.$emit('close', 'land');
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -267,8 +254,8 @@ export default {
   font-size: 13px;
   overflow: hidden;
 }
-.detail-content-right{
-  >img {
+.detail-content-right {
+  > img {
     width: 100%;
     height: auto;
   }

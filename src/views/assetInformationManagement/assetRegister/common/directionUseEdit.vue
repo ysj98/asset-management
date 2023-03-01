@@ -6,320 +6,315 @@
 -->
 <template>
   <div class="basicDownload">
-    <SG-Modal
-      :centered="true"
-      width="800px"
-      v-model="modalShow"
-      okText="提交"
-      title="编辑使用方向"
-      @cancel="handleCancel"
-      @ok="handleSubmit"
-    >
-    <div class="directionUseEdit">
-      <span class="section-title blue">资产信息</span>
+    <SG-Modal :centered="true" width="800px" v-model="modalShow" okText="提交" title="编辑使用方向" @cancel="handleCancel" @ok="handleSubmit">
+      <div class="directionUseEdit">
+        <span class="section-title blue">资产信息</span>
         <a-row class="playground-row">
-          <a-col :span="12" class="playground-col">资产名称：{{examine.assetName || '--'}}</a-col>
-          <a-col :span="12" class="playground-col">资产编码：{{examine.assetCode || '--'}}</a-col>
-          <a-col :span="12" class="playground-col">资产分类：{{examine.objectTypeName || '--'}}</a-col>
-          <a-col v-if="!isEquipment" :span="12" class="playground-col">建筑面积(㎡)：{{examine.buildArea || '--'}}</a-col>
+          <a-col :span="12" class="playground-col">资产名称：{{ examine.assetName || '--' }}</a-col>
+          <a-col :span="12" class="playground-col">资产编码：{{ examine.assetCode || '--' }}</a-col>
+          <a-col :span="12" class="playground-col">资产分类：{{ examine.objectTypeName || '--' }}</a-col>
+          <a-col v-if="!isEquipment" :span="12" class="playground-col">建筑面积(㎡)：{{ examine.buildArea || '--' }}</a-col>
         </a-row>
-      <span class="section-title blue">使用方向</span>
-      <a-form :form="form" @submit="handleSubmit">
-        <div v-if="isEquipment" class="mt30 mb30">
-          <a-col :span="12" class="h-65">
-            <a-form-item label="转物业时间" v-bind="formItemLayout">
-              <a-date-picker
-                :style="allWidth"
-                placeholder="转物业时间"
-                v-decorator="['transferTime',
-                  {rules: [{ required: false, message: '转物业时间'}]}
-                ]"
-              />
-            </a-form-item>
-          </a-col>
-          <a-col :span="12" class="h-65">
-            <a-form-item label="使用方向" v-bind="formItemLayout" placeholder="请选择使用方向">
-              <a-select
-                v-decorator="['useDirection',
-                  {rules: [{ required: true, message: '请选择使用方向'}]}
-                ]"
-                :options="amsUseDirectionCom" style="width: 200px;"
-              >
-              </a-select>
-            </a-form-item>
-
-          </a-col>
-        </div>
-        <div v-else class="mt30 mb30">
-          <a-row>
-
+        <span class="section-title blue">使用方向</span>
+        <a-form :form="form" @submit="handleSubmit">
+          <div v-if="isEquipment" class="mt30 mb30">
+            <a-col :span="12" class="h-65">
+              <a-form-item label="转物业时间" v-bind="formItemLayout">
+                <a-date-picker
+                  :style="allWidth"
+                  placeholder="转物业时间"
+                  v-decorator="['transferTime', { rules: [{ required: false, message: '转物业时间' }] }]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="12" class="h-65">
+              <a-form-item label="使用方向" v-bind="formItemLayout" placeholder="请选择使用方向">
+                <a-select
+                  v-decorator="['useDirection', { rules: [{ required: true, message: '请选择使用方向' }] }]"
+                  :options="amsUseDirectionCom"
+                  style="width: 200px"
+                >
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </div>
+          <div v-else class="mt30 mb30">
+            <a-row>
               <a-col :span="12" class="h-65">
                 <a-form-item label="转物业时间" v-bind="formItemLayout">
                   <a-date-picker
-                  :style="allWidth"
-                  placeholder="转物业时间"
-                  v-decorator="['transferTime',
-                    {rules: [{ required: false, message: '转物业时间'}]}
-                  ]"
+                    :style="allWidth"
+                    placeholder="转物业时间"
+                    v-decorator="['transferTime', { rules: [{ required: false, message: '转物业时间' }] }]"
                   />
-                  </a-form-item>
-               </a-col>
+                </a-form-item>
+              </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="转物业面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number placeholder="转物业面积(㎡)"
-                  :style="allWidth"
-                  :min="0"
-                  :precision="4"
-                  :max="99999999.99"
-                  v-decorator="['transferArea',
-                    {rules: [{required: false, message: '转物业面积(支持四位小数)'}], initialValue: subData.transferArea}
-                  ]"/>
+                  <a-input-number
+                    placeholder="转物业面积(㎡)"
+                    :style="allWidth"
+                    :min="0"
+                    :precision="4"
+                    :max="99999999.99"
+                    v-decorator="[
+                      'transferArea',
+                      { rules: [{ required: false, message: '转物业面积(支持四位小数)' }], initialValue: subData.transferArea },
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="转运营时间" v-bind="formItemLayout">
                   <a-date-picker
-                  :style="allWidth"
-                  placeholder="转运营时间"
-                  v-decorator="['transferOperationTime',
-                    {rules: [{ required: false, message: '转运营时间'}]}
-                  ]"
+                    :style="allWidth"
+                    placeholder="转运营时间"
+                    v-decorator="['transferOperationTime', { rules: [{ required: false, message: '转运营时间' }] }]"
                   />
-                  </a-form-item>
-               </a-col>
+                </a-form-item>
+              </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="运营面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number placeholder="运营面积(㎡)"
-                  :style="allWidth"
-                  :min="0"
-                  :max="99999999.99"
-                  :precision="4"
-                  v-decorator="['transferOperationArea',
-                    {rules: [{ required: true, message: '运营面积(支持四位小数)'}], initialValue: subData.transferOperationArea}
-                  ]"/>
+                  <a-input-number
+                    placeholder="运营面积(㎡)"
+                    :style="allWidth"
+                    :min="0"
+                    :max="99999999.99"
+                    :precision="4"
+                    v-decorator="[
+                      'transferOperationArea',
+                      { rules: [{ required: true, message: '运营面积(支持四位小数)' }], initialValue: subData.transferOperationArea },
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="自用面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number placeholder="自用面积(㎡)"
-                  :style="allWidth"
-                  :min="0"
-                  :max="99999999.99"
-                  :precision="4"
-                  v-decorator="['selfUserArea',
-                    {rules: [{ required: true, message: '自用面积(支持四位小数)'}], initialValue: subData.selfUserArea}
-                  ]"/>
+                  <a-input-number
+                    placeholder="自用面积(㎡)"
+                    :style="allWidth"
+                    :min="0"
+                    :max="99999999.99"
+                    :precision="4"
+                    v-decorator="[
+                      'selfUserArea',
+                      { rules: [{ required: true, message: '自用面积(支持四位小数)' }], initialValue: subData.selfUserArea },
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="占用面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number placeholder="占用面积(㎡)"
-                  :style="allWidth"
-                  :min="0"
-                  :max="99999999.99"
-                  :precision="4"
-                  v-decorator="['occupationArea',
-                    {rules: [{ required: true, message: '占用面积(支持四位小数)'}], initialValue: subData.occupationArea}
-                  ]"/>
+                  <a-input-number
+                    placeholder="占用面积(㎡)"
+                    :style="allWidth"
+                    :min="0"
+                    :max="99999999.99"
+                    :precision="4"
+                    v-decorator="[
+                      'occupationArea',
+                      { rules: [{ required: true, message: '占用面积(支持四位小数)' }], initialValue: subData.occupationArea },
+                    ]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="其他面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number placeholder="其他面积(㎡)"
-                  :style="allWidth"
-                  :min="0"
-                  :max="99999999.99"
-                  :precision="4"
-                  v-decorator="['otherArea',
-                    {rules: [{ required: true, message: '其他面积(支持四位小数)'}], initialValue: subData.otherArea}
-                  ]"/>
+                  <a-input-number
+                    placeholder="其他面积(㎡)"
+                    :style="allWidth"
+                    :min="0"
+                    :max="99999999.99"
+                    :precision="4"
+                    v-decorator="['otherArea', { rules: [{ required: true, message: '其他面积(支持四位小数)' }], initialValue: subData.otherArea }]"
+                  />
                 </a-form-item>
               </a-col>
               <a-col :span="12" class="h-65">
                 <a-form-item label="闲置面积(㎡)" v-bind="formItemLayout">
-                  <a-input-number placeholder="闲置面积(㎡)"
-                  :style="allWidth"
-                  :min="0"
-                  :max="99999999.99"
-                  :precision="4"
-                  v-decorator="['idleArea',
-                    {rules: [{ required: true, message: '闲置面积(支持四位小数)'}], initialValue: subData.idleArea}
-                  ]"/>
+                  <a-input-number
+                    placeholder="闲置面积(㎡)"
+                    :style="allWidth"
+                    :min="0"
+                    :max="99999999.99"
+                    :precision="4"
+                    v-decorator="['idleArea', { rules: [{ required: true, message: '闲置面积(支持四位小数)' }], initialValue: subData.idleArea }]"
+                  />
                 </a-form-item>
               </a-col>
-
-          </a-row>
-        </div>
-      </a-form>
-    </div>
+            </a-row>
+          </div>
+        </a-form>
+      </div>
     </SG-Modal>
   </div>
 </template>
 
 <script>
-import {SET_AMS_USE_DIRECTION} from '@/store/types/platformDictTypes'
-import moment from 'moment'
-const conditionalJudgment = [undefined, null, '']
+import { SET_AMS_USE_DIRECTION } from '@/store/types/platformDictTypes';
+import moment from 'moment';
+const conditionalJudgment = [undefined, null, ''];
 export default {
   components: {},
   props: {
-    isEquipment:{
+    isEquipment: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       organId: '67',
       form: this.$form.createForm(this),
       modalShow: false,
       examine: {},
       subData: {
-        assetId: '',                 // 资产ID
-        transferTime: '',            // 转物业时间
-        transferArea: '',            // 转物业面积(㎡)
-        transferOperationTime: '',   // 转运营时间
-        transferOperationArea: '',   // 运营面积(㎡)
-        selfUserArea: '',            // 自用面积(㎡)
-        idleArea: '',                // 闲置面积(㎡)
-        occupationArea: '',          // 占用面积(㎡)
-        otherArea: '',                // 其他面积(㎡)
+        assetId: '', // 资产ID
+        transferTime: '', // 转物业时间
+        transferArea: '', // 转物业面积(㎡)
+        transferOperationTime: '', // 转运营时间
+        transferOperationArea: '', // 运营面积(㎡)
+        selfUserArea: '', // 自用面积(㎡)
+        idleArea: '', // 闲置面积(㎡)
+        occupationArea: '', // 占用面积(㎡)
+        otherArea: '', // 其他面积(㎡)
       },
       assetName: '',
-      allWidth: {width: '200px'},
+      allWidth: { width: '200px' },
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 8 }
+          sm: { span: 8 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 14 }
-        }
-      }
-    }
+          sm: { span: 14 },
+        },
+      },
+    };
   },
   computed: {
-    amsUseDirectionCom(){
-      return this.$store.state.platformDict.AMS_USE_DIRECTION.map(ele=>{
+    amsUseDirectionCom() {
+      return this.$store.state.platformDict.AMS_USE_DIRECTION.map((ele) => {
         return {
           title: ele.name,
           value: ele.value,
-          label: ele.name
+          label: ele.name,
         };
-      })
-    }
+      });
+    },
   },
-  created () {
-  },
+  created() {},
   watch: {
-    modalShow (nv) {
+    modalShow(nv) {
       if (!nv) {
-        this.handleCancel()
+        this.handleCancel();
       }
-    }
+    },
   },
-  mounted () {
-    this.$store.dispatch('platformDict/getPlatformDict',{
-      code:'AMS_USE_DIRECTION',
-      type: SET_AMS_USE_DIRECTION
-    })
+  mounted() {
+    this.$store.dispatch('platformDict/getPlatformDict', {
+      code: 'AMS_USE_DIRECTION',
+      type: SET_AMS_USE_DIRECTION,
+    });
     this.$nextTick(() => {
-      this.$textReplace()
-    })
+      this.$textReplace();
+    });
   },
   methods: {
     moment,
     // 编辑查询
-    getValueDetail (record) {
-      this.examine = record
+    getValueDetail(record) {
+      this.examine = record;
       let data = {
-        assetId	: record.assetId
-      }
-      this.$api.assets.useForDetail(data).then(res => {
-        if (res.data.code === "0") {
-          let obj = res.data.data || {}
-          this.examine = obj
-          this.subData.assetId = obj.assetId
+        assetId: record.assetId,
+      };
+      this.$api.assets.useForDetail(data).then((res) => {
+        if (res.data.code === '0') {
+          let obj = res.data.data || {};
+          this.examine = obj;
+          this.subData.assetId = obj.assetId;
           // 处理表单数据
-          let o = {transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : undefined}
+          let o = { transferTime: obj.transferTime ? moment(obj.transferTime, 'YYYY-MM-DD') : undefined };
           // 转物业时间
-          if (!this.isEquipment){
-            Object.assign(o,{
-              transferArea: obj.transferArea,                     // 转物业面积(㎡)
-              transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : undefined,   // 转运营时间
-              transferOperationArea: obj.transferOperationArea,   // 运营面积(㎡)
-              selfUserArea: obj.selfUserArea,                     // 自用面积(㎡)
-              idleArea: obj.idleArea,                             // 闲置面积(㎡)
-              occupationArea: obj.occupationArea,                 // 占用面积(㎡)
-              otherArea: obj.otherArea                            // 其他面积(㎡)
-            })
-          }else {
-            Object.assign(o,{
-              useDirection: obj.useDirection
-            })
+          if (!this.isEquipment) {
+            Object.assign(o, {
+              transferArea: obj.transferArea, // 转物业面积(㎡)
+              transferOperationTime: obj.transferOperationTime ? moment(obj.transferOperationTime, 'YYYY-MM-DD') : undefined, // 转运营时间
+              transferOperationArea: obj.transferOperationArea, // 运营面积(㎡)
+              selfUserArea: obj.selfUserArea, // 自用面积(㎡)
+              idleArea: obj.idleArea, // 闲置面积(㎡)
+              occupationArea: obj.occupationArea, // 占用面积(㎡)
+              otherArea: obj.otherArea, // 其他面积(㎡)
+            });
+          } else {
+            Object.assign(o, {
+              useDirection: obj.useDirection,
+            });
           }
-          this.form.setFieldsValue(o)
+          this.form.setFieldsValue(o);
         } else {
           this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 提交
-    useForUpdate (values) {
-      let obj = {}
-      if (this.isEquipment){
+    useForUpdate(values) {
+      let obj = {};
+      if (this.isEquipment) {
         obj = {
           assetId: this.subData.assetId,
           transferTime: conditionalJudgment.includes(values.transferTime) ? '' : `${values.transferTime.format('YYYY-MM-DD')}`,
-          useDirection: conditionalJudgment.includes(values.useDirection) ? '' : `${values.useDirection}`
-        }
-      }else {
+          useDirection: conditionalJudgment.includes(values.useDirection) ? '' : `${values.useDirection}`,
+        };
+      } else {
         obj = {
           assetId: this.subData.assetId,
-          transferTime: conditionalJudgment.includes(values.transferTime) ? '' : `${values.transferTime.format('YYYY-MM-DD')}`,                     // 转物业时间
-          transferArea: conditionalJudgment.includes(values.transferArea) ? '' : values.transferArea,                     // 转物业面积(㎡)
-          transferOperationTime: conditionalJudgment.includes(values.transferOperationTime) ? '' : `${values.transferOperationTime.format('YYYY-MM-DD')}`,   // 转运营时间
-          transferOperationArea: conditionalJudgment.includes(values.transferOperationArea) ? '' : values.transferOperationArea,   // 运营面积(㎡)
-          selfUserArea: conditionalJudgment.includes(values.selfUserArea) ? '' : values.selfUserArea,                     // 自用面积(㎡)
-          idleArea: conditionalJudgment.includes(values.idleArea) ? '' : values.idleArea,                             // 闲置面积(㎡)
-          occupationArea: conditionalJudgment.includes(values.occupationArea) ? '' : values.occupationArea,                 // 占用面积(㎡)
-          otherArea: conditionalJudgment.includes(values.otherArea) ? '' : values.otherArea                            // 其他面积(㎡)
-        }
+          transferTime: conditionalJudgment.includes(values.transferTime) ? '' : `${values.transferTime.format('YYYY-MM-DD')}`, // 转物业时间
+          transferArea: conditionalJudgment.includes(values.transferArea) ? '' : values.transferArea, // 转物业面积(㎡)
+          transferOperationTime: conditionalJudgment.includes(values.transferOperationTime)
+            ? ''
+            : `${values.transferOperationTime.format('YYYY-MM-DD')}`, // 转运营时间
+          transferOperationArea: conditionalJudgment.includes(values.transferOperationArea) ? '' : values.transferOperationArea, // 运营面积(㎡)
+          selfUserArea: conditionalJudgment.includes(values.selfUserArea) ? '' : values.selfUserArea, // 自用面积(㎡)
+          idleArea: conditionalJudgment.includes(values.idleArea) ? '' : values.idleArea, // 闲置面积(㎡)
+          occupationArea: conditionalJudgment.includes(values.occupationArea) ? '' : values.occupationArea, // 占用面积(㎡)
+          otherArea: conditionalJudgment.includes(values.otherArea) ? '' : values.otherArea, // 其他面积(㎡)
+        };
       }
-      console.log(values, 'dddd')
-      let loadingName = this.SG_Loding('保存中...')
-      this.$api.assets.useForUpdate(obj).then(res => {
+      console.log(values, 'dddd');
+      let loadingName = this.SG_Loding('保存中...');
+      this.$api.assets.useForUpdate(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.success('提交成功')
-            this.$emit('allQuery')
-            this.handleCancel()
-          })
+            this.$SG_Message.success('提交成功');
+            this.$emit('allQuery');
+            this.handleCancel();
+          });
         } else {
           this.DE_Loding(loadingName).then(() => {
-            this.$message.error(res.data.message)
-          })
+            this.$message.error(res.data.message);
+          });
         }
-      })
+      });
     },
-    commonFn () {
-      this.handleSubmit()
+    commonFn() {
+      this.handleSubmit();
     },
     // 取消
-    handleCancel () {
-      this.show = false
-      this.$emit('cancel')
+    handleCancel() {
+      this.show = false;
+      this.$emit('cancel');
     },
-    handleSubmit () {
+    handleSubmit() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.useForUpdate(values)
+          this.useForUpdate(values);
         }
-      })
+      });
     },
-  }
-}
+  },
+};
 </script>
 <style lang="less" scoped>
 .modal-nav {

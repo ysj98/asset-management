@@ -1,35 +1,14 @@
 <!--资产出租-出租登记-->
 <template>
   <div class="rentRegister">
-    <SG-SearchContainer
-      size="fold"
-      background="white"
-      v-model="toggle"
-      @input="searchContainerFn"
-    >
+    <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button
-          class="fl"
-          style="margin-right: 20px"
-          type="primary"
-          @click="registerFn"
-          v-power="ASSET_MANAGEMENT.RENT_FORM_NEW"
+        <SG-Button class="fl" style="margin-right: 20px" type="primary" @click="registerFn" v-power="ASSET_MANAGEMENT.RENT_FORM_NEW"
           >出租登记</SG-Button
         >
-        <SG-Button
-          icon="export"
-          :loading="exportBtnLoading"
-          @click="exportFn"
-          v-power="ASSET_MANAGEMENT.ASSET_RENT_REGISTER"
-          >导出</SG-Button
-        >
+        <SG-Button icon="export" :loading="exportBtnLoading" @click="exportFn" v-power="ASSET_MANAGEMENT.ASSET_RENT_REGISTER">导出</SG-Button>
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect
-            @changeTree="changeTree"
-            placeholder="请选择组织机构"
-            :allowClear="false"
-            :style="allStyle"
-          ></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle"></treeSelect>
           <a-select
             :maxTagCount="1"
             mode="multiple"
@@ -45,13 +24,9 @@
               }
             "
           >
-            <a-select-option
-              :title="item.name"
-              v-for="(item, index) in projectData"
-              :key="index"
-              :value="item.value"
-              >{{ item.name }}</a-select-option
-            >
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
           </a-select>
           <a-select
             :maxTagCount="1"
@@ -62,13 +37,9 @@
             @select="assetTypeDataFn"
             v-model="queryCondition.assetType"
           >
-            <a-select-option
-              :title="item.name"
-              v-for="(item, index) in assetTypeData"
-              :key="index"
-              :value="item.value"
-              >{{ item.name }}</a-select-option
-            >
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
           </a-select>
           <a-select
             :maxTagCount="1"
@@ -79,13 +50,9 @@
             @select="approvalStatusFn"
             v-model="queryCondition.approvalStatus"
           >
-            <a-select-option
-              :title="item.name"
-              v-for="(item, index) in approvalStatusData"
-              :key="index"
-              :value="item.value"
-              >{{ item.name }}</a-select-option
-            >
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
           </a-select>
           <a-input-search
             v-model="queryCondition.assetNameCode"
@@ -109,13 +76,9 @@
           @select="contractStatusListFn"
           v-model="queryCondition.contractStatus"
         >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in contractStatusList"
-            :key="index"
-            :value="item.value"
-            >{{ item.name }}</a-select-option
-          >
+          <a-select-option :title="item.name" v-for="(item, index) in contractStatusList" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
         <SG-DatePicker
           :allowClear="false"
@@ -142,18 +105,9 @@
     <div class="table-layout-fixed">
       <!-- ref="table_box" -->
       <!-- :scroll="scrollHeight" -->
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :dataSource="tableData"
-        size="middle"
-        :pagination="false"
-      >
+      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false">
         <template slot="operation" slot-scope="text, record">
-          <OperationPopover
-            :operationData="record.operationDataBtn"
-            @operationFun="operationFun($event, record)"
-          ></OperationPopover>
+          <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)"></OperationPopover>
         </template>
       </a-table>
     </div>
@@ -170,136 +124,136 @@
 </template>
 
 <script>
-import {generateTableAreaByAssetTypeString} from '@/utils/utils'
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import segiIcon from "@/components/segiIcon.vue";
-import TreeSelect from "../../common/treeSelect";
-import moment from "moment";
-import noDataTips from "@/components/noDataTips";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import OperationPopover from "@/components/OperationPopover";
+import { generateTableAreaByAssetTypeString } from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import segiIcon from '@/components/segiIcon.vue';
+import TreeSelect from '../../common/treeSelect';
+import moment from 'moment';
+import noDataTips from '@/components/noDataTips';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import OperationPopover from '@/components/OperationPopover';
 const approvalStatusData = [
   {
-    name: "全部审批状态",
-    value: "",
+    name: '全部审批状态',
+    value: '',
   },
   {
-    name: "草稿",
-    value: "0",
+    name: '草稿',
+    value: '0',
   },
   {
-    name: "待审批",
-    value: "2",
+    name: '待审批',
+    value: '2',
   },
   {
-    name: "已驳回",
-    value: "3",
+    name: '已驳回',
+    value: '3',
   },
   {
-    name: "已审批",
-    value: "1",
+    name: '已审批',
+    value: '1',
   },
   {
-    name: "已取消",
-    value: "4",
+    name: '已取消',
+    value: '4',
   },
 ];
 const contractStatusList = [
   {
-    name: "全部合同状态",
-    value: "",
+    name: '全部合同状态',
+    value: '',
   },
   {
-    name: "未生效",
-    value: "0",
+    name: '未生效',
+    value: '0',
   },
   {
-    name: "待执行",
-    value: "1",
+    name: '待执行',
+    value: '1',
   },
   {
-    name: "执行中",
-    value: "2",
+    name: '执行中',
+    value: '2',
   },
   {
-    name: "已终止",
-    value: "3",
+    name: '已终止',
+    value: '3',
   },
   {
-    name: "已作废",
-    value: "4",
+    name: '已作废',
+    value: '4',
   },
 ];
 const columns = [
   {
-    title: "出租单ID",
+    title: '出租单ID',
     width: 100,
-    dataIndex: "leaseOrderId",
+    dataIndex: 'leaseOrderId',
   },
   {
-    title: "所属机构",
-    dataIndex: "organName",
+    title: '所属机构',
+    dataIndex: 'organName',
   },
   {
-    title: "出租单名称",
-    dataIndex: "leaseName",
+    title: '出租单名称',
+    dataIndex: 'leaseName',
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
+    title: '资产项目',
+    dataIndex: 'projectName',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
   },
   {
-    title: "承租人",
-    dataIndex: "lesseeName",
+    title: '承租人',
+    dataIndex: 'lesseeName',
   },
   {
-    title: "资产数量",
-    dataIndex: "assetSum",
+    title: '资产数量',
+    dataIndex: 'assetSum',
   },
   {
-    title: "出租面积(㎡)",
+    title: '出租面积(㎡)',
     width: 100,
-    key: "leaseArea",
-    customRender(record){
-      return generateTableAreaByAssetTypeString({record,keyStr:'leaseArea',assetTypeName:record.assetTypeName})
-    }
+    key: 'leaseArea',
+    customRender(record) {
+      return generateTableAreaByAssetTypeString({ record, keyStr: 'leaseArea', assetTypeName: record.assetTypeName });
+    },
   },
   {
-    title: "起租日期",
-    dataIndex: "startLeaseDate",
+    title: '起租日期',
+    dataIndex: 'startLeaseDate',
   },
   {
-    title: "止租日期",
-    dataIndex: "endLeaseDate",
+    title: '止租日期',
+    dataIndex: 'endLeaseDate',
   },
   {
-    title: "租金单价",
-    dataIndex: "rentPrice",
+    title: '租金单价',
+    dataIndex: 'rentPrice',
   },
   {
-    title: "合同编号",
-    dataIndex: "contractCode",
+    title: '合同编号',
+    dataIndex: 'contractCode',
   },
   {
-    title: "合同状态",
-    dataIndex: "contractStatusName",
+    title: '合同状态',
+    dataIndex: 'contractStatusName',
   },
   {
-    title: "签订日期",
-    dataIndex: "signingDate",
+    title: '签订日期',
+    dataIndex: 'signingDate',
   },
   {
-    title: "审批状态",
-    dataIndex: "approvalStatusName",
+    title: '审批状态',
+    dataIndex: 'approvalStatusName',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 export default {
@@ -313,13 +267,13 @@ export default {
   data() {
     return {
       organID: 0,
-      organName: "",
+      organName: '',
       ASSET_MANAGEMENT,
       loading: false,
       exportBtnLoading: false, // 导出按钮loading
       columns,
       toggle: false,
-      allStyle: "width: 150px; margin-right: 10px;",
+      allStyle: 'width: 150px; margin-right: 10px;',
       approvalStatusData: [...approvalStatusData],
       contractStatusList: [...contractStatusList],
       queryCondition: {
@@ -327,76 +281,68 @@ export default {
         pageSize: 10, // 每页显示记录数
         organId: 1, // 组织机构id
         projectId: undefined, // 资产项目Id
-        assetType: [""], // 全部资产类型id(多个用，分割)
-        approvalStatus: "", // 审批状态
-        assetNameCode: "", // 出租单名称/合同编号
-        contractStatus: [""], // 合同状态
+        assetType: [''], // 全部资产类型id(多个用，分割)
+        approvalStatus: '', // 审批状态
+        assetNameCode: '', // 出租单名称/合同编号
+        contractStatus: [''], // 合同状态
       },
       projectData: [],
-      count: "",
+      count: '',
       noPageTools: false,
       assetTypeData: [
         {
-          name: "全部资产类型",
-          value: "",
+          name: '全部资产类型',
+          value: '',
         },
       ],
-      signDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 180),
-        moment(new Date()),
-      ],
-      rentDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 180),
-        moment(new Date()),
-      ],
+      signDate: [moment(new Date() - 24 * 1000 * 60 * 60 * 180), moment(new Date())],
+      rentDate: [moment(new Date() - 24 * 1000 * 60 * 60 * 180), moment(new Date())],
       tableData: [],
       numList: [
-        { title: "全部", key: "total", value: 0, fontColor: "#3d91f9" },
-        { title: "草稿", key: "draft", value: 0, bgColor: "#0092ff" },
-        { title: "待审批", key: "await", value: 0, bgColor: "#ed7ce3" },
-        { title: "已驳回", key: "reject", value: 0, bgColor: "#ff6a6b" },
+        { title: '全部', key: 'total', value: 0, fontColor: '#3d91f9' },
+        { title: '草稿', key: 'draft', value: 0, bgColor: '#0092ff' },
+        { title: '待审批', key: 'await', value: 0, bgColor: '#ed7ce3' },
+        { title: '已驳回', key: 'reject', value: 0, bgColor: '#ff6a6b' },
         {
-          title: "已审批",
-          key: "complete",
+          title: '已审批',
+          key: 'complete',
           value: 0,
-          bgColor: "#00d58e",
+          bgColor: '#00d58e',
         },
-        { title: "已取消", key: "cancel", value: 0, bgColor: "#bbc8d6" },
+        { title: '已取消', key: 'cancel', value: 0, bgColor: '#bbc8d6' },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
   watch: {},
   mounted() {
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
   },
   // 路由卫士，用于新建、编辑、审批成功后刷新列表
-    beforeRouteEnter ({query: {refresh}}, {path}, next) {
-      next(vm => {
-        // 通过 `vm` 访问组件实例
-        if ((path === '/rentRegister/rentAdd' || path === '/rentRegister/rentEdit' || path === '/rentRegister/rentApproval') && refresh) {
-          vm.allQuery()
-        }
-      })
-    },
+  beforeRouteEnter({ query: { refresh } }, { path }, next) {
+    next((vm) => {
+      // 通过 `vm` 访问组件实例
+      if ((path === '/rentRegister/rentAdd' || path === '/rentRegister/rentEdit' || path === '/rentRegister/rentApproval') && refresh) {
+        vm.allQuery();
+      }
+    });
+  },
   methods: {
     query(type) {
       let obj = {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
         organId: Number(this.queryCondition.organId), // 组织机构id
-        projectIdList: this.queryCondition.projectId
-          ? this.queryCondition.projectId
-          : [], // 资产项目Id
+        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [], // 资产项目Id
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus),
         leaseNameOrIdOrContractCode: this.queryCondition.assetNameCode,
         contractStatusList: this.alljudge(this.queryCondition.contractStatus),
-        signingDateStart: moment(this.signDate[0]).format("YYYY-MM-DD"),
-        signingDateEnd: moment(this.signDate[1]).format("YYYY-MM-DD"),
-        startleaseDateStart: moment(this.rentDate[0]).format("YYYY-MM-DD"),
-        startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
+        signingDateStart: moment(this.signDate[0]).format('YYYY-MM-DD'),
+        signingDateEnd: moment(this.signDate[1]).format('YYYY-MM-DD'),
+        startleaseDateStart: moment(this.rentDate[0]).format('YYYY-MM-DD'),
+        startleaseDateEnd: moment(this.rentDate[1]).format('YYYY-MM-DD'),
       };
-      if (type === "export") {
+      if (type === 'export') {
         return obj;
       }
       this.loading = true;
@@ -405,9 +351,7 @@ export default {
           let data = res.data.data.data;
           data.forEach((item, index) => {
             item.key = index;
-            item.operationDataBtn = this.createOperationBtn(
-              item.approvalStatus
-            );
+            item.operationDataBtn = this.createOperationBtn(item.approvalStatus);
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -428,16 +372,16 @@ export default {
     // 导出
     exportFn() {
       this.exportBtnLoading = true;
-      let data = this.query("export");
+      let data = this.query('export');
       this.$api.assetRent
         .exportLeaseOrder(data)
         .then((res) => {
           if (res.status === 200) {
             let blob = new Blob([res.data]);
-            let a = document.createElement("a");
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = "出租登记表.xls";
-            a.style.display = "none";
+            a.download = '出租登记表.xls';
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -447,13 +391,13 @@ export default {
           this.exportBtnLoading = false;
         })
         .catch((err) => {
-          context.$message.error(err || "操作失败");
+          context.$message.error(err || '操作失败');
         });
     },
     // 出租登记
     registerFn() {
       this.$router.push({
-        path: "/rentRegister/rentAdd",
+        path: '/rentRegister/rentAdd',
         query: { organId: this.organID, organName: this.organName },
       });
     },
@@ -469,25 +413,21 @@ export default {
       this.getObjectKeyValueByOrganIdFn();
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -497,7 +437,7 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId,
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -523,8 +463,8 @@ export default {
       this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
+          if (str === 'asset_type') {
+            this.assetTypeData = [{ name: '全部资产类型', value: '' }, ...data];
           }
         } else {
           this.$message.error(res.data.message);
@@ -534,31 +474,19 @@ export default {
     // 资产类型变化
     assetTypeDataFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.assetType,
-          this.assetTypeData
-        );
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData);
       });
     },
     // 状态发生变化
     approvalStatusFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.approvalStatus,
-          this.approvalStatusData
-        );
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData);
       });
     },
     // 状态发生变化
     contractStatusListFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.contractStatus = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.contractStatus,
-          this.contractStatusList
-        );
+        this.queryCondition.contractStatus = this.handleMultipleSelectValue(value, this.queryCondition.contractStatus, this.contractStatusList);
       });
     },
     // 查询统计信息
@@ -567,7 +495,7 @@ export default {
         .getLeaseOrderStatistics(form)
         .then((r) => {
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             let { numList } = this;
             return (this.numList = numList.map((m) => {
               return { ...m, value: (res.data || {})[m.key] };
@@ -576,7 +504,7 @@ export default {
           throw res.message;
         })
         .catch((err) => {
-          this.$message.error(err || "查询统计信息出错");
+          this.$message.error(err || '查询统计信息出错');
         });
     },
     // 分页查询
@@ -592,7 +520,7 @@ export default {
     },
     alljudge(val) {
       if (val.length !== 0) {
-        if (val[0] === "") {
+        if (val[0] === '') {
           return [];
         } else {
           return val;
@@ -606,51 +534,51 @@ export default {
       // 审批状态  0草稿   2待审批、3已驳回、 已审批1  已取消4
       let arr = [];
       // 草稿 已驳回
-      if (["0", "3"].includes(String(type))) {
+      if (['0', '3'].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_EDIT)) {
-          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+          arr.push({ iconType: 'edit', text: '编辑', editType: 'edit' });
         }
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_DELETE)) {
-          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+          arr.push({ iconType: 'delete', text: '删除', editType: 'delete' });
         }
       }
       // 待审批
-      if (["2"].includes(String(type))) {
+      if (['2'].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_APPROVE)) {
-          arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+          arr.push({ iconType: 'edit', text: '审批', editType: 'approval' });
         }
       }
       // 已审批
-      if (["1"].includes(String(type))) {
+      if (['1'].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_FORM_REVERSE_AUDIT)) {
           arr.push({
-            iconType: "edit",
-            text: "反审核",
-            editType: "readApproval",
+            iconType: 'edit',
+            text: '反审核',
+            editType: 'readApproval',
           });
         }
       }
-      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      arr.push({ iconType: 'file-text', text: '详情', editType: 'detail' });
       return arr;
     },
     // 操作事件函数
     operationFun(type, record) {
       // 编辑
-      if (["edit"].includes(type)) {
+      if (['edit'].includes(type)) {
         this.$router.push({
-          path: "/rentRegister/rentEdit",
+          path: '/rentRegister/rentEdit',
           query: { leaseOrderId: record.leaseOrderId },
         });
-      } else if (["detail"].includes(type)) {
+      } else if (['detail'].includes(type)) {
         this.$router.push({
-          path: "/rentRegister/rentDetail",
+          path: '/rentRegister/rentDetail',
           query: { leaseOrderId: record.leaseOrderId },
         });
-      } else if (["readApproval"].includes(type)) {
+      } else if (['readApproval'].includes(type)) {
         let that = this;
         this.$confirm({
-          title: "提示",
-          content: "确认要作废此出租单吗？",
+          title: '提示',
+          content: '确认要作废此出租单吗？',
           onOk() {
             that.$api.assetRent
               .updateLeaseOrderStatus({
@@ -666,11 +594,11 @@ export default {
               });
           },
         });
-      } else if (["delete"].includes(type)) {
+      } else if (['delete'].includes(type)) {
         let that = this;
         this.$confirm({
-          title: "提示",
-          content: "确认要删除此出租单吗？",
+          title: '提示',
+          content: '确认要删除此出租单吗？',
           onOk() {
             that.$api.assetRent
               .updateLeaseOrderStatus({
@@ -686,9 +614,9 @@ export default {
               });
           },
         });
-      } else if (["approval"].includes(type)) {
+      } else if (['approval'].includes(type)) {
         this.$router.push({
-          path: "/rentRegister/rentApproval",
+          path: '/rentRegister/rentApproval',
           query: { leaseOrderId: record.leaseOrderId },
         });
       }

@@ -1,12 +1,5 @@
 <template>
-  <SG-Modal
-    v-model="show"
-    :width="960"
-    wrapClassName="assetRentForm"
-    :noPadding="true"
-    :maskClosable="false"
-    :footer="null"
-  >
+  <SG-Modal v-model="show" :width="960" wrapClassName="assetRentForm" :noPadding="true" :maskClosable="false" :footer="null">
     <template #title>
       <div style="font-size: 16px">选择资产出租单</div>
     </template>
@@ -22,13 +15,9 @@
           v-model="contractStatus"
           @change="contractStatusListFn"
         >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in contractStatusList"
-            :key="index"
-            :value="item.value"
-            >{{ item.name }}</a-select-option
-          >
+          <a-select-option :title="item.name" v-for="(item, index) in contractStatusList" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
         <SG-DatePicker
           :allowClear="false"
@@ -78,112 +67,112 @@
 </template>
 
 <script>
-import {generateTableAreaByAssetTypeString} from '@/utils/utils'
+import { generateTableAreaByAssetTypeString } from '@/utils/utils';
 const columns = [
   {
-    title: "出租单ID",
-    dataIndex: "leaseOrderId",
-    fixed: "left",
-    align: "center",
+    title: '出租单ID',
+    dataIndex: 'leaseOrderId',
+    fixed: 'left',
+    align: 'center',
     width: 120,
   },
   {
-    title: "出租单名称",
-    dataIndex: "leaseName",
-    fixed: "left",
+    title: '出租单名称',
+    dataIndex: 'leaseName',
+    fixed: 'left',
     width: 120,
-    align: "center",
+    align: 'center',
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
-    align: "center",
+    title: '资产项目',
+    dataIndex: 'projectName',
+    align: 'center',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    align: "center",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    align: 'center',
   },
   {
-    title: "承租人",
-    dataIndex: "lesseeName",
-    align: "center",
+    title: '承租人',
+    dataIndex: 'lesseeName',
+    align: 'center',
   },
   {
-    title: "资产数量",
-    dataIndex: "assetSum",
-    align: "center",
+    title: '资产数量',
+    dataIndex: 'assetSum',
+    align: 'center',
   },
   {
-    title: "出租面积(㎡)",
+    title: '出租面积(㎡)',
     width: 100,
-    key: "leaseArea",
-    customRender(record){
+    key: 'leaseArea',
+    customRender(record) {
       return generateTableAreaByAssetTypeString({
         record,
-        keyStr:'leaseArea',
-        assetTypeName: record.assetTypeName
-      })
+        keyStr: 'leaseArea',
+        assetTypeName: record.assetTypeName,
+      });
     },
-    align: "center",
+    align: 'center',
   },
   {
-    title: "起租日期",
-    dataIndex: "startLeaseDate",
-    align: "center",
+    title: '起租日期',
+    dataIndex: 'startLeaseDate',
+    align: 'center',
   },
   {
-    title: "止租日期",
-    dataIndex: "endLeaseDate",
-    align: "center",
+    title: '止租日期',
+    dataIndex: 'endLeaseDate',
+    align: 'center',
   },
   {
-    title: "合同编号",
-    dataIndex: "contractCode",
-    align: "center",
+    title: '合同编号',
+    dataIndex: 'contractCode',
+    align: 'center',
   },
   {
-    title: "合同状态",
-    dataIndex: "contractStatusName",
-    align: "center",
+    title: '合同状态',
+    dataIndex: 'contractStatusName',
+    align: 'center',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
     width: 70,
-    fixed: "right",
-    align: "center",
+    fixed: 'right',
+    align: 'center',
   },
 ];
 const contractStatusList = [
   {
-    name: "全部合同状态",
-    value: "",
+    name: '全部合同状态',
+    value: '',
   },
   {
-    name: "未生效",
-    value: "0",
+    name: '未生效',
+    value: '0',
   },
   {
-    name: "待执行",
-    value: "1",
+    name: '待执行',
+    value: '1',
   },
   {
-    name: "执行中",
-    value: "2",
+    name: '执行中',
+    value: '2',
   },
   {
-    name: "已终止",
-    value: "3",
+    name: '已终止',
+    value: '3',
   },
   {
-    name: "已作废",
-    value: "4",
+    name: '已作废',
+    value: '4',
   },
 ];
-import moment from "moment";
-import TooltipText from "../../common/TooltipText";
+import moment from 'moment';
+import TooltipText from '../../common/TooltipText';
 export default {
   data() {
     return {
@@ -191,12 +180,9 @@ export default {
       show: false,
       loading: false,
       contractStatusList: [...contractStatusList], // 合同状态列表
-      contractStatus: [""], // 当前合同状态
-      rentNameOrId: "", // 出租单名称/ID/合同编号
-      rentDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 90),
-        moment(new Date()),
-      ],
+      contractStatus: [''], // 当前合同状态
+      rentNameOrId: '', // 出租单名称/ID/合同编号
+      rentDate: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       tableData: [],
       count: 0, // 总条数
       pagination: {
@@ -205,14 +191,14 @@ export default {
       },
     };
   },
-  props: ["organId"],
+  props: ['organId'],
   components: { TooltipText },
   watch: {
     show(newVal) {
       if (newVal === true) {
         this.query();
       } else {
-        this.$emit("input", newVal);
+        this.$emit('input', newVal);
       }
     },
   },
@@ -229,9 +215,9 @@ export default {
         pageSize: this.pagination.pageLength, // 每页显示记录数
         organId: Number(this.organId), // 组织机构id
         leaseNameOrIdOrContractCode: this.rentNameOrId,
-        contractStatusList: this.contractStatus[0] === "" ? [] : this.contractStatus,
-        startleaseDateStart: moment(this.rentDate[0]).format("YYYY-MM-DD"),
-        startleaseDateEnd: moment(this.rentDate[1]).format("YYYY-MM-DD"),
+        contractStatusList: this.contractStatus[0] === '' ? [] : this.contractStatus,
+        startleaseDateStart: moment(this.rentDate[0]).format('YYYY-MM-DD'),
+        startleaseDateEnd: moment(this.rentDate[1]).format('YYYY-MM-DD'),
       };
       this.$api.assetRent.getLeaseOrderPageList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -259,7 +245,7 @@ export default {
     },
     // 选择按钮
     chose(record) {
-      this.$emit("getRentList", record);
+      this.$emit('getRentList', record);
       this.show = false;
     },
     // 页码改变
@@ -270,16 +256,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -288,12 +274,8 @@ export default {
     // 状态改变
     contractStatusListFn(value) {
       this.$nextTick(function () {
-        this.contractStatus = this.handleMultipleSelectValue(
-          value,
-          this.contractStatus,
-          this.contractStatusList
-        );
-        this.query()
+        this.contractStatus = this.handleMultipleSelectValue(value, this.contractStatus, this.contractStatusList);
+        this.query();
       });
     },
     // 日期改变

@@ -14,10 +14,10 @@
         <span class="section-title blue">基础信息</span>
         <a-row class="playground-row">
           <a-col class="playground-col" :span="12" v-for="(item, index) in basicDate" :key="index"
-            >{{ item.text }}：{{ conditionalJudgment.includes(particularsData[item.value]) ? "" : particularsData[item.value] }}</a-col
+            >{{ item.text }}：{{ conditionalJudgment.includes(particularsData[item.value]) ? '' : particularsData[item.value] }}</a-col
           >
-          <a-col class="playground-col" :span="24">附加说明：{{ particularsData.excursus || "" }}</a-col>
-          <a-col class="playground-col" :span="24">备注：{{ particularsData.remark || "" }}</a-col>
+          <a-col class="playground-col" :span="24">附加说明：{{ particularsData.excursus || '' }}</a-col>
+          <a-col class="playground-col" :span="24">备注：{{ particularsData.remark || '' }}</a-col>
           <a-col class="playground-col" :class="{ 'files-style': files.length > 0 }" :span="24">
             附件：
             <span v-if="files.length === 0">无</span>
@@ -29,13 +29,13 @@
           </a-col>
         </a-row>
       </div>
-      <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3'|| this.kindOfRight === '5' || this.kindOfRight === '6'">
+      <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '3' || this.kindOfRight === '5' || this.kindOfRight === '6'">
         <span class="section-title blue">权属人</span>
         <div class="tab-nav table-border">
           <a-table :columns="columns" :dataSource="amsOwnershipWarrantObligeeList" size="middle" :pagination="false"></a-table>
         </div>
       </div>
-      <div class="newCard-nav" v-if="this.kindOfRight === '1'|| this.kindOfRight === '5' || this.kindOfRight === '6'">
+      <div class="newCard-nav" v-if="this.kindOfRight === '1' || this.kindOfRight === '5' || this.kindOfRight === '6'">
         <span class="section-title blue">抵押信息</span>
         <div class="tab-nav table-border">
           <a-table :columns="mortgageInformation" :dataSource="amsOwnershipWarrantMortgageList" size="middle" :pagination="false"></a-table>
@@ -55,98 +55,106 @@
         </div>
       </div>
     </div>
-    <form-footer v-if="type === 'approval'" leftButtonName="审核通过" rightButtonName="驳回" rightButtonType="danger" @save="handleApprove(1)" @cancel="handleApprove(0)"> </form-footer>
+    <form-footer
+      v-if="type === 'approval'"
+      leftButtonName="审核通过"
+      rightButtonName="驳回"
+      rightButtonType="danger"
+      @save="handleApprove(1)"
+      @cancel="handleApprove(0)"
+    >
+    </form-footer>
   </SuperModal>
 </template>
 
 <script>
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import FormFooter from "@/components/FormFooter";
-import configBase from "@/config/config.base";
-import { utils } from "@/utils/utils";
-import { columns, mortgageInformation } from "./beat";
-import SuperModal from "./SuperModal.vue";
-import moment from "moment";
-const conditionalJudgment = [undefined, null, ""];
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import FormFooter from '@/components/FormFooter';
+import configBase from '@/config/config.base';
+import { utils } from '@/utils/utils';
+import { columns, mortgageInformation } from './beat';
+import SuperModal from './SuperModal.vue';
+import moment from 'moment';
+const conditionalJudgment = [undefined, null, ''];
 const titleDeed = [
-  { text: "权证号", value: "warrantNbr" },
-  { text: "权属形式", value: "ownerTypeName" },
-  { text: "权证类型", value: "kindOfRightName" },
-  { text: "实际产权单位", value: "propertyRightUnit" },
-  { text: "实际保管单位", value: "safekeepUnit" },
-  { text: "不动产单元号", value: "estateUnitCode" },
-  { text: "宗地号", value: "lotNo" },
-  { text: "坐落位置", value: "seatingPosition" },
-  { text: "土地面积 (㎡)", value: "landArea" },
-  { text: "土地用途", value: "landUse" },
-  { text: "权属用途", value: "ownershipUseName" },
-  { text: "建筑结构", value: "structureName" },
-  { text: "建筑面积(㎡)", value: "buildArea" },
-  { text: "专有建筑面积", value: "exclusiveBuildArea" },
-  { text: "分摊面积(㎡)", value: "apportionArea" },
-  { text: "总套数", value: "totalSuite" },
-  { text: "权利性质", value: "qualityOfRightName" },
-  { text: "使用期限", value: "useLimitDate" },
-  { text: "房产证使用年限", value: "houseProveLife" },
-  { text: "房产证起始日期", value: "houseStartDate" },
-  { text: "房产证截止日期", value: "houseEndDate" },
-  { text: "登记日期", value: "rigisterDate" },
-  { text: "交接日期", value: "handoverDate" },
+  { text: '权证号', value: 'warrantNbr' },
+  { text: '权属形式', value: 'ownerTypeName' },
+  { text: '权证类型', value: 'kindOfRightName' },
+  { text: '实际产权单位', value: 'propertyRightUnit' },
+  { text: '实际保管单位', value: 'safekeepUnit' },
+  { text: '不动产单元号', value: 'estateUnitCode' },
+  { text: '宗地号', value: 'lotNo' },
+  { text: '坐落位置', value: 'seatingPosition' },
+  { text: '土地面积 (㎡)', value: 'landArea' },
+  { text: '土地用途', value: 'landUse' },
+  { text: '权属用途', value: 'ownershipUseName' },
+  { text: '建筑结构', value: 'structureName' },
+  { text: '建筑面积(㎡)', value: 'buildArea' },
+  { text: '专有建筑面积', value: 'exclusiveBuildArea' },
+  { text: '分摊面积(㎡)', value: 'apportionArea' },
+  { text: '总套数', value: 'totalSuite' },
+  { text: '权利性质', value: 'qualityOfRightName' },
+  { text: '使用期限', value: 'useLimitDate' },
+  { text: '房产证使用年限', value: 'houseProveLife' },
+  { text: '房产证起始日期', value: 'houseStartDate' },
+  { text: '房产证截止日期', value: 'houseEndDate' },
+  { text: '登记日期', value: 'rigisterDate' },
+  { text: '交接日期', value: 'handoverDate' },
 ];
 const accessCard = [
-  { text: "权证号", value: "warrantNbr" },
-  { text: "权属形式", value: "ownerTypeName" },
-  { text: "权证类型", value: "kindOfRightName" },
-  { text: "实际产权单位", value: "propertyRightUnit" },
-  { text: "实际保管单位", value: "safekeepUnit" },
-  { text: "房屋所有权人", value: "houseOwner" },
-  { text: "承租人", value: "tenantIdName" },
-  { text: "委托管理单位", value: "entrustOrganization" },
-  { text: "建筑面积(㎡)", value: "buildArea" },
-  { text: "使用面积(㎡)", value: "useArea" },
-  { text: "专有建筑面积(㎡)", value: "exclusiveBuildArea" },
-  { text: "分摊面积(㎡)", value: "apportionArea" },
-  { text: "坐落位置", value: "seatingPosition" },
-  { text: "用途", value: "ownershipUseName" },
-  { text: "建筑结构", value: "structureName" },
-  { text: "总层数", value: "totalFloor" },
-  { text: "所在层", value: "placeFloor" },
-  { text: "房屋号", value: "houseNo" },
-  { text: "租金单价", value: "rentUnitPice" },
-  { text: "租金总价", value: "rentTotalPrice" },
-  { text: "合同期限", value: "contractData" },
-  { text: "议价租金单价", value: "talkUnitPrice" },
-  { text: "议价租金总价", value: "talkTotalPrice" },
-  { text: "租金缴纳期限", value: "rentPayDate" },
-  { text: "产别", value: "antenatal" },
-  { text: "登记日期", value: "rigisterDate" },
-  { text: "交接日期", value: "handoverDate" },
+  { text: '权证号', value: 'warrantNbr' },
+  { text: '权属形式', value: 'ownerTypeName' },
+  { text: '权证类型', value: 'kindOfRightName' },
+  { text: '实际产权单位', value: 'propertyRightUnit' },
+  { text: '实际保管单位', value: 'safekeepUnit' },
+  { text: '房屋所有权人', value: 'houseOwner' },
+  { text: '承租人', value: 'tenantIdName' },
+  { text: '委托管理单位', value: 'entrustOrganization' },
+  { text: '建筑面积(㎡)', value: 'buildArea' },
+  { text: '使用面积(㎡)', value: 'useArea' },
+  { text: '专有建筑面积(㎡)', value: 'exclusiveBuildArea' },
+  { text: '分摊面积(㎡)', value: 'apportionArea' },
+  { text: '坐落位置', value: 'seatingPosition' },
+  { text: '用途', value: 'ownershipUseName' },
+  { text: '建筑结构', value: 'structureName' },
+  { text: '总层数', value: 'totalFloor' },
+  { text: '所在层', value: 'placeFloor' },
+  { text: '房屋号', value: 'houseNo' },
+  { text: '租金单价', value: 'rentUnitPice' },
+  { text: '租金总价', value: 'rentTotalPrice' },
+  { text: '合同期限', value: 'contractData' },
+  { text: '议价租金单价', value: 'talkUnitPrice' },
+  { text: '议价租金总价', value: 'talkTotalPrice' },
+  { text: '租金缴纳期限', value: 'rentPayDate' },
+  { text: '产别', value: 'antenatal' },
+  { text: '登记日期', value: 'rigisterDate' },
+  { text: '交接日期', value: 'handoverDate' },
 ];
 const landDeed = [
-  { text: "权证号", value: "warrantNbr" },
-  { text: "权属形式", value: "ownerTypeName" },
-  { text: "权证类型", value: "kindOfRightName" },
-  { text: "实际产权单位", value: "propertyRightUnit" },
-  { text: "实际保管单位", value: "safekeepUnit" },
-  { text: "地号", value: "landNumber" },
-  { text: "图号", value: "picNumber" },
-  { text: "座落位置", value: "seatingPosition" },
-  { text: "地类(用途)", value: "landCategory" },
-  { text: "取得价格", value: "getPrice" },
-  { text: "使用权类型", value: "useCategory" },
-  { text: "使用权面积(㎡)", value: "useArea" },
-  { text: "独有面积(㎡)", value: "exclusiveArea" },
-  { text: "分摊面积(㎡)", value: "apportionArea" },
-  { text: "终止日期", value: "terminationData" },
-  { text: "登记日期", value: "rigisterDate" },
-  { text: "交接日期", value: "handoverDate" },
+  { text: '权证号', value: 'warrantNbr' },
+  { text: '权属形式', value: 'ownerTypeName' },
+  { text: '权证类型', value: 'kindOfRightName' },
+  { text: '实际产权单位', value: 'propertyRightUnit' },
+  { text: '实际保管单位', value: 'safekeepUnit' },
+  { text: '地号', value: 'landNumber' },
+  { text: '图号', value: 'picNumber' },
+  { text: '座落位置', value: 'seatingPosition' },
+  { text: '地类(用途)', value: 'landCategory' },
+  { text: '取得价格', value: 'getPrice' },
+  { text: '使用权类型', value: 'useCategory' },
+  { text: '使用权面积(㎡)', value: 'useArea' },
+  { text: '独有面积(㎡)', value: 'exclusiveArea' },
+  { text: '分摊面积(㎡)', value: 'apportionArea' },
+  { text: '终止日期', value: 'terminationData' },
+  { text: '登记日期', value: 'rigisterDate' },
+  { text: '交接日期', value: 'handoverDate' },
 ];
 export default {
   components: { SuperModal, FormFooter },
   props: {},
   data() {
     return {
-      type: "particulars",
+      type: 'particulars',
       openDirectly: false,
       configBase,
       conditionalJudgment,
@@ -156,15 +164,15 @@ export default {
       landDeed,
       particularsData: {},
       files: [],
-      kindOfRight: "", // 权证类型判断
+      kindOfRight: '', // 权证类型判断
       beat: [],
       columns: [],
       mortgageInformation: [],
       amsOwnershipWarrantObligeeList: [],
       amsOwnershipWarrantMortgageList: [],
-      allWidth: "width: 214px",
-      widthBox: "width: 73.5%",
-      newCard: "",
+      allWidth: 'width: 214px',
+      widthBox: 'width: 73.5%',
+      newCard: '',
       show: false,
       formItemTextarea: {
         labelCol: {
@@ -182,50 +190,50 @@ export default {
           sm: { span: 18 },
         },
       },
-      operOpinion: "", // 审核意见
+      operOpinion: '', // 审核意见
       stepList: [], // 审批轨迹
-      apprId: "",
+      apprId: '',
     };
   },
   provide() {
     return {
       preview: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_PREVIEW),
-      download: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_DOWNLOAD)
+      download: this.$power.has(ASSET_MANAGEMENT.AUTHORITY_MANA_DOWNLOAD),
     };
   },
   computed: {
     useModal() {
-      return this.$route && this.$route.path !== "/authorityCardInfo";
+      return this.$route && this.$route.path !== '/authorityCardInfo';
     },
   },
   watch: {
     kindOfRight(val) {
-      if (val === "1" || val === "3" || val === "4"|| val === "5" || val === "6") {
+      if (val === '1' || val === '3' || val === '4' || val === '5' || val === '6') {
         let arr = utils.deepClone(columns);
         this.columns = arr.splice(0, arr.length - 1);
         let opt = utils.deepClone(mortgageInformation);
         this.mortgageInformation = opt.splice(0, opt.length - 1);
-        if (val === "1"|| val === "3" || val === "4") {
+        if (val === '1' || val === '3' || val === '4') {
           this.basicDate = titleDeed;
-        } else if (val === "3") {
+        } else if (val === '3') {
           this.basicDate = landDeed;
-        } else if (val === "4") {
+        } else if (val === '4') {
           this.basicDate = titleDeed;
         }
-      } else if (val === "2") {
+      } else if (val === '2') {
         this.basicDate = accessCard;
       }
     },
     show() {
-      this.operOpinion = ''
-    }
+      this.operOpinion = '';
+    },
   },
   methods: {
     // 审批
     handleApprove(operResult) {
       if (operResult === 0) {
         if (!this.operOpinion) {
-          this.$message.error("驳回必填审核意见");
+          this.$message.error('驳回必填审核意见');
           return null;
         }
       }
@@ -237,18 +245,18 @@ export default {
       this.$api.approve
         .uniformSubmit(req)
         .then(({ data: res }) => {
-          if (res && String(res.code) === "0") {
-            this.$message.success("操作成功");
-            this.show = false
+          if (res && String(res.code) === '0') {
+            this.$message.success('操作成功');
+            this.show = false;
             // 刷新页面
-            this.$parent.query()
+            this.$parent.query();
           } else {
             throw res.message;
           }
         })
         .catch((err) => {
           console.error(err);
-          this.$message.error("操作失败");
+          this.$message.error('操作失败');
         });
     },
     // 关闭弹窗
@@ -274,7 +282,7 @@ export default {
     // 详情查询
     query({ warrantId, warrantNbr, organId }) {
       if (!warrantId && !warrantNbr && !organId) {
-        this.$message.error("缺少必要入参");
+        this.$message.error('缺少必要入参');
         return null;
       }
       this.particularsData = {};
@@ -292,11 +300,11 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           // 如果是审批，则获取审批轨迹
-          if (this.type === "approval") this.queryApprovalRecordByBus(data.amsOwnershipWarrant.warrantId, data.amsOwnershipWarrant.organId);
+          if (this.type === 'approval') this.queryApprovalRecordByBus(data.amsOwnershipWarrant.warrantId, data.amsOwnershipWarrant.organId);
           this.kindOfRight = String(data.amsOwnershipWarrant.kindOfRight);
           this.particularsData = data.amsOwnershipWarrant;
-          this.particularsData["houseEndDate"] = this.particularsData["houseEndDate"] ? this.particularsData["houseEndDate"].split("T")[0] : "";
-          this.particularsData["houseStartDate"] = this.particularsData["houseStartDate"] ? this.particularsData["houseStartDate"].split("T")[0] : "";
+          this.particularsData['houseEndDate'] = this.particularsData['houseEndDate'] ? this.particularsData['houseEndDate'].split('T')[0] : '';
+          this.particularsData['houseStartDate'] = this.particularsData['houseStartDate'] ? this.particularsData['houseStartDate'].split('T')[0] : '';
           let files = [];
           if (data.amsAttachmentList && data.amsAttachmentList.length > 0) {
             data.amsAttachmentList.forEach((item) => {
@@ -321,8 +329,8 @@ export default {
           });
           this.amsOwnershipWarrantMortgageList = data.amsOwnershipWarrantMortgageList;
           this.$nextTick(() => {
-            this.$textReplace()
-          })
+            this.$textReplace();
+          });
         } else {
           this.$message.error(res.data.message);
         }
@@ -332,13 +340,13 @@ export default {
     queryApprovalRecordByBus(busId, organId) {
       const req = { busType: 1009, busId, organId };
       this.$api.approve.queryApprovalRecordByBus(req).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
+        if (code === '0') {
           this.apprId = data.amsApprovalResDto.apprId;
           this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
             return {
               date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
               title: ele.operOpinion,
-              desc: "",
+              desc: '',
               isDone: false,
               operation: [],
             };
@@ -352,7 +360,7 @@ export default {
   },
   created() {
     // 权证详情弹框可以从权证管理页面点击详情打开，也可以按照下面的方式直接路由访问打开
-    if (this.$route && this.$route.path === "/authorityCardInfo") {
+    if (this.$route && this.$route.path === '/authorityCardInfo') {
       const { warrantId } = this.$route.query;
       this.openDirectly = true;
       this.query({ warrantId });

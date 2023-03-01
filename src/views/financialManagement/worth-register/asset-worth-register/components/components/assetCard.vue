@@ -1,6 +1,15 @@
 <template>
   <div class="assetCard">
-    <SG-Modal v-model="isShow" width="1000px" height="450px" title="选择资产卡片" okText="确定选择" cancelText="取消" @cancel="handleAction('cancel')" @ok="handleAction('ok')">
+    <SG-Modal
+      v-model="isShow"
+      width="1000px"
+      height="450px"
+      title="选择资产卡片"
+      okText="确定选择"
+      cancelText="取消"
+      @cancel="handleAction('cancel')"
+      @ok="handleAction('ok')"
+    >
       <div class="search" style="display: flex">
         <a-select
           :maxTagCount="1"
@@ -46,64 +55,70 @@
         </a-table>
         <no-data-tips v-show="showNoDataTips"></no-data-tips>
       </div>
-      <SG-FooterPagination :pageLength="paginator.pageLength" :totalCount="paginator.totalCount" location="relative" v-model="paginator.pageNo" @change="handlePageChange" />
+      <SG-FooterPagination
+        :pageLength="paginator.pageLength"
+        :totalCount="paginator.totalCount"
+        location="relative"
+        v-model="paginator.pageNo"
+        @change="handlePageChange"
+      />
       <a-spin class="loading" size="large" :spinning="loading" />
     </SG-Modal>
   </div>
 </template>
 <script>
-import noDataTips from "@/components/noDataTips";
+import noDataTips from '@/components/noDataTips';
 
 const columnsData = [
   {
-    title: "卡片名称",
-    dataIndex: "cardName",
+    title: '卡片名称',
+    dataIndex: 'cardName',
     width: 120,
-    scopedSlots: { customRender: "cardName" },
-    fixed: "left",
+    scopedSlots: { customRender: 'cardName' },
+    fixed: 'left',
   },
   {
-    title: "卡片编码",
-    dataIndex: "cardCode",
+    title: '卡片编码',
+    dataIndex: 'cardCode',
     width: 220,
-    scopedSlots: { customRender: "cardCode" },
+    scopedSlots: { customRender: 'cardCode' },
   },
 
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
     width: 80,
   },
   {
-    title: "资产分类",
-    dataIndex: "assetCategoryName",
+    title: '资产分类',
+    dataIndex: 'assetCategoryName',
     width: 110,
   },
   {
-    title: "入账日期",
-    dataIndex: "accountEntryTime",
+    title: '入账日期',
+    dataIndex: 'accountEntryTime',
     width: 100,
   },
-  { title: "存放地点", dataIndex: "storagePath", width: 120 },
+  { title: '存放地点', dataIndex: 'storagePath', width: 120 },
   {
-    title: "入账原值(元)",
-    dataIndex: "purchaseValue",
+    title: '入账原值(元)',
+    dataIndex: 'purchaseValue',
     width: 110,
   },
   {
-    title: "累计折旧(元)",
-    dataIndex: "cumulativeDepreciation",
+    title: '累计折旧(元)',
+    dataIndex: 'cumulativeDepreciation',
     width: 110,
   },
   {
-    title: "净值(元)",
-    dataIndex: "netValue",
+    title: '净值(元)',
+    dataIndex: 'netValue',
     width: 110,
   },
 ];
 
 export default {
-  name: "assetCard",
+  name: 'assetCard',
   components: { noDataTips },
   props: {
     organId: {
@@ -125,11 +140,11 @@ export default {
     return {
       selectedRowKeys: [],
       showNoDataTips: false,
-      assetClassifyOptions: [{ label: "全部资产分类", value: "" }],
-      allStyle: "width: 170px; margin-right: 10px;",
+      assetClassifyOptions: [{ label: '全部资产分类', value: '' }],
+      allStyle: 'width: 170px; margin-right: 10px;',
       isShow: true,
-      assetClassify: [""], //  资产分类
-      cardName: "", // 资产编码
+      assetClassify: [''], //  资产分类
+      cardName: '', // 资产编码
       columns: [...columnsData],
       dataSource: [],
       scroll: { x: columnsData.length * 140 },
@@ -151,12 +166,12 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
     handleAction(type) {
-      if (type === "cancel") {
+      if (type === 'cancel') {
         // 关闭弹框
         this.$parent.handleAddCard(false);
-      } else if (type === "ok") {
+      } else if (type === 'ok') {
         if (this.selectedRowKeys.length === 0) {
-          this.$message.error("还未选择资产卡片");
+          this.$message.error('还未选择资产卡片');
           return;
         }
 
@@ -182,13 +197,13 @@ export default {
         .assetListPage(form)
         .then((r) => {
           let res = r.data;
-          if (res && res.code.toString() === "0") {
+          if (res && res.code.toString() === '0') {
             this.loading = false;
             const { data } = res.data;
             let assetIdList = data.map((item) => {
               return item.assetId;
             });
-            this.$emit("assetCardSubmit", assetIdList);
+            this.$emit('assetCardSubmit', assetIdList);
             // 关闭弹框
             this.$parent.handleAddCard(false);
             // Object.assign(this.paginationObj, {
@@ -229,12 +244,12 @@ export default {
         projectId: Number(this.projectId),
         cardName: this.cardName,
         assetType: this.assetType,
-        assetCategoryId: this.assetClassify.join(","),
+        assetCategoryId: this.assetClassify.join(','),
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength,
       };
       this.$api.assets.queryCardPageList(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data.data;
           if (data.length === 0) {
             this.showNoDataTips = true;
@@ -244,8 +259,8 @@ export default {
           data.forEach((item, index) => {
             item.key = index;
             for (let key in item) {
-              if (item[key] === "" || item[key] === null) {
-                item[key] = "--";
+              if (item[key] === '' || item[key] === null) {
+                item[key] = '--';
               }
             }
           });
@@ -272,16 +287,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -294,8 +309,8 @@ export default {
         assetType: this.assetType,
       };
       this.$api.assets.getList(obj).then((res) => {
-        if (res.data.code === "0") {
-          let arr = [{ label: "全部资产分类", value: "" }];
+        if (res.data.code === '0') {
+          let arr = [{ label: '全部资产分类', value: '' }];
           res.data.data.forEach((item) => {
             let obj = {
               label: item.professionName,

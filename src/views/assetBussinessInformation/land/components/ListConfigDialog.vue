@@ -9,10 +9,10 @@
           <a-checkbox :value="item.value" :key="index" style="margin-left: 10px" :disabled="item.disabled">
             <a-tooltip>
               <template slot="title">
-                {{item.label}}
+                {{ item.label }}
               </template>
               <div class="check-content">
-                {{item.label}}
+                {{ item.label }}
               </div>
             </a-tooltip>
           </a-checkbox>
@@ -22,16 +22,16 @@
   </a-modal>
 </template>
 <script>
-export default  {
+export default {
   props: {
-    organId:{
-      default: ""
+    organId: {
+      default: '',
     },
     visible: {
-      default : false
+      default: false,
     },
   },
-  data: ()=>({
+  data: () => ({
     options: [],
     loading: false,
     selectedList: [],
@@ -39,55 +39,57 @@ export default  {
   watch: {
     visible: {
       handler: function (v) {
-        if(v) {
-          this.init()
+        if (v) {
+          this.init();
         }
-      }
-    }
+      },
+    },
   },
-  methods:{
-    init () {
-      this.assetRolList()
+  methods: {
+    init() {
+      this.assetRolList();
     },
-    handleClose () {
-      this.$emit("close")
+    handleClose() {
+      this.$emit('close');
     },
-    handleSubmit () {
-      const params = this.beforeAddCustomShow(this.selectedList)
-      this.addCustomShow(params)
+    handleSubmit() {
+      const params = this.beforeAddCustomShow(this.selectedList);
+      this.addCustomShow(params);
     },
     /*********************************************************************************************************/
-    beforeAddCustomShow (params) {
-      const chooseList = this.options.filter(item=>params.some(n=>n===item.value)).map(item=>({colName:item.colName,colCode:item.colCode}))
-      return {chooseList}
+    beforeAddCustomShow(params) {
+      const chooseList = this.options
+        .filter((item) => params.some((n) => n === item.value))
+        .map((item) => ({ colName: item.colName, colCode: item.colCode }));
+      return { chooseList };
     },
-    async addCustomShow(params){
+    async addCustomShow(params) {
       try {
-        const {data: res} = await this.$api.assetBussinessInformation.addCustomShow(params)
+        const { data: res } = await this.$api.assetBussinessInformation.addCustomShow(params);
         if (String(res.code) === '0') {
-          this.$emit("submit")
-          this.$SG_Message.success("编辑成功")
+          this.$emit('submit');
+          this.$SG_Message.success('编辑成功');
         } else {
-          this.$SG_Message.error(res.message)
+          this.$SG_Message.error(res.message);
         }
       } finally {
       }
     },
-    async assetRolList () {
-      this.loading = true
+    async assetRolList() {
+      this.loading = true;
       try {
         const params = {
           assetType: this.$store.state.ASSET_TYPE_CODE.LAND,
-          organId: this.organId
-        }
-        const {data: res} = await this.$api.assetBussinessInformation.assetRolList(params)
+          organId: this.organId,
+        };
+        const { data: res } = await this.$api.assetBussinessInformation.assetRolList(params);
         if (String(res.code) === '0') {
-          this.options = this.generatorOptions(res.data)
+          this.options = this.generatorOptions(res.data);
         } else {
-          this.$SG_Message.error(res.message)
+          this.$SG_Message.error(res.message);
         }
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
     /**
@@ -96,34 +98,36 @@ export default  {
      * @param customShow 用户配置数据列表
      * @param templeCode 全量数据列表
      */
-    generatorOptions ({customChose=[],customShow = [],templeCode = []}) {
-      this.selectedList = []
-      const selectItemList = new Set()
-      const itemList = templeCode.map(item => {
+    generatorOptions({ customChose = [], customShow = [], templeCode = [] }) {
+      this.selectedList = [];
+      const selectItemList = new Set();
+      const itemList = templeCode.map((item) => {
         return {
           ...item,
           label: item.colName,
           value: item.colCode,
-          disabled: false
-        }
+          disabled: false,
+        };
       });
-      const returnList = itemList.map(item =>{ // 处理默认表格
-        const choseNum = customChose.some(n=>n.colCode == item.colCode)
-        const userShow = customShow.some(n=>n.colCode == item.colCode)
-        if (userShow) {
-          item.disabled = true
-          // this.selectedList.push(item.value)
-        } else if (choseNum) {
-          selectItemList.add(item.value)
-        }
-        return item
-      }).sort(item=>item.disabled?-1:1);
-      this.selectedList = Array.from(selectItemList)
-      return returnList
+      const returnList = itemList
+        .map((item) => {
+          // 处理默认表格
+          const choseNum = customChose.some((n) => n.colCode == item.colCode);
+          const userShow = customShow.some((n) => n.colCode == item.colCode);
+          if (userShow) {
+            item.disabled = true;
+            // this.selectedList.push(item.value)
+          } else if (choseNum) {
+            selectItemList.add(item.value);
+          }
+          return item;
+        })
+        .sort((item) => (item.disabled ? -1 : 1));
+      this.selectedList = Array.from(selectItemList);
+      return returnList;
     },
-
-  }
-}
+  },
+};
 </script>
 <style lang="less" scoped>
 .check-box {
@@ -135,7 +139,7 @@ export default  {
   overflow: hidden;
   white-space: nowrap;
   display: inline-block;
-  text-overflow:ellipsis;
+  text-overflow: ellipsis;
   vertical-align: bottom;
   margin-top: 10px;
 }
@@ -146,10 +150,3 @@ export default  {
   justify-content: center;
 }
 </style>
-
-
-
-
-
-
-

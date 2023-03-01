@@ -3,43 +3,18 @@
     <div class="top-block">
       <div class="progress-block left-block">
         <span class="text" style="line-height: 32px">透明度</span>
-        <a-progress
-          @click="handleProgress"
-          type="line"
-          class="progress"
-          :percent="progress"
-          :strokeWidt="20"
-          status="normal"
-        />
+        <a-progress @click="handleProgress" type="line" class="progress" :percent="progress" :strokeWidt="20" status="normal" />
       </div>
-      <TreeSelect
-        class="left-block tree-select"
-        @changeTree="changeTree"
-        placeholder="请选择"
-      />
-      <SG-Select
-        class="left-block"
-        v-model="layerSchemeId"
-        placeholder="请选择方案"
-        @change="changeMethod"
-      >
-        <SG-Option
-          v-for="item in methodOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        ></SG-Option>
+      <TreeSelect class="left-block tree-select" @changeTree="changeTree" placeholder="请选择" />
+      <SG-Select class="left-block" v-model="layerSchemeId" placeholder="请选择方案" @change="changeMethod">
+        <SG-Option v-for="item in methodOptions" :key="item.value" :label="item.label" :value="item.value"></SG-Option>
       </SG-Select>
       <div @click="handleToggleFullscreen" class="full-icon-block">
         <a-icon type="fullscreen" />
       </div>
     </div>
     <div ref="mapWrapperRef" class="middle-content">
-      <div
-        ref="closeBtn"
-        @click="handleToggleFullscreen"
-        class="default-close-btn"
-      >
+      <div ref="closeBtn" @click="handleToggleFullscreen" class="default-close-btn">
         <a-icon type="fullscreen-exit" />
       </div>
       <div v-if="!mapFlag" class="place">
@@ -49,7 +24,7 @@
       <AssetLandList
         ref="AssetLandListRef"
         class="filter-block"
-        :class="{'filter-block-full': isFull}"
+        :class="{ 'filter-block-full': isFull }"
         v-if="mapFlag"
         :popupDataSource="popupDataSource"
         :previewMode="true"
@@ -64,58 +39,46 @@
       <div v-if="mapFlag" class="summary">
         <div>
           <span class="title">宗地：</span>
-          <span>{{parcel}}块</span>
+          <span>{{ parcel }}块</span>
         </div>
         <div v-if="!hasSelf">
           <span class="title">自有：</span>
-          <span>{{allAssetArea}}m²</span>
+          <span>{{ allAssetArea }}m²</span>
         </div>
       </div>
-      <div
-        class="item"
-        v-for="item in operationModeList"
-        :key="item.modeOperId"
-      >
-        <span class="color-block" :style="{ backgroundColor: item.color }">
-        </span>
+      <div class="item" v-for="item in operationModeList" :key="item.modeOperId">
+        <span class="color-block" :style="{ backgroundColor: item.color }"> </span>
         <div class="text">
           <div style="margin-bottom: 5px">{{ item.operName }}</div>
           <div>{{ `${item.landArea}m²` }}</div>
         </div>
       </div>
       <div class="export" v-if="mapFlag">
-        <SG-Button type="primary" icon="import" :loading='exportLoading' @click="handleExport">导出</SG-Button>
+        <SG-Button type="primary" icon="import" :loading="exportLoading" @click="handleExport">导出</SG-Button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Vue from "vue";
-import LandDetailPopup from "@/views/landParameter/landAssetMap/LandDetailPopup";
-import AssetLandList from "@/views/mapDrawLand/AssetLandList";
-import {
-  arrayToObj,
-  generatePathStyle,
-  getOffsetNum,
-  initMap,
-  jumpMapLand,
-  markerIcon,
-} from "@/views/mapDrawLand/share";
-import TreeSelect from "src/views/common/treeSelect";
-import Leaflet from "leaflet";
-import "leaflet/dist/leaflet.css";
-import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
-import { queryLayerById } from "@/views/mapDrawLand/share";
-import {handleDownloadFile} from "@/utils/utils";
+import Vue from 'vue';
+import LandDetailPopup from '@/views/landParameter/landAssetMap/LandDetailPopup';
+import AssetLandList from '@/views/mapDrawLand/AssetLandList';
+import { arrayToObj, generatePathStyle, getOffsetNum, initMap, jumpMapLand, markerIcon } from '@/views/mapDrawLand/share';
+import TreeSelect from 'src/views/common/treeSelect';
+import Leaflet from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import SimpleAssetLandInfo from '@/views/mapDrawLand/components/SimpleAssetLandInfo';
+import { queryLayerById } from '@/views/mapDrawLand/share';
+import { handleDownloadFile } from '@/utils/utils';
 export default {
   /*
    * 土地资产地图预览
    * */
-  name: "landAssetMap",
+  name: 'landAssetMap',
   components: {
     TreeSelect,
-    AssetLandList
+    AssetLandList,
   },
   data() {
     return {
@@ -138,9 +101,9 @@ export default {
       currentAssetInfo: {},
       mapInstance: null,
       polygonLayer: null,
-      organId: "",
+      organId: '',
       methodOptions: [],
-      layerSchemeId: "",
+      layerSchemeId: '',
       operationModeList: [],
       mapEle: null,
       pathStyle: {
@@ -148,53 +111,53 @@ export default {
       },
       sleepTimer: null,
       timer: null,
-      hasSelf: false // operationModeList是否含有自有项目
+      hasSelf: false, // operationModeList是否含有自有项目
     };
   },
   computed: {
     errorText() {
       if (!this.layerSchemeId) {
-        return "请先选择方案";
+        return '请先选择方案';
       } else {
-        return "当前方案不存在背景图";
+        return '当前方案不存在背景图';
       }
     },
   },
   methods: {
     async handleExport() {
-      this.exportLoading = true
-      try{
-        const req = this.$refs.AssetLandListRef.handleGetListReq()
+      this.exportLoading = true;
+      try {
+        const req = this.$refs.AssetLandListRef.handleGetListReq();
         const responseData = await this.$api.drawMap.exportLandDetails(req);
-        if (responseData.data.type === "application/json") {
-          const enc = new TextDecoder("utf-8");
+        if (responseData.data.type === 'application/json') {
+          const enc = new TextDecoder('utf-8');
           responseData.data.arrayBuffer().then((buffer) => {
             let data = JSON.parse(enc.decode(new Uint8Array(buffer))) || {};
-            console.log("data", data);
+            console.log('data', data);
             this.$SG_Message.error(data.message);
           });
         } else {
           handleDownloadFile({
             data: responseData.data,
-            fileName: "已绘制地块资产列表.xls",
+            fileName: '已绘制地块资产列表.xls',
           });
         }
-      }finally {
-        this.exportLoading = false
+      } finally {
+        this.exportLoading = false;
       }
     },
     // 资产列表 点击具体资产对应事件
-    handleClickAsset({ assetItemInfo },{needOpenDetailPop} = {needOpenDetailPop: false}){
-      if (this.currentSelectLayer){
-        this.currentSelectLayer.setStyle(this.oldPathOptions)
+    handleClickAsset({ assetItemInfo }, { needOpenDetailPop } = { needOpenDetailPop: false }) {
+      if (this.currentSelectLayer) {
+        this.currentSelectLayer.setStyle(this.oldPathOptions);
       }
-      console.log({ assetItemInfo })
+      console.log({ assetItemInfo });
       const { assetId } = assetItemInfo;
       const layer = this.mapLayers[assetId];
-      this.currentSelectLayer = layer
+      this.currentSelectLayer = layer;
       const latlng = layer.getCenter();
       jumpMapLand(layer, this.mapInstance);
-      if (needOpenDetailPop){
+      if (needOpenDetailPop) {
         this.$nextTick(() => {
           setTimeout(() => {
             this.generateDetailPop({
@@ -206,33 +169,26 @@ export default {
         });
       }
 
-      const {
-        color,
-        fillColor,
-        fillOpacity,
-        weight,
-      } = layer.options
+      const { color, fillColor, fillOpacity, weight } = layer.options;
 
       this.oldPathOptions = {
         color,
         fillColor,
         fillOpacity,
-        weight
-      }
+        weight,
+      };
       layer.setStyle({
         weight: 4,
-        color:'white',
-        fillOpacity: Math.min(1,this.pathStyle.fillOpacity + 0.3),
-      })
+        color: 'white',
+        fillOpacity: Math.min(1, this.pathStyle.fillOpacity + 0.3),
+      });
     },
     handleProgress(e) {
-      if (
-        !["ant-progress-inner", "ant-progress-bg"].includes(e.target.className)
-      ) {
+      if (!['ant-progress-inner', 'ant-progress-bg'].includes(e.target.className)) {
         return null;
       }
       let allWidth = e.target.offsetWidth;
-      if (e.target.className === "ant-progress-bg") {
+      if (e.target.className === 'ant-progress-bg') {
         allWidth = e.target.parentNode.offsetWidth;
       }
       this.progress = Math.ceil((e.offsetX / allWidth) * 100);
@@ -245,17 +201,17 @@ export default {
       this.pathStyle = {
         fillOpacity: fillOpacity,
       };
-      this.initAssetLayers(this.assetList, {needGetLandUseStatistics: false});
+      this.initAssetLayers(this.assetList, { needGetLandUseStatistics: false });
     },
     closeAutoChange() {
-      console.log("关闭了定时器");
+      console.log('关闭了定时器');
       clearInterval(this.timer);
       this.autoChaneIngFlag = false;
     },
     async autoChange(flag = true) {
       const _this = this;
       if (!Object.keys(this.mapLayers).length) {
-        console.warn("没有图层数据");
+        console.warn('没有图层数据');
         return null;
       }
       this.closeAutoChange();
@@ -271,14 +227,14 @@ export default {
           _this.idx = 0;
         }
         _this.$nextTick(() => {
-          _this.handleClickAsset({assetItemInfo:{assetId: _this.cycleArr[_this.idx]}},{needOpenDetailPop:true})
+          _this.handleClickAsset({ assetItemInfo: { assetId: _this.cycleArr[_this.idx] } }, { needOpenDetailPop: true });
         });
         _this.idx++;
       }
     },
     handleToggleFullscreen() {
       if (!this.mapFlag) {
-        this.$SG_Message.error("地图未初始化");
+        this.$SG_Message.error('地图未初始化');
         return null;
       }
       this.toggleFullscreen();
@@ -287,22 +243,20 @@ export default {
       if (document.fullscreenElement) document.exitFullscreen();
       else this.$refs.mapWrapperRef.requestFullscreen();
     },
-    handleSummary(){
-      this.parcel = this.assetList.length
-      this.allAssetArea = this.assetList.reduce((pre,cur)=>{
-        return pre + cur.landArea
-      },0)
+    handleSummary() {
+      this.parcel = this.assetList.length;
+      this.allAssetArea = this.assetList.reduce((pre, cur) => {
+        return pre + cur.landArea;
+      }, 0);
     },
     // type参数用来控制是否调用 汇总信息接口,注意: 子组件 emit传参变动，此处判断要做对应修改
-    initAssetLayers(assetList, {needGetLandUseStatistics} = {needGetLandUseStatistics:true}) {
-      this.assetList = assetList
-      if (needGetLandUseStatistics){
-        this.getLandUseStatistics({ assetList })
+    initAssetLayers(assetList, { needGetLandUseStatistics } = { needGetLandUseStatistics: true }) {
+      this.assetList = assetList;
+      if (needGetLandUseStatistics) {
+        this.getLandUseStatistics({ assetList });
       }
-      this.handleSummary()
-      this.cycleArr = assetList
-        .filter((ele) => ele.layerSchemeDetailVo)
-        .map((ele) => ele.assetId);
+      this.handleSummary();
+      this.cycleArr = assetList.filter((ele) => ele.layerSchemeDetailVo).map((ele) => ele.assetId);
       this.mapLayers = {};
       this.polygonLayer.clearLayers();
       const geoJsonData = assetList
@@ -311,17 +265,15 @@ export default {
           return {
             assetId: ele.assetId,
             layerDetailId: ele.layerSchemeDetailVo.layerDetailId,
-            type: "Feature",
+            type: 'Feature',
             properties: {
               style: {
                 color: ele.modeColour,
               },
             },
             geometry: {
-              type: "Polygon",
-              coordinates: [
-                arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1),
-              ],
+              type: 'Polygon',
+              coordinates: [arrayToObj(ele.layerSchemeDetailVo.coordinateList, 1)],
             },
           };
         });
@@ -329,7 +281,7 @@ export default {
     },
     getDetailDialog({ assetId }, popup) {
       if (!assetId || !popup) {
-        console.error("错误");
+        console.error('错误');
         return null;
       }
       let Profile = Vue.extend(LandDetailPopup);
@@ -339,7 +291,7 @@ export default {
           popupDataSource: this.popupDataSource,
           assetId,
         },
-      }).$mount("#landDetailPopup");
+      }).$mount('#landDetailPopup');
       const req = {
         assetId: assetId,
         // 固定写死2
@@ -353,14 +305,14 @@ export default {
             message,
           },
         }) => {
-          if (code === "0") {
+          if (code === '0') {
             console.log(landInfo);
             const data = {
               ...landInfo,
             };
             // 创建构造器
             // 创建 Profile 实例，并挂载到一个元素上。
-            console.log("popupInstance", popupInstance);
+            console.log('popupInstance', popupInstance);
             popupInstance.init(data);
           } else {
             this.$SG_Message.error(message);
@@ -375,22 +327,20 @@ export default {
       const req = {
         topOrganId: this.organId,
       };
-      this.$api.drawMap
-        .queryLayerFields(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            this.popupDataSource = data;
-          } else {
-            this.$message.error(message);
-            this.popupDataSource = [];
-          }
-        });
+      this.$api.drawMap.queryLayerFields(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          this.popupDataSource = data;
+        } else {
+          this.$message.error(message);
+          this.popupDataSource = [];
+        }
+      });
     },
     getDialog({ assetId }) {
       let Profile = Vue.extend(SimpleAssetLandInfo);
       new Profile({
         propsData: { popupDataSource: this.popupDataSource, assetId },
-      }).$mount("#simple-popup");
+      }).$mount('#simple-popup');
     },
     generateSimplePop({ layer, latlng, assetId }) {
       const _this = this;
@@ -401,7 +351,7 @@ export default {
         height: 214,
       });
       const popup = Leaflet.popup({
-        className: "custom-popup",
+        className: 'custom-popup',
         minWidth: 260,
         maxHeight: 214,
         autoPan: false,
@@ -426,7 +376,7 @@ export default {
         height: 520,
       });
       const popup = Leaflet.popup({
-        className: "custom-popup",
+        className: 'custom-popup',
         closeButton: false,
         minWidth: 400,
         maxWidth: 400,
@@ -452,14 +402,14 @@ export default {
         assetId: feature.assetId,
         layerDetailId: feature.layerDetailId,
       });
-      layer.on("click", (e) => {
-        const assetId = e.target._assetId
-        this.$nextTick(()=>{
+      layer.on('click', (e) => {
+        const assetId = e.target._assetId;
+        this.$nextTick(() => {
           this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
-          this.handleClickAsset({assetItemInfo:{assetId}},{ needOpenDetailPop: true})
-        })
+          this.handleClickAsset({ assetItemInfo: { assetId } }, { needOpenDetailPop: true });
+        });
       });
-      layer.on("mouseover", (e) => {
+      layer.on('mouseover', (e) => {
         if (this.autoChaneIngFlag) {
           return null;
         }
@@ -470,7 +420,7 @@ export default {
         });
         this.$refs.AssetLandListRef.setSelectAsset({ assetId: layer._assetId });
       });
-      layer.on("mouseout", mouseoutCb, this);
+      layer.on('mouseout', mouseoutCb, this);
       layer.addTo(this.polygonLayer);
       this.polygonLayer.addTo(this.mapInstance);
       this.mapLayers = Object.assign({}, this.mapLayers, {
@@ -480,9 +430,8 @@ export default {
         if (this.autoChaneIngFlag) {
           return null;
         }
-        const target =
-          e.originalEvent.toElement || e.originalEvent.relatedTarget;
-        if (target.getAttribute("id") === "leaflet-map") {
+        const target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
+        if (target.getAttribute('id') === 'leaflet-map') {
           this.mapInstance.closePopup(layer._popup_);
           layer._popup_ = null;
         }
@@ -490,16 +439,14 @@ export default {
     },
     async getLandUseStatistics({ assetList }) {
       const req = {
-        assetIdList: assetList
-          .filter((ele) => ele.layerSchemeDetailVo)
-          .map((ele) => ele.assetId),
+        assetIdList: assetList.filter((ele) => ele.layerSchemeDetailVo).map((ele) => ele.assetId),
       };
       const {
         data: { code, message, data },
       } = await this.$api.drawMap.landUseStatistics(req);
-      if (code === "0") {
+      if (code === '0') {
         this.operationModeList = data;
-        this.hasSelf = this.operationModeList.some(item => item.operName === '自有')
+        this.hasSelf = this.operationModeList.some((item) => item.operName === '自有');
       } else {
         this.$SG_Message.error(message);
       }
@@ -519,9 +466,9 @@ export default {
       });
     },
     changeTree(organId) {
-      console.log("organId", organId);
+      console.log('organId', organId);
       this.organId = organId;
-      this.layerSchemeId = "";
+      this.layerSchemeId = '';
       this.getMethodOptions();
       this.queryLayerFields();
     },
@@ -538,7 +485,7 @@ export default {
           message,
         },
       } = await this.$api.drawMap.queryLayerPageList(req);
-      if (code === "0") {
+      if (code === '0') {
         this.methodOptions = (data || []).map((ele) => {
           return {
             ...ele,
@@ -564,41 +511,32 @@ export default {
     /*
      * 生成中心点
      * */
-    generateCenterMarker({ latlng,centralName }) {
+    generateCenterMarker({ latlng, centralName }) {
       const marker = Leaflet.marker(latlng, {
         icon: markerIcon,
         zIndexOffset: 1000,
         riseOnHover: true,
         draggable: false,
       }).addTo(this.mapInstance);
-      marker.bindPopup(centralName || "中心点位").openPopup();
+      marker.bindPopup(centralName || '中心点位').openPopup();
     },
     async changeMethod(value) {
       this.initStore();
       // const res = this.methodOptions.filter((e) => e.value === value)[0];
       const res = await queryLayerById({ layerId: value });
       if (res) {
-        const {
-          organId,
-          layerPath,
-          width,
-          height,
-          centralLevel,
-          centralX,
-          centralY,
-          centralName
-        } = res;
+        const { organId, layerPath, width, height, centralLevel, centralX, centralY, centralName } = res;
         if (organId && layerPath && width && height) {
           this.mapFlag = true;
           this.$nextTick(() => {
-            const temp = layerPath.split("/");
+            const temp = layerPath.split('/');
             const options = {
-              id: "leaflet-map",
+              id: 'leaflet-map',
               imgWidth: width,
               imgHeight: height,
               layerPath: temp[temp.length - 1],
-              mapInstanceKeyName: "mapInstance",
-              defaultZoom: [null, ""].includes(centralLevel) ? 4 : centralLevel,
+              mapInstanceKeyName: 'mapInstance',
+              defaultZoom: [null, ''].includes(centralLevel) ? 4 : centralLevel,
               defaultLatLng: { lat: centralX, lng: centralY },
             };
             initMap.call(this, options, ({ defaultLatLng }) => {
@@ -614,10 +552,10 @@ export default {
           });
         } else {
           this.mapFlag = false;
-          console.warn("初始化地图失败,缺少必要数据");
+          console.warn('初始化地图失败,缺少必要数据');
         }
       } else {
-        this.$SG_Message.error("系统出错,请刷新后重试");
+        this.$SG_Message.error('系统出错,请刷新后重试');
       }
     },
     mouseMoveCb() {
@@ -628,20 +566,18 @@ export default {
       }, 5000);
     },
     initFullEvent() {
-      document.addEventListener("fullscreenchange", this.fullscreenchangeCb);
+      document.addEventListener('fullscreenchange', this.fullscreenchangeCb);
     },
     fullscreenchangeCb() {
-      console.log("this", arguments);
-      this.isFull = document.fullscreenElement
-      this.$refs.closeBtn.className = document.fullscreenElement
-        ? "full-screen-close"
-        : "default-close-btn";
+      console.log('this', arguments);
+      this.isFull = document.fullscreenElement;
+      this.$refs.closeBtn.className = document.fullscreenElement ? 'full-screen-close' : 'default-close-btn';
 
       if (document.fullscreenElement) {
         this.mouseMoveCb();
-        document.addEventListener("mousemove", this.mouseMoveCb);
+        document.addEventListener('mousemove', this.mouseMoveCb);
       } else {
-        document.removeEventListener("mousemove", this.mouseMoveCb);
+        document.removeEventListener('mousemove', this.mouseMoveCb);
         clearTimeout(this.sleepTimer);
         this.closeAutoChange();
       }
@@ -652,8 +588,8 @@ export default {
   },
   beforeDestroy() {
     this.closeAutoChange();
-    document.removeEventListener("mousemove", this.mouseMoveCb);
-    document.removeEventListener("fullscreenchange", this.fullscreenchangeCb);
+    document.removeEventListener('mousemove', this.mouseMoveCb);
+    document.removeEventListener('fullscreenchange', this.fullscreenchangeCb);
   },
 };
 </script>
@@ -728,7 +664,7 @@ export default {
       z-index: 999;
       min-width: 600px;
     }
-    .filter-block-full{
+    .filter-block-full {
       display: none;
     }
   }
@@ -793,18 +729,18 @@ export default {
 ::v-deep .leaflet-popup-tip-container {
   display: none;
 }
-.summary{
+.summary {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  .title{
+  .title {
     font-weight: bold;
   }
 }
-.export{
+.export {
   position: absolute;
   top: 50%;
   right: 60px;
-  transform: translate(0,-50%);
+  transform: translate(0, -50%);
 }
 </style>

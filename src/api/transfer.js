@@ -1,5 +1,5 @@
-import {axiosGet, axiosPost} from "../utils/axios";
-import { transfer } from "../config/config.url";
+import { axiosGet, axiosPost } from '../utils/axios';
+import { transfer } from '../config/config.url';
 export function getList(data) {
   return axiosPost(transfer.getList, data, false);
 }

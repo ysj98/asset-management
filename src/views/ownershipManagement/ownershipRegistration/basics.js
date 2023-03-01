@@ -5,108 +5,131 @@
  * @Description: file content
  */
 // 首次登记 变更登记
-import {generateTableAreaByAssetTypeCode} from '@/utils/utils'
-export const register = [{
-  title: '资产名称',
-  dataIndex: 'assetName',
-  width: '8%'
-}, {
-  title: '资产编码',
-  dataIndex: 'assetCode',
-  width: '8%'
-}, {
-  title: '资产类型',
-  dataIndex: 'assetTypeName',
-  width: '8%'
-}, {
-  title: '资产项目名称',
-  dataIndex: 'projectName',
-  width: '10%'
-}, {
-  title: '资产分类',
-  dataIndex: 'objectTypeName',
-  width: '8%'
-}, {
-  title: '权属类型',
-  dataIndex: 'kindOfRightName',
-  width: '8%'
-}, {
-  title: '所在位置',
-  dataIndex: 'address',
-  width: '10%'
-}, {
-  title: '面积',
-  key: 'assetArea',
-  customRender(record){
-    return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
+import { generateTableAreaByAssetTypeCode } from '@/utils/utils';
+export const register = [
+  {
+    title: '资产名称',
+    dataIndex: 'assetName',
+    width: '8%',
   },
-  width: '5%'
-}, {
-  title: '原权证号',
-  dataIndex: 'oldWarrantNbr',
-  align: 'center',
-  width: '15%',
-  scopedSlots: { customRender: 'oldWarrantNbr' }
-}, {
-  title: '新权证号',
-  dataIndex: 'warrantNbr',
-  align: 'center',
-  scopedSlots: { customRender: 'warrantNbr' },
-  width: '15%'
-}, {
-  title: '操作',
-  dataIndex: 'operation',
-  align: 'center',
-  width: '7%',
-  scopedSlots: { customRender: 'operation' }
-}]
+  {
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    width: '8%',
+  },
+  {
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: '8%',
+  },
+  {
+    title: '资产项目名称',
+    dataIndex: 'projectName',
+    width: '10%',
+  },
+  {
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
+    width: '8%',
+  },
+  {
+    title: '权属类型',
+    dataIndex: 'kindOfRightName',
+    width: '8%',
+  },
+  {
+    title: '所在位置',
+    dataIndex: 'address',
+    width: '10%',
+  },
+  {
+    title: '面积',
+    key: 'assetArea',
+    customRender(record) {
+      return generateTableAreaByAssetTypeCode({ record, keyStr: 'assetArea', assetTypeCode: String(record.assetType) });
+    },
+    width: '5%',
+  },
+  {
+    title: '原权证号',
+    dataIndex: 'oldWarrantNbr',
+    align: 'center',
+    width: '15%',
+    scopedSlots: { customRender: 'oldWarrantNbr' },
+  },
+  {
+    title: '新权证号',
+    dataIndex: 'warrantNbr',
+    align: 'center',
+    scopedSlots: { customRender: 'warrantNbr' },
+    width: '15%',
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    align: 'center',
+    width: '7%',
+    scopedSlots: { customRender: 'operation' },
+  },
+];
 
 // 注销登记
-export const cancellation = [{
-  title: '资产名称',
-  dataIndex: 'assetName',
-  width: '12%'
-}, {
-  title: '资产编码',
-  dataIndex: 'assetCode',
-  width: '10%'
-}, {
-  title: '资产类型',
-  dataIndex: 'assetTypeName',
-  width: '8%'
-}, {
-  title: '资产项目名称',
-  dataIndex: 'projectName',
-  width: '12%'
-}, {
-  title: '资产分类',
-  dataIndex: 'objectTypeName',
-  width: '8%'
-}, {
-  title: '权属类型',
-  dataIndex: 'kindOfRightName',
-  width: '8%'
-}, {
-  title: '所在位置',
-  dataIndex: 'address',
-  width: '20%'
-}, {
-  title: '面积',
-  key: 'assetArea',
-  customRender(record){
-    return generateTableAreaByAssetTypeCode({record,keyStr:'assetArea',assetTypeCode:String(record.assetType)})
+export const cancellation = [
+  {
+    title: '资产名称',
+    dataIndex: 'assetName',
+    width: '12%',
   },
-  width: '10%'
-}, {
-  title: '原权证号',
-  dataIndex: 'oldWarrantNbr',
-  align: 'center',
-  width: '15%',
-  scopedSlots: { customRender: 'oldWarrantNbr' }
-}, {
-  title: '操作',
-  dataIndex: 'operation',
-  align: 'center',
-  width: '8%',
-  scopedSlots: { customRender: 'operation' }
-}]
+  {
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    width: '10%',
+  },
+  {
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: '8%',
+  },
+  {
+    title: '资产项目名称',
+    dataIndex: 'projectName',
+    width: '12%',
+  },
+  {
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
+    width: '8%',
+  },
+  {
+    title: '权属类型',
+    dataIndex: 'kindOfRightName',
+    width: '8%',
+  },
+  {
+    title: '所在位置',
+    dataIndex: 'address',
+    width: '20%',
+  },
+  {
+    title: '面积',
+    key: 'assetArea',
+    customRender(record) {
+      return generateTableAreaByAssetTypeCode({ record, keyStr: 'assetArea', assetTypeCode: String(record.assetType) });
+    },
+    width: '10%',
+  },
+  {
+    title: '原权证号',
+    dataIndex: 'oldWarrantNbr',
+    align: 'center',
+    width: '15%',
+    scopedSlots: { customRender: 'oldWarrantNbr' },
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    align: 'center',
+    width: '8%',
+    scopedSlots: { customRender: 'operation' },
+  },
+];

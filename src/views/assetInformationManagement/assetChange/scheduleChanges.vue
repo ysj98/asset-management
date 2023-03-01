@@ -3,66 +3,110 @@
 -->
 <template>
   <div class="scheduleChanges">
-    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{paddingTop:'16px'}">
+    <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{ paddingTop: '16px' }">
       <div slot="headerBtns">
-        <SG-Button
-          type="primary"
-          @click="downloadFn"
-          v-power="ASSET_MANAGEMENT.ASSET_CHANGE_LIST_EXPORT"
-        >
-          <segiIcon type="#icon-ziyuan10" class="icon-right"/>导出
+        <SG-Button type="primary" @click="downloadFn" v-power="ASSET_MANAGEMENT.ASSET_CHANGE_LIST_EXPORT">
+          <segiIcon type="#icon-ziyuan10" class="icon-right" />导出
         </SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect @changeTree="changeTree"  placeholder='请选择组织机构' :allowClear="false" style="width: 170px; margin-right: 10px;"></treeSelect>
-        <a-input-search v-model="queryCondition.assetName" placeholder="资产名称/编码" :maxLength="40" style="width: 140px; margin-right: 10px;" @search="onSearch" />
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" style="width: 170px; margin-right: 10px"></treeSelect>
+        <a-input-search
+          v-model="queryCondition.assetName"
+          placeholder="资产名称/编码"
+          :maxLength="40"
+          style="width: 140px; margin-right: 10px"
+          @search="onSearch"
+        />
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部状态" :tokenSeparators="[',']"  @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
-              <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部变更类型" :tokenSeparators="[',']"  @select="changeStatus" v-model="queryCondition.changeType">
-              <a-select-option :title="item.name" v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
-              <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <a-select
-              :maxTagCount="1"
-              :style="allStyle"
-              mode="multiple"
-              placeholder="全部资产类型"
-              :tokenSeparators="[',']"
-              @change="assetTypeDataFn"
-              v-model="queryCondition.assetType"
-            >
-              <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <EquipmentSelectTree
-              v-if="isSelectedEquipment"
-              :style="allStyle"
-              :top-organ-id="queryCondition.organId.split(',')[0]"
-              :multiple="true"
-              v-model="queryCondition.assetClassify"
-              :options-data-format="(data)=>{
-                return [{label: '全部资产分类', value: '', isLeaf: true},...data]
-              }"
-              @select="assetClassifyDataFn($event,true)"
-            />
-            <a-select v-else :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类"
-                      :tokenSeparators="[',']"  @select="assetClassifyDataFn" v-model="queryCondition.assetClassify">
-              <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-            </a-select>
-            <div class="box sg-datePicker" :style="dateWidth">
-              <SG-DatePicker label="提交日期" style="width: 232px;"  pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
-            </div>
-            <div class="box sg-datePicker" :style="dateWidth">
-              <SG-DatePicker label="变更日期" style="width: 232px;"  pickerType="RangePicker" v-model="alterationDate" format="YYYY-MM-DD"></SG-DatePicker>
-            </div>
+          <a-select
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部状态"
+            :tokenSeparators="[',']"
+            @select="approvalStatusFn"
+            v-model="queryCondition.approvalStatus"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
+          </a-select>
+          <a-select
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部变更类型"
+            :tokenSeparators="[',']"
+            @select="changeStatus"
+            v-model="queryCondition.changeType"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
+          </a-select>
+          <a-select :style="allStyle" :showSearch="true" :filterOption="filterOption" placeholder="全部资产项目" v-model="queryCondition.projectId">
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
+          </a-select>
+          <a-select
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部资产类型"
+            :tokenSeparators="[',']"
+            @change="assetTypeDataFn"
+            v-model="queryCondition.assetType"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
+          </a-select>
+          <EquipmentSelectTree
+            v-if="isSelectedEquipment"
+            :style="allStyle"
+            :top-organ-id="queryCondition.organId.split(',')[0]"
+            :multiple="true"
+            v-model="queryCondition.assetClassify"
+            :options-data-format="
+              (data) => {
+                return [{ label: '全部资产分类', value: '', isLeaf: true }, ...data];
+              }
+            "
+            @select="assetClassifyDataFn($event, true)"
+          />
+          <a-select
+            v-else
+            :maxTagCount="1"
+            :style="allStyle"
+            mode="multiple"
+            placeholder="全部分类"
+            :tokenSeparators="[',']"
+            @select="assetClassifyDataFn"
+            v-model="queryCondition.assetClassify"
+          >
+            <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
+          </a-select>
+          <div class="box sg-datePicker" :style="dateWidth">
+            <SG-DatePicker label="提交日期" style="width: 232px" pickerType="RangePicker" v-model="defaultValue" format="YYYY-MM-DD"></SG-DatePicker>
+          </div>
+          <div class="box sg-datePicker" :style="dateWidth">
+            <SG-DatePicker
+              label="变更日期"
+              style="width: 232px"
+              pickerType="RangePicker"
+              v-model="alterationDate"
+              format="YYYY-MM-DD"
+            ></SG-DatePicker>
+          </div>
         </div>
         <div class="two-row-box">
-          <SG-Button type="primary" style="margin-right: 10px;" @click="query">查询</SG-Button>
+          <SG-Button type="primary" style="margin-right: 10px" @click="query">查询</SG-Button>
           <SG-Button @click="eliminateFn">清空</SG-Button>
         </div>
       </div>
@@ -70,13 +114,7 @@
     <div class="table-layout-fixed">
       <!--  ref="table_box" -->
       <!-- :scroll="scrollHeight" -->
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :dataSource="tableData"
-        size="middle"
-        :pagination="false"
-        >
+      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false">
         <!-- <template slot="operation" slot-scope="text, record">
           <OperationPopover :operationData="operationData" :record="record" @operationFun="operationFun"></OperationPopover>
         </template> -->
@@ -95,128 +133,128 @@
 </template>
 
 <script>
-import SearchContainer from '@/views/common/SearchContainer'
-import TreeSelect from '../../common/treeSelect'
-import moment from 'moment'
-import { ASSET_MANAGEMENT } from "@/config/config.power"
-import segiIcon from '@/components/segiIcon.vue'
-import noDataTips from '@/components/noDataTips'
-import {utils, debounce} from '@/utils/utils.js'
-import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
-const allWidth = {width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
-const dateWidth = {width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', 'display': 'inline-block', 'vertical-align': 'middle'}
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '../../common/treeSelect';
+import moment from 'moment';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import segiIcon from '@/components/segiIcon.vue';
+import noDataTips from '@/components/noDataTips';
+import { utils, debounce } from '@/utils/utils.js';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
+const dateWidth = { width: '300px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
 const columns = [
   {
     title: '变更编号',
-    dataIndex: 'changeOrderDetailId'
+    dataIndex: 'changeOrderDetailId',
   },
   {
     title: '资产编号',
-    dataIndex: 'assetCode'
+    dataIndex: 'assetCode',
   },
   {
     title: '资产名称',
-    dataIndex: 'assetName'
+    dataIndex: 'assetName',
   },
   {
     title: '资产类型',
-    dataIndex: 'assetTypeName'
+    dataIndex: 'assetTypeName',
   },
   {
     title: '所属机构',
-    dataIndex: 'organName'
+    dataIndex: 'organName',
   },
   {
     title: '所属资产项目',
-    dataIndex: 'projectName'
+    dataIndex: 'projectName',
   },
   {
     title: '所属变更单',
-    dataIndex: 'changeOrderId'
+    dataIndex: 'changeOrderId',
   },
   {
     title: '变更类型',
-    dataIndex: 'changeTypeName'
+    dataIndex: 'changeTypeName',
   },
   {
     title: '变更前信息',
-    dataIndex: 'oldChangeInfo'
+    dataIndex: 'oldChangeInfo',
   },
   {
     title: '变更后信息',
-    dataIndex: 'changeInfo'
+    dataIndex: 'changeInfo',
   },
   {
     title: '变更时间',
-    dataIndex: 'changeDate'
+    dataIndex: 'changeDate',
   },
   {
     title: '备注',
-    dataIndex: 'remark'
+    dataIndex: 'remark',
   },
   {
     title: '提交人',
-    dataIndex: 'createByName'
+    dataIndex: 'createByName',
   },
   {
     title: '提交时间',
-    dataIndex: 'createTime'
+    dataIndex: 'createTime',
   },
   {
     title: '状态',
-    dataIndex: 'approvalStatusName'
-  }
-]
+    dataIndex: 'approvalStatusName',
+  },
+];
 const operationData = [
-  {iconType: 'form', text: '修改', editType: 'edit'},
-  {iconType: 'delete', text: '删除', editType: 'delete'}
-]
+  { iconType: 'form', text: '修改', editType: 'edit' },
+  { iconType: 'delete', text: '删除', editType: 'delete' },
+];
 const approvalStatusData = [
   {
     name: '全部状态',
-    value: ''
+    value: '',
   },
   {
     name: '草稿',
-    value: '0'
+    value: '0',
   },
   {
     name: '待审批',
-    value: '2'
+    value: '2',
   },
   {
     name: '已驳回',
-    value: '3'
+    value: '3',
   },
   {
     name: '已审批',
-    value: '1'
+    value: '1',
   },
   {
     name: '已取消',
-    value: '4'
-  }
-]
-const queryCondition =  {
-    organId: '',   // 组织机构id
-    approvalStatus: '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-    projectId: '',   // 资产项目Id
-    changeType: '',   // 变更类型
-    assetType: '',    // 资产类型Id
-    assetClassify: '', // 资产分类
-    startDate: '',       // 创建日期开始日期
-    endDate: '',    // 创建日期结束日期
-    changStartDate: '',  // 变更日期开始
-    changEndDate: '',   // 变更日期结束
-    currentOrganId: '',   // 仅当前机构下资产清理单 0 否 1 是
-    assetName: '',    // 资产名称/编码模糊查询
-    pageNum: 1,     // 当前页
-    pageSize: 10    // 每页显示记录数
-  }
+    value: '4',
+  },
+];
+const queryCondition = {
+  organId: '', // 组织机构id
+  approvalStatus: '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+  projectId: '', // 资产项目Id
+  changeType: '', // 变更类型
+  assetType: '', // 资产类型Id
+  assetClassify: '', // 资产分类
+  startDate: '', // 创建日期开始日期
+  endDate: '', // 创建日期结束日期
+  changStartDate: '', // 变更日期开始
+  changEndDate: '', // 变更日期结束
+  currentOrganId: '', // 仅当前机构下资产清理单 0 否 1 是
+  assetName: '', // 资产名称/编码模糊查询
+  pageNum: 1, // 当前页
+  pageSize: 10, // 每页显示记录数
+};
 export default {
-  components: {SearchContainer, TreeSelect, segiIcon, noDataTips, EquipmentSelectTree},
+  components: { SearchContainer, TreeSelect, segiIcon, noDataTips, EquipmentSelectTree },
   props: {},
-  data () {
+  data() {
     return {
       ASSET_MANAGEMENT,
       dateWidth,
@@ -232,129 +270,129 @@ export default {
       tableData: [],
       operationData: [...operationData],
       approvalStatusData: [...approvalStatusData],
-      queryCondition: {...queryCondition},
+      queryCondition: { ...queryCondition },
       count: '',
       projectData: [
         {
           name: '全部资产项目',
-          value: ''
-        }
+          value: '',
+        },
       ],
       changeTypeData: [],
       assetTypeData: [],
       assetClassifyData: [
         {
           name: '全部资产分类',
-          value: ''
-        }
+          value: '',
+        },
       ],
       defaultValue: [],
-      alterationDate: []
-    }
+      alterationDate: [],
+    };
   },
   computed: {
-    isSelectedEquipment(){
-      const assetTypeArr = this.queryCondition.assetType
-      return (assetTypeArr.length === 1) && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
-    }
+    isSelectedEquipment() {
+      const assetTypeArr = this.queryCondition.assetType;
+      return assetTypeArr.length === 1 && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
+    },
   },
   methods: {
     // 导出
-    downloadFn () {
+    downloadFn() {
       let obj = {
-        projectId: this.queryCondition.projectId,       // 资产项目Id
-        organIds:this.queryCondition.organId,         // 组织机构id
-        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',       // 创建日期开始日期
-        endCreateDate:  this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',    // 创建日期结束日期
-        currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
+        projectId: this.queryCondition.projectId, // 资产项目Id
+        organIds: this.queryCondition.organId, // 组织机构id
+        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '', // 资产类型Id
+        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        startCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '', // 创建日期开始日期
+        endCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '', // 创建日期结束日期
+        currentOrganId: this.queryCondition.currentOrganId, // 仅当前机构下资产清理单 0 否 1 是
         // pageNum: this.queryCondition.pageNum,     // 当前页
         // pageSize: this.queryCondition.pageSize,    // 每页显示记录数
-        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变更类型
+        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '', // 变更类型
         multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
-        assetCodeName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变更日期开始
-        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变更日期结束
-      }
-      this.$api.assets.exportChangeScheduleList(obj).then(res => {
-        console.log(res)
-        let blob = new Blob([res.data])
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = '资产变更一览表.xls'
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      })
+        assetCodeName: this.queryCondition.assetName, // 资产名称/编码模糊查询
+        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '', // 变更日期开始
+        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '', // 变更日期结束
+      };
+      this.$api.assets.exportChangeScheduleList(obj).then((res) => {
+        console.log(res);
+        let blob = new Blob([res.data]);
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '资产变更一览表.xls';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
     },
     // 组织机构树
-    changeTree (value, label) {
-      this.organName = label
-      this.queryCondition.organId = value
-      this.queryCondition.pageNum = 1
-      this.queryCondition.projectId = ''
-      this.queryCondition.assetClassify = ''
-      this.getObjectKeyValueByOrganIdFn()
-      this.getListFn()
-      this.query()
+    changeTree(value, label) {
+      this.organName = label;
+      this.queryCondition.organId = value;
+      this.queryCondition.pageNum = 1;
+      this.queryCondition.projectId = '';
+      this.queryCondition.assetClassify = '';
+      this.getObjectKeyValueByOrganIdFn();
+      this.getListFn();
+      this.query();
     },
     // 搜索
-    onSearch () {
-      this.queryCondition.pageNum = 1
-      this.query()
+    onSearch() {
+      this.queryCondition.pageNum = 1;
+      this.query();
     },
     // 高级搜索控制
-    searchContainerFn (val) {
-      this.toggle = val
+    searchContainerFn(val) {
+      this.toggle = val;
     },
     // 分页查询
-    handleChange (data) {
-      this.queryCondition.pageNum = data.pageNo
-      this.queryCondition.pageSize = data.pageLength
-      this.query()
+    handleChange(data) {
+      this.queryCondition.pageNum = data.pageNo;
+      this.queryCondition.pageSize = data.pageLength;
+      this.query();
     },
     // 资产项目
-    getObjectKeyValueByOrganIdFn () {
+    getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        projectName: ''
-      }
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+        projectName: '',
+      };
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          let arr = []
-          data.forEach(item => {
+          let data = res.data.data;
+          let arr = [];
+          data.forEach((item) => {
             arr.push({
               name: item.projectName,
-              value: item.projectId
-            })
-          })
-          this.projectData = [{name: '全部资产项目', value: ''}, ...arr]
+              value: item.projectId,
+            });
+          });
+          this.projectData = [{ name: '全部资产项目', value: '' }, ...arr];
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 平台字典获取变更类型
-    platformDictFn (str) {
+    platformDictFn(str) {
       let obj = {
-        code: str
-      }
-      this.$api.assets.platformDict(obj).then(res => {
+        code: str,
+      };
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data;
           if (str === 'asset_change_type') {
-            this.changeTypeData = [{name: '全部变更类型', value: ''}, ...data]
+            this.changeTypeData = [{ name: '全部变更类型', value: '' }, ...data];
           } else if (str === 'asset_type') {
-            this.assetTypeData = [{name: '全部资产类型', value: ''}, ...data]
-            this.getListFn()
+            this.assetTypeData = [{ name: '全部资产类型', value: '' }, ...data];
+            this.getListFn();
           }
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // organDict () {
     //   this.$api.assets.organDict({code: 'approval_status_type'}).then(res => {
@@ -367,89 +405,87 @@ export default {
     //   })
     // },
     // 资产分类列表
-    getListFn () {
+    getListFn() {
       if (!this.queryCondition.organId) {
-        return
+        return;
       }
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : ''
-      }
+        assetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',
+      };
 
-      this.$api.assets.getList(obj).then(res => {
+      this.$api.assets.getList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          let arr = []
-          data.forEach(item => {
+          let data = res.data.data;
+          let arr = [];
+          data.forEach((item) => {
             arr.push({
               name: item.professionName,
-              value: item.professionCode
-            })
-          })
-          this.assetClassifyData = [{name: '全部资产分类', value: ''}, ...arr]
+              value: item.professionCode,
+            });
+          });
+          this.assetClassifyData = [{ name: '全部资产分类', value: '' }, ...arr];
         }
-      })
+      });
     },
     // 资产分类
-    assetClassifyDataFn (value,isSelectedEquipment) {
+    assetClassifyDataFn(value, isSelectedEquipment) {
       this.$nextTick(function () {
-        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData
-        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions)
-      })
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData;
+        this.queryCondition.assetClassify = this.handleMultipleSelectValue(value, this.queryCondition.assetClassify, resOptions);
+      });
     },
     // 资产类型变化
-    assetTypeDataFn (value) {
+    assetTypeDataFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData)
-        if (!this.queryCondition.assetType[0] || this.queryCondition.assetType.length > 1 ) {
-          this.assetClassifyData = [{name: '全部资产分类', value: ''}]
-          this.queryCondition.assetClassify = ['']
-        }else {
-          this.getListFn()
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData);
+        if (!this.queryCondition.assetType[0] || this.queryCondition.assetType.length > 1) {
+          this.assetClassifyData = [{ name: '全部资产分类', value: '' }];
+          this.queryCondition.assetClassify = [''];
+        } else {
+          this.getListFn();
         }
-      })
+      });
     },
     // 状态发生变化
-    changeStatus (value) {
+    changeStatus(value) {
       this.$nextTick(function () {
-        this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData)
-      })
+        this.queryCondition.changeType = this.handleMultipleSelectValue(value, this.queryCondition.changeType, this.changeTypeData);
+      });
     },
     // 状态发生变化
-    approvalStatusFn (value) {
+    approvalStatusFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData)
-      })
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData);
+      });
     },
     // 处理多选下拉框有全选时的数组
-    handleMultipleSelectValue (value, data, dataOptions) {
+    handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
       if (value === '') {
-        data = ['']
+        data = [''];
       } else {
-        let totalIndex = data.indexOf('')
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
-          data.splice(totalIndex, 1)
+          data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = ['']
+            data = [''];
           }
         }
       }
-      return data
+      return data;
     },
     // 清空
-    eliminateFn () {
-      this.alterationDate = []
-      this.defaultValue = []
-      this.queryCondition = {...queryCondition}
-      this.query()
+    eliminateFn() {
+      this.alterationDate = [];
+      this.defaultValue = [];
+      this.queryCondition = { ...queryCondition };
+      this.query();
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      )
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     // 计算滚动条宽度
     // computedHeight () {
@@ -467,60 +503,59 @@ export default {
     //   this.computedHeight()
     // }, 200),
     // 查询
-    query () {
-      this.loading = true
+    query() {
+      this.loading = true;
       let obj = {
-        projectId: this.queryCondition.projectId,       // 资产项目Id
-        organIds: this.queryCondition.organId,         // 组织机构id
-        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '',       // 资产类型Id
-        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '',  // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        startCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',       // 创建日期开始日期
-        endCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',    // 创建日期结束日期
-        currentOrganId: this.queryCondition.currentOrganId,   // 仅当前机构下资产清理单 0 否 1 是
-        pageNum: this.queryCondition.pageNum,     // 当前页
-        pageSize: this.queryCondition.pageSize,    // 每页显示记录数
-        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '',  // 变更类型
+        projectId: this.queryCondition.projectId, // 资产项目Id
+        organIds: this.queryCondition.organId, // 组织机构id
+        multiAssetType: this.queryCondition.assetType.length > 0 ? this.queryCondition.assetType.join(',') : '', // 资产类型Id
+        multiApprovalStatus: this.queryCondition.approvalStatus.length > 0 ? this.queryCondition.approvalStatus.join(',') : '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        startCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '', // 创建日期开始日期
+        endCreateDate: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '', // 创建日期结束日期
+        currentOrganId: this.queryCondition.currentOrganId, // 仅当前机构下资产清理单 0 否 1 是
+        pageNum: this.queryCondition.pageNum, // 当前页
+        pageSize: this.queryCondition.pageSize, // 每页显示记录数
+        multiChangeType: this.queryCondition.changeType.length > 0 ? this.queryCondition.changeType.join(',') : '', // 变更类型
         multiAssetCategory: this.queryCondition.assetClassify.length > 0 ? this.queryCondition.assetClassify.join(',') : '', // 资产分类
-        assetCodeName: this.queryCondition.assetName,    // 资产名称/编码模糊查询
-        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',  // 变更日期开始
-        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : ''   // 变更日期结束
-      }
-      this.$api.assets.getChangeSchedulePage(obj).then(res => {
+        assetCodeName: this.queryCondition.assetName, // 资产名称/编码模糊查询
+        startChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '', // 变更日期开始
+        endChangeDate: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '', // 变更日期结束
+      };
+      this.$api.assets.getChangeSchedulePage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data.data
+          let data = res.data.data.data;
           if (data && data.length > 0) {
             data.forEach((item, index) => {
-              item.key = index
-            })
-            this.tableData = data
-            this.count = res.data.data.count
+              item.key = index;
+            });
+            this.tableData = data;
+            this.count = res.data.data.count;
           } else {
-            this.tableData = []
-            this.count = 0
+            this.tableData = [];
+            this.count = 0;
           }
-          this.loading = false
+          this.loading = false;
         } else {
-          this.$message.error(res.data.message)
-          this.loading = false
+          this.$message.error(res.data.message);
+          this.loading = false;
         }
-      })
-    }
+      });
+    },
   },
-  created () {
-  },
-  mounted () {
+  created() {},
+  mounted() {
     // this.computedHeight()
     // window.addEventListener('resize', () => {
     //   this.debounceMothed()
     // })
     // 获取变更类型
-    this.platformDictFn('asset_change_type')
+    this.platformDictFn('asset_change_type');
     // 获取状态
     // this.organDict('approval_status_type')
     // 资产类型
-    this.platformDictFn('asset_type')
-  }
-}
+    this.platformDictFn('asset_type');
+  },
+};
 </script>
 <style lang="less" scoped>
 .scheduleChanges {
@@ -537,15 +572,15 @@ export default {
     padding-bottom: 60px;
   }
 }
-.search-content-box{
+.search-content-box {
   display: flex;
   justify-content: space-between;
-  .search-from-box{
+  .search-from-box {
     flex: 1;
     flex-wrap: wrap;
     text-align: left;
   }
-  .two-row-box{
+  .two-row-box {
     padding-top: 14px;
     flex: 0 0 190px;
   }

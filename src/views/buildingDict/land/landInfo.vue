@@ -7,22 +7,14 @@
     <div class="create-form">
       <!-- 搜索框 -->
       <div class="top-search-one">
-        <div class="pt30" style="width: 400px;">
-          <SG-Button
-            v-if="createPower"
-            @click="goPage('create')"
-            class="mr10"
-            icon="plus"
-            type="primary"
-          >新增</SG-Button>
+        <div class="pt30" style="width: 400px">
+          <SG-Button v-if="createPower" @click="goPage('create')" class="mr10" icon="plus" type="primary">新增</SG-Button>
           <!-- <SG-Button class="mr10" ><segiIcon type="#icon-ziyuan4" class="mr10"/>房间资料导入</SG-Button> -->
-          <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10">
-            <segiIcon type="#icon-ziyuan10" class="mr10" />导出
-          </SG-Button>
-          <SG-Button v-if="landImportButton" @click="showLandDataImport"><segiIcon type="#icon-ziyuan4" class="mr10"/>批量导入</SG-Button>
+          <SG-Button @click="exportList" v-if="hasPowerExport" class="mr10"> <segiIcon type="#icon-ziyuan10" class="mr10" />导出 </SG-Button>
+          <SG-Button v-if="landImportButton" @click="showLandDataImport"><segiIcon type="#icon-ziyuan4" class="mr10" />批量导入</SG-Button>
         </div>
 
-        <div style="overflow: visible"  class="search-from-box">
+        <div style="overflow: visible" class="search-from-box">
           <!-- 全部运营项目-->
           <a-select
             showSearch
@@ -73,18 +65,15 @@
             notFoundContent="没有查询到数据"
           />
           <!-- 资产名称或编码 -->
-          <a-input
-            :maxLength="30"
-            placeholder="土地名称/编码/宗地号"
-            v-model="queryCondition.queryName"
-            :style="allStyle"
+          <a-input :maxLength="30" placeholder="土地名称/编码/宗地号" v-model="queryCondition.queryName" :style="allStyle" />
+          <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+          <a-input-search
+            v-model="queryCondition.address"
+            placeholder="请输入地址"
+            maxLength="30"
+            style="width: 140px; height: 32px; margin-right: 10px; margin-top: 10px"
+            @search="searchQuery"
           />
-          <ProvinceCityDistrict
-          class="city"
-          ref="ProvinceCityDistrict"
-          v-model="provinces"
-        ></ProvinceCityDistrict>
-        <a-input-search v-model="queryCondition.address" placeholder="请输入地址" maxLength="30" style="width: 140px; height: 32px; margin-right: 10px;margin-top:10px" @search="searchQuery" />
           <SG-Button @click="searchQuery" class="mr10 mt10" type="primary">查询</SG-Button>
         </div>
       </div>
@@ -96,11 +85,11 @@
           :pagination="false"
           :columns="table.columns"
           :dataSource="table.dataSource"
-          :locale="{emptyText: '暂无数据'}"
-          :scroll="{x: 1200,y:570}"
+          :locale="{ emptyText: '暂无数据' }"
+          :scroll="{ x: 1200, y: 570 }"
         >
           <template slot="matchingName" slot-scope="text, record">
-            <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+            <span class="nav_name" @click="goPage('detail', record)">{{ text }}</span>
           </template>
           <!-- <template slot="blankName" slot-scope="text">
             <a-tooltip placement="topLeft">
@@ -111,14 +100,11 @@
             </a-tooltip>
           </template> -->
           <template slot="buildArea" slot-scope="text, record">
-            <span>{{record.buildArea ? getFormat(text, '') : "-"}}</span>
+            <span>{{ record.buildArea ? getFormat(text, '') : '-' }}</span>
             <!-- <span>{{Number(text).toFixed(4)}}</span> -->
           </template>
           <template slot="operation" slot-scope="text, record">
-            <OperationPopover
-              :operationData="record.operationDataBtn"
-              @operationFun="operationFun($event, record)"
-            ></OperationPopover>
+            <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)"></OperationPopover>
           </template>
         </a-table>
         <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
@@ -131,30 +117,27 @@
         />
       </div>
     </div>
-    <landDataImport title="导入数据" ref="landDataImport" :organId="queryCondition.organId" @success="landImport" @cancel="$refs.landDataImport.visible = false"></landDataImport>
+    <landDataImport
+      title="导入数据"
+      ref="landDataImport"
+      :organId="queryCondition.organId"
+      @success="landImport"
+      @cancel="$refs.landDataImport.visible = false"
+    ></landDataImport>
   </div>
 </template>
 <script>
-import noDataTips from "@/components/noDataTips";
-import TreeSelect from "@/views/common/treeSelect";
-import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict'
-import segiIcon from "@/components/segiIcon.vue";
-import { utils, getFormat } from "@/utils/utils";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OperationPopover from "@/components/OperationPopover";
+import noDataTips from '@/components/noDataTips';
+import TreeSelect from '@/views/common/treeSelect';
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict';
+import segiIcon from '@/components/segiIcon.vue';
+import { utils, getFormat } from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OperationPopover from '@/components/OperationPopover';
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
-import {
-  operationTypes,
-  allStyle,
-  columns,
-  queryCondition,
-  communityIdOpt,
-  landTypeOpt,
-  landuseOpt,
-  registerList
-} from "./dict.js";
-import landDataImport from './landDataImport.vue'
-const allWidth = {width: '170px', 'margin-right': '10px', 'margin-top': '14px'}
+import { operationTypes, allStyle, columns, queryCondition, communityIdOpt, landTypeOpt, landuseOpt, registerList } from './dict.js';
+import landDataImport from './landDataImport.vue';
+const allWidth = { width: '170px', 'margin-right': '10px', 'margin-top': '14px' };
 export default {
   components: {
     TreeSelect,
@@ -162,13 +145,13 @@ export default {
     segiIcon,
     OperationPopover,
     landDataImport,
-    ProvinceCityDistrict
+    ProvinceCityDistrict,
   },
   props: {
     organIdInfo: {
       type: Object,
       default: () => {
-        return ({})
+        return {};
       },
     },
     isCurrent: {
@@ -202,33 +185,29 @@ export default {
       provinces: {
         province: undefined,
         city: undefined,
-        district: undefined
+        district: undefined,
       },
     };
   },
   watch: {
     $route() {
-      if (
-        this.$route.path === "/buildingDict" &&
-        this.$route.query.refresh &&
-        this.$route.query.showKey === "land"
-      ) {
+      if (this.$route.path === '/buildingDict' && this.$route.query.refresh && this.$route.query.showKey === 'land') {
         this.queryCondition.pageNum = 1;
         this.queryCondition.pageSize = 10;
         this.query();
       }
     },
     organIdInfo: {
-      handler({organId, organName}) {
+      handler({ organId, organName }) {
         if (organId) {
-          this.organIdChange(organId, organName)
+          this.organIdChange(organId, organName);
         }
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
     isCurrent() {
-      this.queryCondition.isCurrent = this.isCurrent
+      this.queryCondition.isCurrent = this.isCurrent;
     },
   },
   mounted() {
@@ -238,18 +217,18 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        city:this.provinces.city,
-        region:this.provinces.district,
-        province:this.provinces.province,
-        communityId: this.queryCondition.communityId.join(","),
+        city: this.provinces.city,
+        region: this.provinces.district,
+        province: this.provinces.province,
+        communityId: this.queryCondition.communityId.join(','),
       };
-      this.table.dataSource = []
-      this.table.totalCount = 0
+      this.table.dataSource = [];
+      this.table.totalCount = 0;
       this.table.loading = true;
       this.$api.building.blankApiPageList(data).then(
         (res) => {
           this.table.loading = false;
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data || [];
             let btnArr = this.createOperationBtn();
 
@@ -263,12 +242,12 @@ export default {
                 ...item,
                 // landuseName: landuseOptRow.label,
                 // landTypeName: landTypeOptRow.label,
-                acreage: getFormat(item.acreage, '') || "-",
+                acreage: getFormat(item.acreage, '') || '-',
                 operationDataBtn: btnArr,
               };
             });
             this.table.totalCount = res.data.paginator.totalCount || 0;
-            this.queryBlankLandTotal(data)
+            this.queryBlankLandTotal(data);
           } else {
             this.$message.error(res.data.message);
           }
@@ -278,15 +257,15 @@ export default {
         }
       );
     },
-    // 合计 
-    queryBlankLandTotal (data) {
+    // 合计
+    queryBlankLandTotal(data) {
       this.$api.building.queryBlankLandTotal(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
-          data.acreage =  getFormat(data.acreageTotal, '') || "-"
-          data.buildArea =  getFormat(data.buildAreaTotal, '') || "-"
-          data.blankId = '合计'
-          this.table.dataSource.push(data)
+          data.acreage = getFormat(data.acreageTotal, '') || '-';
+          data.buildArea = getFormat(data.buildAreaTotal, '') || '-';
+          data.blankId = '合计';
+          this.table.dataSource.push(data);
         }
       });
     },
@@ -298,50 +277,50 @@ export default {
     // 查询土地类别
     queryLandType() {
       let data = {
-        dictCode: "OCM_LAND_TYPE",
-        dictFlag: "1",
+        dictCode: 'OCM_LAND_TYPE',
+        dictFlag: '1',
         groupId: this.queryCondition.organId,
-        code: "OCM_LAND_TYPE",
+        code: 'OCM_LAND_TYPE',
         organId: this.queryCondition.organId,
         // assetType: "4",
       };
       // this.$api.assets.getList(data)
       // this.$api.basics.organDict(data)
       return this.$api.basics.organDict(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
           this.landTypeOpt = utils.deepClone(landTypeOpt);
           data.forEach((item) => {
             this.landTypeOpt.push({
-              value: item["value"],
-              label: item["name"],
+              value: item['value'],
+              label: item['name'],
               // id: item["dictId"]
             });
           });
-          this.queryCondition.landType = "";
+          this.queryCondition.landType = '';
         }
       });
     },
     // 取全部土地用途
     queryLandUseList() {
       let data = {
-        dictCode: "OCM_LANDUSE",
-        dictFlag: "1",
+        dictCode: 'OCM_LANDUSE',
+        dictFlag: '1',
         groupId: this.queryCondition.organId,
-        code: "OCM_LANDUSE",
+        code: 'OCM_LANDUSE',
         organId: this.queryCondition.organId,
       };
       return this.$api.basics.organDict(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
           this.landuseOpt = utils.deepClone(landuseOpt);
           data.forEach((item) => {
             this.landuseOpt.push({
-              value: item["value"],
-              label: item["name"],
+              value: item['value'],
+              label: item['name'],
             });
           });
-          this.queryCondition.landuse = "";
+          this.queryCondition.landuse = '';
         }
       });
     },
@@ -350,7 +329,7 @@ export default {
         organId: this.queryCondition.organId,
       };
       this.$api.basics.queryCommunityListByOrganId(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let resultArr = result.map((item) => {
             return {
@@ -359,57 +338,48 @@ export default {
               ...item,
             };
           });
-          this.communityIdOpt = [
-            ...utils.deepClone(communityIdOpt),
-            ...resultArr,
-          ];
+          this.communityIdOpt = [...utils.deepClone(communityIdOpt), ...resultArr];
         }
       });
     },
     // orangId改变
-    organIdChange(organId,organName) {
-      console.log("一级物业改变", organId);
+    organIdChange(organId, organName) {
+      console.log('一级物业改变', organId);
       this.organName = organName;
       if (!organId) {
         return;
       }
-      this.queryCondition.organId = organId
+      this.queryCondition.organId = organId;
       this.queryCommunityListByOrganId();
       // 异步接口
       if (this.landTypeOpt.length === 1) {
-        Promise.all([this.queryLandType(), this.queryLandUseList()]).then(
-          () => {
-            this.searchQuery();
-          }
-        );
+        Promise.all([this.queryLandType(), this.queryLandUseList()]).then(() => {
+          this.searchQuery();
+        });
       } else {
         this.searchQuery();
       }
     },
     communityIdSelect(value) {
       this.$nextTick(function () {
-        this.queryCondition.communityId = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.communityId,
-          this.communityIdSelect
-        );
+        this.queryCondition.communityId = this.handleMultipleSelectValue(value, this.queryCondition.communityId, this.communityIdSelect);
       });
     },
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      let hasAll = data.indexOf("") !== -1;
+      let hasAll = data.indexOf('') !== -1;
       let len = data.length;
       // 如果点击全选或者取消全选
-      if (data[len - 1] === "" || len === 0) {
-        return (data = [""]);
+      if (data[len - 1] === '' || len === 0) {
+        return (data = ['']);
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === dataOptions.length - 1) {
-        return (data = [""]);
+        return (data = ['']);
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
-        data.splice(data.indexOf(""), 1);
+        data.splice(data.indexOf(''), 1);
       }
       return data;
     },
@@ -418,12 +388,12 @@ export default {
       // 审批状态
       let arr = [];
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_EDIT)) {
-        arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+        arr.push({ iconType: 'edit', text: '编辑', editType: 'edit' });
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_DELETE)) {
-        arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+        arr.push({ iconType: 'delete', text: '删除', editType: 'delete' });
       }
-      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      arr.push({ iconType: 'file-text', text: '详情', editType: 'detail' });
       return arr;
     },
     // 处理按钮权限
@@ -432,53 +402,53 @@ export default {
         this.createPower = true;
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_BUILDLAND_EXPORT)) {
-        this.hasPowerExport = true
+        this.hasPowerExport = true;
       }
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_DICT_LAND_IMPORT)) {
-        this.landImportButton = true
+        this.landImportButton = true;
       }
     },
     exportList() {
       let data = {
         ...this.queryCondition,
-        communityId: this.queryCondition.communityId.join(","),
+        communityId: this.queryCondition.communityId.join(','),
       };
       delete data.pageNum;
       delete data.pageSize;
       this.$api.building.blankApiExport(data).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
-        let a = document.createElement("a");
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `楼盘字典土地信息.xls`;
-        a.style.display = "none";
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
       });
     },
-    showLandDataImport () {
-      this.$refs.landDataImport.visible = true
+    showLandDataImport() {
+      this.$refs.landDataImport.visible = true;
     },
     // 操作事件函数
     operationFun(type, record) {
-      console.log("操作事件", type, record);
-      if (["edit", "detail"].includes(type)) {
+      console.log('操作事件', type, record);
+      if (['edit', 'detail'].includes(type)) {
         this.goPage(type, record);
       }
-      if (["delete"].includes(type)) {
+      if (['delete'].includes(type)) {
         this.$SG_Modal.confirm({
           content: `确定要删除该土地信息吗?`,
-          okText: "确定",
-          cancelText: "关闭",
+          okText: '确定',
+          cancelText: '关闭',
           onOk: () => {
             let data = {
               organId: this.queryCondition.organId,
               blankId: record.blankId,
             };
             this.$api.building.blankApiDelete(data).then((res) => {
-              if (res.data.code === "0") {
-                this.$message.success("删除成功!");
+              if (res.data.code === '0') {
+                this.$message.success('删除成功!');
                 this.query();
               } else {
                 this.$message.error(res.data.message);
@@ -497,7 +467,7 @@ export default {
           type,
         }
       );
-      if (["edit", "detail"].includes(type)) {
+      if (['edit', 'detail'].includes(type)) {
         Object.assign(query, {
           blankId: record.blankId,
         });
@@ -511,15 +481,11 @@ export default {
     },
     // 搜索
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     landImport() {
-      this.query()
-    }
+      this.query();
+    },
   },
 };
 </script>
@@ -530,31 +496,32 @@ export default {
   justify-content: space-between;
 }
 .city {
-    float: left;
-    margin-right: 8px;
-    margin-top: 10px;
-    /deep/.ant-col-8 {width: 180px;}
-    /deep/.province_style {
-      width: 170px;
-      flex: 1;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    /deep/.city_style {
-      width: 170px;
-      flex: 1;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    /deep/.district_style {
-      width: 170px;
-      flex: 1;
-      display: inline-block;
-      vertical-align: middle;
-    }
+  float: left;
+  margin-right: 8px;
+  margin-top: 10px;
+  /deep/.ant-col-8 {
+    width: 180px;
   }
-  .tb-height{
-    height: 570px;
+  /deep/.province_style {
+    width: 170px;
+    flex: 1;
+    display: inline-block;
+    vertical-align: middle;
   }
+  /deep/.city_style {
+    width: 170px;
+    flex: 1;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  /deep/.district_style {
+    width: 170px;
+    flex: 1;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+.tb-height {
+  height: 570px;
+}
 </style>
-

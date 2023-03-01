@@ -2,37 +2,29 @@
   <div>
     <a-table ref="refTable" v-bind="tableOptions">
       <!-- 分类名称 -->
-      <template #professionName="text,record,index">
-        <a-input
-          style="width: 100%;"
-          v-model="record.professionName"
-          placeholder="请输入分类名称"
-        ></a-input>
+      <template #professionName="text, record, index">
+        <a-input style="width: 100%" v-model="record.professionName" placeholder="请输入分类名称"></a-input>
       </template>
       <!-- 属性数量 -->
-      <template #attrNum="text,record,index">
-        <a
-          v-if="record.professionCode"
-          style="text-decoration: underline"
-          @click="handleSetAttr(record)"
-        >
+      <template #attrNum="text, record, index">
+        <a v-if="record.professionCode" style="text-decoration: underline" @click="handleSetAttr(record)">
           {{ record.attrNum || 0 }}
         </a>
         <span title="请保存成功之后设置属性" v-else>--</span>
       </template>
       <!-- 专业设备 -->
-      <template #equipmentCode="text,record,index">
+      <template #equipmentCode="text, record, index">
         <a-select
-          style="width: 100%;"
+          style="width: 100%"
           :disabled="Boolean(record.professionCode)"
           v-model="record.equipmentCode"
           :options="equipmentCodeSubOptions"
         ></a-select>
       </template>
       <!-- 净残值率 -->
-      <template #netSalvageRate="text,record,index">
+      <template #netSalvageRate="text, record, index">
         <a-input-number
-          style="width: 100%;"
+          style="width: 100%"
           v-model="record.netSalvageRate"
           placeholder="请输入净残值率"
           :min="0"
@@ -41,28 +33,17 @@
         ></a-input-number>
       </template>
       <!-- 折旧方式 -->
-      <template #depreciationMethod="text,record,index">
-        <a-select
-          v-model="record.depreciationMethod"
-          style="width: 100%;"
-          :options="depreciationMethodOptions"
-        ></a-select>
+      <template #depreciationMethod="text, record, index">
+        <a-select v-model="record.depreciationMethod" style="width: 100%" :options="depreciationMethodOptions"></a-select>
       </template>
       <!-- 使用年限 -->
-      <template #usedAge="text,record,index">
-        <a-input-number
-          style="width: 100%;"
-          v-model="record.usedAge"
-          :min="0"
-          :max="999"
-          :step="1"
-          placeholder="请输入使用年限"
-        ></a-input-number>
+      <template #usedAge="text, record, index">
+        <a-input-number style="width: 100%" v-model="record.usedAge" :min="0" :max="999" :step="1" placeholder="请输入使用年限"></a-input-number>
       </template>
       <!-- 折旧年限 -->
-      <template #depreciationAge="text,record,index">
+      <template #depreciationAge="text, record, index">
         <a-input-number
-          style="width: 100%;"
+          style="width: 100%"
           v-model="record.depreciationAge"
           :min="0"
           :max="999"
@@ -71,25 +52,20 @@
         ></a-input-number>
       </template>
       <!-- 操作 -->
-      <template #action="text,record,index">
+      <template #action="text, record, index">
         <a @click="handleDelete(record)">删除</a>
       </template>
       <template #footer>
         <div @click="handleAddCategory" class="table-footer">
           <a-icon type="plus" />
-          <span style="margin-left: 5px;">新增分类属性</span>
+          <span style="margin-left: 5px">新增分类属性</span>
         </div>
       </template>
     </a-table>
     <div class="footer">
       <div>
         <a-button @click="handleSave" type="primary" v-power="ASSET_MANAGEMENT.ASSET_CLASS_SET_EQ">保存</a-button>
-        <a-button
-          @click="handleResetSubEquipmentCategoryTable"
-          style="margin-left: 20px;"
-        >
-          重置
-        </a-button>
+        <a-button @click="handleResetSubEquipmentCategoryTable" style="margin-left: 20px"> 重置 </a-button>
       </div>
     </div>
     <CategoryAttrModal
@@ -102,139 +78,139 @@
 </template>
 
 <script>
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { uuid } from "utils/utils";
-import { pick } from "lodash";
-import CategoryAttrModal from "@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/CategoryAttrModal";
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { uuid } from 'utils/utils';
+import { pick } from 'lodash';
+import CategoryAttrModal from '@/views/assetInformationManagement/assetClassSet/child/EquipmentCategory/CategoryAttrModal';
 export default {
   /*
    * 下级分类
    * */
-  name: "SubEquipmentCategoryTable",
+  name: 'SubEquipmentCategoryTable',
   components: {
-    CategoryAttrModal
+    CategoryAttrModal,
   },
   props: {
     organId: {
       type: String,
-      required: true
+      required: true,
     },
     upEquipmentId: {
       type: [String, Number],
-      required: true
+      required: true,
     },
     upEquipmentName: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
       ASSET_MANAGEMENT,
       tableOptions: {
-        rowKey: function(record) {
+        rowKey: function (record) {
           return record.professionCode || record._key;
         },
-        scroll:{
+        scroll: {
           x: 2560,
-          y: 450
+          y: 450,
         },
         pagination: false,
         dataSource: [],
         columns: [
           {
-            title: "序号",
-            key: "index",
+            title: '序号',
+            key: 'index',
             width: 80,
             customRender(text, record, index) {
               return index + 1;
-            }
+            },
           },
           {
-            title: "分类ID",
-            key: "professionCode",
+            title: '分类ID',
+            key: 'professionCode',
             width: 100,
             customRender(_, record) {
-              return record.professionCode || "--";
-            }
+              return record.professionCode || '--';
+            },
           },
           {
-            title: "分类名称",
+            title: '分类名称',
             width: 240,
-            key: "professionName",
+            key: 'professionName',
             scopedSlots: {
-              customRender: "professionName"
-            }
+              customRender: 'professionName',
+            },
           },
           {
-            title: "属性数量",
-            key: "attrNum",
+            title: '属性数量',
+            key: 'attrNum',
             width: 80,
             scopedSlots: {
-              customRender: "attrNum"
-            }
+              customRender: 'attrNum',
+            },
           },
           {
-            title: "专业设备",
+            title: '专业设备',
             width: 240,
-            key: "equipmentCode",
+            key: 'equipmentCode',
             scopedSlots: {
-              customRender: "equipmentCode"
-            }
+              customRender: 'equipmentCode',
+            },
           },
           {
-            title: "净残值率(%)",
+            title: '净残值率(%)',
             width: 240,
-            key: "netSalvageRate",
+            key: 'netSalvageRate',
             scopedSlots: {
-              customRender: "netSalvageRate"
-            }
+              customRender: 'netSalvageRate',
+            },
           },
           {
-            title: "折旧方式",
+            title: '折旧方式',
             width: 240,
-            key: "depreciationMethod",
+            key: 'depreciationMethod',
             scopedSlots: {
-              customRender: "depreciationMethod"
-            }
+              customRender: 'depreciationMethod',
+            },
           },
           {
-            title: "使用年限",
+            title: '使用年限',
             width: 180,
-            key: "usedAge",
+            key: 'usedAge',
             scopedSlots: {
-              customRender: "usedAge"
-            }
+              customRender: 'usedAge',
+            },
           },
           {
-            title: "折旧年限",
+            title: '折旧年限',
             width: 180,
-            key: "depreciationAge",
+            key: 'depreciationAge',
             scopedSlots: {
-              customRender: "depreciationAge"
-            }
+              customRender: 'depreciationAge',
+            },
           },
           // {
           //   title: "描述"
           // },
           {
-            title: "操作",
+            title: '操作',
             width: 100,
-            key: "action",
+            key: 'action',
             scopedSlots: {
-              customRender: "action"
-            }
-          }
-        ]
+              customRender: 'action',
+            },
+          },
+        ],
       },
       modalList: {
         CategoryAttrModal: {
-          modalName: "CategoryAttrModal",
+          modalName: 'CategoryAttrModal',
           flag: false,
-          title: "分类属性",
-          payload: {}
-        }
-      }
+          title: '分类属性',
+          payload: {},
+        },
+      },
     };
   },
   watch: {
@@ -244,27 +220,27 @@ export default {
           this.getPage(newValue);
         }
       },
-    }
+    },
   },
   computed: {
     depreciationMethodOptions() {
-      return this.$store.state.platformDict.DEPRECIATION_METHOD.map(ele => {
+      return this.$store.state.platformDict.DEPRECIATION_METHOD.map((ele) => {
         return {
           title: ele.name,
           value: ele.value,
-          label: ele.name
+          label: ele.name,
         };
       });
     },
     equipmentCodeSubOptions() {
-      return this.$store.state.platformDict.EQUIPMENT_CODE_SUB.map(ele => {
+      return this.$store.state.platformDict.EQUIPMENT_CODE_SUB.map((ele) => {
         return {
           title: ele.name,
           value: ele.value,
-          label: ele.name
+          label: ele.name,
         };
       });
-    }
+    },
   },
   methods: {
     doOpenPop(modal, title) {
@@ -278,13 +254,13 @@ export default {
     },
     handleSetAttrSuccess() {},
     handleSetAttr(record) {
-      this.doOpenPop("CategoryAttrModal");
+      this.doOpenPop('CategoryAttrModal');
       this.modalList.CategoryAttrModal.payload = {
         successFn(num) {
           record.attrNum = num;
         },
         organId: this.organId,
-        equipmentId: record.professionCode
+        equipmentId: record.professionCode,
       };
     },
     handleResetSubEquipmentCategoryTable() {
@@ -292,41 +268,39 @@ export default {
     },
     handleAddCategory() {
       if (!this.upEquipmentId) {
-        this.$message.error("请先选择分类");
+        this.$message.error('请先选择分类');
         return null;
       }
       this.tableOptions.dataSource.push({
-        _key: uuid()
+        _key: uuid(),
       });
-      this.$nextTick(()=>{
-        const antTableBodyEle = this.$refs.refTable.$el.querySelector('.ant-table-body')
+      this.$nextTick(() => {
+        const antTableBodyEle = this.$refs.refTable.$el.querySelector('.ant-table-body');
         antTableBodyEle.scrollTop = antTableBodyEle.scrollHeight;
-      })
+      });
     },
     handleDelete(record) {
       const { professionCode, _key } = record;
       const _this = this;
       this.$SG_Modal.confirm({
         content: `确定删除此分类吗?`,
-        okText: "确定",
-        cancelText: "取消",
+        okText: '确定',
+        cancelText: '取消',
         onOk: async () => {
           if (professionCode) {
             const requestData = {
               ...record,
               organId: _this.organId,
               categoryConfId: professionCode,
-              status: 0
+              status: 0,
             };
             const {
-              data: { message, code }
+              data: { message, code },
             } = await this.$api.assets.updateEquipmentStatus(requestData);
-            if (code === "0") {
-              const idx = _this.tableOptions.dataSource.findIndex(
-                ele => ele.professionCode === professionCode
-              );
-              this.$message.success("操作成功");
-              this.$emit('actionSuccess')
+            if (code === '0') {
+              const idx = _this.tableOptions.dataSource.findIndex((ele) => ele.professionCode === professionCode);
+              this.$message.success('操作成功');
+              this.$emit('actionSuccess');
               if (idx !== -1) {
                 _this.tableOptions.dataSource.splice(idx, 1);
               }
@@ -334,28 +308,26 @@ export default {
               _this.$SG_Message.error(message);
             }
           } else {
-            const idx = _this.tableOptions.dataSource.findIndex(
-              ele => ele._key === _key
-            );
+            const idx = _this.tableOptions.dataSource.findIndex((ele) => ele._key === _key);
             if (idx !== -1) {
               _this.tableOptions.dataSource.splice(idx, 1);
-              this.$emit('actionSuccess')
+              this.$emit('actionSuccess');
             }
           }
-        }
+        },
       });
     },
     async handleSave() {
       if (!this.upEquipmentId) {
-        this.$message.error("请选择设备设施分类");
+        this.$message.error('请选择设备设施分类');
         return null;
       }
       if (!this.tableOptions.dataSource.length) {
-        this.$message.error("不存在下级分类 无法保存");
+        this.$message.error('不存在下级分类 无法保存');
         return null;
       }
-      if (!this.tableOptions.dataSource.every(ele => ele.professionName)) {
-        this.$message.error("请输入分类名称");
+      if (!this.tableOptions.dataSource.every((ele) => ele.professionName)) {
+        this.$message.error('请输入分类名称');
         return null;
       }
       // 由于存量数据存在 分类名称 相同的数据，最终决定去除前端分类名称重复校验
@@ -365,47 +337,47 @@ export default {
       //   return null
       // }
       const keyArr = [
-        "equipmentOrganRelId",
-        "equipmentName",
-        "equipmentCode",
-        "assetType",
-        "professionCode",
-        "depreciationMethod",
-        "netSalvageRate",
-        "usedAge",
-        "depreciationAge"
+        'equipmentOrganRelId',
+        'equipmentName',
+        'equipmentCode',
+        'assetType',
+        'professionCode',
+        'depreciationMethod',
+        'netSalvageRate',
+        'usedAge',
+        'depreciationAge',
       ];
-      const tempArr = this.tableOptions.dataSource.map(ele => {
+      const tempArr = this.tableOptions.dataSource.map((ele) => {
         const res = pick(ele, keyArr);
         return {
           ...res,
           assetType: 3,
           organId: this.organId,
-          categoryConfId: ele.categoryConfId || "",
+          categoryConfId: ele.categoryConfId || '',
           upEquipmentId: this.upEquipmentId,
           upEquipmentName: this.upEquipmentName,
-          equipmentId: ele.professionCode || "",
-          equipmentName: ele.professionName || "",
-          professionName: ele.professionName || "",
+          equipmentId: ele.professionCode || '',
+          equipmentName: ele.professionName || '',
+          professionName: ele.professionName || '',
         };
       });
       const requestData = {
-        categoryBatchEquipmentDtos: tempArr
+        categoryBatchEquipmentDtos: tempArr,
       };
       const {
-        data: { code, message }
+        data: { code, message },
       } = await this.$api.assets.updateEquipment(requestData);
-      if (code === "0") {
-        this.$message.success("保存成功");
+      if (code === '0') {
+        this.$message.success('保存成功');
         this.getPage(this.upEquipmentId);
-        this.$emit('actionSuccess')
+        this.$emit('actionSuccess');
       } else {
         this.$message.error(message);
       }
     },
     async getPage(upEquipmentId) {
       if (!upEquipmentId) {
-        this.$message.error("请选择设备设施分类");
+        this.$message.error('请选择设备设施分类');
         return null;
       }
       const requestData = {
@@ -413,23 +385,23 @@ export default {
         pageSize: 9999,
         organId: this.organId,
         assetType: this.$store.state.ASSET_TYPE_CODE.EQUIPMENT,
-        upEquipmentId: upEquipmentId
+        upEquipmentId: upEquipmentId,
       };
       const {
-        data: { code, data }
+        data: { code, data },
       } = await this.$api.assets.getPage(requestData);
-      if (code === "0") {
+      if (code === '0') {
         const tempArr = data ? data.data : [];
-        this.tableOptions.dataSource = tempArr.map(ele=>{
+        this.tableOptions.dataSource = tempArr.map((ele) => {
           return {
             ...ele,
-            equipmentCode: ['0',null].includes(ele.equipmentCode) ? '' : ele.equipmentCode
-          }
-        })
+            equipmentCode: ['0', null].includes(ele.equipmentCode) ? '' : ele.equipmentCode,
+          };
+        });
       }
-    }
+    },
   },
-  mounted() {}
+  mounted() {},
 };
 </script>
 
@@ -454,7 +426,7 @@ export default {
   background-color: #fff;
   padding: 0;
 }
-::v-deep .ant-table-body{
-  scroll-behavior:smooth
+::v-deep .ant-table-body {
+  scroll-behavior: smooth;
 }
 </style>

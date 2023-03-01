@@ -17,10 +17,7 @@
                 placeholder="请输入组织机构"
                 :style="allWidth"
                 :disabled="true"
-                v-decorator="[
-                  'organName',
-                  { rules: [], initialValue: organName },
-                ]"
+                v-decorator="['organName', { rules: [], initialValue: organName }]"
               />
             </a-form-item>
           </a-col>
@@ -48,11 +45,7 @@
             </a-form-item>
           </a-col>
           <a-col class="playground-col" :span="8">
-            <a-form-item
-              :colon="false"
-              label="债务类型："
-              v-bind="formItemLayout"
-            >
+            <a-form-item :colon="false" label="债务类型：" v-bind="formItemLayout">
               <label slot="label">债务类型：</label>
               <a-select
                 :style="allWidth"
@@ -79,7 +72,7 @@
                 v-decorator="[
                   'debtDate',
                   {
-                    rules: [{ required: false, message: '请选择' + debtTypeLabel + '有效期'}],
+                    rules: [{ required: false, message: '请选择' + debtTypeLabel + '有效期' }],
                     initialValue: newDebt.debtDate,
                   },
                 ]"
@@ -184,9 +177,7 @@
           </a-col>
           <a-col class="playground-col" :span="24">
             <a-form-item :colon="false" v-bind="formItemTextarea">
-              <label slot="label"
-                >备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label
-              >
+              <label slot="label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
               <a-textarea
                 placeholder="请输入备注"
                 :style="widthBox"
@@ -220,22 +211,11 @@
         <div class="button-box">
           <!-- <div class="fl">交付资产数量：{{assetChangeCount || 0}}个<span v-if="!isSelectedEquipment">，合计交付面积：{{deliveryArea || '0'}}㎡</span></div> -->
           <div class="fr">
-            <SG-Button class="mr10" type="primary" weaken @click="addTheAsset"
-              >添加资产</SG-Button
-            >
-            <SG-Button
-              :disabled="selectedRowKeys.length === 0"
-              type="primary"
-              weaken
-              @click="deleteFn"
-              >删除</SG-Button
-            >
+            <SG-Button class="mr10" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>
+            <SG-Button :disabled="selectedRowKeys.length === 0" type="primary" weaken @click="deleteFn">删除</SG-Button>
           </div>
         </div>
-        <div
-          class="table-layout-fixed"
-          :class="{ 'table-border': tableData.length != 0 }"
-        >
+        <div class="table-layout-fixed" :class="{ 'table-border': tableData.length != 0 }">
           <a-table
             :scroll="{ y: 700 }"
             :row-selection="{
@@ -247,17 +227,13 @@
             size="middle"
             :pagination="false"
           >
-          <template slot="num" slot-scope="text, record,index">
-              {{index+1}}
+            <template slot="num" slot-scope="text, record, index">
+              {{ index + 1 }}
             </template>
             <template slot="amount" slot-scope="text, record">
-              <a-input
-                size="small"
-                v-model="record.amount"
-                @change="checkAmount"
-              />
+              <a-input size="small" v-model="record.amount" @change="checkAmount" />
             </template>
-            <template slot="operation" slot-scope="text, record,index">
+            <template slot="operation" slot-scope="text, record, index">
               <a @click="deleteRe(index)">删除</a>
             </template>
           </a-table>
@@ -285,84 +261,84 @@
 </template>
 
 <script>
-import { calc, debounce } from "@/utils/utils";
-import AssetBundlePopover from "src/views/common/assetBundlePopover";
-import noDataTips from "@/components/noDataTips";
-import FormFooter from "@/components/FormFooter";
-import moment from "moment";
-const conditionalJudgment = [undefined, null, ""];
+import { calc, debounce } from '@/utils/utils';
+import AssetBundlePopover from 'src/views/common/assetBundlePopover';
+import noDataTips from '@/components/noDataTips';
+import FormFooter from '@/components/FormFooter';
+import moment from 'moment';
+const conditionalJudgment = [undefined, null, ''];
 const columns = [
   {
-    title: "序号",
-    dataIndex: "num",
-    width: "5%",
-    scopedSlots: { customRender: "num" },
+    title: '序号',
+    dataIndex: 'num',
+    width: '5%',
+    scopedSlots: { customRender: 'num' },
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
-    width: "10%",
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    width: '10%',
   },
   {
-    title: "资产名称",
-    dataIndex: "assetName",
-    width: "15%",
+    title: '资产名称',
+    dataIndex: 'assetName',
+    width: '15%',
   },
   {
-    title: "地址",
-    dataIndex: "address",
-    width: "15%",
+    title: '地址',
+    dataIndex: 'address',
+    width: '15%',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    width: "5%",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: '5%',
   },
   {
-    title: "资产分类",
-    dataIndex: "objectTypeName",
-    width: "8%",
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
+    width: '8%',
   },
   {
-    title: "资产面积",
-    dataIndex: "area",
-    width: "10%",
+    title: '资产面积',
+    dataIndex: 'area',
+    width: '10%',
   },
   {
-    title: "金额",
-    dataIndex: "amount",
-    align: "center",
-    width: "15%",
-    scopedSlots: { customRender: "amount" },
+    title: '金额',
+    dataIndex: 'amount',
+    align: 'center',
+    width: '15%',
+    scopedSlots: { customRender: 'amount' },
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    align: "center",
-    width: "12%",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    align: 'center',
+    width: '12%',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 const debtTypeList = [
   {
-    label: "抵押",
+    label: '抵押',
     value: '1',
   },
   {
-    label: "质押",
+    label: '质押',
     value: '2',
   },
 ];
 const newDebt = {
-  creditor: "", // 交付名称
-  creditorTel: "",
-  debtId:'',
-  creditorAddr: "",
+  creditor: '', // 交付名称
+  creditorTel: '',
+  debtId: '',
+  creditorAddr: '',
   amount: undefined,
   debtType: undefined, // 资产类型
   projectId: undefined, // 资产项目
   debtDate: [], // 交付日期
-  remark: "", // 备注
+  remark: '', // 备注
   files: [],
 };
 export default {
@@ -372,29 +348,29 @@ export default {
     return {
       debtTypeLabel: '抵押',
       moment,
-      debtType: "",
-      debtId: "", // 债务id
-      deliveryArea: "", // 交付面积
-      assetChangeCount: "", // 资产数量
-      setType: "", // 新增编辑
+      debtType: '',
+      debtId: '', // 债务id
+      deliveryArea: '', // 交付面积
+      assetChangeCount: '', // 资产数量
+      setType: '', // 新增编辑
       selectedRowKeys: [], // 表格选择的数据
       checkedData: [],
       organIdData: [], // 父组件传进来的数据
       columns, // 表头
       tableData: [], // 表格内容
-      organId: "", // 机构id
-      organName: "", // 所属机构
-      saveValues: "",
+      organId: '', // 机构id
+      organName: '', // 所属机构
+      saveValues: '',
       debtTypeList: debtTypeList,
       assetTypeData: [], // 资产类型
       projectIdData: [], // 资产项目
       newDebt: { ...newDebt },
       form: this.$form.createForm(this),
-      allWidth: "width: 160px",
-      widthBox: "width: 80%",
+      allWidth: 'width: 160px',
+      widthBox: 'width: 80%',
       deliveryTypeOpt: [
-        { value: "1", label: "交付物业" },
-        { value: "2", label: "交付运营" },
+        { value: '1', label: '交付物业' },
+        { value: '2', label: '交付运营' },
       ],
       formItemTextarea: {
         labelCol: {
@@ -433,7 +409,7 @@ export default {
     this.setType = this.$route.query.setType; // 判断新增修改
   },
   mounted() {
-    if (this.setType === "edit") {
+    if (this.setType === 'edit') {
       this.debtId = this.$route.query.debtId;
       Promise.all([
         this.editFn(),
@@ -448,86 +424,79 @@ export default {
   methods: {
     // 编辑回填基础信息
     editFn() {
-      this.$api.debt
-        .getDebtInfo({ debtId: this.debtId })
-        .then((res) => {
-          if (Number(res.data.code) === 0) {
-            let obj = res.data.data;
-            let o = {
-              creditor: "", // 交付名称
-              creditorTel: "",
-              debtId:'',
-              creditorAddr: "",
-              amount: "",
-              debtDate:undefined,
-              dateStart:undefined,
-              dateEnd:undefined,
-              debtType: undefined, // 资产类型
-              projectId: undefined, // 资产项目
-              remark: "", // 备注
-            };
-            for (var key in o) {
-              if (["debtType", "deliveryType","amount"].includes(key)) {
-                o[key] = String(obj[key]);
-              } else if (["dateStart", "dateEnd"].includes(key)) {
-                o[key] = obj[key] ? moment(obj[key], "YYYY-MM-DD") : undefined;
-              } else {
-                o[key] = obj[key];
-              }
+      this.$api.debt.getDebtInfo({ debtId: this.debtId }).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let obj = res.data.data;
+          let o = {
+            creditor: '', // 交付名称
+            creditorTel: '',
+            debtId: '',
+            creditorAddr: '',
+            amount: '',
+            debtDate: undefined,
+            dateStart: undefined,
+            dateEnd: undefined,
+            debtType: undefined, // 资产类型
+            projectId: undefined, // 资产项目
+            remark: '', // 备注
+          };
+          for (var key in o) {
+            if (['debtType', 'deliveryType', 'amount'].includes(key)) {
+              o[key] = String(obj[key]);
+            } else if (['dateStart', 'dateEnd'].includes(key)) {
+              o[key] = obj[key] ? moment(obj[key], 'YYYY-MM-DD') : undefined;
+            } else {
+              o[key] = obj[key];
             }
-            console.log(o)
-            if(o.dateStart&&o.dateEnd){
-
-              o.debtDate=[moment(o.dateStart, "YYYY-MM-DD"),moment(o.dateEnd, "YYYY-MM-DD")]
-            }
-            this.form.setFieldsValue(o);
-            this.debtType = obj.debtType;
-          } else {
-            this.$message.error(res.data.message);
           }
-        });
+          console.log(o);
+          if (o.dateStart && o.dateEnd) {
+            o.debtDate = [moment(o.dateStart, 'YYYY-MM-DD'), moment(o.dateEnd, 'YYYY-MM-DD')];
+          }
+          this.form.setFieldsValue(o);
+          this.debtType = obj.debtType;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
     },
     // 查资产明细
     getDeliveryDetailList() {
-      this.$api.debt
-        .getDebtInfoDetailLis({ debtId: this.debtId })
-        .then((res) => {
-          if (Number(res.data.code) === 0) {
-            let data = res.data.data;
-            this.checkedData = [];
-            data.forEach((item) => {
-              item.key = item.assetId;
+      this.$api.debt.getDebtInfoDetailLis({ debtId: this.debtId }).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data;
+          this.checkedData = [];
+          data.forEach((item) => {
+            item.key = item.assetId;
             //   item.address = item.pasitionString;
             //   item.assetCategoryName = item.assetObjectTypeName;
             //   item.transferArea = item.oldTransferArea;
             //   item.transferOperationArea = item.oldTransferOperationArea;
-              this.checkedData.push(item.assetId);
-            });
-            this.tableData = data;
-          } else {
-            this.$message.error(res.data.message);
-          }
-        });
+            this.checkedData.push(item.assetId);
+          });
+          this.tableData = data;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
     },
     // 查汇总信息
     getDeliveryDetailListStatistics() {
-      this.$api.delivery
-        .getDeliveryDetailListStatistics({ deliveryId: this.deliveryId })
-        .then((res) => {
-          if (Number(res.data.code) === 0) {
-            let data = res.data.data;
-            this.assetChangeCount = data.assetChangeCount; // 数量
-            this.deliveryArea = data.deliveryArea; // 面积
-          } else {
-            this.$message.error(res.data.message);
-          }
-        });
+      this.$api.delivery.getDeliveryDetailListStatistics({ deliveryId: this.deliveryId }).then((res) => {
+        if (Number(res.data.code) === 0) {
+          let data = res.data.data;
+          this.assetChangeCount = data.assetChangeCount; // 数量
+          this.deliveryArea = data.deliveryArea; // 面积
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
     },
     // 附件查询
     attachment() {
       let obj = {
         objectId: this.debtId, // 交付id
-        objectType: "32", // 类型：交付信息18
+        objectType: '32', // 类型：交付信息18
       };
       this.$api.basics.attachment(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -550,30 +519,24 @@ export default {
     // 提交
     save() {
       this.form.validateFields((err, values) => {
-          console.log(err, 'err11111')
+        console.log(err, 'err11111');
         if (!err) {
-            console.log(values)
+          console.log(values);
           if (this.tableData.length === 0) {
-            this.$message.info("请选择资产明细");
+            this.$message.info('请选择资产明细');
             return;
           }
-          let match =/^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/
-          if(values.creditorTel&&values.creditorTel.length!=0){
-              if(!values.creditorTel.match(match)){
-                  this.$message.info("请填写正确的手机号码");
-            return;
-              }
+          let match = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+          if (values.creditorTel && values.creditorTel.length != 0) {
+            if (!values.creditorTel.match(match)) {
+              this.$message.info('请填写正确的手机号码');
+              return;
+            }
           }
           let assetDetailList = this.tableData.map((item) => {
             return {
-              debtDetailId: conditionalJudgment.includes(
-                item.debtDetailId
-              )
-                ? ""
-                : item.debtDetailId, //明细Id 修改时必填
-              amount: conditionalJudgment.includes(item.amount)
-                ? ""
-                : item.amount, // 修改时必填
+              debtDetailId: conditionalJudgment.includes(item.debtDetailId) ? '' : item.debtDetailId, //明细Id 修改时必填
+              amount: conditionalJudgment.includes(item.amount) ? '' : item.amount, // 修改时必填
               assetId: item.assetId, // 资产id
             };
           });
@@ -588,36 +551,30 @@ export default {
           }
           let obj = {
             organId: this.organId, // 组织机构id
-            debtId:'',
-            amount:values.amount,
+            debtId: '',
+            amount: values.amount,
             creditor: values.creditor, // 债权人
             creditorTel: values.creditorTel, //债权人电话
             creditorAddr: values.creditorAddr, // 债权人地址
             debtType: values.debtType, // 资产类型
             projectId: values.projectId, // 资产项目Id
-            dateStart:
-              values.debtDate.length==0
-                ? ""
-                : `${values.debtDate[0].format("YYYY-MM-DD")}`, // 交付日期
-            dateEnd:
-              values.debtDate.length==0
-                ? ""
-                : `${values.debtDate[1].format("YYYY-MM-DD")}`, // 截止日期
+            dateStart: values.debtDate.length == 0 ? '' : `${values.debtDate[0].format('YYYY-MM-DD')}`, // 交付日期
+            dateEnd: values.debtDate.length == 0 ? '' : `${values.debtDate[1].format('YYYY-MM-DD')}`, // 截止日期
             remark: values.remark, // 备注
             attachmentList: files,
             detailList: assetDetailList, // 资产明细
           };
-          if(this.setType){
-              obj.debtId=this.debtId
+          if (this.setType) {
+            obj.debtId = this.debtId;
           }
-          console.log(obj)
-          let loadingName = this.SG_Loding("保存中...");
+          console.log(obj);
+          let loadingName = this.SG_Loding('保存中...');
           this.$api.debt.submitDebt(obj).then((res) => {
             if (Number(res.data.code) === 0) {
               this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success("提交成功");
+                this.$SG_Message.success('提交成功');
                 this.$router.push({
-                  path: "/debt",
+                  path: '/debt',
                 });
               });
             } else {
@@ -640,17 +597,14 @@ export default {
     // 每次再次计算统计的值
     calcFn() {
       if (this.tableData.length > 0) {
-        this.deliveryArea = this.tableData.reduce(
-          (sun, current) => calc.add(sun, current.deliveryArea || 0),
-          0
-        );
+        this.deliveryArea = this.tableData.reduce((sun, current) => calc.add(sun, current.deliveryArea || 0), 0);
       } else {
         this.deliveryArea = 0;
       }
     },
     // 取消
     cancel() {
-      this.$router.push({ path: "/debt" });
+      this.$router.push({ path: '/debt' });
     },
     // 表格选择的数组
     onSelectChange(selectedRowKeys) {
@@ -660,26 +614,24 @@ export default {
     deleteFn() {
       let _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要删除该条记录吗？",
+        title: '提示',
+        content: '确认要删除该条记录吗？',
         onOk() {
           let arr = [];
-          _this.tableData = _this.tableData.filter(
-            (m) => !_this.selectedRowKeys.includes(m.assetId)
-          );
+          _this.tableData = _this.tableData.filter((m) => !_this.selectedRowKeys.includes(m.assetId));
           _this.tableData.forEach((item) => {
             arr.push(item.assetId);
           });
           _this.checkedData = arr;
           _this.assetChangeCount = _this.tableData.length;
-        //   _this.calcFn();
+          //   _this.calcFn();
           _this.selectedRowKeys = [];
         },
       });
     },
     //单条删除
-    deleteRe(val){
-        this.tableData.splice(val,1)
+    deleteRe(val) {
+      this.tableData.splice(val, 1);
     },
     // 确定拿到数据
     status(val, data) {
@@ -689,39 +641,30 @@ export default {
         item.key = item.assetId;
         item.area = item.assetArea; // 交付面积默认为资产面积
         item.objectTypeName = item.assetCategoryName;
-        item.amount=item.debtAmount
+        item.amount = item.debtAmount;
       });
       this.tableData = data;
-      console.log(data)
+      console.log(data);
       this.assetChangeCount = this.tableData.length;
       this.calcFn();
       this.$refs.assetBundlePopover.show = false;
     },
     // 添加资产
     addTheAsset() {
-      if (!this.form.getFieldValue("projectId")) {
-        this.$message.info("请先选择资产项目");
+      if (!this.form.getFieldValue('projectId')) {
+        this.$message.info('请先选择资产项目');
         return;
       }
-      this.$refs.assetBundlePopover.redactCheckedDataFn(
-        this.checkedData,
-        this.form.getFieldValue("projectId"),
-        '',
-        this.tableData
-      );
+      this.$refs.assetBundlePopover.redactCheckedDataFn(this.checkedData, this.form.getFieldValue('projectId'), '', this.tableData);
       this.$refs.assetBundlePopover.show = true;
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     // 平台字典获取资产类型
     platformDictFn() {
       let obj = {
-        code: "asset_type",
+        code: 'asset_type',
       };
       this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -742,7 +685,7 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.organId,
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -767,25 +710,25 @@ export default {
       this.checkedData = [];
     },
     // 资产类型监听
-    assetTypeFn (value) {
-      if (value === "1") {
-        this.debtTypeLabel = '抵押'
+    assetTypeFn(value) {
+      if (value === '1') {
+        this.debtTypeLabel = '抵押';
       } else {
-        this.debtTypeLabel = '质押'
+        this.debtTypeLabel = '质押';
       }
-    //   this.tableData = []
-    //   this.checkedData = []
+      //   this.tableData = []
+      //   this.checkedData = []
     },
-    checkAmount(){
-        console.log(this.form)
-        let count = 0
-        this.tableData.forEach(ele=>{
-            if(ele.amount){
-                count+=Number(ele.amount) 
-            }
-        })
-        this.form.setFieldsValue({'amount':String(count)})
-    }
+    checkAmount() {
+      console.log(this.form);
+      let count = 0;
+      this.tableData.forEach((ele) => {
+        if (ele.amount) {
+          count += Number(ele.amount);
+        }
+      });
+      this.form.setFieldsValue({ amount: String(count) });
+    },
   },
 };
 </script>
@@ -810,7 +753,7 @@ export default {
     }
   }
 }
-/deep/.ant-table-scroll{
+/deep/.ant-table-scroll {
   overflow: hidden;
 }
 </style>

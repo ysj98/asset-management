@@ -8,25 +8,12 @@
         v-model="objectType"
         :options-data-format="
           (data) => {
-            return [
-              { label: '全部资产类别', value: '', isLeaf: true },
-              ...data,
-            ];
+            return [{ label: '全部资产类别', value: '', isLeaf: true }, ...data];
           }
         "
       />
-      <a-select
-        v-else
-        style="width: 200px"
-        placeholder="全部资产类别"
-        v-model="objectType"
-      >
-        <a-select-option
-          :title="item.name"
-          v-for="(item, index) in objectTypeData"
-          :key="index"
-          :value="item.value"
-        >
+      <a-select v-else style="width: 200px" placeholder="全部资产类别" v-model="objectType">
+        <a-select-option :title="item.name" v-for="(item, index) in objectTypeData" :key="index" :value="item.value">
           {{ item.name }}
         </a-select-option>
       </a-select>
@@ -57,14 +44,14 @@
 </template>
 
 <script>
-import { columns } from "@/views/assetOperating/SelectAssetExportModal/share";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
+import { columns } from '@/views/assetOperating/SelectAssetExportModal/share';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
 export default {
-  name: "ToBeSelectTable",
+  name: 'ToBeSelectTable',
   components: {
     EquipmentSelectTree,
   },
-  inject: ["sonData"],
+  inject: ['sonData'],
   props: {
     selectTableData: {
       type: Array,
@@ -72,9 +59,9 @@ export default {
   },
   data() {
     return {
-      objectTypeData: [{ name: "全部资产类型", value: "" }],
-      assetNameCode: "",
-      objectType: "",
+      objectTypeData: [{ name: '全部资产类型', value: '' }],
+      assetNameCode: '',
+      objectType: '',
       pageForm: {
         pageSize: 10,
         pageNum: 1,
@@ -137,8 +124,8 @@ export default {
           this.objectTypeData = [];
           let atr = [
             {
-              name: "全部资产分类",
-              value: "",
+              name: '全部资产分类',
+              value: '',
             },
           ];
           this.objectTypeData = [...atr, ...arr];
@@ -161,10 +148,8 @@ export default {
           result.push(ele);
         }
       });
-      result = result.filter((ele) =>
-        this.selectedRowKeys.includes(ele.assetId)
-      );
-      this.$emit("update:selectTableData", result);
+      result = result.filter((ele) => this.selectedRowKeys.includes(ele.assetId));
+      this.$emit('update:selectTableData', result);
     },
     handleChange({ pageNo, pageLength }) {
       this.pageForm = {
@@ -187,7 +172,7 @@ export default {
       const {
         data: { data, code, message },
       } = await this.$api.assets.assetListPage(req);
-      if (code === "0") {
+      if (code === '0') {
         this.tableOptions.dataSource = data ? data.data : [];
         this.totalCount = data.count;
       } else {

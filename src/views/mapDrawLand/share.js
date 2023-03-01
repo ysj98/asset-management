@@ -1,6 +1,6 @@
-import Leaflet from "leaflet";
-import LRasterCoords from "leaflet-rastercoords";
-import * as apiDrawMap from "@/api/drawMap";
+import Leaflet from 'leaflet';
+import LRasterCoords from 'leaflet-rastercoords';
+import * as apiDrawMap from '@/api/drawMap';
 /*
  * type
  *   - 0 array to obj return Array  [{x,y}]
@@ -35,25 +35,14 @@ export function generatePathStyle({ color }, options = {}) {
   return Object.assign(obj, options);
 }
 
-export function initMap(
-  {
-    id,
-    imgWidth,
-    imgHeight,
-    layerPath,
-    mapInstanceKeyName,
-    defaultZoom = 4,
-    defaultLatLng,
-  },
-  callback
-) {
+export function initMap({ id, imgWidth, imgHeight, layerPath, mapInstanceKeyName, defaultZoom = 4, defaultLatLng }, callback) {
   console.log(arguments);
   if (!id || !imgWidth || !imgHeight || !layerPath) {
-    console.error("缺少数据初始化地图");
+    console.error('缺少数据初始化地图');
     return null;
   }
   if (this[mapInstanceKeyName] === undefined) {
-    console.error("没有此数据,请定义key名");
+    console.error('没有此数据,请定义key名');
     return null;
   }
   this.polygonLayer = new Leaflet.layerGroup();
@@ -64,26 +53,20 @@ export function initMap(
     minZoom: 2,
     maxBoundsViscosity: 0.9,
   });
-  new Leaflet.Control.Zoom({ position: "bottomright" }).addTo(this.mapInstance);
+  new Leaflet.Control.Zoom({ position: 'bottomright' }).addTo(this.mapInstance);
   // TODO:反过来倒是边界刚好, 暂时不知道为什么
   const imgInfo = [imgHeight, imgWidth];
   const rc = new LRasterCoords(this.mapInstance, imgInfo);
   // 默认经纬度同时存在取默认经纬度 否则取取片中心点
-  const resDefaultLatLng =
-    defaultLatLng.lat && defaultLatLng.lng
-      ? defaultLatLng
-      : rc.unproject([imgWidth / 2, imgHeight / 2]);
+  const resDefaultLatLng = defaultLatLng.lat && defaultLatLng.lng ? defaultLatLng : rc.unproject([imgWidth / 2, imgHeight / 2]);
   rc.setMaxBounds();
   this[mapInstanceKeyName].setView(resDefaultLatLng, defaultZoom);
   this[mapInstanceKeyName].setMaxZoom(rc.zoomLevel());
-  Leaflet.tileLayer(
-    `/scheme/${layerPath}/{z}/{x}/{y}.png?requestTime=${new Date().getTime()}`,
-    {
-      noWrap: true,
-      bounds: rc.getMaxBounds(),
-      maxNativeZoom: rc.zoomLevel(),
-    }
-  ).addTo(this[mapInstanceKeyName]);
+  Leaflet.tileLayer(`/scheme/${layerPath}/{z}/{x}/{y}.png?requestTime=${new Date().getTime()}`, {
+    noWrap: true,
+    bounds: rc.getMaxBounds(),
+    maxNativeZoom: rc.zoomLevel(),
+  }).addTo(this[mapInstanceKeyName]);
 
   // TODO:DEMO，测试功能时删除
   // BEGINNING
@@ -110,20 +93,20 @@ export function initMap(
   //   .addTo(this[mapInstanceKeyName]);
   // this[mapInstanceKeyName].setView(temp, defaultZoom);
   // END
-  if (typeof callback === "function") {
+  if (typeof callback === 'function') {
     callback({ defaultLatLng: resDefaultLatLng });
   }
 }
 
 export function jumpMapLand(layer, mapInstance) {
   const latlng = layer.getCenter();
-  console.log("latlng", latlng);
+  console.log('latlng', latlng);
   mapInstance.panTo(latlng, {
     animate: true,
   });
 }
 
-const iconSrc = require("./assets/marker-icon.png");
+const iconSrc = require('./assets/marker-icon.png');
 export const markerIcon = Leaflet.icon({
   iconUrl: iconSrc,
   iconSize: [25, 41],
@@ -138,7 +121,7 @@ export async function queryLayerById({ layerId }) {
   const {
     data: { code, data, message },
   } = await apiDrawMap.queryLayerById(req);
-  if (code === "0") {
+  if (code === '0') {
     return Promise.resolve(data);
   } else {
     this.$SG_Message.error(message);
@@ -148,57 +131,55 @@ export async function queryLayerById({ layerId }) {
 
 export const allBaseFields = [
   {
-    title: "土地名称",
-    key: "assetName",
+    title: '土地名称',
+    key: 'assetName',
   },
   {
-    title: "资产编码",
-    key: "assetCode",
+    title: '资产编码',
+    key: 'assetCode',
   },
   {
-    title: "宗地号",
-    key: "theNo",
+    title: '宗地号',
+    key: 'theNo',
   },
   {
-    title: "土地面积",
-    key: "landArea",
+    title: '土地面积',
+    key: 'landArea',
   },
   {
-    title: "土地性质",
-    key: "landProperties",
+    title: '土地性质',
+    key: 'landProperties',
   },
   {
-    title: "经营方式",
-    key: "modelOperName",
+    title: '经营方式',
+    key: 'modelOperName',
   },
   {
-    title: "使用期限",
-    key: "startAndEndTime",
+    title: '使用期限',
+    key: 'startAndEndTime',
     render(h, data, resValue, allInfo) {
-      return allInfo.startDate && allInfo.endDate
-        ? [allInfo.startDate, allInfo.endDate]
-        : "";
+      return allInfo.startDate && allInfo.endDate ? [allInfo.startDate, allInfo.endDate] : '';
     },
   },
   {
-    title: "地理位置",
-    key: "position",
+    title: '地理位置',
+    key: 'position',
   },
   {
-    title: "运营项目",
-    key: "communityName",
+    title: '运营项目',
+    key: 'communityName',
   },
   {
-    title: "资产面积",
-    key: "landArea",
+    title: '资产面积',
+    key: 'landArea',
   },
   {
-    title: "资产原值",
-    key: "originalValue",
+    title: '资产原值',
+    key: 'originalValue',
   },
   {
-    title: "最新估值",
-    key: "marketValue",
+    title: '最新估值',
+    key: 'marketValue',
   },
 ];
 // 获取偏移位置
@@ -212,15 +193,15 @@ export function getOffsetNum({ mapInstance, latlng, width, height }) {
   const currentX = block.x;
   const currentY = block.y;
   if (0 <= currentX && currentX <= width / 2) {
-    console.log("弹窗向右偏移");
+    console.log('弹窗向右偏移');
     resOffset[0] = width / 2 - currentX + 10;
   }
   if (currentX < 0) {
-    console.log("弹窗向右偏移-中心点为超出当前区域");
+    console.log('弹窗向右偏移-中心点为超出当前区域');
     resOffset[0] = width / 2 + Math.abs(currentX) + 10;
   }
   if (currentY <= height) {
-    console.log("弹窗向下偏移");
+    console.log('弹窗向下偏移');
     // 30，20是边距 70是防止弹窗与容器贴和
     resOffset[1] = height - currentY + 80;
     // 防止弹窗覆盖图块 向左/右 偏移
@@ -232,18 +213,18 @@ export function getOffsetNum({ mapInstance, latlng, width, height }) {
   }
 
   if (allX - currentX <= width / 2) {
-    console.log("弹窗向左偏移");
+    console.log('弹窗向左偏移');
     // resOffset[0] = -(260 - (allX - currentX));
     resOffset[0] = -(width / 2 - Math.abs(allX - currentX) + 10);
   }
   if (currentX > allX) {
-    console.log("弹窗向左偏移-中心点为超出当前区域");
+    console.log('弹窗向左偏移-中心点为超出当前区域');
     resOffset[0] = -(Math.abs(currentX - allX) + width / 2 + 10);
   }
   if (currentY - allY >= 0) {
-    console.log("弹窗向上偏移");
+    console.log('弹窗向上偏移');
     resOffset[1] = -(currentY - allY) - 10;
   }
-  console.log("resOffset", resOffset);
+  console.log('resOffset', resOffset);
   return resOffset;
 }

@@ -13,13 +13,14 @@
     <a-row :gutter="8">
       <!--组织机构选择控件, 多选-->
       <a-col :span="isShowBuilding ? 8 : 12">
-        <tree-select 
+        <tree-select
           :multiple="multiple"
           :treeCheckable="true"
-          :allowClear="false" 
+          :allowClear="false"
           @changeTree="changeTree"
-          :showSearch='showSearch'
-          class="organ_style"/>
+          :showSearch="showSearch"
+          class="organ_style"
+        />
       </a-col>
       <a-col :span="isShowBuilding ? 8 : 12">
         <a-select
@@ -48,145 +49,149 @@
 </template>
 
 <script>
-  import TreeSelect from 'src/views/common/treeSelect'
-  export default {
-    name: 'OrganProjectBuilding',
-    components: { TreeSelect },
-    props: {
-      // 是否显示楼栋
-      isShowBuilding: {
-        type: Boolean,
-        default: () => true
-      },
-      // 支持v-model,向外传递一个对象 { organId, projectId, buildingId }
-      value: {
-        type: Object,
-        default: () => ({})
-      },
-      // 是否可搜索
-      showSearch: {
-        type: Boolean,
-        default: () => true
-      },
-      // 是否可清除
-      allowClear: {
-        type: Boolean,
-        default: () => true
-      },
-      // 尺寸大小default large small
-      size: {
-        type: String,
-        default: () => 'default'
-      },
-      // 资产项目和楼栋列表 多选/单选模式
-      mode: {
-        type: String,
-        default: () => 'default'
-      },
-      // 组织机构 多选
-      multiple: {
-        type: Boolean,
-        default: false
-      },
+import TreeSelect from 'src/views/common/treeSelect';
+export default {
+  name: 'OrganProjectBuilding',
+  components: { TreeSelect },
+  props: {
+    // 是否显示楼栋
+    isShowBuilding: {
+      type: Boolean,
+      default: () => true,
     },
-    data () {
-      return {
-        loading: false, // 加载状态
-        organId: '',
-        organName: '',
-        projectId: undefined, // 多选和单选值类型不同，定义undefined
+    // 支持v-model,向外传递一个对象 { organId, projectId, buildingId }
+    value: {
+      type: Object,
+      default: () => ({}),
+    },
+    // 是否可搜索
+    showSearch: {
+      type: Boolean,
+      default: () => true,
+    },
+    // 是否可清除
+    allowClear: {
+      type: Boolean,
+      default: () => true,
+    },
+    // 尺寸大小default large small
+    size: {
+      type: String,
+      default: () => 'default',
+    },
+    // 资产项目和楼栋列表 多选/单选模式
+    mode: {
+      type: String,
+      default: () => 'default',
+    },
+    // 组织机构 多选
+    multiple: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      loading: false, // 加载状态
+      organId: '',
+      organName: '',
+      projectId: undefined, // 多选和单选值类型不同，定义undefined
+      projectOptions: [],
+      buildingId: undefined,
+      buildingOptions: [],
+      properties: {}, // 属性值
+    };
+  },
+
+  methods: {
+    // 搜索过滤选项
+    filterOption(input, option) {
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    },
+
+    // 获取选择的组织机构
+    changeTree(organId, name) {
+      this.organName = name;
+      this.organId = organId;
+      if (organId instanceof Array) {
+        this.organId = this.organId.join(',');
+      }
+    },
+
+    // 查询资产项目接口
+    queryData(type) {
+      if (!this.isShowBuilding && type === 'buildingOptions') {
+        return false;
+      } // 不展示楼栋不执行调接口
+      const api = { buildingOptions: 'queryBuildingByOrganId', projectOptions: 'getObjectKeyValueByOrganId' };
+      this.loading = true;
+      this.$api.assets[api[type]]({ organId: this.organId })
+        .then((r) => {
+          this.loading = false;
+          let res = r.data;
+          if (res && String(res.code) === '0') {
+            this[type] = (res.data || []).map((item) => {
+              return {
+                key: item.buildId || item.projectId,
+                title: item.buildName || item.projectName,
+              };
+            });
+            return false;
+          }
+          throw res.message || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`;
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.$message.error(err || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`);
+        });
+    },
+  },
+
+  mounted() {
+    // 初始化属性和值
+    const { allowClear, size, showSearch, value, mode } = this;
+    let properties = { allowClear, size, showSearch, mode };
+    mode === 'multiple' ? (properties.maxTagCount = 1) : ''; // 多选模式防止换行
+    this.properties = properties;
+    this.multiple ? (properties.maxTagCount = 1) : '';
+    Object.assign(this, { ...value });
+  },
+
+  watch: {
+    organId: function (organId) {
+      if (!organId) return;
+      Object.assign(this, {
+        projectId: undefined,
         projectOptions: [],
         buildingId: undefined,
         buildingOptions: [],
-        properties: {} // 属性值
-      }
+      });
+      this.$emit('input', { organId, organName: this.organName, projectId: undefined, buildingId: undefined });
+      organId && this.queryData('projectOptions');
+      organId && this.queryData('buildingOptions');
     },
 
-    methods: {
-      // 搜索过滤选项
-      filterOption(input, option) {
-        return (
-          option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        )
-      },
-
-      // 获取选择的组织机构
-      changeTree (organId, name) {
-        this.organName = name
-        this.organId = organId
-        if(organId instanceof Array){
-          this.organId = this.organId.join(',')
-        }
-      },
-
-      // 查询资产项目接口
-      queryData (type) {
-        if (!this.isShowBuilding && type === 'buildingOptions') { return false } // 不展示楼栋不执行调接口
-        const api = { buildingOptions: 'queryBuildingByOrganId', projectOptions: 'getObjectKeyValueByOrganId' }
-        this.loading = true
-        this.$api.assets[api[type]]({organId: this.organId}).then(r => {
-          this.loading = false
-          let res = r.data
-          if (res && String(res.code) === '0') {
-            this[type] = (res.data || []).map(item => {
-              return {
-                key: item.buildId || item.projectId,
-                title: item.buildName || item.projectName
-              }
-            })
-            return false
-          }
-          throw res.message || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`
-        }).catch(err => {
-          this.loading = false
-          this.$message.error(err || `查询${type === 'buildingOptions' ? '楼栋' : '资产项目'}失败`)
-        })
-      }
+    projectId: function (projectId) {
+      const { organId, organName } = this;
+      this.buildingId = undefined;
+      this.buildingOptions = [];
+      this.$emit('input', { organId, organName, projectId, buildingId: undefined });
     },
 
-    mounted () {
-      // 初始化属性和值
-      const { allowClear, size, showSearch, value, mode } = this
-      let properties = { allowClear, size, showSearch, mode }
-      mode === 'multiple' ? properties.maxTagCount = 1 : '' // 多选模式防止换行
-      this.properties = properties
-      this.multiple ? properties.maxTagCount = 1 : ''
-      Object.assign(this, { ...value })
+    buildingId: function (buildingId) {
+      const { organId, projectId, organName } = this;
+      this.$emit('input', { organId, organName, projectId, buildingId });
     },
-
-    watch: {
-      organId: function (organId) {
-        if(!organId) return
-        Object.assign(this, {
-          projectId: undefined,
-          projectOptions: [],
-          buildingId: undefined,
-          buildingOptions: [],
-        })
-        this.$emit('input', { organId, organName: this.organName, projectId: undefined, buildingId: undefined })
-        organId && this.queryData('projectOptions')
-        organId && this.queryData('buildingOptions')
-      },
-
-      projectId: function (projectId) {
-        const { organId, organName } = this
-        this.buildingId = undefined
-        this.buildingOptions = []
-        this.$emit('input', { organId, organName, projectId, buildingId: undefined })
-      },
-
-      buildingId: function (buildingId) {
-        const { organId, projectId, organName } = this
-        this.$emit('input', { organId, organName, projectId, buildingId })
-      }
-    }
-  }
+  },
+};
 </script>
 
-<style lang='less' scoped>
-  .choose_area {
-    .organ_style, .project_style, .building_style {
-      width: 100%;
-    }
+<style lang="less" scoped>
+.choose_area {
+  .organ_style,
+  .project_style,
+  .building_style {
+    width: 100%;
   }
+}
 </style>

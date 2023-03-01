@@ -1,5 +1,5 @@
-import { axiosPost } from "../utils/axios";
-import {operationParams, toOperation} from "../config/config.url";
+import { axiosPost } from '../utils/axios';
+import { operationParams, toOperation } from '../config/config.url';
 // 分页查询转运营参数列表
 export function getPage(data) {
   return axiosPost(operationParams.getPage, data);
@@ -10,11 +10,11 @@ export function updateStatus(data) {
 }
 // 资产转运营参数-新增保存
 export function saveTransferOperationParam(data) {
-  return axiosPost(operationParams.saveTransferOperationParam, data,true);
+  return axiosPost(operationParams.saveTransferOperationParam, data, true);
 }
 // 资产转运营参数-编辑提交
 export function editTransferOperationParam(data) {
-  return axiosPost(operationParams.editTransferOperationParam, data,true);
+  return axiosPost(operationParams.editTransferOperationParam, data, true);
 }
 // 资产转运营参数-详情
 export function getDetail(data) {

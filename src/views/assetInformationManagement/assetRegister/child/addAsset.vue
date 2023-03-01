@@ -35,7 +35,18 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">资产名称：</label>
-                <a-input placeholder="请输入资产名称" :style="allWidth" :max="30" v-decorator="['assetName', { rules: [{ required: true, max: 30, whitespace: true, message: '请输入资产名称(不超过30字符)' }], initialValue: params.assetName }]" />
+                <a-input
+                  placeholder="请输入资产名称"
+                  :style="allWidth"
+                  :max="30"
+                  v-decorator="[
+                    'assetName',
+                    {
+                      rules: [{ required: true, max: 30, whitespace: true, message: '请输入资产名称(不超过30字符)' }],
+                      initialValue: params.assetName,
+                    },
+                  ]"
+                />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
@@ -43,7 +54,20 @@
                 <label slot="label">资产编码：</label>
                 <a-tooltip placement="topLeft" :title="params.assetCode" arrow-point-at-center>
                   <!-- <span v-if="assetCodeDisabled" class="assetCodeBtn">{{ params.assetCode || '资产编码' }}</span> -->
-                  <a-input v-if="assetCodeDisabled" disabled placeholder="请输入资产编码" :style="allWidth" :max="100" v-decorator="['assetCode', { rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产编码(不超过100字符)' }], initialValue: params.assetCode }]" />
+                  <a-input
+                    v-if="assetCodeDisabled"
+                    disabled
+                    placeholder="请输入资产编码"
+                    :style="allWidth"
+                    :max="100"
+                    v-decorator="[
+                      'assetCode',
+                      {
+                        rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产编码(不超过100字符)' }],
+                        initialValue: params.assetCode,
+                      },
+                    ]"
+                  />
                 </a-tooltip>
               </a-form-item>
             </a-col>
@@ -123,13 +147,31 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">装修情况：</label>
-                <a-input placeholder="请输入装修情况" :style="allWidth" :max="30" v-decorator="['decorationSituation', { rules: [{ required: true, max: 30, whitespace: true, message: '请输入装修情况(不超过30字符)' }], initialValue: params.decorationSituation }]" />
+                <a-input
+                  placeholder="请输入装修情况"
+                  :style="allWidth"
+                  :max="30"
+                  v-decorator="[
+                    'decorationSituation',
+                    {
+                      rules: [{ required: true, max: 30, whitespace: true, message: '请输入装修情况(不超过30字符)' }],
+                      initialValue: params.decorationSituation,
+                    },
+                  ]"
+                />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">资产原值(元)：</label>
-                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入资产原值" :style="allWidth" v-decorator="['originalValue', { initialValue: params.originalValue }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.99"
+                  :step="0.01"
+                  placeholder="请输入资产原值"
+                  :style="allWidth"
+                  v-decorator="['originalValue', { initialValue: params.originalValue }]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -137,7 +179,14 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">市场价值(元)：</label>
-                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入市场价值" :style="allWidth" v-decorator="['marketValue', { initialValue: params.marketValue }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.99"
+                  :step="0.01"
+                  placeholder="请输入市场价值"
+                  :style="allWidth"
+                  v-decorator="['marketValue', { initialValue: params.marketValue }]"
+                />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
@@ -220,7 +269,18 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">权证号：</label>
-                <a-input placeholder="请输入权证号" :style="allWidth" :max="30" v-decorator="['warrantNbr', { rules: [{ required: warrantNbrShow, max: 30, whitespace: true, message: '请输入权证号(不超过30字符)' }], initialValue: params.warrantNbr }]" />
+                <a-input
+                  placeholder="请输入权证号"
+                  :style="allWidth"
+                  :max="30"
+                  v-decorator="[
+                    'warrantNbr',
+                    {
+                      rules: [{ required: warrantNbrShow, max: 30, whitespace: true, message: '请输入权证号(不超过30字符)' }],
+                      initialValue: params.warrantNbr,
+                    },
+                  ]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -238,7 +298,17 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">运营面积(㎡)：</label>
-                <a-input-number :min="0" :max="9999999.9999" :step="0.0001" placeholder="请输入运营面积" :style="allWidth" v-decorator="['transferOperationArea', { rules: [{ required: true, message: '请输入请输入运营面积' }], initialValue: params.transferOperationArea }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.9999"
+                  :step="0.0001"
+                  placeholder="请输入运营面积"
+                  :style="allWidth"
+                  v-decorator="[
+                    'transferOperationArea',
+                    { rules: [{ required: true, message: '请输入请输入运营面积' }], initialValue: params.transferOperationArea },
+                  ]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -246,13 +316,27 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">其他面积(㎡)：</label>
-                <a-input-number :min="0" :max="9999999.9999" :step="0.0001" placeholder="请输入其他面积" :style="allWidth" v-decorator="['otherArea', { rules: [{ required: true, message: '请输入其他面积' }], initialValue: params.otherArea }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.9999"
+                  :step="0.0001"
+                  placeholder="请输入其他面积"
+                  :style="allWidth"
+                  v-decorator="['otherArea', { rules: [{ required: true, message: '请输入其他面积' }], initialValue: params.otherArea }]"
+                />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">闲置面积(㎡)：</label>
-                <a-input-number :min="0" :max="9999999.9999" :step="0.0001" placeholder="请输入闲置面积" :style="allWidth" v-decorator="['idleArea', { rules: [{ required: true, message: '请输入闲置面积' }], initialValue: params.idleArea }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.9999"
+                  :step="0.0001"
+                  placeholder="请输入闲置面积"
+                  :style="allWidth"
+                  v-decorator="['idleArea', { rules: [{ required: true, message: '请输入闲置面积' }], initialValue: params.idleArea }]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -260,13 +344,27 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">自用面积(㎡)：</label>
-                <a-input-number :min="0" :max="9999999.9999" :step="0.0001" placeholder="请输入自用面积" :style="allWidth" v-decorator="['selfUserArea', { rules: [{ required: true, message: '请输入自用面积' }], initialValue: params.selfUserArea }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.9999"
+                  :step="0.0001"
+                  placeholder="请输入自用面积"
+                  :style="allWidth"
+                  v-decorator="['selfUserArea', { rules: [{ required: true, message: '请输入自用面积' }], initialValue: params.selfUserArea }]"
+                />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">占地面积(㎡)：</label>
-                <a-input-number :min="0" :max="9999999.9999" :step="0.0001" placeholder="请输入占地面积" :style="allWidth" v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占地面积' }], initialValue: params.occupationArea }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.9999"
+                  :step="0.0001"
+                  placeholder="请输入占地面积"
+                  :style="allWidth"
+                  v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占地面积' }], initialValue: params.occupationArea }]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -278,13 +376,27 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">债券金额(元)：</label>
-                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入债券金额" :style="allWidth" v-decorator="['creditorAmount', { rules: [{ required: false, message: '请输入债券金额' }], initialValue: params.creditorAmount }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.99"
+                  :step="0.01"
+                  placeholder="请输入债券金额"
+                  :style="allWidth"
+                  v-decorator="['creditorAmount', { rules: [{ required: false, message: '请输入债券金额' }], initialValue: params.creditorAmount }]"
+                />
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">债务金额(元)：</label>
-                <a-input-number :min="0" :max="9999999.99" :step="0.01" placeholder="请输入债务金额" :style="allWidth" v-decorator="['debtAmount', { rules: [{ required: false, message: '请输入债务金额' }], initialValue: params.debtAmount }]" />
+                <a-input-number
+                  :min="0"
+                  :max="9999999.99"
+                  :step="0.01"
+                  placeholder="请输入债务金额"
+                  :style="allWidth"
+                  v-decorator="['debtAmount', { rules: [{ required: false, message: '请输入债务金额' }], initialValue: params.debtAmount }]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -366,7 +478,18 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
                 <label slot="label">资产原始来源方：</label>
-                <a-input placeholder="请输入资产原始来源方" :style="allWidth" :max="100" v-decorator="['originSource', { rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产原始来源方(不超过30字符)' }], initialValue: params.originSource }]" />
+                <a-input
+                  placeholder="请输入资产原始来源方"
+                  :style="allWidth"
+                  :max="100"
+                  v-decorator="[
+                    'originSource',
+                    {
+                      rules: [{ required: false, max: 100, whitespace: true, message: '请输入资产原始来源方(不超过30字符)' }],
+                      initialValue: params.originSource,
+                    },
+                  ]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -374,7 +497,15 @@
             <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
                 <label slot="label">诉讼情况：</label>
-                <a-textarea placeholder="请输入诉讼情况" :style="widthBox" :autosize="{ minRows: 2, maxRows: 4 }" v-decorator="['lawsuitRemark', { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark }]" />
+                <a-textarea
+                  placeholder="请输入诉讼情况"
+                  :style="widthBox"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
+                  v-decorator="[
+                    'lawsuitRemark',
+                    { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark },
+                  ]"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -387,15 +518,15 @@
   </div>
 </template>
 <script>
-import { debounce } from 'utils/utils'
-import _ from 'lodash'
-import moment from 'moment'
+import { debounce } from 'utils/utils';
+import _ from 'lodash';
+import moment from 'moment';
 const formItemTextarea = {
   labelCol: {
     xs: { span: 24 },
     sm: { span: 4 },
   },
-}
+};
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -405,7 +536,7 @@ const formItemLayout = {
     xs: { span: 24 },
     sm: { span: 16 },
   },
-}
+};
 const params = {
   assetType: '1', // 资产类型
   assetName: '', // 资产名称
@@ -442,7 +573,7 @@ const params = {
   lawsuit: '', // 是否涉诉 /lawsuitName
   lawsuitRemark: '', //诉讼情况
   originSource: '', // 资产原始来源方
-}
+};
 export default {
   props: {
     organId: {
@@ -490,32 +621,32 @@ export default {
       transferTime: '',
       transferTimeTemp: '',
       lawsuitRemarkShow: false,
-    }
+    };
   },
   watch: {
     show(val) {
-      if (!val) this.$parent.modelStatus = false
+      if (!val) this.$parent.modelStatus = false;
     },
     sourceType: {
       handler(val) {
-        if (val) this.params.sourceMode = val + ''
+        if (val) this.params.sourceMode = val + '';
       },
       immediate: true,
     },
   },
   computed: {
     assetTitle() {
-      return '楼栋名称'
+      return '楼栋名称';
     },
   },
   mounted() {
     // this.platformDictFn() // 获取资产类型
-    this.debounceMothed() // 获取楼栋列表
-    this.getAssetSourceOptions() // 获取资产来源下拉列表
-    this.ownershipFn() // 获取权属类型
+    this.debounceMothed(); // 获取楼栋列表
+    this.getAssetSourceOptions(); // 获取资产来源下拉列表
+    this.ownershipFn(); // 获取权属类型
     this.$nextTick(() => {
-      this.$textReplace()
-    })
+      this.$textReplace();
+    });
   },
   methods: {
     moment,
@@ -526,63 +657,63 @@ export default {
         projectId: this.projectId + '',
         organId: this.organId,
         resId: this.params.houseNumber || this.params.buildId,
-      }
-      this.$api.assets.getAssetCode(params).then(res => {
+      };
+      this.$api.assets.getAssetCode(params).then((res) => {
         if (res.data.code === '0') {
-          this.params.assetCode = res.data.data
+          this.params.assetCode = res.data.data;
         }
-      })
+      });
     },
 
     // 权属类型
     ownershipFn() {
-      this.$api.assets.platformDict({ code: 'AMS_ASSET_KIND_OF_RIGHT' }).then(res => {
+      this.$api.assets.platformDict({ code: 'AMS_ASSET_KIND_OF_RIGHT' }).then((res) => {
         if (Number(res.data.code) === 0) {
-          this.ownershipData = [...res.data.data]
+          this.ownershipData = [...res.data.data];
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 获取资产来源下拉列表
     getAssetSourceOptions() {
       let form = {
         code: 'ams_source_type',
-      }
-      this.$api.basics.platformDict(form).then(res => {
+      };
+      this.$api.basics.platformDict(form).then((res) => {
         if (res.data.code === '0') {
-          let arr = []
-          res.data.data.forEach(item => {
+          let arr = [];
+          res.data.data.forEach((item) => {
             let obj = {
               name: item.name,
               value: item.value,
-            }
-            arr.push(obj)
-          })
-          this.assetSourceOptions = arr
+            };
+            arr.push(obj);
+          });
+          this.assetSourceOptions = arr;
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 选择楼栋
     handlePositionId(value) {
-      this.params.buildId = value
+      this.params.buildId = value;
       // 获取房间列表
-      this.queryHouseByPage()
+      this.queryHouseByPage();
       //查询建筑面积和坐落位置字段
-      this.queryBuildDetail(value)
+      this.queryBuildDetail(value);
       // 获取资产编码
-      this.getAssetCode()
+      this.getAssetCode();
     },
     // 搜索楼栋
     handleSearch(value) {
-      this.searchName = value
-      this.debounceMothed()
+      this.searchName = value;
+      this.debounceMothed();
     },
     // 防抖函数后台请求楼栋数据
     debounceMothed: debounce(function () {
-      this.positionApiList(this.organId, this.searchName || '')
+      this.positionApiList(this.organId, this.searchName || '');
     }, 200),
     positionApiList(organId, aliasName) {
       // 资产类型是车场
@@ -593,19 +724,19 @@ export default {
           nameOrCode: aliasName,
           pageNo: 1,
           pageLength: 20,
-        }
-        this.$api.building.parkApiList(requestData).then(value => {
+        };
+        this.$api.building.parkApiList(requestData).then((value) => {
           if (value.data.code === '0') {
-            let result = value.data ? value.data.data.resultList : []
-            this.positionNameData = result.map(item => {
+            let result = value.data ? value.data.data.resultList : [];
+            this.positionNameData = result.map((item) => {
               return {
                 name: item.placeName,
                 value: item.placeId,
                 type: item.buildType,
-              }
-            })
+              };
+            });
           }
-        })
+        });
       } else {
         this.$api.basics
           .positionApiList({
@@ -614,132 +745,132 @@ export default {
             positionType: this.params.assetType,
             subPositionType: '',
           })
-          .then(res => {
+          .then((res) => {
             if (res.data.code === '0') {
-              let result = res.data.data || []
-              this.positionNameData = result.map(item => {
+              let result = res.data.data || [];
+              this.positionNameData = result.map((item) => {
                 return {
                   value: item.objectId,
                   name: item.aliasName,
-                }
-              })
+                };
+              });
             }
-          })
+          });
       }
     },
     ownershipStatusChange(value) {
-      this.params.ownershipStatusName = this.ownershipStatusList.filter(item => {
-        return item.value === value
-      })[0].name
-      this.warrantNbrShow = value === '1'
+      this.params.ownershipStatusName = this.ownershipStatusList.filter((item) => {
+        return item.value === value;
+      })[0].name;
+      this.warrantNbrShow = value === '1';
     },
     handleOk() {
-      this.params.transferOperationTime = moment(this.transferTimeTemp).valueOf()
-      this.transferTime = moment(this.transferTimeTemp).format('YYYY-MM-DD')
-      this.timeShow = false
+      this.params.transferOperationTime = moment(this.transferTimeTemp).valueOf();
+      this.transferTime = moment(this.transferTimeTemp).format('YYYY-MM-DD');
+      this.timeShow = false;
     },
     handleCancel() {
-      this.timeShow = false
+      this.timeShow = false;
     },
     lawsuitChange(value) {
-      this.lawsuitRemarkShow = value === '1'
+      this.lawsuitRemarkShow = value === '1';
     },
     assetTypeChange() {},
     houseChange(value) {
-      let result = this.houseList.filter(item => {
-        return item.value === value
-      })[0]
-      this.params.objectType = result.type
-      this.params.area = result.area
+      let result = this.houseList.filter((item) => {
+        return item.value === value;
+      })[0];
+      this.params.objectType = result.type;
+      this.params.area = result.area;
       // 获取资产编码
-      this.getAssetCode()
+      this.getAssetCode();
     },
     // 查询房间列表
     queryHouseByPage() {
-      this.params.houseNumber = ''
-      this.houseList = []
+      this.params.houseNumber = '';
+      this.houseList = [];
       const queryData = {
         pageNo: 1,
         pageLength: 10000,
         organId: this.organId,
         buildId: this.params.buildId,
-      }
-      this.$api.building.queryHouseByPage(queryData).then(res => {
+      };
+      this.$api.building.queryHouseByPage(queryData).then((res) => {
         if (res.data.code === '0') {
-          this.houseList = res.data.data.map(item => {
+          this.houseList = res.data.data.map((item) => {
             return {
               name: item.houseName,
               value: item.houseId,
               type: item.houseType,
               area: item.area,
-            }
-          })
+            };
+          });
         }
-      })
+      });
     },
     //  查看楼栋详情
     queryBuildDetail(buildId) {
       let data = {
         buildId,
-      }
-      this.$api.building.queryBuildDetail(data).then(res => {
+      };
+      this.$api.building.queryBuildDetail(data).then((res) => {
         if (res.data.code === '0') {
-          const { builtArea, buildAddress, province, city, region, address, buildType } = res.data.data
-          this.buildAddress = buildAddress // 展示
-          this.params.province = province
-          this.params.city = city
-          this.params.region = region
-          this.params.address = address
-          this.params.objectType = buildType
-          this.params.area = builtArea // 展示
+          const { builtArea, buildAddress, province, city, region, address, buildType } = res.data.data;
+          this.buildAddress = buildAddress; // 展示
+          this.params.province = province;
+          this.params.city = city;
+          this.params.region = region;
+          this.params.address = address;
+          this.params.objectType = buildType;
+          this.params.area = builtArea; // 展示
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 提交
     onConfirm() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.$parent.modelStatus = false
-          let obj = _.cloneDeep(values)
+          this.$parent.modelStatus = false;
+          let obj = _.cloneDeep(values);
           for (const key in this.params) {
             if (!Object.hasOwnProperty.call(obj, key)) {
-              obj[key] = this.params[key]
+              obj[key] = this.params[key];
             }
           }
           // type 1楼栋 2房屋
-          obj.type = obj.houseNumber ? '2' : '1'
-          obj.objectId = obj.houseNumber ? obj.houseNumber : obj.buildId
-          this.$emit('submitAsset', _.cloneDeep([].concat(obj)))
+          obj.type = obj.houseNumber ? '2' : '1';
+          obj.objectId = obj.houseNumber ? obj.houseNumber : obj.buildId;
+          this.$emit('submitAsset', _.cloneDeep([].concat(obj)));
         } else {
-          this.$message.error('请按照规则填写信息')
+          this.$message.error('请按照规则填写信息');
         }
-      })
+      });
     },
     onCancel() {
-      this.$parent.modelStatus = false
+      this.$parent.modelStatus = false;
     },
     assetTypeFn() {},
     // 平台字典获取资产类型
     platformDictFn() {
       let obj = {
         code: 'asset_type',
-      }
-      this.$api.assets.platformDict(obj).then(res => {
+      };
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.assetTypeData = [...data]
+          let data = res.data.data;
+          this.assetTypeData = [...data];
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     filterOption(input, option) {
-      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 .playground-row {

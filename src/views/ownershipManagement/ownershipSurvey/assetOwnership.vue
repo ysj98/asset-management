@@ -5,25 +5,14 @@
  -->
 <template>
   <div>
-    <div class=" content-active-box">
-      <SearchContainer
-        v-model="toggle"
-        :contentStyle="{ paddingTop: toggle ? '16px' : 0 }"
-      >
+    <div class="content-active-box">
+      <SearchContainer v-model="toggle" :contentStyle="{ paddingTop: toggle ? '16px' : 0 }">
         <div slot="headerBtns">
-          <SG-Button
-            type="primary"
-            v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_OPT_EXPORT"
-            class="mr10"
-            @click="openExport"
+          <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_OWNERSHIP_OPT_EXPORT" class="mr10" @click="openExport"
             ><segiIcon type="#icon-ziyuan10" class="mr10" />导出</SG-Button
           >
         </div>
-        <div
-          slot="contentForm"
-          class="search-content-box"
-          style="text-align: left; position: absolute"
-        >
+        <div slot="contentForm" class="search-content-box" style="text-align: left; position: absolute">
           <!-- style="text-align: left;width: 100%; position: absolute" -->
           <div class="search-from-box">
             <treeSelect
@@ -31,7 +20,7 @@
               placeholder="请选择组织机构"
               :allowClear="false"
               :style="allStyle"
-              :showSearch='true'
+              :showSearch="true"
               :multiple="true"
             ></treeSelect>
             <!-- 资产项目 -->
@@ -65,10 +54,7 @@
               v-model="queryCondition.objectTypes"
               :options-data-format="
                 (data) => {
-                  return [
-                    { label: '全部资产分类', value: '', isLeaf: true },
-                    ...data,
-                  ];
+                  return [{ label: '全部资产分类', value: '', isLeaf: true }, ...data];
                 }
               "
               @select="assetClassifyDataFn($event, true)"
@@ -167,34 +153,13 @@
               :filterOption="filterOption"
               notFoundContent="没有查询到数据"
             />
-            <a-input
-              :maxLength="30"
-              v-model="queryCondition.name"
-              placeholder="输入资产名称/权证号"
-              :style="allStyle"
-            />
-            <a-input
-              :maxLength="30"
-              v-model="queryCondition.ownershipRemark"
-              placeholder="权属备注"
-              :style="allStyle"
-            />
-            <ProvinceCityDistrict
-              class="city"
-              ref="ProvinceCityDistrict"
-              v-model="provinces"
-            ></ProvinceCityDistrict>
-            <a-input
-              :maxLength="30"
-              v-model="queryCondition.address"
-              placeholder="请输入地址"
-              :style="allStyle"
-            />
+            <a-input :maxLength="30" v-model="queryCondition.name" placeholder="输入资产名称/权证号" :style="allStyle" />
+            <a-input :maxLength="30" v-model="queryCondition.ownershipRemark" placeholder="权属备注" :style="allStyle" />
+            <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+            <a-input :maxLength="30" v-model="queryCondition.address" placeholder="请输入地址" :style="allStyle" />
           </div>
           <div class="two-row-box">
-            <SG-Button @click="searchQuery" class="mr10" type="primary"
-              >查询</SG-Button
-            >
+            <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
             <SG-Button @click="restQuery">清除</SG-Button>
           </div>
         </div>
@@ -202,7 +167,7 @@
       <overview-number :numList="numList" />
       <div>
         <a-table
-          class="custom-scroll custom-total td-pd10 "
+          class="custom-scroll custom-total td-pd10"
           :loading="table.loading"
           :pagination="false"
           :scroll="tableScrollOptions"
@@ -213,15 +178,8 @@
           ref="table"
         >
           <template slot="assetName" slot-scope="text, record, index">
-            <span
-              v-if="index < table.dataSource.length - 2"
-              class="nav_name"
-              @click="goPage('detail', record)"
-              >{{ text }}</span
-            >
-            <span v-else :title="record.warrantNbr">{{
-              record.assetName
-            }}</span>
+            <span v-if="index < table.dataSource.length - 2" class="nav_name" @click="goPage('detail', record)">{{ text }}</span>
+            <span v-else :title="record.warrantNbr">{{ record.assetName }}</span>
           </template>
           <template slot="tranProgress" slot-scope="text, record">
             <div style="padding-right: 20px">
@@ -252,20 +210,16 @@
   </div>
 </template>
 <script>
-import OverviewNumber from "src/views/common/OverviewNumber";
-import noDataTips from "@/components/noDataTips";
-import SearchContainer from "@/views/common/SearchContainer";
-import ProvinceCityDistrict from "@/views/common/ProvinceCityDistrict";
-import TreeSelect from "@/views/common/treeSelect";
-import segiIcon from "@/components/segiIcon.vue";
-import { utils } from "@/utils/utils";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import {
-  handleTableHeaderScrollHeight,
-  handleTableScrollHeight,
-  handleTableTotalRow,
-} from "utils/share";
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import noDataTips from '@/components/noDataTips';
+import SearchContainer from '@/views/common/SearchContainer';
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict';
+import TreeSelect from '@/views/common/treeSelect';
+import segiIcon from '@/components/segiIcon.vue';
+import { utils } from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+import { handleTableHeaderScrollHeight, handleTableScrollHeight, handleTableTotalRow } from 'utils/share';
 let getUuid = (
   (uuid = 1) =>
   () =>
@@ -273,158 +227,158 @@ let getUuid = (
 )();
 // 页面跳转
 const operationTypes = {
-  detail: "/ownershipSurvey/assetOwnershipDetail",
+  detail: '/ownershipSurvey/assetOwnershipDetail',
 };
 const allStyle = {
-  width: "170px",
-  "margin-right": "10px",
-  "margin-top": "14px",
+  width: '170px',
+  'margin-right': '10px',
+  'margin-top': '14px',
 };
 const allWidth = {
-  width: "170px",
-  "margin-right": "10px",
-  "margin-top": "14px",
-  height: "32px",
-  overflow: "hidden",
+  width: '170px',
+  'margin-right': '10px',
+  'margin-top': '14px',
+  height: '32px',
+  overflow: 'hidden',
 };
 const queryCondition = {
-  organId: "",
-  projectId: "",
-  ownershipStatuss: [""], // 权属情况(多选)
-  objectTypes: [""], // 资产分类
-  assetTypes: [""], // 资产类型
-  obligeeId: "", // 权属人
-  kindOfRights: [""], // 权证类型(多选)
-  shipType: "", // 权属类型
-  statuss: [""], // 资产状态(多选)
-  name: "", // 资产名称/权证号
-  ownershipRemark: "",
+  organId: '',
+  projectId: '',
+  ownershipStatuss: [''], // 权属情况(多选)
+  objectTypes: [''], // 资产分类
+  assetTypes: [''], // 资产类型
+  obligeeId: '', // 权属人
+  kindOfRights: [''], // 权证类型(多选)
+  shipType: '', // 权属类型
+  statuss: [''], // 资产状态(多选)
+  name: '', // 资产名称/权证号
+  ownershipRemark: '',
   pageNum: 1,
   pageSize: 10,
-  address: "",
-  supportMaterial: "",
+  address: '',
+  supportMaterial: '',
 };
-const projectIdOpt = [{ label: "全部资产项目", value: "" }];
+const projectIdOpt = [{ label: '全部资产项目', value: '' }];
 const ownershipStatussOpt = [
-  { label: "全部权属情况", value: "" },
-  { label: "有证", value: "1" },
-  { label: "无证", value: "0" },
-  { label: "待办", value: "2" },
+  { label: '全部权属情况', value: '' },
+  { label: '有证', value: '1' },
+  { label: '无证', value: '0' },
+  { label: '待办', value: '2' },
 ];
-const obligeeIdOpt = [{ label: "全部权属人", value: "" }];
-const kindOfRightsOpt = [{ label: "全部权证类型", value: "" }];
-const shipTypeOpt = [{ label: "全部权属类型", value: "" }];
+const obligeeIdOpt = [{ label: '全部权属人', value: '' }];
+const kindOfRightsOpt = [{ label: '全部权证类型', value: '' }];
+const shipTypeOpt = [{ label: '全部权属类型', value: '' }];
 const statussOpt = [
-  { label: "全部资产状态", value: "" },
-  { label: "待入库", value: "0" },
-  { label: "正常", value: "1" },
-  { label: "报废", value: "2" },
-  { label: "转让", value: "3" },
-  { label: "报损", value: "4" },
-  { label: "已出库", value: "5" },
-  { label: "已取消", value: "6" },
-  { label: "入库中", value: "7" },
+  { label: '全部资产状态', value: '' },
+  { label: '待入库', value: '0' },
+  { label: '正常', value: '1' },
+  { label: '报废', value: '2' },
+  { label: '转让', value: '3' },
+  { label: '报损', value: '4' },
+  { label: '已出库', value: '5' },
+  { label: '已取消', value: '6' },
+  { label: '入库中', value: '7' },
 ];
 const supportMaterialOpt = [
-  { label: "全部证件情况", value: "" },
-  { label: "有证明材料证件", value: 1 },
-  { label: "无证明材料证件", value: 0 },
+  { label: '全部证件情况', value: '' },
+  { label: '有证明材料证件', value: 1 },
+  { label: '无证明材料证件', value: 0 },
 ];
 // 需要合计的列
-const totalKeyArr = ["area"];
+const totalKeyArr = ['area'];
 let columns = [
   {
-    title: "资产名称",
-    dataIndex: "assetName",
-    scopedSlots: { customRender: "assetName" },
+    title: '资产名称',
+    dataIndex: 'assetName',
+    scopedSlots: { customRender: 'assetName' },
     width: 200,
-    fixed: "left",
+    fixed: 'left',
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
+    title: '资产编码',
+    dataIndex: 'assetCode',
     width: 300,
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
     width: 120,
   },
   {
-    title: "资产分类",
-    dataIndex: "objectTypeName",
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
     width: 200,
   },
   {
-    title: "管理机构",
-    dataIndex: "organName",
+    title: '管理机构',
+    dataIndex: 'organName',
     width: 120,
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 120,
   },
   {
-    title: "所在位置",
-    dataIndex: "location",
+    title: '所在位置',
+    dataIndex: 'location',
     width: 360,
   },
   {
-    title: "面积(㎡)",
-    dataIndex: "area",
+    title: '面积(㎡)',
+    dataIndex: 'area',
     width: 200,
   },
   {
-    title: "权属情况",
-    dataIndex: "ownershipStatusName",
+    title: '权属情况',
+    dataIndex: 'ownershipStatusName',
     width: 100,
   },
   {
-    title: "权属类型",
-    dataIndex: "shipTypeName",
+    title: '权属类型',
+    dataIndex: 'shipTypeName',
     width: 100,
   },
   {
-    title: "权属办理方式",
-    dataIndex: "settingMethodName",
+    title: '权属办理方式',
+    dataIndex: 'settingMethodName',
     width: 120,
   },
   {
-    title: "权证类型",
-    dataIndex: "kindOfRightName",
+    title: '权证类型',
+    dataIndex: 'kindOfRightName',
     width: 120,
   },
   {
-    title: "权证号",
-    dataIndex: "warrantNbr",
+    title: '权证号',
+    dataIndex: 'warrantNbr',
     width: 120,
   },
   {
-    title: "资产状态",
-    dataIndex: "statusName",
+    title: '资产状态',
+    dataIndex: 'statusName',
     width: 100,
   },
   {
-    title: "权属备注",
-    dataIndex: "ownershipRemark",
+    title: '权属备注',
+    dataIndex: 'ownershipRemark',
     width: 100,
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
     width: 100,
   },
 ];
 // 添加 根据宽度自动省略 属性
 columns.forEach((ele) => (ele.ellipsis = true));
 columns.push({
-  title: "",
+  title: '',
 });
 const decimalFormat = (area) => {
-  return Math.round(area*10000)/10000
-}
+  return Math.round(area * 10000) / 10000;
+};
 export default {
   components: {
     SearchContainer,
@@ -439,39 +393,39 @@ export default {
     return {
       numList: [
         {
-          title: "全部资产 (㎡)",
-          key: "totalNum",
+          title: '全部资产 (㎡)',
+          key: 'totalNum',
           value: 0,
-          fontColor: "#324057",
+          fontColor: '#324057',
         },
         {
-          title: "房屋资产(㎡)",
-          key: "houseNum",
+          title: '房屋资产(㎡)',
+          key: 'houseNum',
           value: 0,
-          bgColor: "#4BD288",
+          bgColor: '#4BD288',
         },
-        { title: "土地资产(㎡)", key: "landNum", value: 0, bgColor: "#1890FF" },
+        { title: '土地资产(㎡)', key: 'landNum', value: 0, bgColor: '#1890FF' },
         {
-          title: "其它资产(㎡)",
-          key: "otherNum",
+          title: '其它资产(㎡)',
+          key: 'otherNum',
           value: 0,
-          bgColor: "#DD81E6",
-        },
-        {
-          title: "有证资产(㎡)",
-          key: "certifiedNum",
-          value: 0,
-          bgColor: "#FD7474",
+          bgColor: '#DD81E6',
         },
         {
-          title: "无证资产(㎡)",
-          key: "unlicensedNum",
+          title: '有证资产(㎡)',
+          key: 'certifiedNum',
           value: 0,
-          bgColor: "gray",
+          bgColor: '#FD7474',
+        },
+        {
+          title: '无证资产(㎡)',
+          key: 'unlicensedNum',
+          value: 0,
+          bgColor: 'gray',
         },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      tableScrollOptions: { x: "100%", y: 500 },
-      assetClassifyData: [{ label: "全部资产分类", value: "" }],
+      tableScrollOptions: { x: '100%', y: 500 },
+      assetClassifyData: [{ label: '全部资产分类', value: '' }],
       assetTypeOptions: [],
       ASSET_MANAGEMENT,
       toggle: true,
@@ -506,16 +460,13 @@ export default {
   computed: {
     isSelectedEquipment() {
       const assetTypeArr = this.queryCondition.assetTypes;
-      return (
-        assetTypeArr.length === 1 &&
-        assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
-      );
+      return assetTypeArr.length === 1 && assetTypeArr[0] === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     },
   },
   created() {
     // this.platformDictFn("AMS_KIND_OF_RIGHT");
-    this.platformDictFn("AMS_ASSET_KIND_OF_RIGHT");
-    this.platformDictFn("asset_type");
+    this.platformDictFn('AMS_ASSET_KIND_OF_RIGHT');
+    this.platformDictFn('asset_type');
     handleTableScrollHeight(this.tableScrollOptions, 540);
     this.tableScrollOptions.y = 340;
   },
@@ -530,19 +481,15 @@ export default {
         city: this.provinces.city,
         region: this.provinces.district,
         province: this.provinces.province,
-        flag: "0",
+        flag: '0',
       };
-      data.organIds = data.organId
-      delete data.organId
-      data.ownershipStatuss = data.ownershipStatuss.join(",");
-      data.kindOfRights = data.kindOfRights.join(",");
-      data.statuss = data.statuss.join(",");
-      data.assetTypes[0] === ""
-        ? (data.assetTypes = [])
-        : data.assetTypes.join(",");
-      data.objectTypes[0] === ""
-        ? (data.objectTypes = [])
-        : data.objectTypes.join(",");
+      data.organIds = data.organId;
+      delete data.organId;
+      data.ownershipStatuss = data.ownershipStatuss.join(',');
+      data.kindOfRights = data.kindOfRights.join(',');
+      data.statuss = data.statuss.join(',');
+      data.assetTypes[0] === '' ? (data.assetTypes = []) : data.assetTypes.join(',');
+      data.objectTypes[0] === '' ? (data.objectTypes = []) : data.objectTypes.join(',');
       this.$api.basics.listStatis(data).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
@@ -563,19 +510,17 @@ export default {
       });
     },
     queryOwnershipCardTableTotal(form) {
-      this.$api.basics
-        .statistics(form)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            const temp = this.table.dataSource.pop();
-            const resData = {
-              area: data.areaCount ? Math.round(data.areaCount*10000)/10000 : 0,
-            };
-            this.table.dataSource.push({ ...temp, ...resData });
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.basics.statistics(form).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          const temp = this.table.dataSource.pop();
+          const resData = {
+            area: data.areaCount ? Math.round(data.areaCount * 10000) / 10000 : 0,
+          };
+          this.table.dataSource.push({ ...temp, ...resData });
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     query() {
       let data = {
@@ -583,31 +528,27 @@ export default {
         city: this.provinces.city,
         region: this.provinces.district,
         province: this.provinces.province,
-        flag: "0",
+        flag: '0',
       };
-      data.organIds = data.organId
-      delete data.organId
-      data.ownershipStatuss = data.ownershipStatuss.join(",");
-      data.kindOfRights = data.kindOfRights.join(",");
-      data.statuss = data.statuss.join(",");
-      data.assetTypes[0] === ""
-        ? (data.assetTypes = [])
-        : data.assetTypes.join(",");
-      data.objectTypes[0] === ""
-        ? (data.objectTypes = [])
-        : data.objectTypes.join(",");
+      data.organIds = data.organId;
+      delete data.organId;
+      data.ownershipStatuss = data.ownershipStatuss.join(',');
+      data.kindOfRights = data.kindOfRights.join(',');
+      data.statuss = data.statuss.join(',');
+      data.assetTypes[0] === '' ? (data.assetTypes = []) : data.assetTypes.join(',');
+      data.objectTypes[0] === '' ? (data.objectTypes = []) : data.objectTypes.join(',');
       // data.assetTypes = data.assetTypes.join(',')
       // data.objectTypes = data.objectTypes.join(',')
       this.table.loading = true;
       this.$api.basics.assetList(data).then(
         (res) => {
           this.table.loading = false;
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data ? res.data.data.data : [];
             this.table.dataSource = result.map((item) => {
-              item.settingMethodName = item.settingMethodName || "--";
-              item.kindOfRightName = item.kindOfRightName || "--";
-              item.warrantNbr = item.warrantNbr || "--";
+              item.settingMethodName = item.settingMethodName || '--';
+              item.kindOfRightName = item.kindOfRightName || '--';
+              item.warrantNbr = item.warrantNbr || '--';
               return {
                 key: getUuid(),
                 ...item,
@@ -616,7 +557,7 @@ export default {
             handleTableTotalRow({
               columns: this.table.columns,
               dataSource: this.table.dataSource,
-              rowKey: "assetObjectId",
+              rowKey: 'assetObjectId',
               totalKeyArr,
             });
             this.queryOwnershipCardTableTotal(data);
@@ -634,7 +575,7 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -655,7 +596,7 @@ export default {
     ownerShipUserSelect() {
       let data = { organId: this.queryCondition.organId.split(',')[0] };
       this.$api.basics.ownerShipUserSelect(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           result = result.map((item) => {
             return { ...item, value: item.obligeeId, label: item.obligeeName };
@@ -668,48 +609,26 @@ export default {
     },
     ownershipStatussSelect(value) {
       this.$nextTick(function () {
-        this.queryCondition.ownershipStatuss = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.ownershipStatuss,
-          this.ownershipStatussOpt
-        );
+        this.queryCondition.ownershipStatuss = this.handleMultipleSelectValue(value, this.queryCondition.ownershipStatuss, this.ownershipStatussOpt);
       });
     },
     kindOfRightsSelect(value) {
       this.$nextTick(function () {
-        this.queryCondition.kindOfRights = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.kindOfRights,
-          this.kindOfRightsOpt
-        );
+        this.queryCondition.kindOfRights = this.handleMultipleSelectValue(value, this.queryCondition.kindOfRights, this.kindOfRightsOpt);
       });
     },
     assetClassifyDataFn(value, isSelectedEquipment) {
       this.$nextTick(function () {
-        const resOptions =
-          isSelectedEquipment === true
-            ? new Array(9999)
-            : this.assetClassifyData;
-        this.queryCondition.objectTypes = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.objectTypes,
-          resOptions
-        );
+        const resOptions = isSelectedEquipment === true ? new Array(9999) : this.assetClassifyData;
+        this.queryCondition.objectTypes = this.handleMultipleSelectValue(value, this.queryCondition.objectTypes, resOptions);
       });
     },
     changeAssetType(value) {
       this.$nextTick(function () {
-        this.queryCondition.assetTypes = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.assetTypes,
-          this.assetTypeOptions
-        );
-        if (
-          !this.queryCondition.assetTypes[0] ||
-          this.queryCondition.assetTypes.length > 1
-        ) {
-          this.assetClassifyData = [{ label: "全部资产分类", value: "" }];
-          this.queryCondition.objectTypes = [""];
+        this.queryCondition.assetTypes = this.handleMultipleSelectValue(value, this.queryCondition.assetTypes, this.assetTypeOptions);
+        if (!this.queryCondition.assetTypes[0] || this.queryCondition.assetTypes.length > 1) {
+          this.assetClassifyData = [{ label: '全部资产分类', value: '' }];
+          this.queryCondition.objectTypes = [''];
         } else {
           this.getListFn();
         }
@@ -717,42 +636,38 @@ export default {
     },
     statussSelect(value) {
       this.$nextTick(function () {
-        this.queryCondition.statuss = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.statuss,
-          this.statussOpt
-        );
+        this.queryCondition.statuss = this.handleMultipleSelectValue(value, this.queryCondition.statuss, this.statussOpt);
       });
     },
     // 选择组织机构
     changeTree(value, label) {
       this.organName = label;
       this.queryCondition.organId = value;
-      this.queryCondition.projectId = "";
-      this.queryCondition.obligeeId = "";
-      this.queryCondition.objectTypes = [""];
-      this.queryCondition.assetTypes = [""];
+      this.queryCondition.projectId = '';
+      this.queryCondition.obligeeId = '';
+      this.queryCondition.objectTypes = [''];
+      this.queryCondition.assetTypes = [''];
       this.getObjectKeyValueByOrganIdFn();
       this.ownerShipUserSelect();
-      this.organDictFn("AMS_KIND_OF_RIGHT", value);
+      this.organDictFn('AMS_KIND_OF_RIGHT', value);
       this.searchQuery();
       this.getListFn();
     },
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      let hasAll = data.indexOf("") !== -1;
+      let hasAll = data.indexOf('') !== -1;
       let len = data.length;
       // 如果点击全选或者取消全选
-      if (data[len - 1] === "" || len === 0) {
-        return (data = [""]);
+      if (data[len - 1] === '' || len === 0) {
+        return (data = ['']);
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === dataOptions.length - 1) {
-        return (data = [""]);
+        return (data = ['']);
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
-        data.splice(data.indexOf(""), 1);
+        data.splice(data.indexOf(''), 1);
       }
       return data;
     },
@@ -760,27 +675,23 @@ export default {
     openExport() {
       let data = {
         ...this.queryCondition,
-        flag: "0",
+        flag: '0',
       };
-      data.assetTypes[0] === ""
-        ? (data.assetTypes = [])
-        : data.assetTypes.join(",");
-      data.objectTypes[0] === ""
-        ? (data.objectTypes = [])
-        : data.objectTypes.join(",");
-      data.ownershipStatuss = data.ownershipStatuss.join(",");
-      data.kindOfRights = data.kindOfRights.join(",");
-      data.statuss = data.statuss.join(",");
+      data.assetTypes[0] === '' ? (data.assetTypes = []) : data.assetTypes.join(',');
+      data.objectTypes[0] === '' ? (data.objectTypes = []) : data.objectTypes.join(',');
+      data.ownershipStatuss = data.ownershipStatuss.join(',');
+      data.kindOfRights = data.kindOfRights.join(',');
+      data.statuss = data.statuss.join(',');
       // data.assetTypes = data.assetTypes.join(',')
       // data.objectTypes = data.objectTypes.join(',')
       data.pageNum = 1;
       data.pageSize = 1;
       this.$api.basics.assetExport(data).then((res) => {
         let blob = new Blob([res.data]);
-        let a = document.createElement("a");
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `资产权属表.xls`;
-        a.style.display = "none";
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -799,52 +710,44 @@ export default {
     },
     // 重置查询条件
     restQuery() {
-      this.queryCondition.projectId = "";
-      this.queryCondition.ownershipStatuss = [""];
-      this.queryCondition.obligeeId = "";
-      this.queryCondition.kindOfRights = [""];
-      this.queryCondition.statuss = [""];
-      this.queryCondition.name = "";
-      this.queryCondition.ownershipRemark = "";
-      this.queryCondition.assetTypes = [""];
-      this.queryCondition.objectTypes = [""];
-      this.queryCondition.shipType = "";
-      this.queryCondition.address = "";
+      this.queryCondition.projectId = '';
+      this.queryCondition.ownershipStatuss = [''];
+      this.queryCondition.obligeeId = '';
+      this.queryCondition.kindOfRights = [''];
+      this.queryCondition.statuss = [''];
+      this.queryCondition.name = '';
+      this.queryCondition.ownershipRemark = '';
+      this.queryCondition.assetTypes = [''];
+      this.queryCondition.objectTypes = [''];
+      this.queryCondition.shipType = '';
+      this.queryCondition.address = '';
     },
     // 机构字典获取数据
     organDictFn(code, organId) {
-      this.$api.assets
-        .organDict({ code: code, organId: organId.split(',')[0] })
-        .then((res) => {
-          if (res.data.code == 0) {
-            let data = res.data.data;
-            let arr = data.map((item) => ({ label: item.name, ...item }));
-            this.kindOfRightsOpt = [
-              ...utils.deepClone(kindOfRightsOpt),
-              ...arr,
-            ];
-          }
-        });
+      this.$api.assets.organDict({ code: code, organId: organId.split(',')[0] }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          let arr = data.map((item) => ({ label: item.name, ...item }));
+          this.kindOfRightsOpt = [...utils.deepClone(kindOfRightsOpt), ...arr];
+        }
+      });
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => ({ label: item.name, ...item }));
           // 权证类型
-          if (code === "AMS_KIND_OF_RIGHT") {
-            this.kindOfRightsOpt = [
-              ...utils.deepClone(kindOfRightsOpt),
-              ...arr,
-            ];
-          } else if (code === "AMS_ASSET_KIND_OF_RIGHT") {
+          if (code === 'AMS_KIND_OF_RIGHT') {
+            this.kindOfRightsOpt = [...utils.deepClone(kindOfRightsOpt), ...arr];
+          } else if (code === 'AMS_ASSET_KIND_OF_RIGHT') {
             // 权属类型
             this.shipTypeOpt = [...utils.deepClone(shipTypeOpt), ...arr];
-          } else if (code === "asset_type") {
+          } else if (code === 'asset_type') {
             this.assetTypeOptions = [
               {
-                label: "全部资产类型",
-                value: "",
+                label: '全部资产类型',
+                value: '',
               },
               ...arr,
             ];
@@ -861,10 +764,10 @@ export default {
       }
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        assetType: this.queryCondition.assetTypes.join(",")
+        assetType: this.queryCondition.assetTypes.join(','),
       };
       this.$api.assets.getList(obj).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
           let arr = [];
           data.forEach((item) => {
@@ -873,10 +776,7 @@ export default {
               value: item.professionCode,
             });
           });
-          this.assetClassifyData = [
-            { label: "全部资产分类", value: "" },
-            ...arr,
-          ];
+          this.assetClassifyData = [{ label: '全部资产分类', value: '' }, ...arr];
         } else {
           this.$message.error(res.data.message);
         }
@@ -893,11 +793,7 @@ export default {
       this.$router.push({ path: operationTypes[type], query });
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
   },
 };
@@ -954,10 +850,9 @@ export default {
     vertical-align: middle;
   }
 }
-
 </style>
 
-<style lang="less" >
+<style lang="less">
 .content-active-box {
   position: relative;
   .search-content {

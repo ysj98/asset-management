@@ -7,7 +7,11 @@
     :noPadding="true"
     :maskClosable="false"
     @ok="submitFn"
-    @cancel="()=>{ show = false }"
+    @cancel="
+      () => {
+        show = false;
+      }
+    "
   >
     <template #title>
       <div style="font-size: 16px">投资收益登记</div>
@@ -16,11 +20,7 @@
       <a-form :form="form">
         <a-row>
           <a-col :span="12">
-            <a-form-item
-              label="收益名称"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="收益名称" :label-col="labelCol" :wrapper-col="wrapperCol">
               <a-input
                 placeholder="请输入收益名称"
                 @change="nameChange"
@@ -37,22 +37,14 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item
-              label="所属组织机构"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="所属组织机构" :label-col="labelCol" :wrapper-col="wrapperCol">
               {{ organName }}
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="12">
-            <a-form-item
-              label="资产项目"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="资产项目" :label-col="labelCol" :wrapper-col="wrapperCol">
               <a-select
                 showSearch
                 style="width: 100%"
@@ -60,28 +52,18 @@
                 placeholder="请选择资产项目"
                 :filterOption="filterOption"
                 @change="projectSelect"
-                v-decorator="[
-                  'projectId',
-                  { rules: [{ required: true, message: '请选择资产项目' }] },
-                ]"
+                v-decorator="['projectId', { rules: [{ required: true, message: '请选择资产项目' }] }]"
               />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item
-              label="资产类型"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="资产类型" :label-col="labelCol" :wrapper-col="wrapperCol">
               <a-select
                 style="width: 100%"
                 placeholder="请选择资产类型"
                 :options="$addTitle(typeOptions)"
                 @change="assetTypeSelect"
-                v-decorator="[
-                  'assetType',
-                  { rules: [{ required: true, message: '请选择资产类型' }] },
-                ]"
+                v-decorator="['assetType', { rules: [{ required: true, message: '请选择资产类型' }] }]"
               />
             </a-form-item>
           </a-col>
@@ -97,20 +79,10 @@
               :validate-status="validateTenant ? 'error' : ''"
             >
               <span>
-                <a-tag
-                  closable
-                  v-for="m in custList"
-                  :key="m.extCustId"
-                  style="background: #fff"
-                  @close="handleTenant(m)"
-                >
+                <a-tag closable v-for="m in custList" :key="m.extCustId" style="background: #fff" @close="handleTenant(m)">
                   {{ m.custName }}
                 </a-tag>
-                <a-tag
-                  color="#108ee9"
-                  @click="handleTenant('')"
-                  v-if="custList.length === 0"
-                >
+                <a-tag color="#108ee9" @click="handleTenant('')" v-if="custList.length === 0">
                   <a-icon type="user-add" style="margin-right: 3px" />选择
                 </a-tag>
               </span>
@@ -126,20 +98,10 @@
               :validate-status="validateRent ? 'error' : ''"
             >
               <span>
-                <a-tag
-                  closable
-                  v-for="m in rentList"
-                  :key="m.investOrderId"
-                  style="background: #fff"
-                  @close="handleRent(m)"
-                >
+                <a-tag closable v-for="m in rentList" :key="m.investOrderId" style="background: #fff" @close="handleRent(m)">
                   {{ m.investName }}
                 </a-tag>
-                <a-tag
-                  color="#108ee9"
-                  @click="handleRent('')"
-                  v-if="rentList.length === 0"
-                >
+                <a-tag color="#108ee9" @click="handleRent('')" v-if="rentList.length === 0">
                   <a-icon type="file-add" style="margin-right: 3px" />选择
                 </a-tag>
               </span>
@@ -148,31 +110,20 @@
         </a-row>
         <a-row>
           <a-col :span="12">
-            <a-form-item
-              label="收益账期"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="收益账期" :label-col="labelCol" :wrapper-col="wrapperCol">
               <!-- :defaultValue="moment(Date.now())" -->
               <a-month-picker
                 placeholder="请选择月份"
                 pickerType="MonthPicker"
                 @change="monthChange"
-                v-decorator="[
-                  'monthNum',
-                  { rules: [{ required: true, message: '请选择月份' }] },
-                ]"
+                v-decorator="['monthNum', { rules: [{ required: true, message: '请选择月份' }] }]"
               />
             </a-form-item>
           </a-col>
         </a-row>
         <a-row>
           <a-col :span="12">
-            <a-form-item
-              label="费用科目"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="费用科目" :label-col="labelCol" :wrapper-col="wrapperCol">
               <a-select
                 show-search
                 :placeholder="'请选择费用科目'"
@@ -182,19 +133,12 @@
                 :filterOption="filterOption"
                 @change="billChange"
                 notFoundContent="没有查询到数据"
-                v-decorator="[
-                  'billOption',
-                  { rules: [{ required: true, message: '请选择费用科目1' }] },
-                ]"
+                v-decorator="['billOption', { rules: [{ required: true, message: '请选择费用科目1' }] }]"
               />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item
-              label="收益金额(元)"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-            >
+            <a-form-item label="收益金额(元)" :label-col="labelCol" :wrapper-col="wrapperCol">
               <a-input
                 placeholder="请输入收益金额"
                 @change="incomeNumChange"
@@ -252,33 +196,17 @@
       </a-form>
     </div>
     <!-- 承租人组件 -->
-    <TenantModal
-      v-model="close"
-      v-if="close"
-      ref="TenantModal"
-      @getTenantList="getTenantList"
-    ></TenantModal>
+    <TenantModal v-model="close" v-if="close" ref="TenantModal" @getTenantList="getTenantList"></TenantModal>
     <!-- 投资单组件 -->
-    <InvestForm
-      v-model="close2"
-      v-if="close2"
-      ref="InvestForm"
-      :organId="organId"
-      @getRentList="getRentList"
-    >
-    </InvestForm>
+    <InvestForm v-model="close2" v-if="close2" ref="InvestForm" :organId="organId" @getRentList="getRentList"> </InvestForm>
   </SG-Modal>
 </template>
 
 <script>
-import {
-  queryProjectListByOrganId,
-  filterOption,
-  queryAssetTypeList,
-} from "src/views/common/commonQueryApi";
-import TenantModal from "@/views/assetRent/component/tenantModal"; // 客户组件
-import InvestForm from "./investForm"; // 投资单组件
-import moment from "moment";
+import { queryProjectListByOrganId, filterOption, queryAssetTypeList } from 'src/views/common/commonQueryApi';
+import TenantModal from '@/views/assetRent/component/tenantModal'; // 客户组件
+import InvestForm from './investForm'; // 投资单组件
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -295,7 +223,7 @@ export default {
           sm: { span: 6 },
         },
       },
-      incomeName: "", // 收益名称
+      incomeName: '', // 收益名称
       projectOptions: [], // 资产项目选项
       typeOptions: [], // 资产类型选项
       validateTenant: false, // 自定义校验客户名称
@@ -310,11 +238,11 @@ export default {
       billConfigOptions: [], // 费用科目
       billOption: undefined, // 已选费用科目
       incomeNum: 0, // 收益金额
-      note: "", // 备注
+      note: '', // 备注
       uploadList: [], // 附件
     };
   },
-  props: ["organName", "organId"],
+  props: ['organName', 'organId'],
   components: { TenantModal, InvestForm },
   watch: {
     show(newVal) {
@@ -322,7 +250,7 @@ export default {
         this.queryProjectByOrganId(this.organId);
         this.getFeeTypeList();
       } else {
-        this.$emit("input", newVal);
+        this.$emit('input', newVal);
       }
     },
     // 自定义必填客户项校验
@@ -344,19 +272,12 @@ export default {
     },
     // 根据organId查询资产项目
     queryProjectByOrganId(organId) {
-      organId &&
-        queryProjectListByOrganId(organId).then((list) =>
-          list
-            ? (this.projectOptions = list)
-            : this.$message.error("查询资产项目失败")
-        );
+      organId && queryProjectListByOrganId(organId).then((list) => (list ? (this.projectOptions = list) : this.$message.error('查询资产项目失败')));
     },
     // 查询资产类型--平台字典
     queryAssetType() {
       queryAssetTypeList().then((list) => {
-        list
-          ? (this.typeOptions = list)
-          : this.$message.error("查询资产类型失败");
+        list ? (this.typeOptions = list) : this.$message.error('查询资产类型失败');
       });
     },
     // 费用科目
@@ -378,11 +299,7 @@ export default {
       });
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     // 费用科目
     billChange(val) {
@@ -406,9 +323,7 @@ export default {
     // 删除、选择客户
     handleTenant(m) {
       if (m) {
-        this.custList = this.custList.filter(
-          (v) => v.extCustId !== m.extCustId
-        );
+        this.custList = this.custList.filter((v) => v.extCustId !== m.extCustId);
       } else {
         this.close = true;
         this.$nextTick(() => {
@@ -418,9 +333,7 @@ export default {
     },
     handleRent(m) {
       if (m) {
-        this.rentList = this.rentList.filter(
-          (v) => v.investOrderId !== m.investOrderId
-        );
+        this.rentList = this.rentList.filter((v) => v.investOrderId !== m.investOrderId);
       } else {
         this.close2 = true;
         this.$nextTick(() => {
@@ -433,9 +346,7 @@ export default {
       let hash = {};
       this.custList.push(val);
       this.custList = this.custList.reduce(function (item, next) {
-        hash[next.extCustId]
-          ? ""
-          : (hash[next.extCustId] = true && item.push(next));
+        hash[next.extCustId] ? '' : (hash[next.extCustId] = true && item.push(next));
         return item;
       }, []);
     },
@@ -444,15 +355,13 @@ export default {
       let hash = {};
       this.rentList.push(val);
       this.rentList = this.rentList.reduce(function (item, next) {
-        hash[next.investOrderId]
-          ? ""
-          : (hash[next.investOrderId] = true && item.push(next));
+        hash[next.investOrderId] ? '' : (hash[next.investOrderId] = true && item.push(next));
         return item;
       }, []);
     },
     // 月份改变
     monthChange(val, date) {
-      console.log("date", date);
+      console.log('date', date);
       this.monthNum = date;
     },
     // 保存收益单api
@@ -475,16 +384,16 @@ export default {
         orderId: this.rentList[0].investOrderId,
         orderName: this.rentList[0].investName,
         status: 1,
-        accountingPeriod: this.monthNum + "-01",
+        accountingPeriod: this.monthNum + '-01',
         amount: this.incomeNum,
         feeSubject: this.billOption,
         remark: this.note,
         attachmentList: upList,
       };
       this.$api.assetRent.saveUpdateIncome(saveObj).then((res) => {
-        this.$message.success("投资收益登记成功！");
+        this.$message.success('投资收益登记成功！');
         this.show = false;
-        this.$emit("childrenSubmit");
+        this.$emit('childrenSubmit');
       });
     },
     // 提交this.

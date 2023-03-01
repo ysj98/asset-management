@@ -3,27 +3,14 @@
     <div class="modal-nav container">
       <span class="title">资产类型：</span>
       <a-radio-group :value="checkboxAssetType">
-        <a-radio
-          v-for="(item, index) in checkboxData"
-          :key="index"
-          disabled
-          :value="item.value"
-        >
+        <a-radio v-for="(item, index) in checkboxData" :key="index" disabled :value="item.value">
           {{ item.name }}
         </a-radio>
       </a-radio-group>
     </div>
-    <div
-      v-if="[ASSET_TYPE_CODE.EQUIPMENT,ASSET_TYPE_CODE.YARD].includes(checkboxAssetType)"
-      style="margin: 0 0 20px;"
-      class="container"
-    >
+    <div v-if="[ASSET_TYPE_CODE.EQUIPMENT, ASSET_TYPE_CODE.YARD].includes(checkboxAssetType)" style="margin: 0 0 20px" class="container">
       <span class="title">所属组织：</span>
-      <TreeSelect
-        @changeTree="handleChangeOrgan"
-        style="width: 300px"
-        :allowClear="false"
-      />
+      <TreeSelect @changeTree="handleChangeOrgan" style="width: 300px" :allowClear="false" />
     </div>
     <div class="container">
       <span class="title">{{ title }}：</span>
@@ -50,33 +37,22 @@
         :filterOption="false"
         notFoundContent="没有查询到数据"
       >
-      <a-select-option v-for="(item,index) in positionNameData" :key="index + 'positionNameData'" :value="item.value">
-        {{ item.label }}
-      </a-select-option>
-    </a-select>
+        <a-select-option v-for="(item, index) in positionNameData" :key="index + 'positionNameData'" :value="item.value">
+          {{ item.label }}
+        </a-select-option>
+      </a-select>
     </div>
-    <div
-      class="modal-nav container"
-      v-if="
-        [ASSET_TYPE_CODE.HOUSE, ASSET_TYPE_CODE.YARD].includes(
-          checkboxAssetType
-        )
-      "
-    >
+    <div class="modal-nav container" v-if="[ASSET_TYPE_CODE.HOUSE, ASSET_TYPE_CODE.YARD].includes(checkboxAssetType)">
       <span class="title">数据范围：</span>
       <a-checkbox-group
         :value="scope"
         @change="
-          value => {
+          (value) => {
             $emit('update:scope', value);
           }
         "
       >
-        <a-checkbox
-          v-for="(item, index) in scopeDataCom"
-          :key="index"
-          :value="item.value"
-        >
+        <a-checkbox v-for="(item, index) in scopeDataCom" :key="index" :value="item.value">
           {{ item.name }}
         </a-checkbox>
       </a-checkbox-group>
@@ -85,53 +61,53 @@
 </template>
 
 <script>
-import {queryTopOrganByOrganID} from '@/views/buildingDict/publicFn.js'
-import TreeSelect from "@/views/common/treeSelect";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import { debounce } from "utils/utils";
+import { queryTopOrganByOrganID } from '@/views/buildingDict/publicFn.js';
+import TreeSelect from '@/views/common/treeSelect';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+import { debounce } from 'utils/utils';
 const yardScopeData = [
   {
-    value: "1",
-    name: "车场"
+    value: '1',
+    name: '车场',
   },
   {
-    value: "2",
-    name: "车位"
-  }
+    value: '2',
+    name: '车位',
+  },
 ];
 const scopeData = [
   {
-    value: "1",
-    name: "楼栋"
+    value: '1',
+    name: '楼栋',
   },
   {
-    value: "2",
-    name: "房屋"
-  }
+    value: '2',
+    name: '房屋',
+  },
 ];
 export default {
-  name: "DownLoadTemplate",
+  name: 'DownLoadTemplate',
   components: {
     TreeSelect,
-    EquipmentSelectTree
+    EquipmentSelectTree,
   },
   props: {
     checkboxAssetType: {
       type: String,
-      required: true
+      required: true,
     },
     organId: {
       type: String,
-      required: true
+      required: true,
     },
     positionIds: {
       type: Array,
-      required: true
+      required: true,
     },
     scope: {
       type: Array,
-      required: true
-    }
+      required: true,
+    },
   },
 
   data() {
@@ -139,18 +115,18 @@ export default {
       yardScopeData,
       scopeData,
       positionNameData: [],
-      topOrganId: "",
-      searchName:''
+      topOrganId: '',
+      searchName: '',
     };
   },
   computed: {
     title() {
       const ASSET_TYPE_CODE = this.$store.state.ASSET_TYPE_CODE;
       const title = {
-        [ASSET_TYPE_CODE.HOUSE]: "楼栋名称",
-        [ASSET_TYPE_CODE.LAND]: "土地名称",
-        [ASSET_TYPE_CODE.YARD]: "车场名称",
-        [ASSET_TYPE_CODE.EQUIPMENT]: "设备设施分类"
+        [ASSET_TYPE_CODE.HOUSE]: '楼栋名称',
+        [ASSET_TYPE_CODE.LAND]: '土地名称',
+        [ASSET_TYPE_CODE.YARD]: '车场名称',
+        [ASSET_TYPE_CODE.EQUIPMENT]: '设备设施分类',
       };
       return title[this.checkboxAssetType];
     },
@@ -166,104 +142,104 @@ export default {
       } else {
         return this.yardScopeData;
       }
-    }
+    },
   },
   methods: {
     handlePositionIds(value) {
       // 全选/单选功能
       let temp = value;
       if (temp[temp.length - 1] === '-1') {
-        temp = ['-1']
+        temp = ['-1'];
       } else {
         if (temp.indexOf('-1') !== -1) {
-          temp.splice(temp.indexOf('-1'), 1)
+          temp.splice(temp.indexOf('-1'), 1);
         }
       }
-      this.$emit("update:positionIds", temp);
+      this.$emit('update:positionIds', temp);
     },
     async handleChangeOrgan(userSelectedOrganId) {
-      this.$emit("changeOrganId", userSelectedOrganId);
-      if (this.ASSET_TYPE_CODE.EQUIPMENT === this.checkboxAssetType){
-        const {organId:organTopId} = await queryTopOrganByOrganID({
-          nOrganId:userSelectedOrganId,
-          nOrgId:userSelectedOrganId
+      this.$emit('changeOrganId', userSelectedOrganId);
+      if (this.ASSET_TYPE_CODE.EQUIPMENT === this.checkboxAssetType) {
+        const { organId: organTopId } = await queryTopOrganByOrganID({
+          nOrganId: userSelectedOrganId,
+          nOrgId: userSelectedOrganId,
         });
-        this.topOrganId = organTopId
+        this.topOrganId = organTopId;
       }
-      if (this.ASSET_TYPE_CODE.YARD === this.checkboxAssetType){
-        this.positionApiList(userSelectedOrganId,this.searchName)
+      if (this.ASSET_TYPE_CODE.YARD === this.checkboxAssetType) {
+        this.positionApiList(userSelectedOrganId, this.searchName);
       }
     },
     init() {
       // this.ASSET_TYPE_CODE.YARD
-      const _tempArr = [this.ASSET_TYPE_CODE.HOUSE,this.ASSET_TYPE_CODE.LAND]
-      if (_tempArr.includes(this.checkboxAssetType)){
+      const _tempArr = [this.ASSET_TYPE_CODE.HOUSE, this.ASSET_TYPE_CODE.LAND];
+      if (_tempArr.includes(this.checkboxAssetType)) {
         this.debounceMothed();
       }
     },
     handleChange(value) {
-      this.$emit("input", value);
+      this.$emit('input', value);
     },
     handleSearch(value) {
       this.searchName = value;
       this.debounceMothed();
     },
     // 防抖函数后台请求楼栋数据
-    debounceMothed: debounce(function() {
-      this.positionApiList(this.organId, this.searchName || "");
+    debounceMothed: debounce(function () {
+      this.positionApiList(this.organId, this.searchName || '');
     }, 200),
     positionApiList(organId, aliasName) {
-      if (this.checkboxAssetType === this.ASSET_TYPE_CODE.YARD){
+      if (this.checkboxAssetType === this.ASSET_TYPE_CODE.YARD) {
         const requestData = {
           organId: this.topOrganId || organId,
           onlyCurrentNode: 1,
           nameOrCode: aliasName,
           pageNo: 1,
-          pageLength: 20
-        }
-        this.$api.building.parkApiList(requestData).then(value=>{
-          if (value.data.code === "0") {
+          pageLength: 20,
+        };
+        this.$api.building.parkApiList(requestData).then((value) => {
+          if (value.data.code === '0') {
             let result = value.data ? value.data.data.resultList : [];
-            this.positionNameData = result.map(item => {
+            this.positionNameData = result.map((item) => {
               return {
                 name: item.placeName,
                 value: item.placeId,
-                label: item.placeName
+                label: item.placeName,
               };
             });
           }
-        })
-      }else {
+        });
+      } else {
         this.$api.basics
           .positionApiList({
             organId,
-            aliasName: aliasName || "",
+            aliasName: aliasName || '',
             positionType: this.checkboxAssetType,
-            subPositionType: ""
+            subPositionType: '',
           })
-          .then(res => {
-            if (res.data.code === "0") {
+          .then((res) => {
+            if (res.data.code === '0') {
               let result = res.data.data || [];
-              this.positionNameData = result.map(item => {
+              this.positionNameData = result.map((item) => {
                 return {
                   value: item.positionId,
-                  label: item.aliasName
+                  label: item.aliasName,
                 };
               });
               if (this.checkboxAssetType === '1') {
                 this.positionNameData.unshift({
                   value: '-1',
-                  label: '全部楼栋'
+                  label: '全部楼栋',
                 });
               }
             }
           });
       }
-      }
+    },
   },
   created() {
     this.init();
-  }
+  },
 };
 </script>
 

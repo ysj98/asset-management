@@ -323,18 +323,18 @@
 </template>
 
 <script>
-import "./addAndEdit.less";
-import transferProjectApprovalTable from "./transferProjectApprovalTable.vue";
-import Information from "@/components/Information";
-import SelectAssetModal from "@/views/disposalManagement/transfer/SelectAssetModal";
-import { getDetail, getObjectKeyValueByOrganIdFn } from "@/views/disposalManagement/transfer/share";
-import configBase from "@/config/config.base";
-import { SET_AMS_PLEDGE_SITUATION } from "store/types/platformDictTypes";
-import UsageTable from "@/views/disposalManagement/transfer/UsageTable";
-import LeaseTable from "@/views/disposalManagement/transfer/LeaseTable";
-import WarrantTable from "@/views/disposalManagement/transfer/WarrantTable";
+import './addAndEdit.less';
+import transferProjectApprovalTable from './transferProjectApprovalTable.vue';
+import Information from '@/components/Information';
+import SelectAssetModal from '@/views/disposalManagement/transfer/SelectAssetModal';
+import { getDetail, getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/transfer/share';
+import configBase from '@/config/config.base';
+import { SET_AMS_PLEDGE_SITUATION } from 'store/types/platformDictTypes';
+import UsageTable from '@/views/disposalManagement/transfer/UsageTable';
+import LeaseTable from '@/views/disposalManagement/transfer/LeaseTable';
+import WarrantTable from '@/views/disposalManagement/transfer/WarrantTable';
 export default {
-  name: "createTransfer",
+  name: 'createTransfer',
   components: {
     WarrantTable,
     LeaseTable,
@@ -348,17 +348,17 @@ export default {
       modalList: {
         usage: {
           show: false,
-          title: "",
+          title: '',
           dataSource: [],
         },
         warrant: {
           show: false,
-          title: "",
+          title: '',
           dataSource: [],
         },
         lease: {
           show: false,
-          title: "",
+          title: '',
           dataSource: [],
         },
       },
@@ -367,7 +367,7 @@ export default {
         // 使用情况
         resourceList: [],
         // 物业名称
-        propertyName: "",
+        propertyName: '',
         // 基础信息
         details: [],
         // 租赁相关信息
@@ -380,47 +380,47 @@ export default {
         formatBasicInfoList: [
           [
             {
-              key: "obligeeName",
-              title: "权属单位",
+              key: 'obligeeName',
+              title: '权属单位',
             },
             {
-              key: "equityComposition",
-              title: "权属人股权构成",
+              key: 'equityComposition',
+              title: '权属人股权构成',
             },
           ],
           [
             {
-              key: "warrantNbr",
-              title: "产权证号",
+              key: 'warrantNbr',
+              title: '产权证号',
               render: (_h, data, resValue) => {
                 const _this = this;
-                const resNode = _h("span", [resValue]);
+                const resNode = _h('span', [resValue]);
                 let childNode = [resNode];
                 if (this.currentAssetDetail.details.length > 1) {
                   const moreNode = _h(
-                    "a",
+                    'a',
                     {
                       style: {
-                        marginLeft: "20px",
-                        flexBasis: "80px",
+                        marginLeft: '20px',
+                        flexBasis: '80px',
                       },
                       on: {
                         click() {
                           _this.modalList.warrant.dataSource = _this.currentAssetDetail.details;
-                          _this.doOpenPop("warrant", _this.currentSelectAsset.assetName);
+                          _this.doOpenPop('warrant', _this.currentSelectAsset.assetName);
                         },
                       },
                     },
-                    ["查看更多权证"]
+                    ['查看更多权证']
                   );
                   childNode.push(moreNode);
                 }
                 return _h(
-                  "div",
+                  'div',
                   {
                     style: {
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                     },
                   },
                   childNode
@@ -428,43 +428,43 @@ export default {
               },
             },
             {
-              key: "houseStartAndEndDate",
-              title: "权证有效期",
+              key: 'houseStartAndEndDate',
+              title: '权证有效期',
             },
           ],
           [
             {
-              key: "usage",
-              title: "目前使用状况",
+              key: 'usage',
+              title: '目前使用状况',
               render: (_h, data, resValue) => {
                 const _this = this;
-                const resNode = _h("span", [resValue]);
+                const resNode = _h('span', [resValue]);
                 let childNode = [resNode];
                 if (this.currentAssetDetail.resourceList.length > 1) {
                   const moreNode = _h(
-                    "a",
+                    'a',
                     {
                       style: {
-                        marginLeft: "20px",
-                        flexBasis: "80px",
+                        marginLeft: '20px',
+                        flexBasis: '80px',
                       },
                       on: {
                         click() {
                           _this.modalList.usage.dataSource = _this.currentAssetDetail.resourceList;
-                          _this.doOpenPop("usage", _this.currentSelectAsset.assetName);
+                          _this.doOpenPop('usage', _this.currentSelectAsset.assetName);
                         },
                       },
                     },
-                    ["查看更多使用情况"]
+                    ['查看更多使用情况']
                   );
                   childNode.push(moreNode);
                 }
                 return _h(
-                  "div",
+                  'div',
                   {
                     style: {
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                     },
                   },
                   childNode
@@ -472,24 +472,24 @@ export default {
               },
             },
             {
-              key: "ownershipUse",
-              title: "证载用途",
+              key: 'ownershipUse',
+              title: '证载用途',
             },
           ],
           [
             {
-              key: "buildArea",
-              title: "建筑面积",
+              key: 'buildArea',
+              title: '建筑面积',
             },
             {
-              key: "landArea",
-              title: "土地面积",
+              key: 'landArea',
+              title: '土地面积',
             },
           ],
           [
             {
-              key: "sourceModeName",
-              title: "获得来源",
+              key: 'sourceModeName',
+              title: '获得来源',
             },
           ],
         ],
@@ -499,31 +499,31 @@ export default {
         formatBasicInfoList: [
           [
             {
-              key: "resName",
-              title: "房号",
+              key: 'resName',
+              title: '房号',
             },
             {
-              key: "startAndEndDateFormat",
-              title: "承租时间",
+              key: 'startAndEndDateFormat',
+              title: '承租时间',
             },
           ],
           [
             {
-              key: "secondName",
-              title: "历史承租人",
+              key: 'secondName',
+              title: '历史承租人',
             },
             {
-              key: "allRent",
-              title: "承租金额",
+              key: 'allRent',
+              title: '承租金额',
               render(_h, data, resValue) {
-                return _h("span", Number(resValue || 0).toLocaleString());
+                return _h('span', Number(resValue || 0).toLocaleString());
               },
             },
           ],
           [
             {
-              key: "unitRentAveragePrice",
-              title: "租金单价",
+              key: 'unitRentAveragePrice',
+              title: '租金单价',
             },
           ],
         ],
@@ -533,37 +533,37 @@ export default {
         formatBasicInfoList: [
           [
             {
-              key: "assessmentOrganName",
-              title: "评估机构",
+              key: 'assessmentOrganName',
+              title: '评估机构',
             },
             {
-              key: "assessmentNum",
-              title: "报告号",
-            },
-          ],
-          [
-            {
-              key: "assessmenBaseDate",
-              title: "评估基准日",
-            },
-            {
-              key: "assessmentValidDate",
-              title: "评估有效期",
+              key: 'assessmentNum',
+              title: '报告号',
             },
           ],
           [
             {
-              key: "assessmentValue",
-              title: "评估价值（元）",
+              key: 'assessmenBaseDate',
+              title: '评估基准日',
+            },
+            {
+              key: 'assessmentValidDate',
+              title: '评估有效期',
+            },
+          ],
+          [
+            {
+              key: 'assessmentValue',
+              title: '评估价值（元）',
               render(_h, data, resValue) {
-                return _h("span", Number(resValue || 0).toLocaleString());
+                return _h('span', Number(resValue || 0).toLocaleString());
               },
             },
           ],
         ],
       },
       currentSelectAsset: {},
-      currentSelectAssetId: "",
+      currentSelectAssetId: '',
       selectedList: [],
       selectAssetModalFlag: false,
       allFile: {
@@ -627,11 +627,11 @@ export default {
           maxRows: 12,
         },
       },
-      organName: "",
-      organId: "",
+      organName: '',
+      organId: '',
       projectListOptions: [],
       formItemStyle: {
-        width: "100%",
+        width: '100%',
       },
       formItemLayoutTwo: {
         labelCol: {
@@ -657,97 +657,97 @@ export default {
         name: [
           {
             required: true,
-            message: "请输入申请单名称",
-            trigger: "blur",
+            message: '请输入申请单名称',
+            trigger: 'blur',
           },
         ],
         projectId: [
           {
             required: true,
-            message: "请选择资产项目",
-            trigger: "change",
+            message: '请选择资产项目',
+            trigger: 'change',
           },
         ],
         relId: [
           {
             required: false,
-            message: "请关联资产转让立项单",
-            trigger: "change",
+            message: '请关联资产转让立项单',
+            trigger: 'change',
           },
         ],
-        assetType: [{ required: true, message: "请选择资产类型", trigger: "change" }],
+        assetType: [{ required: true, message: '请选择资产类型', trigger: 'change' }],
         feasibility: [
           {
             required: true,
-            message: "请输入可行性和必要性分析",
-            trigger: "blur",
+            message: '请输入可行性和必要性分析',
+            trigger: 'blur',
           },
         ],
         compliance: [
           {
             required: true,
-            message: "请输入重要条款",
-            trigger: "blur",
+            message: '请输入重要条款',
+            trigger: 'blur',
           },
         ],
         listingPrice: [
           {
             required: true,
-            message: "请输入挂牌价格",
-            trigger: "blur",
+            message: '请输入挂牌价格',
+            trigger: 'blur',
           },
         ],
         marketAnalysis: [
           {
             required: true,
-            message: "请输入市场分析",
-            trigger: "blur",
+            message: '请输入市场分析',
+            trigger: 'blur',
           },
         ],
         interestedParty: [
           {
             required: true,
-            message: "请输入潜在意向方情况",
-            trigger: "blur",
+            message: '请输入潜在意向方情况',
+            trigger: 'blur',
           },
         ],
         withdrawalClause: [
           {
             required: true,
-            message: "请输入退出条款",
-            trigger: "blur",
+            message: '请输入退出条款',
+            trigger: 'blur',
           },
         ],
         remark: [
           {
             required: true,
-            message: "请输入其它说明情况",
-            trigger: "blur",
+            message: '请输入其它说明情况',
+            trigger: 'blur',
           },
         ],
       },
       formStyle: {
-        width: "200px",
+        width: '200px',
       },
       formData: {
-        name: "",
-        projectId: "",
-        assetType: "",
-        feasibility: "",
-        compliance: "",
-        listingPrice: "",
-        marketAnalysis: "",
-        interestedParty: "",
-        withdrawalClause: "",
-        remark: "",
-        relId: "", // 资产转让关联的资产立项单Id
+        name: '',
+        projectId: '',
+        assetType: '',
+        feasibility: '',
+        compliance: '',
+        listingPrice: '',
+        marketAnalysis: '',
+        interestedParty: '',
+        withdrawalClause: '',
+        remark: '',
+        relId: '', // 资产转让关联的资产立项单Id
       },
       ShowTransferProjectApprovalTable: false,
     };
   },
   computed: {
     isEdit() {
-      return this.$route.path === "/transfer/edit";
+      return this.$route.path === '/transfer/edit';
     },
     amsPledgeSituationOptions() {
       return this.$store.state.platformDict.AMS_PLEDGE_SITUATION.map((ele) => {
@@ -774,13 +774,13 @@ export default {
   methods: {
     showTable() {
       if (!this.formData.projectId) {
-        this.$message.error("请选选择资产项目");
+        this.$message.error('请选选择资产项目');
         return;
       }
       this.ShowTransferProjectApprovalTable = !this.ShowTransferProjectApprovalTable;
     },
     clearRelId() {
-      this.$set(this.formData, "relId", "");
+      this.$set(this.formData, 'relId', '');
     },
     // 获取是否资产转让关联资产转让立项单
     async getSystemConfig() {
@@ -791,14 +791,14 @@ export default {
         serviceType: 1018,
         organId: this.organId,
       });
-      if (code === "0") {
+      if (code === '0') {
         const { isValid } = data;
         if (isValid === 1) {
-          this.$set(this.rules, "relId", [
+          this.$set(this.rules, 'relId', [
             {
               required: true,
-              message: "请关联资产转让立项单",
-              trigger: "change",
+              message: '请关联资产转让立项单',
+              trigger: 'change',
             },
           ]);
         }
@@ -806,7 +806,7 @@ export default {
     },
     btnMoreLeaseInfo() {
       this.modalList.lease.dataSource = this.currentAssetDetail.lease;
-      this.doOpenPop("lease", this.currentSelectAsset.assetName);
+      this.doOpenPop('lease', this.currentSelectAsset.assetName);
     },
     doClosePop(modal) {
       this.modalList[modal].show = false;
@@ -820,12 +820,12 @@ export default {
     changeProject() {
       this.selectedList = [];
       this.currentSelectAsset = {};
-      this.currentSelectAssetId = "";
+      this.currentSelectAssetId = '';
       this.currentAssetDetail = {
         // 使用情况
         resourceList: [],
         // 物业名称
-        propertyName: "",
+        propertyName: '',
         // 基础信息
         details: [],
         // 租赁相关信息
@@ -876,8 +876,8 @@ export default {
             })
             .flat();
           if (errorFlag) {
-            console.log("errorInfo", errorInfo);
-            this.$message.error(errorInfo.join(","));
+            console.log('errorInfo', errorInfo);
+            this.$message.error(errorInfo.join(','));
             return null;
           }
           const req = {
@@ -891,13 +891,13 @@ export default {
           if (this.isEdit) {
             req.applyId = this.$route.query.applyId;
           }
-          console.log("req", req);
+          console.log('req', req);
           const {
             data: { code, message, data },
           } = await this.$api.transfer.addOrUpdate(req);
-          if (code === "0") {
-            console.log("data", data);
-            this.$message.success("操作成功");
+          if (code === '0') {
+            console.log('data', data);
+            this.$message.success('操作成功');
             this.goBack();
           } else {
             this.$message.error(message);
@@ -910,8 +910,8 @@ export default {
     handleDelSelectAsset({ assetId }) {
       const _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认删除吗？",
+        title: '提示',
+        content: '确认删除吗？',
         onOk() {
           _this.selectedList = _this.selectedList.filter((ele) => ele.assetId !== assetId);
         },
@@ -922,8 +922,8 @@ export default {
         assetId,
       };
       this.$api.transfer.historicLease(req).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
-          console.log("data", data);
+        if (code === '0') {
+          console.log('data', data);
           this.currentAssetDetail.lease = data || [];
           this.leasingSituationOptions.data = this.currentAssetDetail.lease[0] || {};
           if (this.leasingSituationOptions.data.rentAveragePrice && this.leasingSituationOptions.data.unit) {
@@ -942,7 +942,7 @@ export default {
         assetId,
       };
       this.$api.transfer.assetDetail(req).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
+        if (code === '0') {
           this.currentAssetDetail.propertyName = data.propertyName;
           this.currentAssetDetail.details = data.details || [];
           this.currentAssetDetail.valueInfos = data.valueInfos || {};
@@ -952,7 +952,7 @@ export default {
 
           this.basicInfoOptions.data.sourceModeName = data.sourceModeName;
 
-          this.basicInfoOptions.data.usage = this.currentAssetDetail.resourceList[0] ? this.currentAssetDetail.resourceList[0].busiStatus : "--";
+          this.basicInfoOptions.data.usage = this.currentAssetDetail.resourceList[0] ? this.currentAssetDetail.resourceList[0].busiStatus : '--';
 
           if (this.basicInfoOptions.data.houseStartDate && this.basicInfoOptions.data.houseEndDate) {
             this.basicInfoOptions.data.houseStartAndEndDate = `${this.basicInfoOptions.data.houseStartDate}至${this.basicInfoOptions.data.houseEndDate}`;
@@ -970,7 +970,7 @@ export default {
     },
     handleValidateBaseInfo() {
       if (!this.formData.assetType || !this.formData.projectId) {
-        return "请先选择资产类型和资产项目";
+        return '请先选择资产类型和资产项目';
       }
     },
     handlePopSave(selectedList) {
@@ -989,8 +989,8 @@ export default {
     getEditData({ applyId }) {
       const req = { applyId };
       this.$api.transfer.feedback(req).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
-          console.log("data", data);
+        if (code === '0') {
+          console.log('data', data);
           this.handlePopSave(
             data.backInfos.map((ele) => ({
               ...ele,
@@ -1038,7 +1038,7 @@ export default {
       const data = await getDetail({ applyId });
       this.getAllFileData(data.attachments);
       this.initFormData(data);
-      console.log("data", data);
+      console.log('data', data);
     },
   },
   mounted() {
@@ -1047,8 +1047,8 @@ export default {
     getObjectKeyValueByOrganIdFn({ organId: this.organId }).then((data) => {
       this.projectListOptions = data;
     });
-    this.$store.dispatch("platformDict/getPlatformDict", {
-      code: "AMS_PLEDGE_SITUATION",
+    this.$store.dispatch('platformDict/getPlatformDict', {
+      code: 'AMS_PLEDGE_SITUATION',
       type: SET_AMS_PLEDGE_SITUATION,
     });
 
@@ -1065,7 +1065,7 @@ export default {
   label {
     font-size: 13px;
     color: #959dab;
-    font-family: "Microsoft Yahei";
+    font-family: 'Microsoft Yahei';
   }
 }
 /deep/ .ant-form-item-children {
@@ -1074,7 +1074,7 @@ export default {
   textarea {
     font-size: 15px;
     color: #49505e;
-    font-family: "Microsoft Yahei";
+    font-family: 'Microsoft Yahei';
   }
   .button {
     span {

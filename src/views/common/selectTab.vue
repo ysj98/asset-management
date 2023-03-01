@@ -4,8 +4,8 @@
  -->
 <template>
   <div class="custom-tab-box">
-    <span class="custom-tab-item" :class="value===item.value&&activeType" v-for="item in list" :key="item.key" @click="keyChange(item)">
-      {{item.label}}
+    <span class="custom-tab-item" :class="value === item.value && activeType" v-for="item in list" :key="item.key" @click="keyChange(item)">
+      {{ item.label }}
     </span>
   </div>
 </template>
@@ -13,60 +13,59 @@
 export default {
   props: {
     value: {
-      default: ''
+      default: '',
     },
     // 显示列表
     list: {
       type: Array,
-      default: () =>[]
+      default: () => [],
     },
     activeType: {
-      default: 'active'  // fancyActive
-    }
+      default: 'active', // fancyActive
+    },
   },
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
   methods: {
-    keyChange (item) {
-      console.log(item)
+    keyChange(item) {
+      console.log(item);
       if (item.value !== this.value) {
-        this.$emit('change', item.value)
+        this.$emit('change', item.value);
       }
+    },
+  },
+};
+</script>
+<style lang="less">
+.custom-tab-box {
+  border-bottom: 1px solid rgba(237, 240, 244, 1);
+  padding-left: 30px;
+  background-color: #fcfcfc;
+  .custom-tab-item {
+    display: inline-block;
+    padding: 13px 20px;
+    border: 1px solid transparent;
+    border-top: 2px solid transparent;
+    border-radius: 2px 2px 0px 0px;
+    font-size: 13px;
+    color: #6d7585;
+    margin-bottom: -1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    &.active {
+      border: 1px solid #dce1e6;
+      border-top: 2px solid rgba(0, 132, 255, 1);
+      border-bottom: 1px solid #fcfcfc;
+      color: #49505e;
+      font-weight: bold;
+    }
+    &.fancyActive {
+      font-size: 15px;
+      border-bottom: 2px solid rgba(0, 132, 255, 1);
+      color: #49505e;
+      font-weight: bold;
     }
   }
 }
-</script>
-<style lang="less">
-  .custom-tab-box{
-    border-bottom:1px solid rgba(237,240,244,1);
-    padding-left: 30px;
-    background-color: #fcfcfc;
-    .custom-tab-item{
-      display: inline-block;
-      padding: 13px 20px;
-      border: 1px solid transparent;
-      border-top: 2px solid transparent;
-      border-radius:2px 2px 0px 0px;
-      font-size: 13px;
-      color: #6D7585;
-      margin-bottom: -1px;
-      cursor: pointer;
-      transition: all 0.2s;
-      &.active{
-        border: 1px solid #DCE1E6;
-        border-top:2px solid rgba(0,132,255,1);
-        border-bottom: 1px solid #fcfcfc;
-        color: #49505E;
-        font-weight:bold;
-      }
-      &.fancyActive{
-        font-size: 15px;
-        border-bottom:2px solid rgba(0,132,255,1);
-        color: #49505E;
-        font-weight:bold;
-      }
-    }
-  }
 </style>

@@ -1,53 +1,19 @@
 // 承租人
 <template>
-  <SG-Modal
-    v-model="show"
-    :width="960"
-    wrapClassName="tenantModal"
-    :noPadding="true"
-    :maskClosable="false"
-    :footer="null"
-  >
+  <SG-Modal v-model="show" :width="960" wrapClassName="tenantModal" :noPadding="true" :maskClosable="false" :footer="null">
     <template #title>
       <div style="font-size: 16px">选择客户</div>
     </template>
     <div class="content">
       <!-- 输入框 -->
       <div class="search_box">
-        <treeSelect
-          @changeTree="changeTree"
-          placeholder="请选择组织机构"
-          :allowClear="false"
-          style="width: 150px; margin-left: 330px"
-        ></treeSelect>
-        <a-input
-          placeholder="请输入客户名称"
-          v-model="custName"
-          style="width: 150px; margin-left: 20px"
-          @pressEnter="onPressEnter()"
-        />
-        <a-input
-          placeholder="请输入联系电话"
-          v-model="custPhone"
-          style="width: 150px; margin-left: 20px"
-          @pressEnter="onPressEnter()"
-        />
-        <SG-Button
-          @click="search"
-          type="primary"
-          icon="search"
-          style="margin-left: 20px"
-          >查询</SG-Button
-        >
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" style="width: 150px; margin-left: 330px"></treeSelect>
+        <a-input placeholder="请输入客户名称" v-model="custName" style="width: 150px; margin-left: 20px" @pressEnter="onPressEnter()" />
+        <a-input placeholder="请输入联系电话" v-model="custPhone" style="width: 150px; margin-left: 20px" @pressEnter="onPressEnter()" />
+        <SG-Button @click="search" type="primary" icon="search" style="margin-left: 20px">查询</SG-Button>
       </div>
       <!-- 表格 -->
-      <a-table
-        :columns="columns"
-        :data-source="tableData"
-        :pagination="false"
-        :bordered="true"
-        size="small"
-      >
+      <a-table :columns="columns" :data-source="tableData" :pagination="false" :bordered="true" size="small">
         <template slot="operation" slot-scope="text, record">
           <a @click="chose(record)">选择</a>
         </template>
@@ -67,56 +33,56 @@
 <script>
 const columns = [
   {
-    title: "客户名称",
-    dataIndex: "custName",
-    align: "center",
+    title: '客户名称',
+    dataIndex: 'custName',
+    align: 'center',
   },
   {
-    title: "客户类型",
-    dataIndex: "custPubTypeName",
-    align: "center",
+    title: '客户类型',
+    dataIndex: 'custPubTypeName',
+    align: 'center',
     width: 150,
   },
   {
-    title: "联系电话",
-    dataIndex: "custPhone",
-    align: "center",
+    title: '联系电话',
+    dataIndex: 'custPhone',
+    align: 'center',
     width: 190,
   },
   {
-    title: "证件类型",
-    dataIndex: "certiTypeName",
-    align: "center",
+    title: '证件类型',
+    dataIndex: 'certiTypeName',
+    align: 'center',
     width: 150,
   },
   {
-    title: "证件号码",
-    dataIndex: "certiNbr",
-    align: "center",
+    title: '证件号码',
+    dataIndex: 'certiNbr',
+    align: 'center',
     width: 220,
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    align: "center",
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
+    align: 'center',
     width: 75,
   },
 ];
-import TreeSelect from "../../common/treeSelect";
+import TreeSelect from '../../common/treeSelect';
 export default {
   data() {
     return {
       columns,
       show: false,
-      searchVal: "",
-      custPhone: "",
-      custName: "",
+      searchVal: '',
+      custPhone: '',
+      custName: '',
       tableData: [],
       custObj: {
-        organId: "",
-        custName: "",
-        custPhone: "",
+        organId: '',
+        custName: '',
+        custPhone: '',
         custState: 1,
         pageNum: 1,
         pageSize: 10,
@@ -124,7 +90,7 @@ export default {
       pagination: {
         pageLength: 10,
         totalCount: 0,
-        pageNo: "1",
+        pageNo: '1',
       },
     };
   },
@@ -144,7 +110,7 @@ export default {
     }, */
     show(newVal) {
       if (newVal === false) {
-        this.$emit("input", newVal);
+        this.$emit('input', newVal);
       }
     },
   },
@@ -169,13 +135,13 @@ export default {
     // 机构树选择
     changeTree(value, label) {
       // console.log(value, label);
-      this.custName = "";
-      this.custPhone = "";
-      this.pagination.pageNo = "1";
+      this.custName = '';
+      this.custPhone = '';
+      this.pagination.pageNo = '1';
       this.custObj = {
         organId: value,
-        custName: "",
-        custPhone: "",
+        custName: '',
+        custPhone: '',
         custState: 1,
         pageNum: 1,
         pageSize: 10,
@@ -189,7 +155,7 @@ export default {
     // 回车搜索
     onPressEnter() {
       this.custObj.pageNum = 1;
-      this.pagination.pageNo = "1";
+      this.pagination.pageNo = '1';
       this.custObj.custName = this.custName;
       this.custObj.custPhone = this.custPhone;
       this.query();
@@ -203,7 +169,7 @@ export default {
     // 选择承租人
     chose(val) {
       // 返回一个用户对象 调用组件时需要用getTenantList方法接收
-      this.$emit("getTenantList", val);
+      this.$emit('getTenantList', val);
       this.show = false;
     },
   },

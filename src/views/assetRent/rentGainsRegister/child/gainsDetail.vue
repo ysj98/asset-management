@@ -1,11 +1,6 @@
 <!--出租收益详情-->
 <template>
-  <SG-Modal
-    v-model="show"
-    :width="800"
-    wrapClassName="gainsDetail"
-    :footer="null"
-  >
+  <SG-Modal v-model="show" :width="800" wrapClassName="gainsDetail" :footer="null">
     <template #title>
       <div style="font-size: 16px">出租收益详情</div>
     </template>
@@ -82,7 +77,7 @@ export default {
   data() {
     return {
       show: false,
-      incomeId: "",
+      incomeId: '',
       uploadList: [], // 附件列表
       incomeInfo: {}, // 收益明细
     };
@@ -100,18 +95,16 @@ export default {
     // 查询收益
     getIncome() {
       if (this.incomeId) {
-        this.$api.assetRent
-          .getIncome({ incomeId: this.incomeId })
-          .then((res) => {
-            if (+res.data.code === 0) {
-              this.incomeInfo = res.data.data;
-            } else {
-              this.$error({
-                title: "提示",
-                content: res.data.message,
-              });
-            }
-          });
+        this.$api.assetRent.getIncome({ incomeId: this.incomeId }).then((res) => {
+          if (+res.data.code === 0) {
+            this.incomeInfo = res.data.data;
+          } else {
+            this.$error({
+              title: '提示',
+              content: res.data.message,
+            });
+          }
+        });
       }
     },
     // 查询附件列表
@@ -119,28 +112,26 @@ export default {
       if (!id) {
         return false;
       }
-      this.uploadList = []
-      this.$api.basics
-        .attachment({ objectId: id, objectType: 21 })
-        .then((res) => {
-          console.log(res);
-          if (+res.data.code === 0) {
-            let attachment = [];
-            res.data.data.forEach((item) => {
-              let obj = {
-                url: item.attachmentPath,
-                name: item.oldAttachmentName,
-              };
-              attachment.push(obj);
-              this.uploadList = attachment;
-            });
-          } else {
-            this.$error({
-              title: "提示",
-              content: res.data.message,
-            });
-          }
-        });
+      this.uploadList = [];
+      this.$api.basics.attachment({ objectId: id, objectType: 21 }).then((res) => {
+        console.log(res);
+        if (+res.data.code === 0) {
+          let attachment = [];
+          res.data.data.forEach((item) => {
+            let obj = {
+              url: item.attachmentPath,
+              name: item.oldAttachmentName,
+            };
+            attachment.push(obj);
+            this.uploadList = attachment;
+          });
+        } else {
+          this.$error({
+            title: '提示',
+            content: res.data.message,
+          });
+        }
+      });
     },
   },
 };

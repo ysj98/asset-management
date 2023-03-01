@@ -19,18 +19,13 @@
         ></SG-Option>
       </SG-Select>
       <div class="input-layer">
-        <a-input
-          v-model="assetNameOrCode"
-          placeholder="搜资产名称、资产编码"
-          class="input right-block"
-        >
-        </a-input>
+        <a-input v-model="assetNameOrCode" placeholder="搜资产名称、资产编码" class="input right-block"> </a-input>
         <div @click="getAssetList" class="search-block">
           <a-icon :style="{ color: '#ffffff' }" type="search" />
         </div>
       </div>
-      <div style="margin-left: 20px;">
-        <SG-Button type="primary" @click="toggle">{{ listFlag ? "收起" : "展开" }}</SG-Button>
+      <div style="margin-left: 20px">
+        <SG-Button type="primary" @click="toggle">{{ listFlag ? '收起' : '展开' }}</SG-Button>
       </div>
     </div>
     <div v-show="listFlag" class="asset-land-list" ref="assetLandListRef">
@@ -50,21 +45,14 @@
           >
             <a-popover placement="right" overlayClassName="custom-popover">
               <template #content>
-                <SimpleAssetLandInfo
-                  :popupDataSource="popupDataSource"
-                  :assetId="item.assetId"
-                />
+                <SimpleAssetLandInfo :popupDataSource="popupDataSource" :assetId="item.assetId" />
               </template>
               <div class="list-item">
                 <div class="left" @click="handleDraw(item, 'text')">
                   <span class="title-name">
                     {{ item.landName }}
                   </span>
-                  <span
-                    class="color-block"
-                    :style="{ backgroundColor: item.modeColour }"
-                  >
-                  </span>
+                  <span class="color-block" :style="{ backgroundColor: item.modeColour }"> </span>
                   <span
                     v-if="!previewMode"
                     class="title-flag"
@@ -72,7 +60,7 @@
                       'activity-asset': item.assetId === currentAssetId,
                     }"
                   >
-                    {{ item.drawStatus ? "已绘制" : "未绘制" }}
+                    {{ item.drawStatus ? '已绘制' : '未绘制' }}
                   </span>
                 </div>
                 <div v-if="!previewMode" @click="handleDraw(item, 'edit')">
@@ -99,13 +87,13 @@
 /*
  * Resolve:上线前把 临时增加的展开/收起功能隐藏
  * */
-import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
+import SimpleAssetLandInfo from '@/views/mapDrawLand/components/SimpleAssetLandInfo';
 
 export default {
   /*
    * 资产列表
    * */
-  name: "AssetLandList",
+  name: 'AssetLandList',
   components: {
     SimpleAssetLandInfo,
   },
@@ -114,31 +102,31 @@ export default {
       type: Array,
       required: true,
     },
-    previewMode:{
+    previewMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       listFlag: true,
-      currentAssetId: "",
-      organId: "",
+      currentAssetId: '',
+      organId: '',
       listLoadingFlag: true,
-      assetNameOrCode: "",
+      assetNameOrCode: '',
       currentAssetProject: [],
       assetProjectOptions: [],
       assetList: [],
     };
   },
-  computed:{
-    assetListCom(){
-      if (this.previewMode){
-        return this.assetList.filter(ele=>{
-          return ele.drawStatus
-        })
-      }else {
-        return this.assetList
+  computed: {
+    assetListCom() {
+      if (this.previewMode) {
+        return this.assetList.filter((ele) => {
+          return ele.drawStatus;
+        });
+      } else {
+        return this.assetList;
       }
     },
   },
@@ -166,26 +154,24 @@ export default {
       let form = {
         organId: this.organId,
       };
-      this.$api.assets
-        .getObjectKeyValueByOrganId(form)
-        .then(({ data: { data, code, message } }) => {
-          if (code === "0") {
-            this.assetProjectOptions = data.map((ele) => {
-              return {
-                label: ele.projectName,
-                value: ele.projectId,
-                title: ele.projectName,
-              };
-            });
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.assets.getObjectKeyValueByOrganId(form).then(({ data: { data, code, message } }) => {
+        if (code === '0') {
+          this.assetProjectOptions = data.map((ele) => {
+            return {
+              label: ele.projectName,
+              value: ele.projectId,
+              title: ele.projectName,
+            };
+          });
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     /*
-    * ref 调用获取 请求参数
-    * */
-    handleGetListReq(){
+     * ref 调用获取 请求参数
+     * */
+    handleGetListReq() {
       return {
         layerSchemeId: this.layerSchemeId,
         assetNameOrCode: this.assetNameOrCode,
@@ -195,14 +181,14 @@ export default {
     },
     async getAssetList() {
       this.listLoadingFlag = true;
-      const req = this.handleGetListReq()
+      const req = this.handleGetListReq();
       const {
         data: { data, code, message },
       } = await this.$api.drawMap.queryAssetOpMode(req);
-      if (code === "0") {
+      if (code === '0') {
         this.assetList = data;
         this.listLoadingFlag = false;
-        this.$emit("initAssetLayers", this.assetListCom);
+        this.$emit('initAssetLayers', this.assetListCom);
       } else {
         this.$SG_Message.error(message);
       }
@@ -212,20 +198,20 @@ export default {
      * */
     handleDraw(item, type) {
       this.currentAssetId = item.assetId;
-      this.$emit("handleDraw", { assetItemInfo: item, type });
+      this.$emit('handleDraw', { assetItemInfo: item, type });
     },
     /*
      *  ref调用
      *  flag Boolean
      * */
     setAssetDrawFlag({ assetId, flag }) {
-      if (!assetId || typeof flag !== "boolean") {
-        console.error("数据出错,刷新后重试");
+      if (!assetId || typeof flag !== 'boolean') {
+        console.error('数据出错,刷新后重试');
         return null;
       }
       const idx = this.assetList.findIndex((ele) => ele.assetId === assetId);
       if (idx !== -1) {
-        this.$set(this.assetList[idx], "drawStatus", Number(flag));
+        this.$set(this.assetList[idx], 'drawStatus', Number(flag));
       }
     },
     /*
@@ -233,7 +219,7 @@ export default {
      * */
     setSelectAsset({ assetId }) {
       if (!assetId) {
-        console.warn("setSelectAsset入参不合法");
+        console.warn('setSelectAsset入参不合法');
         return null;
       }
       this.currentAssetId = assetId;
@@ -246,8 +232,8 @@ export default {
         return String(ele.dataset.id) === String(assetId);
       });
       const assetLandListRefEle = this.$refs.assetLandListRef;
-      console.log("assetLandListRefEle", assetLandListRefEle);
-      console.log("item", this.$refs.itemRef[idx]);
+      console.log('assetLandListRefEle', assetLandListRefEle);
+      console.log('item', this.$refs.itemRef[idx]);
       const height = 100;
       assetLandListRefEle.scrollTop = Math.max(height, idx * 40);
     },

@@ -13,48 +13,46 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       status: ['-1'],
       optionStatus: [
         {
           value: '-1',
-          label: '全部状态'
+          label: '全部状态',
         },
         {
           value: '待承保',
-          label: '待承保'
+          label: '待承保',
         },
         {
           value: '已生效',
-          label: '已生效'
+          label: '已生效',
         },
         {
           value: '已终止',
-          label: '已终止'
+          label: '已终止',
         },
       ],
-    }
+    };
   },
   methods: {
-    handleChange (value) {
-      if(value[value.length-1] === '-1'){
-        this.status = ['-1']
-      }else{
-        if(this.status.includes('-1')){
-          let idx = this.status.indexOf('-1')
-          this.status = this.status.splice(idx+1, 1)
+    handleChange(value) {
+      if (value[value.length - 1] === '-1') {
+        this.status = ['-1'];
+      } else {
+        if (this.status.includes('-1')) {
+          let idx = this.status.indexOf('-1');
+          this.status = this.status.splice(idx + 1, 1);
         }
-        if(this.status.length === this.optionStatus.length - 1 && !this.status.includes('-1')){
-          this.status = ['-1']
+        if (this.status.length === this.optionStatus.length - 1 && !this.status.includes('-1')) {
+          this.status = ['-1'];
         }
       }
-      this.$emit('statusClick', this.status)
-    }
-  }
-}
+      this.$emit('statusClick', this.status);
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

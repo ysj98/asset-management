@@ -1,5 +1,5 @@
-import {axiosGet, axiosPost} from "../utils/axios";
-import { paramsConfig } from "../config/config.url";
+import { axiosGet, axiosPost } from '../utils/axios';
+import { paramsConfig } from '../config/config.url';
 /* 参数设置-组织机构系统设置保存 */
 export function paramsSave(data) {
   return axiosPost(paramsConfig.paramsSave, data);

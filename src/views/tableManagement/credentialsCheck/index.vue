@@ -9,7 +9,14 @@
       </a-col>
       <a-col :span="4">
         <!-- 资产类型 -->
-        <a-select :maxTagCount="1" style="width: 100%" @change="assetTypeChange" :options="$addTitle(assetTypeOptions)" v-model="queryObj.assetType" placeholder="请选择资产类型" />
+        <a-select
+          :maxTagCount="1"
+          style="width: 100%"
+          @change="assetTypeChange"
+          :options="$addTitle(assetTypeOptions)"
+          v-model="queryObj.assetType"
+          placeholder="请选择资产类型"
+        />
       </a-col>
       <a-col :span="4">
         <!-- 资产名称/编码 -->
@@ -65,11 +72,11 @@ export default {
   methods: {
     assetTypeChange(value) {
       let lastIndex = value.length - 1;
-      this.queryObj.assetType = value[lastIndex] === '-1' ? ['-1'] : value.filter(m => m !== '-1');
+      this.queryObj.assetType = value[lastIndex] === '-1' ? ['-1'] : value.filter((m) => m !== '-1');
     },
     // 查询资产类型--平台字典
     queryAssetType() {
-      queryAssetTypeList().then(list => {
+      queryAssetTypeList().then((list) => {
         this.assetTypeOptions = [{ title: '全部资产类型', key: '-1' }].concat(list);
       });
     },
@@ -89,13 +96,13 @@ export default {
           ...form,
           assetType: form.assetType === '-1' ? '' : form.assetType,
         })
-        .then(r => {
+        .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
           if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             if (data || data.length) {
-              this.tableObj.dataSource = data.map(item => {
+              this.tableObj.dataSource = data.map((item) => {
                 return {
                   ...item,
                   ownershipStatus: ownershipStatus[item.ownershipStatus] || '无',
@@ -105,7 +112,7 @@ export default {
             Object.assign(this.paginationObj, { totalCount: count, pageNo, pageLength });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           this.tableObj.loading = false;
           this.$message.error(err || '查询接口出错');
         });

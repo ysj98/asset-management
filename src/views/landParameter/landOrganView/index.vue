@@ -43,42 +43,42 @@
 </template>
 
 <script>
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import NoDataTip from "src/components/noDataTips";
-import TreeSelect from "src/views/common/treeSelect";
-import OverviewNumber from "src/views/common/OverviewNumber";
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import NoDataTip from 'src/components/noDataTips';
+import TreeSelect from 'src/views/common/treeSelect';
+import OverviewNumber from 'src/views/common/OverviewNumber';
 // 概览数字数据, title 标题，value 数值，bgColor 背景色
 const numList = [
-  { title: "全部资产(㎡)", key: "landArea", value: 0, fontColor: "#324057" },
+  { title: '全部资产(㎡)', key: 'landArea', value: 0, fontColor: '#324057' },
   {
-    title: "运营(㎡)",
-    key: "transferOperationArea",
+    title: '运营(㎡)',
+    key: 'transferOperationArea',
     value: 0,
-    bgColor: "#4BD288",
+    bgColor: '#4BD288',
   },
-  { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
   {
-    title: "自用(㎡)",
-    key: "selfUserArea",
+    title: '自用(㎡)',
+    key: 'selfUserArea',
     value: 0,
-    bgColor: "#DD81E6",
+    bgColor: '#DD81E6',
   },
   {
-    title: "占用(㎡)",
-    key: "occupationArea",
+    title: '占用(㎡)',
+    key: 'occupationArea',
     value: 0,
-    bgColor: "#FD7474",
+    bgColor: '#FD7474',
   },
-  { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
 ];
 export default {
-  name: "index",
+  name: 'index',
   components: { OverviewNumber, NoDataTip, TreeSelect },
   data() {
     return {
       ASSET_MANAGEMENT,
-      organName: "",
-      organId: "", // 查询条件-组织机构
+      organName: '',
+      organId: '', // 查询条件-组织机构
       exportBtnLoading: false, // 导出按钮loading
       overviewNumSpinning: false, // 查询视图面积概览数据loading
       numList: numList,
@@ -87,57 +87,57 @@ export default {
         dataSource: [],
         loading: false,
         pagination: false,
-        rowKey: "organId",
+        rowKey: 'organId',
         columns: [
-          { title: "管理机构", dataIndex: "organName" },
-          { title: "土地面积(㎡)", dataIndex: "landArea" },
-          { title: "土地数量", dataIndex: "landCount" },
-          { title: "运营(㎡)", dataIndex: "transferOperationArea" },
-          { title: "自用(㎡)", dataIndex: "selfUserArea" },
-          { title: "闲置(㎡)", dataIndex: "idleArea" },
-          { title: "占用(㎡)", dataIndex: "occupationArea" },
-          { title: "其它(㎡)", dataIndex: "otherArea" },
-          { title: "资产原值", dataIndex: "originalValue" },
-          { title: "最新估值", dataIndex: "marketValue" },
-          { title: "操作", key: "action", scopedSlots: { customRender: "action" }, width: 60 },
+          { title: '管理机构', dataIndex: 'organName' },
+          { title: '土地面积(㎡)', dataIndex: 'landArea' },
+          { title: '土地数量', dataIndex: 'landCount' },
+          { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+          { title: '自用(㎡)', dataIndex: 'selfUserArea' },
+          { title: '闲置(㎡)', dataIndex: 'idleArea' },
+          { title: '占用(㎡)', dataIndex: 'occupationArea' },
+          { title: '其它(㎡)', dataIndex: 'otherArea' },
+          { title: '资产原值', dataIndex: 'originalValue' },
+          { title: '最新估值', dataIndex: 'marketValue' },
+          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 60 },
         ],
       },
       paginationObj: {
         pageNo: 1,
         totalCount: 0,
         pageLength: 10,
-        location: "absolute",
+        location: 'absolute',
       },
       sumObj: {
-        organName: "",
-        landArea: "",
-        landCount: "",
-        transferOperationArea: "",
-        selfUserArea: "",
-        idleArea: "",
-        occupationArea: "",
-        otherArea: "",
-        originalValue: "",
-        marketValue: "",
+        organName: '',
+        landArea: '',
+        landCount: '',
+        transferOperationArea: '',
+        selfUserArea: '',
+        idleArea: '',
+        occupationArea: '',
+        otherArea: '',
+        originalValue: '',
+        marketValue: '',
       }, // 求和用的对象
       current: null, // 当前选中的概览区域下标，与后台入参一一对应
       statusList: [], // 资产分类
       statusListOpt: [
-        { title: "全部状态", key: "all" },
-        { title: "待入库", key: "0" },
-        { title: "正常", key: "1" },
-        { title: "报废", key: "2" },
-        { title: "转让", key: "3" },
-        { title: "报损", key: "4" },
-        { title: "入库中", key: "7" },
+        { title: '全部状态', key: 'all' },
+        { title: '待入库', key: '0' },
+        { title: '正常', key: '1' },
+        { title: '报废', key: '2' },
+        { title: '转让', key: '3' },
+        { title: '报损', key: '4' },
+        { title: '入库中', key: '7' },
       ],
     };
   },
   watch: {
     // 全选与其他选项互斥处理
     statusList: function (val) {
-      if (val && val.length !== 1 && val.includes("all")) {
-        this.statusList = ["all"];
+      if (val && val.length !== 1 && val.includes('all')) {
+        this.statusList = ['all'];
       }
     },
   },
@@ -145,23 +145,23 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: "" });
+      this.queryTableData({ type: '' });
     },
 
     // 查看组织机构视图详情
     handleViewDetail(record) {
       let query = {
         organId: record.organId,
-        statusList: this.statusList.includes("all") ? [] : this.statusList,
+        statusList: this.statusList.includes('all') ? [] : this.statusList,
       };
-      this.$router.push({ path: "/landOrganView/detail", query: query || {} });
+      this.$router.push({ path: '/landOrganView/detail', query: query || {} });
     },
 
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const { sumObj, organId, current, statusList } = this;
       if (!organId) {
-        return this.$message.info("请选择组织机构");
+        return this.$message.info('请选择组织机构');
       }
       this.tableObj.loading = true;
       this.$api.land
@@ -169,12 +169,12 @@ export default {
           organIds: organId.toString(),
           pageSize: pageLength,
           pageNum: pageNo,
-          flag: current ? current - 1 : "",
-          statusList: statusList.includes("all") ? [] : statusList,
+          flag: current ? current - 1 : '',
+          statusList: statusList.includes('all') ? [] : statusList,
         })
         .then(({ data: res }) => {
           this.tableObj.loading = false;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             let pageSum = {};
             /**
@@ -186,16 +186,16 @@ export default {
               Object.keys(sumObj).forEach((key) => {
                 !pageSum[key] && (pageSum[key] = 0);
                 pageSum[key] += item[key]
-                  ? ["landCount"].includes(key)
+                  ? ['landCount'].includes(key)
                     ? Number(item[key])
-                    : ["originalValue", "marketValue"].includes(key)
+                    : ['originalValue', 'marketValue'].includes(key)
                     ? Math.round(item[key] * 100) / 100
                     : Math.round(item[key] * 10000) / 10000
                   : 0;
                 if (index === data.length - 1) {
-                  pageSum[key] = ["buildNum"].includes(key)
+                  pageSum[key] = ['buildNum'].includes(key)
                     ? pageSum[key]
-                    : ["originalValue", "marketValue"].includes(key)
+                    : ['originalValue', 'marketValue'].includes(key)
                     ? Math.round(pageSum[key] * 100) / 100
                     : Math.round(pageSum[key] * 10000) / 10000;
                 }
@@ -204,17 +204,17 @@ export default {
             this.tableObj.dataSource = data.length
               ? data.concat({
                   ...pageSum,
-                  organName: "本页合计",
-                  organId: "-999",
+                  organName: '本页合计',
+                  organId: '-999',
                   totalRow: true,
                 })
               : [];
             // 查询楼栋面积统计数据
-            if (type !== "search") {
+            if (type !== 'search') {
               data.length &&
                 this.tableObj.dataSource.push({
                   ...sumObj,
-                  organName: "全部合计",
+                  organName: '全部合计',
                   organId: Date.now(),
                   totalRow: true,
                 });
@@ -231,7 +231,7 @@ export default {
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询列表接口出错");
+          this.$message.error(err || '查询列表接口出错');
         });
     },
 
@@ -248,20 +248,20 @@ export default {
       this.$api.land
         .organViewTotal({
           organIds: organId.toString(),
-          flag: current ? current - 1 : "",
-          statusList: statusList.includes("all") ? [] : statusList,
+          flag: current ? current - 1 : '',
+          statusList: statusList.includes('all') ? [] : statusList,
         })
         .then(({ data: res }) => {
           this.overviewNumSpinning = false;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             let obj = {};
             let list = res.data || {};
             Object.keys(sumObj).forEach(
               (key) =>
                 (obj[key] = list[key]
-                  ? ["landCount"].includes(key)
+                  ? ['landCount'].includes(key)
                     ? list[key]
-                    : ["originalValue", "marketValue"].includes(key)
+                    : ['originalValue', 'marketValue'].includes(key)
                     ? Math.round(list[key] * 100) / 100
                     : Math.round(list[key] * 10000) / 10000
                   : 0)
@@ -270,7 +270,7 @@ export default {
             dataSource.length &&
               this.tableObj.dataSource.push({
                 ...obj,
-                organName: "全部合计",
+                organName: '全部合计',
                 organId: Date.now(),
                 totalRow: true,
               });
@@ -287,7 +287,7 @@ export default {
         })
         .catch((err) => {
           this.overviewNumSpinning = false;
-          this.$message.error(err || "查询组织机构视图面积统计出错");
+          this.$message.error(err || '查询组织机构视图面积统计出错');
         });
     },
 
@@ -298,26 +298,26 @@ export default {
       this.$api.land
         .organViewExport({
           organIds: organId.toString(),
-          flag: current ? current - 1 : "",
+          flag: current ? current - 1 : '',
           pageSize: 1,
           pageNum: 1,
         })
         .then((res) => {
           this.exportBtnLoading = false;
           if (res.status === 200 && res.data && res.data.size) {
-            let a = document.createElement("a");
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([res.data]));
-            a.download = "组织机构视图导出列表.xls";
-            a.style.display = "none";
+            a.download = '组织机构视图导出列表.xls';
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             return a.remove();
           }
-          throw res.message || "导出组织机构视图失败";
+          throw res.message || '导出组织机构视图失败';
         })
         .catch((err) => {
           this.exportBtnLoading = false;
-          this.$message.error(err || "导出组织机构视图失败");
+          this.$message.error(err || '导出组织机构视图失败');
         });
     },
 
@@ -325,7 +325,7 @@ export default {
     changeTree(organId, name) {
       this.organName = name;
       this.organId = organId;
-      organId && this.queryTableData({ type: "search" });
+      organId && this.queryTableData({ type: 'search' });
     },
   },
 

@@ -1,9 +1,9 @@
-import { axiosGet, axiosPost } from "../utils/axios";
-import { toOperation } from "../config/config.url";
+import { axiosGet, axiosPost } from '../utils/axios';
+import { toOperation } from '../config/config.url';
 // 主列表导出
 export function exportListPage(data) {
   return axiosPost(toOperation.exportListPage, data, true, false, {
-    responseType: "blob",
+    responseType: 'blob',
   });
 }
 // 主列表查询
@@ -23,13 +23,13 @@ export function updateOperationApprovalStatus(data) {
 
 // 新增提交
 export function submitTransferOperation(data) {
-  return axiosPost(toOperation.submitTransferOperation, data,true);
+  return axiosPost(toOperation.submitTransferOperation, data, true);
 }
 
 // 添加资产导出
 export function exportAsset(data) {
   return axiosPost(toOperation.exportAsset, data, true, false, {
-    responseType: "blob",
+    responseType: 'blob',
   });
 }
 

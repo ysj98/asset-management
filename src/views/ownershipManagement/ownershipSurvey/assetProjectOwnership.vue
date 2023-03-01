@@ -3,7 +3,7 @@
  * @Author: chen han
  * @Description: 资产项目权属
  -->
- <template>
+<template>
   <div class="assetProjectOwnership pb70">
     <SearchContainer type="line" :value="false">
       <div slot="headerBtns">
@@ -13,13 +13,7 @@
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <a-checkbox :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产项目</a-checkbox>
-        <treeSelect
-          @changeTree="changeTree"
-          placeholder="请选择组织机构"
-          :allowClear="false"
-          :style="allStyle"
-          :showSearch='true'
-        ></treeSelect>
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
         <!-- 资产项目 -->
         <a-select
           showSearch
@@ -52,23 +46,23 @@
     </SearchContainer>
     <div>
       <a-table
-        :scroll="{ x: 3000, y: 540}"
+        :scroll="{ x: 3000, y: 540 }"
         class="custom-tables"
         bordered
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"
         :dataSource="table.dataSource"
-        :locale="{emptyText: '暂无数据'}"
+        :locale="{ emptyText: '暂无数据' }"
       >
         <template slot="projectName" slot-scope="text, record">
           <!-- <span class="nav_name" @click="goPage('detail', record)">{{text}}</span> -->
-          <span>{{text}}</span>
+          <span>{{ text }}</span>
         </template>
         <template slot="tranProgress" slot-scope="text, record">
-          <div style="padding-right: 10px;">
-              <a-progress :percent="Number(record.tranProgress) || 0" />
-            </div>
+          <div style="padding-right: 10px">
+            <a-progress :percent="Number(record.tranProgress) || 0" />
+          </div>
           <!-- <a-progress :percent="Number(record.tranProgress) || 0" /> -->
         </template>
         <template slot="operation" slot-scope="text, record">
@@ -87,151 +81,155 @@
     </div>
   </div>
 </template>
- <script>
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "@/views/common/treeSelect";
-import { utils } from "@/utils/utils";
-import {ASSET_MANAGEMENT} from '@/config/config.power'
-import noDataTips from "@/components/noDataTips";
-import segiIcon from '@/components/segiIcon.vue'
+<script>
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '@/views/common/treeSelect';
+import { utils } from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import noDataTips from '@/components/noDataTips';
+import segiIcon from '@/components/segiIcon.vue';
 // 页面跳转
 const operationTypes = {
-  detail: "/ownershipSurvey/projectDetail",
-  set: "/ownershipSurvey/projectSet"
+  detail: '/ownershipSurvey/projectDetail',
+  set: '/ownershipSurvey/projectSet',
 };
-const allStyle = { width: "140px", marginRight: "10px" };
-const allWidth = { width: "170px", "margin-right": "10px" };
-let getUuid = ((uuid = 1) => () => ++uuid)();
+const allStyle = { width: '140px', marginRight: '10px' };
+const allWidth = { width: '170px', 'margin-right': '10px' };
+let getUuid = (
+  (uuid = 1) =>
+  () =>
+    ++uuid
+)();
 const queryCondition = {
-  organId: "",
-  projectName: "",
-  projectId: "",
+  organId: '',
+  projectName: '',
+  projectId: '',
   assetTypes: '',
   currentOrgan: false,
   pageSize: 10,
-  pageNum: 1
+  pageNum: 1,
 };
 const projectIdOpt = [
   {
-    label: "全部资产项目",
-    value: ""
-  }
+    label: '全部资产项目',
+    value: '',
+  },
 ];
 const assetTypeData = [
   {
-    label: "全部资产类型",
-    value: ""
-  }
-]
+    label: '全部资产类型',
+    value: '',
+  },
+];
 let columns = [
   {
-    title: "管理机构",
-    dataIndex: "organName",
-    width: 150
+    title: '管理机构',
+    dataIndex: 'organName',
+    width: 150,
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
-    scopedSlots: { customRender: "projectName" },
-    width: 150
+    title: '资产项目名称',
+    dataIndex: 'projectName',
+    scopedSlots: { customRender: 'projectName' },
+    width: 150,
   },
   {
-    title: "资产项目编码",
-    dataIndex: "projectCode",
-    width: 120
+    title: '资产项目编码',
+    dataIndex: 'projectCode',
+    width: 120,
   },
   {
-    title: "来源方式",
-    dataIndex: "sourceTypeName",
-    width: 100
+    title: '来源方式',
+    dataIndex: 'sourceTypeName',
+    width: 100,
   },
   {
-    title: "来源方式说明",
-    dataIndex: "souceChannelType",
-    width: 100
+    title: '来源方式说明',
+    dataIndex: 'souceChannelType',
+    width: 100,
   },
   {
-    title: "资产数量",
-    dataIndex: "assetCount",
-    width: 100
+    title: '资产数量',
+    dataIndex: 'assetCount',
+    width: 100,
   },
   {
-    title: "办理进度",
-    dataIndex: "tranProgress",
-    scopedSlots: { customRender: "tranProgress" },
-    width: 150
+    title: '办理进度',
+    dataIndex: 'tranProgress',
+    scopedSlots: { customRender: 'tranProgress' },
+    width: 150,
   },
-   {
-    title: "所有权",
-    dataIndex: "goodsTypeNames",
+  {
+    title: '所有权',
+    dataIndex: 'goodsTypeNames',
     children: [
       {
-        title: "总数",
-        dataIndex: "ownerShipCount",
-        width: "100px"
+        title: '总数',
+        dataIndex: 'ownerShipCount',
+        width: '100px',
       },
       {
-        title: "有证",
-        dataIndex: "ownerShipYesCount",
-        width: "100px"
+        title: '有证',
+        dataIndex: 'ownerShipYesCount',
+        width: '100px',
       },
       {
-        title: "无证",
-        dataIndex: "ownerShipNoCount",
-        width: "100px"
+        title: '无证',
+        dataIndex: 'ownerShipNoCount',
+        width: '100px',
       },
       {
-        title: "待办证",
-        dataIndex: "ownerShipWaitCount",
-        width: "100px"
-      }
+        title: '待办证',
+        dataIndex: 'ownerShipWaitCount',
+        width: '100px',
+      },
     ],
   },
   {
-    title: "使用权",
-    dataIndex: "wsPrice",
+    title: '使用权',
+    dataIndex: 'wsPrice',
     children: [
       {
-        title: "总数",
-        dataIndex: "useShipCount",
-        width: "100px"
+        title: '总数',
+        dataIndex: 'useShipCount',
+        width: '100px',
       },
       {
-        title: "有证",
-        width: "100px",
-        dataIndex: "useShipYesCount",
+        title: '有证',
+        width: '100px',
+        dataIndex: 'useShipYesCount',
       },
       {
-        title: "无证",
-        width: "100px",
-        dataIndex: "useShipNoCount",
+        title: '无证',
+        width: '100px',
+        dataIndex: 'useShipNoCount',
       },
       {
-        title: "待办证",
-        width: "100px",
-        dataIndex: "useShipWaitCount",
-      }
+        title: '待办证',
+        width: '100px',
+        dataIndex: 'useShipWaitCount',
+      },
     ],
   },
   {
-    title: "暂无权属",
-    dataIndex: "temporary",
+    title: '暂无权属',
+    dataIndex: 'temporary',
     children: [
       {
-        title: "总数",
-        dataIndex: "temporaryCount",
-        width: "100px"
+        title: '总数',
+        dataIndex: 'temporaryCount',
+        width: '100px',
       },
       {
-        title: "无证",
-        width: "100px",
-        dataIndex: "temporaryNoCount",
+        title: '无证',
+        width: '100px',
+        dataIndex: 'temporaryNoCount',
       },
       {
-        title: "待办证",
-        width: "100px",
-        dataIndex: "temporaryWaitCount",
-      }
+        title: '待办证',
+        width: '100px',
+        dataIndex: 'temporaryWaitCount',
+      },
     ],
   },
   // {
@@ -250,25 +248,25 @@ let columns = [
   //   width: 100
   // },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    width: 200
-  }
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
+    width: 200,
+  },
 ];
 export default {
   components: {
     SearchContainer,
     TreeSelect,
     noDataTips,
-    segiIcon
+    segiIcon,
   },
   data() {
     return {
       allStyle,
       allWidth,
       ASSET_MANAGEMENT,
-      organName: "", // 所选组织机构名称
+      organName: '', // 所选组织机构名称
       queryCondition,
       projectIdOpt,
       assetTypeData,
@@ -276,37 +274,37 @@ export default {
         columns,
         dataSource: [],
         loading: false,
-        totalCount: 0
-      }
+        totalCount: 0,
+      },
     };
   },
   watch: {
-    '$route' () {
+    $route() {
       if (this.$route.path === '/ownershipSurvey' && this.$route.query.refresh) {
-      this.queryCondition.pageNum = 1
-      this.queryCondition.pageSize = 10
-        this.query()
+        this.queryCondition.pageNum = 1;
+        this.queryCondition.pageSize = 10;
+        this.query();
       }
-    }
+    },
   },
   mounted() {
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
   },
   methods: {
     exportList() {
       let data = {
         ...this.queryCondition,
-        flag: this.queryCondition.currentOrgan ? 1 : 0
+        flag: this.queryCondition.currentOrgan ? 1 : 0,
       };
-      data.pageNum = 1
-      data.pageSize = 1
-      data.assetTypes = this.alljudge(data.assetTypes)
+      data.pageNum = 1;
+      data.pageSize = 1;
+      data.assetTypes = this.alljudge(data.assetTypes);
       this.$api.basics.projectExport(data).then((res) => {
         let blob = new Blob([res.data]);
-        let a = document.createElement("a");
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `资产项目权属表.xls`;
-        a.style.display = "none";
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -315,22 +313,18 @@ export default {
     // 资产类型发生变化
     changeAssetType(value) {
       this.$nextTick(function () {
-        this.queryCondition.assetTypes = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.assetTypes,
-          this.assetTypeData
-        );
+        this.queryCondition.assetTypes = this.handleMultipleSelectValue(value, this.queryCondition.assetTypes, this.assetTypeData);
       });
     },
-    alljudge (val) {
+    alljudge(val) {
       if (val.length !== 0) {
         if (val[0] === '') {
-          return []
+          return [];
         } else {
-          return val
+          return val;
         }
       } else {
-        return []
+        return [];
       }
     },
     query() {
@@ -338,23 +332,23 @@ export default {
         ...this.queryCondition,
         flag: this.queryCondition.currentOrgan ? 1 : 0,
       };
-      data.assetTypes = this.alljudge(data.assetTypes)
+      data.assetTypes = this.alljudge(data.assetTypes);
       this.table.loading = true;
       this.$api.basics.ownerShipList(data).then(
-        res => {
+        (res) => {
           this.table.loading = false;
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data.data || [];
-            this.table.dataSource = result.map(item => {
-              item.sourceTypeName = item.sourceTypeName || "--";
-              item.souceChannelType = item.souceChannelType || "--";
-              item.tranProgress = item.tranProgress.substring(0, item.tranProgress.length - 1)
+            this.table.dataSource = result.map((item) => {
+              item.sourceTypeName = item.sourceTypeName || '--';
+              item.souceChannelType = item.souceChannelType || '--';
+              item.tranProgress = item.tranProgress.substring(0, item.tranProgress.length - 1);
               return {
                 key: getUuid(),
-                ...item
+                ...item,
               };
             });
-            this.table.totalCount = res.data.data.count || "";
+            this.table.totalCount = res.data.data.count || '';
           } else {
             this.$message.error(res.data.message);
           }
@@ -368,15 +362,15 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId,
-        projectName: ""
+        projectName: '',
       };
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data || [];
-          let result = data.map(item => {
+          let result = data.map((item) => {
             return {
               label: item.projectName,
-              value: item.projectId
+              value: item.projectId,
             };
           });
           this.projectIdOpt = [...utils.deepClone(projectIdOpt), ...result];
@@ -393,9 +387,9 @@ export default {
       this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          if (str === "asset_type") {
+          if (str === 'asset_type') {
             this.assetTypeData = [
-              { label: "全部资产类型", value: "" },
+              { label: '全部资产类型', value: '' },
               ...data.map((item) => {
                 return { ...item, label: item.name };
               }),
@@ -409,16 +403,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -428,7 +422,7 @@ export default {
     changeTree(value, label) {
       this.organName = label;
       this.queryCondition.organId = value;
-      this.queryCondition.projectId = "";
+      this.queryCondition.projectId = '';
       this.getObjectKeyValueByOrganIdFn();
       this.searchQuery();
     },
@@ -448,29 +442,25 @@ export default {
     },
     // 页面跳转
     goPage(type, record) {
-      let assetTypes = this.queryCondition.assetTypes
+      let assetTypes = this.queryCondition.assetTypes;
       let query = {
         type,
         projectId: record.projectId,
         // assetTypes 存在 且长度大于等于1，然后过滤 空值，undefined，如果 assetTypes不存在就传空数组
-        assetTypes: (assetTypes && assetTypes.length && assetTypes.filter(ele=>!["",undefined].includes(ele))) || []
+        assetTypes: (assetTypes && assetTypes.length && assetTypes.filter((ele) => !['', undefined].includes(ele))) || [],
       };
       this.$router.push({ path: operationTypes[type], query });
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
-    }
-  }
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    },
+  },
 };
 </script>
- <style lang="less" scoped>
+<style lang="less" scoped>
 .assetProjectOwnership {
-   /deep/ .ant-table-header{
-      height: 100% !important;
-   }
+  /deep/ .ant-table-header {
+    height: 100% !important;
+  }
 }
 </style>

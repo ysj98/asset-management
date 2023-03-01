@@ -3,132 +3,162 @@
  * @Author: chen han
  * @Description: 新建楼层，编辑楼层，删除楼层
  -->
- <template>
-   <div class="createBuilding-page">
-     <div class="form-box">
-        <div class="title-box">
-          <SG-Title noMargin :title="title" />
-        </div>
-        <!-- 表单部分 -->
-         <div>
-          <a-form :form="form" @submit="handleSave" layout="horizontal">
-            <a-row>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="楼层名称" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['floorName', {initialValue: '' || undefined, rules: [{required: true, whitespace: true, message: '请输入楼层名称'}]}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
-                    <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['area', {initialValue: '' || undefined}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
-                    <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['useArea', {initialValue: '' || undefined}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="楼层顺序" v-bind="formItemLayout">
-                    <a-input-number  :precision="0" :style="allWidth" v-decorator="['floorIndex', {initialValue: '' ||
-                    undefined}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="楼层编码" v-bind="formItemLayout">
-                    <a-input :style="allWidth" v-decorator="['floorCode', {initialValue: '' || undefined}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="层高(m)" v-bind="formItemLayout">
-                    <a-input-number :min="0" :max="9999.99" :style="allWidth" v-decorator="['floorHeight', {initialValue: '' || undefined,
-                    rules: [
-                    {required: false, message: '请输入楼层高度'},
-                    {pattern: /^(\.*)(\d+)(\.?)(\d{0,2}).*$/, message: '最多保留2位小数'}]}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col v-bind="formSpan">
-                  <a-form-item label="房屋数量" v-bind="formItemLayout">
-                    <a-input-number :min="0" :max="9999999" :style="allWidth" v-decorator="['houseNum', {initialValue: '' || undefined, rules: [{pattern: /^[0-9]*$/, message: '请输入整数'}]}]"/>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                    <!-- 文本框 -->
-                    <a-form-item label="描述" v-bind="formItemLayout2">
-                      <a-textarea @input="(e)=>{ floorDescNum = e.target.value.length}" v-decorator="['floorDesc', {initialValue: ''}]" :maxLength="50" placeholder="请输入描述内容(50字内)" />
-                      <div style="text-align: right">{{floorDescNum}}/50</div>
-                    </a-form-item>
-                </a-col>
-                <a-col :span="12">
-                  <a-form-item label="是否有消防验收材料" v-bind="formItemLayout">
-                    <!-- 疯狂报错 先去掉不知道怎么写的-->
-                    <!-- :getPopupContainer="getPopupContainer" -->
-                    <!-- :filterOption="filterOption" -->
-                    <a-select
-                      :style="allWidth"
-                        placeholder="是否有消防验收材料"
-                        showSearch
-                        optionFilterProp="children"
-                        :options="$addTitle(fireMaterialOpt)"
-                        :allowClear="false"
-                        notFoundContent="没有查询到数据"
-                        v-decorator="['fireMaterial', {initialValue: 0}]"
-                      />
-                  </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                  <a-form-item label="图片" v-bind="formItemLayout2">
-                    <SG-UploadFile  :customDownload="customDownload" :customUpload="customUpload"  v-model="picPath" :max="1"/>
-                  </a-form-item>
-                </a-col>
-                <a-col :span="24">
-                  <a-form-item label="平面图" v-bind="formItemLayout2">
-                    <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="planePicPath" :max="1"/>
-                  </a-form-item>
-                </a-col>
-            </a-row>
-          </a-form>
-         </div>
-     </div>
-     <FormFooter>
-       <SG-Button v-if="hasUpdatePower" :class="[type==='edit'&&'mr10']" @click="handleSave" type="primary">保存</SG-Button>
-       <SG-Button v-power="ASSET_MANAGEMENT.ASSET_FLOOR_DELETE" v-if="type==='edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
-     </FormFooter>
-   </div>
+<template>
+  <div class="createBuilding-page">
+    <div class="form-box">
+      <div class="title-box">
+        <SG-Title noMargin :title="title" />
+      </div>
+      <!-- 表单部分 -->
+      <div>
+        <a-form :form="form" @submit="handleSave" layout="horizontal">
+          <a-row>
+            <a-col v-bind="formSpan">
+              <a-form-item label="楼层名称" v-bind="formItemLayout">
+                <a-input
+                  :style="allWidth"
+                  v-decorator="[
+                    'floorName',
+                    { initialValue: '' || undefined, rules: [{ required: true, whitespace: true, message: '请输入楼层名称' }] },
+                  ]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item label="建筑面积(㎡)" v-bind="formItemLayout">
+                <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['area', { initialValue: '' || undefined }]" />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item label="使用面积(㎡)" v-bind="formItemLayout">
+                <a-input-number :min="0" :max="999999.9999" :style="allWidth" v-decorator="['useArea', { initialValue: '' || undefined }]" />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item label="楼层顺序" v-bind="formItemLayout">
+                <a-input-number :precision="0" :style="allWidth" v-decorator="['floorIndex', { initialValue: '' || undefined }]" />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item label="楼层编码" v-bind="formItemLayout">
+                <a-input :style="allWidth" v-decorator="['floorCode', { initialValue: '' || undefined }]" />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item label="层高(m)" v-bind="formItemLayout">
+                <a-input-number
+                  :min="0"
+                  :max="9999.99"
+                  :style="allWidth"
+                  v-decorator="[
+                    'floorHeight',
+                    {
+                      initialValue: '' || undefined,
+                      rules: [
+                        { required: false, message: '请输入楼层高度' },
+                        { pattern: /^(\.*)(\d+)(\.?)(\d{0,2}).*$/, message: '最多保留2位小数' },
+                      ],
+                    },
+                  ]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item label="房屋数量" v-bind="formItemLayout">
+                <a-input-number
+                  :min="0"
+                  :max="9999999"
+                  :style="allWidth"
+                  v-decorator="['houseNum', { initialValue: '' || undefined, rules: [{ pattern: /^[0-9]*$/, message: '请输入整数' }] }]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="24">
+              <!-- 文本框 -->
+              <a-form-item label="描述" v-bind="formItemLayout2">
+                <a-textarea
+                  @input="
+                    (e) => {
+                      floorDescNum = e.target.value.length;
+                    }
+                  "
+                  v-decorator="['floorDesc', { initialValue: '' }]"
+                  :maxLength="50"
+                  placeholder="请输入描述内容(50字内)"
+                />
+                <div style="text-align: right">{{ floorDescNum }}/50</div>
+              </a-form-item>
+            </a-col>
+            <a-col :span="12">
+              <a-form-item label="是否有消防验收材料" v-bind="formItemLayout">
+                <!-- 疯狂报错 先去掉不知道怎么写的-->
+                <!-- :getPopupContainer="getPopupContainer" -->
+                <!-- :filterOption="filterOption" -->
+                <a-select
+                  :style="allWidth"
+                  placeholder="是否有消防验收材料"
+                  showSearch
+                  optionFilterProp="children"
+                  :options="$addTitle(fireMaterialOpt)"
+                  :allowClear="false"
+                  notFoundContent="没有查询到数据"
+                  v-decorator="['fireMaterial', { initialValue: 0 }]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-item label="图片" v-bind="formItemLayout2">
+                <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="picPath" :max="1" />
+              </a-form-item>
+            </a-col>
+            <a-col :span="24">
+              <a-form-item label="平面图" v-bind="formItemLayout2">
+                <SG-UploadFile :customDownload="customDownload" :customUpload="customUpload" v-model="planePicPath" :max="1" />
+              </a-form-item>
+            </a-col>
+          </a-row>
+        </a-form>
+      </div>
+    </div>
+    <FormFooter>
+      <SG-Button v-if="hasUpdatePower" :class="[type === 'edit' && 'mr10']" @click="handleSave" type="primary">保存</SG-Button>
+      <SG-Button v-power="ASSET_MANAGEMENT.ASSET_FLOOR_DELETE" v-if="type === 'edit'" @click="handleCancel" type="danger" ghost>删除</SG-Button>
+    </FormFooter>
+  </div>
 </template>
 <script>
-import FormFooter from '@/components/FormFooter.vue'
-import utils from '@/utils/utils'
-import {ASSET_MANAGEMENT} from '@/config/config.power'
-import dictMixin from './dictMixin.js'
-const allWidth = {width: '100%'}
-const allWidth1 = {width: '100px', marginRight: '10px', flex: '0 0 120px'}
-const allWidth2 = {width: '250px', flex: 1}
-const judgeArr = [undefined, null, '', 'null']
+import FormFooter from '@/components/FormFooter.vue';
+import utils from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import dictMixin from './dictMixin.js';
+const allWidth = { width: '100%' };
+const allWidth1 = { width: '100px', marginRight: '10px', flex: '0 0 120px' };
+const allWidth2 = { width: '250px', flex: 1 };
+const judgeArr = [undefined, null, '', 'null'];
 export default {
   components: {
-    FormFooter
+    FormFooter,
   },
   mixins: [dictMixin],
   props: {
     type: {
-      default: 'create'
+      default: 'create',
     },
     organId: {
-      default: ''
+      default: '',
     },
     objectData: {
-      default: () => ({})
+      default: () => ({}),
     },
     activeType: {
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
-      fireMaterialOpt:[
-        {key: 0, title: '否'},
-        {key: 1, title: '是'}
+      fireMaterialOpt: [
+        { key: 0, title: '否' },
+        { key: 1, title: '是' },
       ],
       floorDescNum: 0,
       bussType: 'floorDir',
@@ -138,251 +168,260 @@ export default {
       allWidth1,
       allWidth2,
       formSpan: {
-       xl: 8,
-       sm: 12
+        xl: 8,
+        sm: 12,
       },
       picPath: [], // 图片
       planePicPath: [], // 平面图
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 6 }
+          sm: { span: 6 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 12 }
-        }
+          sm: { span: 12 },
+        },
       },
       formItemLayout2: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 2 }
+          sm: { span: 2 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 20 }
-        }
-      }
-    }
+          sm: { span: 20 },
+        },
+      },
+    };
   },
   watch: {
-    type () {
-      this.init()
+    type() {
+      this.init();
     },
     // 监听id变化
-    objectData () {
-      this.init()
-    }
+    objectData() {
+      this.init();
+    },
   },
-  beforeCreate () {
-    this.form = this.$form.createForm(this)
+  beforeCreate() {
+    this.form = this.$form.createForm(this);
   },
   computed: {
-    title () {
-      return this.type === 'edit' ? '编辑楼层' : '新增楼层'
-    }
+    title() {
+      return this.type === 'edit' ? '编辑楼层' : '新增楼层';
+    },
   },
-  mounted () {
-    this.init()
-    this.handleBtn()
-    this.$textReplace()
+  mounted() {
+    this.init();
+    this.handleBtn();
+    this.$textReplace();
   },
   methods: {
-    init () {
-      this.resetAll()
+    init() {
+      this.resetAll();
       if (this.type === 'edit') {
-        this.queryFloorDetail()
+        this.queryFloorDetail();
       }
-      if (this.type==='create') {
-        this.getObjectSeq()
+      if (this.type === 'create') {
+        this.getObjectSeq();
       }
     },
     //objectId type=1时，为项目ID，type=2为楼栋ID ，type=3时，根据isBuild 传楼栋ID或者单元ID
-    getObjectSeq () {
+    getObjectSeq() {
       // console.log('leibie',this.activeType)
-      let isBuild = +this.activeType === 0 ? '0' : '1'
-      this.$api.building.getObjectSeq({objectId: this.objectData.positionId, type: '3', isBuild: isBuild}).then(res => {
+      let isBuild = +this.activeType === 0 ? '0' : '1';
+      this.$api.building.getObjectSeq({ objectId: this.objectData.positionId, type: '3', isBuild: isBuild }).then((res) => {
         if (+res.data.code === 0) {
-          let data = judgeArr.includes(res.data.data) ? 1 : res.data.data
-          this.form.setFieldsValue({floorIndex: data})
+          let data = judgeArr.includes(res.data.data) ? 1 : res.data.data;
+          this.form.setFieldsValue({ floorIndex: data });
         } else {
-          this.form.setFieldsValue({floorIndex: 1})
+          this.form.setFieldsValue({ floorIndex: 1 });
         }
-      })
+      });
     },
-    handleBtn () {
-      if (this.type==='create') {
-        this.hasUpdatePower = true
+    handleBtn() {
+      if (this.type === 'create') {
+        this.hasUpdatePower = true;
       }
-      if (this.type==='edit' && this.$power.has(ASSET_MANAGEMENT.ASSET_FLOOR_EDIT)) {
-        this.hasUpdatePower = true
+      if (this.type === 'edit' && this.$power.has(ASSET_MANAGEMENT.ASSET_FLOOR_EDIT)) {
+        this.hasUpdatePower = true;
       }
     },
-    queryFloorDetail () {
+    queryFloorDetail() {
       let data = {
-        floorId: this.objectData.positionId
-      }
-      this.$api.building.queryFloorDetail(data).then(res => {
+        floorId: this.objectData.positionId,
+      };
+      this.$api.building.queryFloorDetail(data).then((res) => {
         if (res.data.code === '0') {
-          this.handleEdit({...res.data.data})
+          this.handleEdit({ ...res.data.data });
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 处理编辑数据
-    handleEdit (data) {
+    handleEdit(data) {
       //消防材料
-      data.fireMaterial = +data.fireMaterial || 0
+      data.fireMaterial = +data.fireMaterial || 0;
       // 处理图片
       if (data.picPath) {
-        this.picPath = [{url: data.picPath, name: ''}]
+        this.picPath = [{ url: data.picPath, name: '' }];
       }
       if (data.planePicPath) {
-        this.planePicPath = [{url: data.planePicPath, name: ''}]
+        this.planePicPath = [{ url: data.planePicPath, name: '' }];
       }
-      let o = this.form.getFieldsValue()
-      console.log('表单数据=>', o)
-      let values = {}
+      let o = this.form.getFieldsValue();
+      console.log('表单数据=>', o);
+      let values = {};
       utils.each(o, (value, key) => {
         if (data[key] && data[key] !== 0) {
-          values[key] = data[key]
+          values[key] = data[key];
         }
-      })
-      console.log('得到值all=>', values)
-      this.form.setFieldsValue(values)
-      this.floorDescNum = values.floorDesc ? values.floorDesc.length : 0
+      });
+      console.log('得到值all=>', values);
+      this.form.setFieldsValue(values);
+      this.floorDescNum = values.floorDesc ? values.floorDesc.length : 0;
     },
     // 重置所有数据
-    resetAll () {
-      this.form.resetFields()
-      this.picPath = [] // 平面图
+    resetAll() {
+      this.form.resetFields();
+      this.picPath = []; // 平面图
     },
-    handleSave () {
+    handleSave() {
       this.form.validateFields((err, values) => {
-        console.log('得到值=>', values)
+        console.log('得到值=>', values);
         if (!err) {
-          let data = {}
+          let data = {};
           utils.each(values, (value, key) => {
-            data[key] = value || ''
-          })
-          data.fireMaterial = data.fireMaterial || 0
+            data[key] = value || '';
+          });
+          data.fireMaterial = data.fireMaterial || 0;
           // 处理图片
           if (this.picPath.length) {
-            data.picPath = this.picPath[0].url
+            data.picPath = this.picPath[0].url;
           }
           // 处理平面图
           if (this.planePicPath.length) {
-            data.planePicPath = this.planePicPath[0].url
+            data.planePicPath = this.planePicPath[0].url;
           }
           // 新增楼层
           if (this.type === 'create') {
-            data.organId = this.organId
-            data.upPositionId = this.objectData.positionId
+            data.organId = this.organId;
+            data.upPositionId = this.objectData.positionId;
             // 新增时需用楼栋id 请求楼栋详情是否有项目id
-            this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
-              if (resData.data.code !== '0') {
-                this.$message.error(resData.data.message)
-              }
-              return resData.data.data.communityId
-            }).then(communityId => {
-              if (communityId && communityId !== '-1') {
-                data.communityId = communityId
-              }
-              let loadingName = this.SG_Loding('新增中...')
-              this.$api.building.addFloor(data).then(res => {
-                this.DE_Loding(loadingName).then(() => {
-                  if (res.data.code === '0') {
-                    this.$SG_Message.success('新增楼层成功')
-                    this.resetAll()
-                    this.$emit('success', 'create')
-                  } else {
-                    this.$message.error(res.data.message)
-                  }
-                })
-              }, () => {
-                this.DE_Loding(loadingName).then(res => {
-                  this.$SG_Message.error('新增失败！')
-                })
+            this.$api.building
+              .queryBuildDetail({ buildId: this.objectData.buildingId })
+              .then((resData) => {
+                if (resData.data.code !== '0') {
+                  this.$message.error(resData.data.message);
+                }
+                return resData.data.data.communityId;
               })
-
-            })
-
+              .then((communityId) => {
+                if (communityId && communityId !== '-1') {
+                  data.communityId = communityId;
+                }
+                let loadingName = this.SG_Loding('新增中...');
+                this.$api.building.addFloor(data).then(
+                  (res) => {
+                    this.DE_Loding(loadingName).then(() => {
+                      if (res.data.code === '0') {
+                        this.$SG_Message.success('新增楼层成功');
+                        this.resetAll();
+                        this.$emit('success', 'create');
+                      } else {
+                        this.$message.error(res.data.message);
+                      }
+                    });
+                  },
+                  () => {
+                    this.DE_Loding(loadingName).then((res) => {
+                      this.$SG_Message.error('新增失败！');
+                    });
+                  }
+                );
+              });
           }
           // 编辑楼栋
           if (this.type === 'edit') {
-            data.organId = this.objectData.organId
-            data.floorId = this.objectData.positionId
-            data.upPositionId = this.objectData.upPositionId
-            this.$api.building.queryBuildDetail({buildId: this.objectData.buildingId}).then(resData => {
-              if (resData.data.code !== '0') {
-                this.$message.error(resData.data.message)
-              }
-              return resData.data.data.communityId
-            }).then(communityId => {
-              if (communityId && communityId !== '-1') {
-                data.communityId = communityId
-              }
-              let loadingName = this.SG_Loding('编辑中...')
-              this.$api.building.updateFloor(data).then(res => {
-                this.DE_Loding(loadingName).then(() => {
-                  if (res.data.code === '0') {
-                    this.$SG_Message.success('编辑楼层成功')
-                    this.$emit('success', 'edit')
-                  } else {
-                    this.$message.error(res.data.message)
-                  }
-                })
-              }, () => {
-                this.DE_Loding(loadingName).then(res => {
-                  this.$SG_Message.error('编辑失败！')
-                })
+            data.organId = this.objectData.organId;
+            data.floorId = this.objectData.positionId;
+            data.upPositionId = this.objectData.upPositionId;
+            this.$api.building
+              .queryBuildDetail({ buildId: this.objectData.buildingId })
+              .then((resData) => {
+                if (resData.data.code !== '0') {
+                  this.$message.error(resData.data.message);
+                }
+                return resData.data.data.communityId;
               })
-            })
+              .then((communityId) => {
+                if (communityId && communityId !== '-1') {
+                  data.communityId = communityId;
+                }
+                let loadingName = this.SG_Loding('编辑中...');
+                this.$api.building.updateFloor(data).then(
+                  (res) => {
+                    this.DE_Loding(loadingName).then(() => {
+                      if (res.data.code === '0') {
+                        this.$SG_Message.success('编辑楼层成功');
+                        this.$emit('success', 'edit');
+                      } else {
+                        this.$message.error(res.data.message);
+                      }
+                    });
+                  },
+                  () => {
+                    this.DE_Loding(loadingName).then((res) => {
+                      this.$SG_Message.error('编辑失败！');
+                    });
+                  }
+                );
+              });
           }
         }
-      })
+      });
     },
-    handleCancel () {
+    handleCancel() {
       this.$SG_Modal.confirm({
         content: `确定删除该楼层吗?`,
         okText: '确定',
         cancelText: '再想想',
         onOk: () => {
           let data = {
-            floorId: this.objectData.positionId
-          }
-          data.organId = this.organId
-          this.$api.building.deleteFloor(data).then(res => {
+            floorId: this.objectData.positionId,
+          };
+          data.organId = this.organId;
+          this.$api.building.deleteFloor(data).then((res) => {
             if (res.data.code === '0') {
-              this.$SG_Message.success(`删除成功`)
-              this.$emit('success', 'delete')
+              this.$SG_Message.success(`删除成功`);
+              this.$emit('success', 'delete');
             } else {
-              this.$message.error(res.data.message)
+              this.$message.error(res.data.message);
             }
-          })
-        }
-      })
+          });
+        },
+      });
     },
-  }
-}
+  },
+};
 </script>
 <style lang="less" scoped>
-  .createBuilding-page{
-    height: 100%;
-    padding: 0px 3px 0 50px;
-    position: relative;
-    overflow: hidden;
-  }
-  .form-box{
-    height: 100%;
-    overflow: hidden;
-    overflow-y: auto;
-    padding-top: 36px;
-    padding-bottom: 70px;
-  }
-  .title-box{
-    margin-bottom: 40px;
-  }
+.createBuilding-page {
+  height: 100%;
+  padding: 0px 3px 0 50px;
+  position: relative;
+  overflow: hidden;
+}
+.form-box {
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  padding-top: 36px;
+  padding-bottom: 70px;
+}
+.title-box {
+  margin-bottom: 40px;
+}
 </style>
-

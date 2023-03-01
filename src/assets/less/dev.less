@@ -7,26 +7,29 @@ body.dev {
   // overflow-x: hidden;
   position: relative;
   width: calc(100vw - 200px);
-  transition: all .4s ease;
+  transition: all 0.4s ease;
   overflow-x: hidden;
 }
 
 .p-development {
   position: fixed;
-  left: 0; top: 0;
+  left: 0;
+  top: 0;
   z-index: 1;
   // 开发菜单
   .m-devMenu {
     position: fixed;
-    left: 0; top: 0; bottom: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: @paddingLeft;
-    transition: left .4s ease;
-    >.ant-menu {
+    transition: left 0.4s ease;
+    > .ant-menu {
       height: calc(100vh - 50px);
       overflow-x: hidden;
       overflow-y: auto;
     }
-    >.devOpts {
+    > .devOpts {
       position: absolute;
       bottom: 0;
       left: 0;
@@ -50,7 +53,8 @@ body.dev {
   // 面包屑
   .m-devBreadNav {
     position: fixed;
-    top: 0; right: 0;
+    top: 0;
+    right: 0;
     left: @paddingLeft;
     line-height: 40px;
     height: 40px;
@@ -58,7 +62,7 @@ body.dev {
     box-sizing: border-box;
     border-bottom: 1px solid #ddd;
     background: #fff;
-    transition: left .4s ease;
+    transition: left 0.4s ease;
     .toggleMenu {
       float: left;
       margin-right: 10px;
@@ -84,9 +88,10 @@ body.dev {
         }
       }
     }
-    >.right {
+    > .right {
       position: absolute;
-      right: 0; top: 0;
+      right: 0;
+      top: 0;
       padding-right: 10px;
     }
   }
@@ -139,21 +144,21 @@ body.dev .p-devOpts {
 }
 
 @media print {
-  .bread-nav{
+  .bread-nav {
     display: none;
   }
-  #Dev{
+  #Dev {
     display: none;
   }
   body.dev {
     margin-left: 0;
     width: 100%;
   }
-  body{
+  body {
     margin: 0 !important;
     width: 100%;
   }
-  .router-view{
+  .router-view {
     height: auto;
   }
 }

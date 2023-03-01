@@ -29,7 +29,7 @@
   </div>
 </template>
 <script>
-import { utils } from "@/utils/utils";
+import { utils } from '@/utils/utils';
 
 let getUuid = (
   (uuid = 1) =>
@@ -59,7 +59,7 @@ export default {
     },
     typeFilter: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   watch: {},
@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       autoExpandParent: false,
-      activeKey: "", // 当前点击项
+      activeKey: '', // 当前点击项
       expandedKeys: [],
       copyExpandedKeys: [],
       gData: [],
@@ -78,7 +78,7 @@ export default {
       store: {},
       selectItem: {}, // 当前添加项
       treeUuid: getUuid(),
-      searchValueInput: "", // 搜索框的值
+      searchValueInput: '', // 搜索框的值
     };
   },
   computed: {
@@ -106,7 +106,7 @@ export default {
       }
       this.selectItem = { ...scope };
       this.activeKey = scope.key;
-      this.$emit("change", { ...scope });
+      this.$emit('change', { ...scope });
     },
     // 根据id返回对象
     mapStoreOrganIdItem(organId) {
@@ -139,7 +139,7 @@ export default {
           return o;
         });
       // 重组树树结构
-      let treeData = utils.buildTree(treeList, "key", "parentKey");
+      let treeData = utils.buildTree(treeList, 'key', 'parentKey');
       return treeData;
     },
     onChange(e) {
@@ -164,7 +164,7 @@ export default {
     },
     hanldSelect() {},
     onExpand(expandedKeys) {
-      console.log("expandedKeys", expandedKeys);
+      console.log('expandedKeys', expandedKeys);
       this.expandedKeys = expandedKeys;
       if (!this.searchValueInput) {
         this.copyExpandedKeys = [...expandedKeys];
@@ -182,17 +182,17 @@ export default {
     },
     queryAsynOrganByUserId() {
       let data = {
-        parentOrganId: "",
+        parentOrganId: '',
       };
       return this.$api.assets.queryAsynOrganByUserId(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           this.gData = result.map((item) => {
-            item.type = "frist";
+            item.type = 'frist';
             item.key = item.organId;
             item.id = item.organId;
             item.title = item.name;
-            item.scopedSlots = { title: "title" };
+            item.scopedSlots = { title: 'title' };
             item.parentKey = item.parentOrganId;
             this.store[item.key] = this.store[item.key] || item;
             this.dataList.push({ ...item });
@@ -210,26 +210,26 @@ export default {
     queryAsynOrganByUserIdSon(data = {}, key) {
       return this.$api.assets.queryAsynOrganByUserId(data).then(
         (res) => {
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data || [];
-            let _item = fetchItem(this.gData, key, "key");
+            let _item = fetchItem(this.gData, key, 'key');
             for (let i = 0; i < result.length; i++) {
               let item = result[i];
               item.key = item.organId;
-              item.type = "second";
+              item.type = 'second';
               item.id = item.organId;
               item.title = item.name;
-              item.scopedSlots = { title: "title" };
+              item.scopedSlots = { title: 'title' };
               item.parentKey = key;
               this.store[item.key] = this.store[item.key] || item;
               this.dataList.push({ ...item });
             }
-            let _copyItem = fetchItem(this.copyGdata, key, "key");
+            let _copyItem = fetchItem(this.copyGdata, key, 'key');
             this.expandedKeys.push(key);
             this.expandedKeys = [...new Set(this.expandedKeys)];
             if (_item) {
-              this.$set(_item, "children", result);
-              this.$set(_copyItem, "children", result);
+              this.$set(_item, 'children', result);
+              this.$set(_copyItem, 'children', result);
             }
           } else {
             this.$message.error(res.data.message);
@@ -245,7 +245,7 @@ export default {
 .tree-bg-box {
   z-index: 4;
   &::before {
-    content: "";
+    content: '';
     display: inline-block;
     position: absolute;
     left: 0;

@@ -82,19 +82,19 @@
 </template>
 
 <script>
-import { approvalStatusOpt } from "@/config/share.js";
-import { handleEnumerationConversion } from "utils/utils";
-import OperationPopover from "@/components/OperationPopover";
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "@/views/common/treeSelect";
-import { utils } from "utils/utils";
-import moment from "moment";
-import { getObjectKeyValueByOrganIdFn } from "@/views/disposalManagement/transfer/share";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-const projectIdOpt = [{ label: "全部资产项目", value: "" }];
+import { approvalStatusOpt } from '@/config/share.js';
+import { handleEnumerationConversion } from 'utils/utils';
+import OperationPopover from '@/components/OperationPopover';
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '@/views/common/treeSelect';
+import { utils } from 'utils/utils';
+import moment from 'moment';
+import { getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/transfer/share';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+const projectIdOpt = [{ label: '全部资产项目', value: '' }];
 export default {
   // 资产转让立项
-  name: "transferProjectApproval",
+  name: 'transferProjectApproval',
   components: {
     SearchContainer,
     TreeSelect,
@@ -110,62 +110,62 @@ export default {
       },
       allApprovalStatusOpt: [
         {
-          title: "全部状态",
-          value: "",
+          title: '全部状态',
+          value: '',
         },
         ...approvalStatusOpt,
       ],
       tableOptions: {
-        rowKey: "applyId",
+        rowKey: 'applyId',
         columns: [
           {
-            title: "立项单ID",
-            dataIndex: "applyId",
+            title: '立项单ID',
+            dataIndex: 'applyId',
           },
           {
-            title: "所属机构",
-            dataIndex: "organName",
+            title: '所属机构',
+            dataIndex: 'organName',
           },
           {
-            title: "资产转让立项单名称",
-            dataIndex: "name",
+            title: '资产转让立项单名称',
+            dataIndex: 'name',
           },
           {
-            title: "资产项目",
-            dataIndex: "projectName",
+            title: '资产项目',
+            dataIndex: 'projectName',
           },
           {
-            title: "预估转让价格(元)",
-            dataIndex: "listingPrice",
+            title: '预估转让价格(元)',
+            dataIndex: 'listingPrice',
           },
           {
-            title: "提交人",
-            dataIndex: "create",
+            title: '提交人',
+            dataIndex: 'create',
           },
           {
-            title: "提交时间",
-            dataIndex: "createTime",
+            title: '提交时间',
+            dataIndex: 'createTime',
           },
           {
-            title: "状态",
-            key: "apprStatus",
+            title: '状态',
+            key: 'apprStatus',
             customRender(text, record) {
               const { apprStatus } = record;
-              return handleEnumerationConversion(apprStatus, approvalStatusOpt, ["value", "title"]);
+              return handleEnumerationConversion(apprStatus, approvalStatusOpt, ['value', 'title']);
             },
           },
           {
-            title: "操作",
+            title: '操作',
             scopedSlots: {
-              customRender: "operation",
+              customRender: 'operation',
             },
           },
         ],
         dataSource: [],
         pagination: false,
       },
-      organId: "",
-      organName: "",
+      organId: '',
+      organName: '',
       exportBtnLoading: false,
       showSearchContainer: true,
       // 通过 initQueryForm 初始化
@@ -184,13 +184,13 @@ export default {
         ...this.pageInfo,
         ...this.queryForm,
       });
-      console.log("req", req);
+      console.log('req', req);
       const mockData = await this.$api.transfer.getList(req);
       const {
         data: { code, message, data },
       } = mockData;
-      if (code === "0") {
-        console.log("data", data);
+      if (code === '0') {
+        console.log('data', data);
         this.tableTotal = data.count;
         this.tableOptions.dataSource = data ? data.data : [];
       } else {
@@ -199,7 +199,7 @@ export default {
     },
     goAddEdit(applyId) {
       this.$router.push({
-        path: "/transferProjectApproval/edit",
+        path: '/transferProjectApproval/edit',
         query: {
           applyId,
           organId: this.organId,
@@ -213,7 +213,7 @@ export default {
      * */
     goDetail({ applyId, organId }, fromType) {
       this.$router.push({
-        path: "/transferProjectApproval/detail",
+        path: '/transferProjectApproval/detail',
         query: {
           applyId,
           organId,
@@ -223,7 +223,7 @@ export default {
     },
     btnAddFn() {
       this.$router.push({
-        path: "/transferProjectApproval/add",
+        path: '/transferProjectApproval/add',
         query: {
           organId: this.organId,
           organName: this.organName,
@@ -236,10 +236,10 @@ export default {
      * @param {Number} allLength 除全部状态外的选项size
      * @param {Array}  defaultData 全部状态对应的数据
      * */
-    judgmentSelectAll({ allSelected, allLength, defaultData = [""] }) {
-      if (allSelected[allSelected.length - 1] !== "") {
+    judgmentSelectAll({ allSelected, allLength, defaultData = [''] }) {
+      if (allSelected[allSelected.length - 1] !== '') {
         if (allSelected.length !== allLength) {
-          return allSelected.filter((ele) => ele !== "");
+          return allSelected.filter((ele) => ele !== '');
         } else {
           return defaultData;
         }
@@ -275,34 +275,34 @@ export default {
       // statusAuth 参考 approvalStatusOpt
       const operationList = [
         {
-          iconType: "edit",
-          text: "编辑",
+          iconType: 'edit',
+          text: '编辑',
           statusAuth: [0, 3],
-          editType: "edit",
+          editType: 'edit',
           auth: ASSET_MANAGEMENT.ASSET_TRANSFER_EDIT_PROJECT,
         },
         {
-          iconType: "check-square",
-          text: "审批",
+          iconType: 'check-square',
+          text: '审批',
           statusAuth: [2],
-          editType: "approve",
+          editType: 'approve',
           auth: ASSET_MANAGEMENT.ASSET_TRANSFER_APPROVE_PROJECT,
         },
         {
-          iconType: "minus-square",
-          text: "反审核",
+          iconType: 'minus-square',
+          text: '反审核',
           statusAuth: [1],
-          editType: "antiApprove",
+          editType: 'antiApprove',
           auth: ASSET_MANAGEMENT.ASSET_TRANSFER_ANTI_APPROVE_PROJECT,
         },
         {
-          iconType: "delete",
-          text: "删除",
+          iconType: 'delete',
+          text: '删除',
           statusAuth: [0, 3],
-          editType: "delete",
+          editType: 'delete',
           auth: ASSET_MANAGEMENT.ASSET_TRANSFER_DEL_PROJECT,
         },
-        { iconType: "book", text: "详情", editType: "detail" },
+        { iconType: 'book', text: '详情', editType: 'detail' },
       ];
       const authRes = operationList.filter((ele) => {
         if (!ele.auth) {
@@ -321,32 +321,32 @@ export default {
     operationFun(type, record) {
       const { applyId, organId } = record;
       switch (type) {
-        case "edit":
+        case 'edit':
           this.goAddEdit(applyId);
           break;
-        case "approve":
+        case 'approve':
           this.goDetail(
             {
               applyId,
               organId,
             },
-            "approve"
+            'approve'
           );
           break;
-        case "delete":
+        case 'delete':
           this.handleDel({ applyId });
           break;
-        case "antiApprove":
-          console.log("反审核");
+        case 'antiApprove':
+          console.log('反审核');
           this.handleAntiAudit({ applyId });
           break;
-        case "detail":
+        case 'detail':
           this.goDetail(
             {
               applyId,
               organId,
             },
-            "detail"
+            'detail'
           );
           break;
       }
@@ -354,15 +354,15 @@ export default {
     handleAntiAudit({ applyId }) {
       const _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要反审核吗？",
+        title: '提示',
+        content: '确认要反审核吗？',
         onOk() {
           let req = {
             applyId: applyId,
           };
           _this.$api.transfer.deApproval(req).then((res) => {
             if (Number(res.data.code) === 0) {
-              _this.$message.success("反审核成功");
+              _this.$message.success('反审核成功');
               _this.getTableDataSource();
             } else {
               _this.$message.error(res.data.message);
@@ -374,15 +374,15 @@ export default {
     handleDel({ applyId }) {
       const _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要删除吗？",
+        title: '提示',
+        content: '确认要删除吗？',
         onOk() {
           let req = {
             applyId: applyId,
           };
           _this.$api.transfer.deleteFn(req).then((res) => {
             if (Number(res.data.code) === 0) {
-              _this.$message.success("删除成功");
+              _this.$message.success('删除成功');
               _this.getTableDataSource();
             } else {
               _this.$message.error(res.data.message);
@@ -392,24 +392,24 @@ export default {
       });
     },
     initQueryForm() {
-      const date = [moment(new Date()).add(-3, "month"), moment(new Date())];
+      const date = [moment(new Date()).add(-3, 'month'), moment(new Date())];
       this.queryForm = {
-        projectIds: [""],
+        projectIds: [''],
         date,
-        apprStatus: [""],
-        name: "",
+        apprStatus: [''],
+        name: '',
       };
     },
     handleSearchReq(data) {
       const { projectIds, apprStatus, name, pageNum, pageSize } = data;
-      const startTime = data.date[0].format("YYYY-MM-DD");
-      const endTime = data.date[1].format("YYYY-MM-DD");
+      const startTime = data.date[0].format('YYYY-MM-DD');
+      const endTime = data.date[1].format('YYYY-MM-DD');
       return {
-        type: "2",
+        type: '2',
         organId: this.organId,
         // 为全选 则传空集合
-        projectIds: projectIds[0] === "" ? [] : projectIds,
-        apprStatus: apprStatus[0] === "" ? [] : apprStatus,
+        projectIds: projectIds[0] === '' ? [] : projectIds,
+        apprStatus: apprStatus[0] === '' ? [] : apprStatus,
         name,
         startTime,
         endTime,
@@ -427,7 +427,7 @@ export default {
     changeTree(value, name) {
       this.organId = value;
       this.organName = name;
-      this.queryForm.projectIds = [""];
+      this.queryForm.projectIds = [''];
       getObjectKeyValueByOrganIdFn({ organId: value }).then((data) => {
         this.projectIdOpt = [...utils.deepClone(projectIdOpt), ...data];
       });

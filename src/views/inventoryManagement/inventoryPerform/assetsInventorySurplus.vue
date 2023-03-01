@@ -9,133 +9,144 @@
 <template>
   <div class="wrapper">
     <SG-Modal
-    class="inventoryResultRegistration"
-    width="1080px"
-    v-model="show"
-    :noPadding="true"
-    :title="newData === 'new' ? '登记盘盈资产' : '编辑盘盈资产'"
-    @ok="statusFn"
-    @cancel="handleCancel"
-  >
-  <div class="inventoryResultRegistration">
-    <div class="inventoryResultRegistration-nav">
-      <span class="section-title blue">资产信息</span>
-        <a-row class="playground-row">
-          <a-form :form="form" @submit="handleSubmit">
-            <a-col class="playground-col" :span="12">
-              <a-form-item v-bind="formItemLayout" label="资产名称：">
-                <a-input placeholder="请输入资产名称"
-                :style="allWidth"
-                :maxLength="30"
-                v-decorator="['assetName', {rules: [{required: true, max: 30, whitespace: true, message: '请输入资产名称(不超过30字符)'}], initialValue: newCardData.assetName}]"/>
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="12">
-              <a-form-item :required="true" v-bind="formItemLayout" label="资产类型：">
-                <a-select :style="allWidth" placeholder="请选择资产类型" v-model="newCardData.assetType" @change="assetTypeFn">
-                  <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-           <a-col class="playground-col" :span="12">
-              <a-form-item :required="true" v-bind="formItemLayout" label="资产分类">
+      class="inventoryResultRegistration"
+      width="1080px"
+      v-model="show"
+      :noPadding="true"
+      :title="newData === 'new' ? '登记盘盈资产' : '编辑盘盈资产'"
+      @ok="statusFn"
+      @cancel="handleCancel"
+    >
+      <div class="inventoryResultRegistration">
+        <div class="inventoryResultRegistration-nav">
+          <span class="section-title blue">资产信息</span>
+          <a-row class="playground-row">
+            <a-form :form="form" @submit="handleSubmit">
+              <a-col class="playground-col" :span="12">
+                <a-form-item v-bind="formItemLayout" label="资产名称：">
+                  <a-input
+                    placeholder="请输入资产名称"
+                    :style="allWidth"
+                    :maxLength="30"
+                    v-decorator="[
+                      'assetName',
+                      {
+                        rules: [{ required: true, max: 30, whitespace: true, message: '请输入资产名称(不超过30字符)' }],
+                        initialValue: newCardData.assetName,
+                      },
+                    ]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="12">
+                <a-form-item :required="true" v-bind="formItemLayout" label="资产类型：">
+                  <a-select :style="allWidth" placeholder="请选择资产类型" v-model="newCardData.assetType" @change="assetTypeFn">
+                    <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{
+                      item.name
+                    }}</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="12">
+                <a-form-item :required="true" v-bind="formItemLayout" label="资产分类">
                   <a-select :style="allWidth" placeholder="请选择资产分类" v-model="newCardData.assetClassify">
                     <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">
-                      {{item.name}}
+                      {{ item.name }}
                     </a-select-option>
                   </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="24">
-              <a-form-item v-bind="formItemTextarea" label="资产位置：">
-                <a-textarea placeholder="请输入资产位置"
-                  :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="100"
-                  v-decorator="['assetAddress',
-                  {rules: [{required: false, max: 100, message: '请输入资产位置(不超过100字符)'}], initialValue: newCardData.assetAddress}
-                  ]"
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="24">
+                <a-form-item v-bind="formItemTextarea" label="资产位置：">
+                  <a-textarea
+                    placeholder="请输入资产位置"
+                    :style="widthBox"
+                    :autosize="{ minRows: 3, maxRows: 3 }"
+                    :maxLength="100"
+                    v-decorator="[
+                      'assetAddress',
+                      { rules: [{ required: false, max: 100, message: '请输入资产位置(不超过100字符)' }], initialValue: newCardData.assetAddress },
+                    ]"
                   />
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="24">
-              <a-form-item v-bind="formItemTextarea" label="备注：">
-                <a-textarea placeholder="请输入备注"
-                  :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
-                  v-decorator="['remark',
-                  {rules: [{required: false, max: 200, message: '请输入备注(不超过200字符)'}], initialValue: newCardData.remark}
-                  ]"
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="24">
+                <a-form-item v-bind="formItemTextarea" label="备注：">
+                  <a-textarea
+                    placeholder="请输入备注"
+                    :style="widthBox"
+                    :autosize="{ minRows: 3, maxRows: 3 }"
+                    :maxLength="200"
+                    v-decorator="[
+                      'remark',
+                      { rules: [{ required: false, max: 200, message: '请输入备注(不超过200字符)' }], initialValue: newCardData.remark },
+                    ]"
                   />
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="24">
-            <a-form-item v-bind="formItemTextarea" label="上传图片：">
-              <UploadFile
-                type="all"
-                v-model="newCardData.files"
-                :maxSize="20480"
-                :customDownload="
-                  (value) => {
-                    return customDownload(
-                      value,
-                      $api.ownership.downLoadAnnex
-                    );
-                  }
-                "
-                :customUpload="
-                  (value) => {
-                    return customUpload(value, $api.ownership.uploadAnnex);
-                  }
-                "
-              >
-                <span slot="tips">(注：上传的图片最多为 5 个,且图片大小小于20M)</span>
-              </UploadFile>
-            </a-form-item>
-          </a-col>
-          </a-form>
-        </a-row>
-    </div>
-  </div>
-  </SG-Modal>
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="24">
+                <a-form-item v-bind="formItemTextarea" label="上传图片：">
+                  <UploadFile
+                    type="all"
+                    v-model="newCardData.files"
+                    :maxSize="20480"
+                    :customDownload="
+                      (value) => {
+                        return customDownload(value, $api.ownership.downLoadAnnex);
+                      }
+                    "
+                    :customUpload="
+                      (value) => {
+                        return customUpload(value, $api.ownership.uploadAnnex);
+                      }
+                    "
+                  >
+                    <span slot="tips">(注：上传的图片最多为 5 个,且图片大小小于20M)</span>
+                  </UploadFile>
+                </a-form-item>
+              </a-col>
+            </a-form>
+          </a-row>
+        </div>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
 <script>
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 export default {
   components: {},
   props: {},
-  mixins:[uploadAndDownLoadFIle],
-  data () {
+  mixins: [uploadAndDownLoadFIle],
+  data() {
     return {
       organId: '',
       resultId: '',
-      checkId: '',   // 盘点单id
-      taskId: '',     // 任务id
-      assetId: '',   // 资产id
-      assetTypeData: [],      // 资产类型
-      assetClassifyData: [],  // 资产分类
-      checkResult: '',     // 盘点结果
+      checkId: '', // 盘点单id
+      taskId: '', // 任务id
+      assetId: '', // 资产id
+      assetTypeData: [], // 资产类型
+      assetClassifyData: [], // 资产分类
+      checkResult: '', // 盘点结果
       show: false,
       newData: '',
       particularsData: '',
       formItemTextarea: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 3 }
-        }
+          sm: { span: 3 },
+        },
       },
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 6 }
+          sm: { span: 6 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 18 }
-        }
+          sm: { span: 18 },
+        },
       },
       form: this.$form.createForm(this),
       allWidth: 'width: 214px',
@@ -146,178 +157,180 @@ export default {
         assetAddress: '',
         assetName: '',
         remark: '',
-        files: []
-      }
-    }
+        files: [],
+      },
+    };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     // 资产类型选择
-    assetTypeFn (val) {
-      this.newCardData.assetType = val
-      this.getListFn()
+    assetTypeFn(val) {
+      this.newCardData.assetType = val;
+      this.getListFn();
     },
     // 平台字典获取变动类型
-    platformDictFn (str) {
+    platformDictFn(str) {
       let obj = {
-        code: str
-      }
-      this.$api.assets.platformDict(obj).then(res => {
+        code: str,
+      };
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
+          let data = res.data.data;
           if (str === 'asset_type') {
-            this.assetTypeData = [...data]
-            this.getListFn()
+            this.assetTypeData = [...data];
+            this.getListFn();
           }
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
+      });
     },
     // 资产分类列表
-    getListFn () {
+    getListFn() {
       let obj = {
         organId: this.organId,
-        assetType: this.newCardData.assetType
-      }
-      this.$api.assets.getList(obj).then(res => {
+        assetType: this.newCardData.assetType,
+      };
+      this.$api.assets.getList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          let arr = []
-          data.forEach(item => {
+          let data = res.data.data;
+          let arr = [];
+          data.forEach((item) => {
             arr.push({
               name: item.professionName,
-              value: item.professionCode
-            })
-          })
-          this.assetClassifyData = arr
+              value: item.professionCode,
+            });
+          });
+          this.assetClassifyData = arr;
         }
-      })
+      });
     },
     // 关闭弹窗
-    handleCancel (str) {
+    handleCancel(str) {
       if (str === 'success') {
-        this.$emit('successQuery')
+        this.$emit('successQuery');
       }
-      this.show = false
-      this.$emit('showFn', this.show)
+      this.show = false;
+      this.$emit('showFn', this.show);
     },
-    handleSubmit (e) {
-      e.preventDefault()
+    handleSubmit(e) {
+      e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
+          console.log('Received values of form: ', values);
         } else {
           // console.log('Received values of form: ', values)
         }
-      })
+      });
     },
     // 提交
-    statusFn () {
+    statusFn() {
       this.form.validateFields((err, values) => {
         if (!err) {
           // 添加资产类型和资产分类校验
-          const validateArr = [undefined,null,""]
-          let errorStr = ''
-          if(validateArr.includes(this.newCardData.assetType)){
-            errorStr = '请选择资产类型'
-          }else if (validateArr.includes(this.newCardData.assetClassify)){
-            errorStr = '请选择资产分类'
+          const validateArr = [undefined, null, ''];
+          let errorStr = '';
+          if (validateArr.includes(this.newCardData.assetType)) {
+            errorStr = '请选择资产类型';
+          } else if (validateArr.includes(this.newCardData.assetClassify)) {
+            errorStr = '请选择资产分类';
           }
-          if (errorStr){
-            this.$message.error(errorStr)
-            return null
+          if (errorStr) {
+            this.$message.error(errorStr);
+            return null;
           }
 
-          let files = []
+          let files = [];
           if (this.newCardData.files.length > 0) {
-            this.newCardData.files.forEach(list => {
+            this.newCardData.files.forEach((list) => {
               files.push({
                 attachmentPath: list.url,
-                oldAttachmentName: list.name
-              })
-            })
+                oldAttachmentName: list.name,
+              });
+            });
           }
           let obj = {
-            resultId: this.resultId,  // 盘点id
-            checkId: this.checkId,                 // 盘点单id
-            taskId: this.taskId,                  // 任务id
-            assetId: this.assetId,                 // 资产id
-            checkResult: this.newData === 'new' ? '3' : this.checkResult,             // 盘点结果(0盘亏 1正常 2信息有误 3盘盈)
-            remark: values.remark,                  // 备注(异常说明)
-            assetName: values.assetName,               // 资产名称(非盘盈利为空)
-            assetType: this.newCardData.assetType,               // 资产类型(非盘盈利为空)
-            objectType: this.newCardData.assetClassify,              // 资产分类(非盘盈利为空)
-            assetAddress: values.assetAddress,            // 资产位置(非盘盈利为空)
-            attachmentList: files        // 附件
-          }
-          console.log(obj, '-=-=-=-=')
-          let loadingName = this.SG_Loding('保存中...')
-          this.$api.inventoryManagementApi.assetCheckInstCheckResult(obj).then(res => {
+            resultId: this.resultId, // 盘点id
+            checkId: this.checkId, // 盘点单id
+            taskId: this.taskId, // 任务id
+            assetId: this.assetId, // 资产id
+            checkResult: this.newData === 'new' ? '3' : this.checkResult, // 盘点结果(0盘亏 1正常 2信息有误 3盘盈)
+            remark: values.remark, // 备注(异常说明)
+            assetName: values.assetName, // 资产名称(非盘盈利为空)
+            assetType: this.newCardData.assetType, // 资产类型(非盘盈利为空)
+            objectType: this.newCardData.assetClassify, // 资产分类(非盘盈利为空)
+            assetAddress: values.assetAddress, // 资产位置(非盘盈利为空)
+            attachmentList: files, // 附件
+          };
+          console.log(obj, '-=-=-=-=');
+          let loadingName = this.SG_Loding('保存中...');
+          this.$api.inventoryManagementApi.assetCheckInstCheckResult(obj).then((res) => {
             if (Number(res.data.code) === 0) {
-              let _this = this
+              let _this = this;
               this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success('提交成功')
-                _this.handleCancel('success')
-              })
+                this.$SG_Message.success('提交成功');
+                _this.handleCancel('success');
+              });
             } else {
               this.DE_Loding(loadingName).then(() => {
-                this.$message.error(res.data.message)
-              })
+                this.$message.error(res.data.message);
+              });
             }
-          })
+          });
         }
-      })
+      });
     },
-    newFn (str, resultId, checkId, taskId, organId) {
-      this.newData = str
-      this.resultId = resultId
-      this.checkId = checkId   // 盘点单id
-      this.taskId = taskId     // 任务id
-      this.organId = organId
+    newFn(str, resultId, checkId, taskId, organId) {
+      this.newData = str;
+      this.resultId = resultId;
+      this.checkId = checkId; // 盘点单id
+      this.taskId = taskId; // 任务id
+      this.organId = organId;
     },
     // 查询详情
-    query (str, resultId, checkId, taskId, assetId, organId) {
-      this.newData = str
-      this.resultId = resultId
-      this.checkId = checkId   // 盘点单id
-      this.taskId = taskId     // 任务id
-      this.assetId = assetId   // 资产id
-      this.organId = organId
+    query(str, resultId, checkId, taskId, assetId, organId) {
+      this.newData = str;
+      this.resultId = resultId;
+      this.checkId = checkId; // 盘点单id
+      this.taskId = taskId; // 任务id
+      this.assetId = assetId; // 资产id
+      this.organId = organId;
       let obj = {
-        resultId: this.resultId  // 盘点id
-      }
-      this.$api.inventoryManagementApi.assetCheckInstFailDetail(obj).then(res => {
+        resultId: this.resultId, // 盘点id
+      };
+      this.$api.inventoryManagementApi.assetCheckInstFailDetail(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.particularsData = data
+          let data = res.data.data;
+          this.particularsData = data;
           if (this.newData === 'set') {
             this.form.setFieldsValue({
               remark: this.particularsData.remark,
               assetName: this.particularsData.assetName,
-              assetAddress: this.particularsData.location
-            })
-            this.newCardData.assetType = String(this.particularsData.assetType) || ''             // 资产类型
-            this.newCardData.assetClassify = String(this.particularsData.objectType) || ''             // 资产分类
-            this.checkResult = this.particularsData.checkResult
+              assetAddress: this.particularsData.location,
+            });
+            this.newCardData.assetType = String(this.particularsData.assetType) || ''; // 资产类型
+            this.newCardData.assetClassify = String(this.particularsData.objectType) || ''; // 资产分类
+            this.checkResult = this.particularsData.checkResult;
             if (data.attachmentList && data.attachmentList.length > 0) {
-              this.newCardData.files = data.attachmentList.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+              this.newCardData.files = data.attachmentList.map((ele) => ({
+                url: ele.attachmentPath,
+                name: ele.oldAttachmentName,
+                attachmentId: ele.attachmentId,
+              }));
             }
           }
-          this.getListFn()      // 查询资产分类
+          this.getListFn(); // 查询资产分类
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
-    }
+      });
+    },
   },
-  created () {
+  created() {},
+  mounted() {
+    this.platformDictFn('asset_type');
   },
-  mounted () {
-    this.platformDictFn('asset_type')
-  }
-}
+};
 </script>
 <style lang="less" scoped>
 .inventoryResultRegistration {

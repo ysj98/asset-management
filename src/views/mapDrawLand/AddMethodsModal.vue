@@ -11,12 +11,7 @@
     >
       <div>
         <div style="text-align: right; margin-bottom: 10px">
-          <a-input-search
-            style="width: 200px"
-            v-model="queryForm.schemeName"
-            placeholder="方案名称"
-            @search="queryLayerPageList"
-          ></a-input-search>
+          <a-input-search style="width: 200px" v-model="queryForm.schemeName" placeholder="方案名称" @search="queryLayerPageList"></a-input-search>
         </div>
         <a-table size="middle" ref="refTable" v-bind="tableOptions">
           <!-- 所属机构  -->
@@ -51,53 +46,28 @@
           </template>
           <!-- 操作  -->
           <template #action="text, record, index">
-            <a
-              v-if="record.layerId && record._editFlag"
-              @click="handleSave(record)"
-            >
-              保存
-            </a>
-            <a
-              v-if="record.layerId && !record._editFlag"
-              @click="handleEdit(record)"
-              class="right-block"
-            >
-              编辑
-            </a>
-            <a
-              v-if="record.layerId && record._editFlag"
-              @click="handleCancel(record)"
-              class="right-block"
-            >
-              取消
-            </a>
-            <a
-              v-if="!record._editFlag"
-              @click="handleDelete(record)"
-              class="right-block"
-            >
-              删除
-            </a>
+            <a v-if="record.layerId && record._editFlag" @click="handleSave(record)"> 保存 </a>
+            <a v-if="record.layerId && !record._editFlag" @click="handleEdit(record)" class="right-block"> 编辑 </a>
+            <a v-if="record.layerId && record._editFlag" @click="handleCancel(record)" class="right-block"> 取消 </a>
+            <a v-if="!record._editFlag" @click="handleDelete(record)" class="right-block"> 删除 </a>
           </template>
         </a-table>
         <div class="table-footer" @click="doAdd">新增方案</div>
-        <div style="margin-top: 10px">
-          合计 {{ tableOptions.dataSource.length }} 条
-        </div>
+        <div style="margin-top: 10px">合计 {{ tableOptions.dataSource.length }} 条</div>
       </div>
     </SG-Modal>
   </div>
 </template>
 
 <script>
-import TreeSelect from "@/views/common/treeSelect";
-import { uuid } from "utils/utils";
+import TreeSelect from '@/views/common/treeSelect';
+import { uuid } from 'utils/utils';
 
 export default {
   /*
    * 新建方案
    * */
-  name: "AddMethodsModal",
+  name: 'AddMethodsModal',
   components: { TreeSelect },
   props: {
     modalObj: {
@@ -113,7 +83,7 @@ export default {
         pageNum: 1,
       },
       queryForm: {
-        schemeName: "",
+        schemeName: '',
       },
       tableOptions: {
         rowKey: function (record) {
@@ -124,26 +94,26 @@ export default {
         scroll: { y: 400 },
         columns: [
           {
-            title: "序号",
+            title: '序号',
             width: 80,
             customRender: this.generateSerialNumber,
           },
           {
-            title: "所属机构",
-            key: "organName",
-            scopedSlots: { customRender: "organName" },
+            title: '所属机构',
+            key: 'organName',
+            scopedSlots: { customRender: 'organName' },
           },
           {
-            title: "方案名称",
-            key: "schemeName",
+            title: '方案名称',
+            key: 'schemeName',
             scopedSlots: {
-              customRender: "schemeName",
+              customRender: 'schemeName',
             },
           },
           {
-            title: "操作",
+            title: '操作',
             scopedSlots: {
-              customRender: "action",
+              customRender: 'action',
             },
           },
         ],
@@ -152,8 +122,8 @@ export default {
   },
   methods: {
     handleSelectOrgan({ organName, organId }, record) {
-      this.$set(record, "organName", organName);
-      this.$set(record, "organId", organId);
+      this.$set(record, 'organName', organName);
+      this.$set(record, 'organId', organId);
     },
     async handleSave(record) {
       if (record.layerId) {
@@ -165,10 +135,10 @@ export default {
         const {
           data: { code, message },
         } = await this.$api.drawMap.updateLayerScheme(req);
-        if (code === "0") {
+        if (code === '0') {
           this.changeEdit(record, false);
-          this.$SG_Message.success({ content: "操作成功" });
-          this.$emit("doRefresh");
+          this.$SG_Message.success({ content: '操作成功' });
+          this.$emit('doRefresh');
         } else {
           this.$SG_Message.error(message);
         }
@@ -176,16 +146,16 @@ export default {
     },
     // 改变表格指定行的编辑状态
     changeEdit(record, flag) {
-      this.$set(record, "_editFlag", flag);
+      this.$set(record, '_editFlag', flag);
     },
     handleEdit(record) {
-      this.$set(record, "_originObj", { ...record });
+      this.$set(record, '_originObj', { ...record });
       this.changeEdit(record, true);
     },
     handleCancel(record) {
       this.changeEdit(record, true);
       Object.keys(record).forEach((ele) => {
-        if (ele !== "_originObj") {
+        if (ele !== '_originObj') {
           this.$set(record, ele, record._originObj[ele]);
         }
       });
@@ -194,24 +164,20 @@ export default {
       const _this = this;
       // 本地删除
       if (record._key) {
-        const idx = this.tableOptions.dataSource.findIndex(
-          (ele) => ele._key === record._key
-        );
+        const idx = this.tableOptions.dataSource.findIndex((ele) => ele._key === record._key);
         if (idx !== -1) {
           this.tableOptions.dataSource.splice(idx, 1);
-          this.$SG_Message.success({ content: "操作成功" });
+          this.$SG_Message.success({ content: '操作成功' });
         }
       }
       // 调用接口删除
       if (record.layerId) {
-        const idx = this.tableOptions.dataSource.findIndex(
-          (ele) => ele.layerId === record.layerId
-        );
+        const idx = this.tableOptions.dataSource.findIndex((ele) => ele.layerId === record.layerId);
         this.$SG_Modal.confirm({
-          content: "确认删除吗?",
-          okText: "确定",
-          cancelText: "关闭",
-          type: "delete",
+          content: '确认删除吗?',
+          okText: '确定',
+          cancelText: '关闭',
+          type: 'delete',
           onOk: async () => {
             const req = {
               layerId: record.layerId,
@@ -219,11 +185,11 @@ export default {
             const {
               data: { code, message },
             } = await _this.$api.drawMap.deleteLayerScheme(req);
-            if (code === "0") {
+            if (code === '0') {
               if (idx !== -1) {
                 _this.tableOptions.dataSource.splice(idx, 1);
-                _this.$SG_Message.success({ content: "操作成功" });
-                _this.$emit("doRefresh");
+                _this.$SG_Message.success({ content: '操作成功' });
+                _this.$emit('doRefresh');
               }
             } else {
               _this.$SG_Message.error(message);
@@ -252,7 +218,7 @@ export default {
           message,
         },
       } = await this.$api.drawMap.queryLayerPageList(req);
-      if (code === "0") {
+      if (code === '0') {
         this.handleTableData(data || []);
       } else {
         this.$SG_Message.error(message);
@@ -265,7 +231,7 @@ export default {
         // return "最少一个新增一个数据";
       } else {
         if (data.some((ele) => !ele.organId || !ele.schemeName)) {
-          return "请选择所属机构和填写方案名称";
+          return '请选择所属机构和填写方案名称';
         }
       }
     },
@@ -281,23 +247,21 @@ export default {
           schemeName: ele.schemeName,
           organId: ele.organId,
         };
-        this.$api.drawMap
-          .addLayerScheme(req)
-          .then(({ data: { code, message } }) => {
-            console.log("code", code);
-            if (code === "0") {
-              this.$SG_Message.success("保存成功");
-              this.queryLayerPageList();
-              this.$emit("success");
-              this.$emit("doRefresh");
-            } else {
-              this.$SG_Message.error(message);
-            }
-          });
+        this.$api.drawMap.addLayerScheme(req).then(({ data: { code, message } }) => {
+          console.log('code', code);
+          if (code === '0') {
+            this.$SG_Message.success('保存成功');
+            this.queryLayerPageList();
+            this.$emit('success');
+            this.$emit('doRefresh');
+          } else {
+            this.$SG_Message.error(message);
+          }
+        });
       });
     },
     doClosePop() {
-      this.$emit("doClosePop", this.modalObj.modalName);
+      this.$emit('doClosePop', this.modalObj.modalName);
     },
     doSearch() {
       this.pageObj.pageNum = 1;
@@ -311,13 +275,12 @@ export default {
     // 新增方案
     doAdd() {
       this.tableOptions.dataSource.push({
-        organId: "",
-        schemeName: "",
+        organId: '',
+        schemeName: '',
         _key: uuid(),
       });
       this.$nextTick(() => {
-        const antTableBodyEle =
-          this.$refs.refTable.$el.querySelector(".ant-table-body");
+        const antTableBodyEle = this.$refs.refTable.$el.querySelector('.ant-table-body');
         antTableBodyEle.scrollTop = antTableBodyEle.scrollHeight;
       });
     },

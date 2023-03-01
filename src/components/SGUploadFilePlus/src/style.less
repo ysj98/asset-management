@@ -4,11 +4,11 @@
     height: 160px;
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     background: #fff;
     &:hover {
-      box-shadow: 0 1px 8px rgba(0, 0, 0, .14);
+      box-shadow: 0 1px 8px rgba(0, 0, 0, 0.14);
       .ItemDelete {
         visibility: visible;
         opacity: 1;
@@ -20,7 +20,7 @@
     &.nodata {
       background: none;
       box-shadow: none;
-      border:1px dashed #DCE1E6;
+      border: 1px dashed #dce1e6;
     }
     // 内容
     .ItemBox {
@@ -28,16 +28,39 @@
       height: 100%;
       background-size: cover;
       background-image: url(./images/icon-image.png);
-      &.txt { background-image: url(./images/icon-txt.png); }
-      &.pdf { background-image: url(./images/icon-pdf.png); }
-      &.doc, &.docx { background-image: url(./images/icon-doc.png); }
-      &.xlsx, &.xls { background-image: url(./images/icon-xlsl.png); }
-      &.ppt, &.pptx { background-image: url(./images/icon-ppt.png); }
-      &.zip { background-image: url(./images/icon-zip.png); }
-      &.rar { background-image: url(./images/icon-rar.png); }
-      &.gz { background-image: url(./images/icon-gz.png); }
-      &.7z { background-image: url(./images/icon-7z.png); }
-      &.acd { background-image: url(./images/icon-acd.png); }
+      &.txt {
+        background-image: url(./images/icon-txt.png);
+      }
+      &.pdf {
+        background-image: url(./images/icon-pdf.png);
+      }
+      &.doc,
+      &.docx {
+        background-image: url(./images/icon-doc.png);
+      }
+      &.xlsx,
+      &.xls {
+        background-image: url(./images/icon-xlsl.png);
+      }
+      &.ppt,
+      &.pptx {
+        background-image: url(./images/icon-ppt.png);
+      }
+      &.zip {
+        background-image: url(./images/icon-zip.png);
+      }
+      &.rar {
+        background-image: url(./images/icon-rar.png);
+      }
+      &.gz {
+        background-image: url(./images/icon-gz.png);
+      }
+      &.7z {
+        background-image: url(./images/icon-7z.png);
+      }
+      &.acd {
+        background-image: url(./images/icon-acd.png);
+      }
       img {
         display: block;
         width: 100%;
@@ -52,17 +75,17 @@
           transform: translate(-50%, -50%) scale(1.2);
         }
       }
-      >.ant-spin {
+      > .ant-spin {
         position: absolute;
         left: 0;
         right: 0;
         bottom: 40px;
         top: 0;
-        background: rgba(255, 255, 255, .8);
+        background: rgba(255, 255, 255, 0.8);
         .anticon {
           position: absolute;
-        top: 50%;
-        left: 50%;
+          top: 50%;
+          left: 50%;
           transform: translate(-50%, -50%);
         }
       }
@@ -82,15 +105,15 @@
         overflow: hidden;
         text-overflow: ellipsis;
         padding: 0 12px;
-        color: #49505E;
+        color: #49505e;
         white-space: nowrap;
       }
       .download {
         height: 16px;
         line-height: 16px;
         padding: 0 12px;
-        border-left: 1px solid #DCE1E6;
-        color: #959DAB;
+        border-left: 1px solid #dce1e6;
+        color: #959dab;
         cursor: pointer;
         &:hover {
           color: #333;
@@ -104,7 +127,7 @@
       height: 24px;
       text-align: center;
       line-height: 24px;
-      background: rgba(0, 0, 0, .2);
+      background: rgba(0, 0, 0, 0.2);
       color: #fff;
       position: absolute;
       left: 0;
@@ -116,7 +139,7 @@
     .ItemDelete {
       visibility: hidden;
       opacity: 0;
-      transition: opacity .3s ease;
+      transition: opacity 0.3s ease;
       width: 24px;
       height: 24px;
       text-align: center;
@@ -126,7 +149,7 @@
       position: absolute;
       top: 4px;
       right: 4px;
-      color: #959DAB;
+      color: #959dab;
       font-size: 10px;
       cursor: pointer;
       &:hover {
@@ -145,10 +168,10 @@
       width: 64px;
       line-height: 24px;
       background: #fff;
-      opacity: .8;
+      opacity: 0.8;
       border-radius: 4px;
       text-align: center;
-      color: #0084FF;
+      color: #0084ff;
       font-size: 13px;
       cursor: pointer;
     }
@@ -157,7 +180,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, .1);
+      background: rgba(0, 0, 0, 0.1);
       color: #fff;
       min-width: 80px;
       line-height: 40px;
@@ -170,59 +193,58 @@
 
 .sg-uploadFile {
   max-width: 848px;
-  >.fileBox {
+  > .fileBox {
     display: flex;
     justify-content: space-between;
     line-height: 32px;
     height: 32px;
     margin-bottom: 20px;
-    >.btn {
+    > .btn {
       width: 160px;
       .segi-butn {
         width: 100%;
-        
       }
       input {
         display: none;
       }
     }
-    >.tips {
+    > .tips {
       flex: 1 1 auto;
       font-size: 12px;
-      color: #959DAB;
+      color: #959dab;
       padding-left: 20px;
     }
-    >.total {
+    > .total {
       font-size: 12px;
-      color: #959DAB;
+      color: #959dab;
       span {
         font-weight: bold;
         font-size: 14px;
         margin: 0 5px;
-        color: #49505E;
+        color: #49505e;
       }
     }
   }
-  >.notData {
+  > .notData {
     width: 160px;
     height: 160px;
-    border: 1px dashed #DCE1E6;
-    background: #FAFAFA;
+    border: 1px dashed #dce1e6;
+    background: #fafafa;
     border-radius: 4px;
     text-align: center;
     line-height: 160px;
-    color: #C0C9D1;
+    color: #c0c9d1;
     font-size: 14px;
     margin-bottom: 20px;
   }
-  >.preview {
+  > .preview {
     overflow: hidden;
     padding-left: 4px;
     margin: 0 -4px;
-    >.previewWrap {
-      transition: transform .6s ease;
+    > .previewWrap {
+      transition: transform 0.6s ease;
       margin-bottom: 20px;
-      >.item {
+      > .item {
         float: left;
         margin-right: 12px;
       }
@@ -232,16 +254,17 @@
         clear: both;
       }
     }
-    >.previewPages {
+    > .previewPages {
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
-      >.previewPrev, >.previewNext {
+      > .previewPrev,
+      > .previewNext {
         font-size: 13px;
         width: 32px;
         height: 32px;
         border-radius: 100%;
-        border: 2px solid #DCE1E6;
+        border: 2px solid #dce1e6;
         cursor: pointer;
         display: flex;
         justify-content: center;
@@ -249,11 +272,11 @@
         &.disabled {
           cursor: no-drop;
           .sg-iconExt {
-            border-color: #DCE1E6;
+            border-color: #dce1e6;
           }
         }
       }
-      >ul {
+      > ul {
         display: flex;
         list-style: none;
         padding: 0;
@@ -263,12 +286,12 @@
           width: 10px;
           height: 10px;
           border-radius: 100%;
-          background: #DCE1E6;
+          background: #dce1e6;
           margin-right: 12px;
-          transition: all .3s ease;
+          transition: all 0.3s ease;
           cursor: pointer;
           &.active {
-            background: #0084FF;
+            background: #0084ff;
           }
         }
       }
@@ -278,10 +301,11 @@
 }
 
 .sg-uploadFile.show {
-  >.preview {
+  > .preview {
     padding: 0;
     .item {
-      .ItemDelete, .ItemAction {
+      .ItemDelete,
+      .ItemAction {
         display: none;
       }
       .ItemIndex {
@@ -308,7 +332,7 @@ div.sg-uploadFile-showImage {
         min-height: 100%;
         filter: grayscale(100%);
       }
-      &.slick-active img{
+      &.slick-active img {
         filter: grayscale(0%);
       }
     }
@@ -319,7 +343,7 @@ div.sg-uploadFile-showImage {
     align-items: center;
     border-radius: 8px 8px 0 0;
     overflow: hidden;
-    >div {
+    > div {
       width: 100%;
     }
     img {
@@ -327,13 +351,14 @@ div.sg-uploadFile-showImage {
       width: 100%;
     }
   }
-  .ant-carousel .slick-prev, .ant-carousel .slick-next {
+  .ant-carousel .slick-prev,
+  .ant-carousel .slick-next {
     font-size: 40px;
     color: #fff;
     width: 70px;
     height: 40px;
-    opacity: .5;
-    transition: opacity .3s ease;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
     z-index: 1;
     margin-top: -50px;
     &::before {
@@ -356,8 +381,8 @@ div.sg-uploadFile-showUpload {
   .itemBox {
     min-height: 105px;
     .errorTips {
-      background:rgba(255,108,93, .1);
-      color: #FD7474;
+      background: rgba(255, 108, 93, 0.1);
+      color: #fd7474;
       line-height: 30px;
       margin: -14px -30px;
       padding: 0 30px;
@@ -366,7 +391,7 @@ div.sg-uploadFile-showUpload {
       margin-bottom: 10px;
     }
     &::after {
-      content: "";
+      content: '';
       display: block;
       clear: both;
     }
@@ -385,7 +410,7 @@ div.sg-uploadFile-showUpload.error {
   .itemBox {
     .item {
       .title {
-        color: #FD7474;
+        color: #fd7474;
       }
     }
   }

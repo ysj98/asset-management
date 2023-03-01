@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { debounce } from "@/utils/utils";
+import { debounce } from '@/utils/utils';
 export default {
   components: {},
   props: {
@@ -36,7 +36,7 @@ export default {
     },
     defaultOrganName: {
       type: String,
-      default: "",
+      default: '',
     },
     // 默认支持清空
     allowClear: {
@@ -45,12 +45,12 @@ export default {
     },
     placeholder: {
       type: String,
-      default: "请选择组织机构树",
+      default: '请选择组织机构树',
     },
     // 过滤参数
     typeFilter: {
       type: String,
-      default: "",
+      default: '',
     },
     value: {
       type: [String, Number],
@@ -86,24 +86,24 @@ export default {
       type: Object,
       default: function () {
         return {
-          maxHeight: "400px",
-          overflow: "auto",
+          maxHeight: '400px',
+          overflow: 'auto',
         };
       },
     },
   },
   model: {
-    event: "change",
-    prop: "value",
+    event: 'change',
+    prop: 'value',
   },
   data() {
     return {
       mapDefault: this.default,
       showDefaultOrganName: false,
-      organId: "",
+      organId: '',
       treeData: [],
       maxTagCount: -1,
-      searchName: "", // 搜索字段
+      searchName: '', // 搜索字段
       organIdMap: {}, // 存储所有的组织机构id {key: organId, value: {}}
     };
   },
@@ -119,7 +119,7 @@ export default {
         this.initDepartment();
       }
       if (nVal === oVal || !nVal) return;
-      this.$emit("change", nVal);
+      this.$emit('change', nVal);
     },
     defaultOrganName: {
       handler: function (newValue) {
@@ -133,7 +133,7 @@ export default {
   methods: {
     // 第一次进来获取组织机构
     initDepartment(organTopId, organTopName) {
-      this.$api.assets.queryAsynOrganByUserId({ parentOrganId: "", typeFilter: this.typeFilter }).then((res) => {
+      this.$api.assets.queryAsynOrganByUserId({ parentOrganId: '', typeFilter: this.typeFilter }).then((res) => {
         if (Number(res.data.code) === 0) {
           let resultData = res.data.data;
           // TODO: 过滤同一 一级机构, 这种通过 外部 ref 调用内部方法 传参 区分过滤 的写法 不太优雅,有时间优化一下
@@ -151,8 +151,8 @@ export default {
             this.organId = this.treeData[0].organId;
             this.organName = this.treeData[0].name;
             // 顶级机构不要一进来就查 organId为1 的是顶级机构
-            if (this.treeData[0].organId !== "1") {
-              this.$emit("changeTree", this.organId, this.organName);
+            if (this.treeData[0].organId !== '1') {
+              this.$emit('changeTree', this.organId, this.organName);
             }
           }
         }
@@ -161,31 +161,31 @@ export default {
     // 组织机构子节点选择
     onLoadData(node) {
       return new Promise((resolve) => {
-        console.log(this.mapDefault, "判断展开");
+        console.log(this.mapDefault, '判断展开');
         if (!this.mapDefault) {
           resolve();
           return;
         }
         // 组织机构系统设置统一查询接口
         this.$api.paramsConfig.queryParamsConfigDetail({ organId: node.value, serviceType: 1010 }).then((res) => {
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             const { isValid, paramKey } = res.data.data;
             if (Number(isValid) === 1) {
               if (this.typeFilter.length) {
-                if (!this.typeFilter.includes("7")) {
-                  this.typeFilter = this.typeFilter + ",7";
+                if (!this.typeFilter.includes('7')) {
+                  this.typeFilter = this.typeFilter + ',7';
                 }
               } else {
-                this.typeFilter = "7";
+                this.typeFilter = '7';
               }
             } else {
-              if (this.typeFilter.length && this.typeFilter.includes("7")) {
+              if (this.typeFilter.length && this.typeFilter.includes('7')) {
                 this.typeFilter = this.typeFilter
-                  .split(",")
+                  .split(',')
                   .filter((item) => {
-                    return item !== "7";
+                    return item !== '7';
                   })
-                  .join(",");
+                  .join(',');
               }
             }
 
@@ -240,7 +240,7 @@ export default {
             // isLeaf: Array.isArray(node.children) && node.children.length <= 0,
           };
           // 多选时，顶级机构不可被选中
-          if (self.multiple && obj.organId + "" === "1") {
+          if (self.multiple && obj.organId + '' === '1') {
             obj.checkable = false;
           }
           resultData.push(obj);
@@ -265,27 +265,27 @@ export default {
       this.showDefaultOrganName = false;
       if (!this.multiple) {
         // 单选
-        this.$emit("changeTree", value, label[0]);
+        this.$emit('changeTree', value, label[0]);
         this.organName = label[0];
         this.organId = value;
-        console.log(value, label, "单选组织结构树change事件");
+        console.log(value, label, '单选组织结构树change事件');
       } else {
         // 如果是多选只能选中一个一级物业 一级物业 如organCode为八位
         let flag = value.filter((item) => this.organIdMap[item] && this.organIdMap[item].organCode.length === 8);
         if (flag.length >= 2) {
-          this.$message.error("不能跨物业选择");
+          this.$message.error('不能跨物业选择');
           this.organName = label.slice(0, label.length - 1);
           this.organId = value.slice(0, label.length - 1);
         } else {
           if (this.organId && this.organId.length > 0) {
-            if (value[0] === "") {
+            if (value[0] === '') {
               value.shift();
               label.shift();
             }
-            this.$emit("changeTree", value.toString(), label.toString());
+            this.$emit('changeTree', value.toString(), label.toString());
             this.organName = label;
             this.organId = value;
-            console.log(value, label, "多选组织结构树change事件");
+            console.log(value, label, '多选组织结构树change事件');
           } else {
             // this.$message.info("请选择组织机构");
           }
@@ -296,8 +296,8 @@ export default {
     searchOrgan(value) {
       this.searchName = value;
       if (this.showSearch && this.searchName.length > 0) {
-        console.log("根据关键字搜索");
-        this.organId = "";
+        console.log('根据关键字搜索');
+        this.organId = '';
         this.mapDefault = false;
         this.keywordOrgan(value);
       }
@@ -321,9 +321,9 @@ export default {
     this.organId = this.value;
     this.initDepartment();
     this.$nextTick(() => {
-      document.addEventListener("click", (event) => {
+      document.addEventListener('click', (event) => {
         event.stopPropagation();
-        this.searchName = "";
+        this.searchName = '';
       });
     });
   },

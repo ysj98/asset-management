@@ -4,22 +4,22 @@
   </a-locale-provider>
 </template>
 <script>
-import { LocaleProvider } from 'ant-design-vue'
-import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
-import moment from 'moment'
-import 'moment/locale/zh-cn'
-import App from './App.vue'
+import { LocaleProvider } from 'ant-design-vue';
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+import App from './App.vue';
 
-moment.locale('zh-cn')
+moment.locale('zh-cn');
 export default {
-  data () {
+  data() {
     return {
-      zhCN
-    }
+      zhCN,
+    };
   },
   components: {
     App,
-    ALocaleProvider: LocaleProvider
-  }
-}
+    ALocaleProvider: LocaleProvider,
+  },
+};
 </script>

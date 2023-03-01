@@ -11,66 +11,64 @@
           <organOwnership />
         </a-tab-pane>
         <a-tab-pane tab="资产项目权属" key="assetProject">
-          <assetProjectOwnership/>
+          <assetProjectOwnership />
         </a-tab-pane>
         <a-tab-pane tab="资产权属" key="asset">
           <assetOwnership />
         </a-tab-pane>
-        
       </a-tabs>
     </div>
   </div>
 </template>
 <script>
-import assetOwnership from './assetOwnership.vue'
-import assetProjectOwnership from './assetProjectOwnership.vue'
-import organOwnership from './organOwnership.vue'
-const allWidth = {width: '185px'}
+import assetOwnership from './assetOwnership.vue';
+import assetProjectOwnership from './assetProjectOwnership.vue';
+import organOwnership from './organOwnership.vue';
+const allWidth = { width: '185px' };
 export default {
   components: {
     assetOwnership,
     assetProjectOwnership,
-    organOwnership
+    organOwnership,
   },
-  data () {
+  data() {
     return {
       showKey: 'organOwnership', // organOwnership组织机构权属  assetProject资产项目  asset 资产
       allWidth,
-      organId: ''
-    }
+      organId: '',
+    };
   },
-  created () {
-    let query = this.GET_ROUTE_QUERY(this.$route.path)
+  created() {
+    let query = this.GET_ROUTE_QUERY(this.$route.path);
     if (Object.keys(query).length > 0) {
       if (query.showKey) {
-        this.showKey = query.showKey
+        this.showKey = query.showKey;
       }
     }
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (to.path.indexOf(from.path) === -1) {
       let o = {
         key: from.path,
-        data: {}
-      }
-      this.$store.commit('pro/SET_ROUTE_QUERY', o)
+        data: {},
+      };
+      this.$store.commit('pro/SET_ROUTE_QUERY', o);
     }
-    next()
+    next();
   },
   methods: {
-    tabChange (v) {
-      this.showKey = v
+    tabChange(v) {
+      this.showKey = v;
     },
-    organIdChange () {
-    },
-  }
-}
+    organIdChange() {},
+  },
+};
 </script>
 <style lang="less" scoped>
-  .buildingDict-page{
-    position: relative;
-  }
-  .top-select{
+.buildingDict-page {
+  position: relative;
+}
+.top-select {
   position: absolute;
   right: 30px;
   top: 13px;

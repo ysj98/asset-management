@@ -40,15 +40,15 @@
 </template>
 
 <script>
-import { clone } from "lodash";
+import { clone } from 'lodash';
 
 const approveServiceType = [1002, 1003, 1004, 1005, 1006, 1007, 1008, 1015, 1016];
-import { serviceTypeAll, columns } from "./share.js";
+import { serviceTypeAll, columns } from './share.js';
 export default {
   /*
    * 审批设置
    * */
-  name: "ApprovalSetting",
+  name: 'ApprovalSetting',
   props: {
     approvalOptions: {
       type: Array,
@@ -58,7 +58,7 @@ export default {
     },
     organId: {
       type: String,
-      default: "",
+      default: '',
     },
     loadingFlag: {
       type: Boolean,
@@ -115,13 +115,13 @@ export default {
       }
       return this.tData.map((ele) => {
         const { isValid, serviceType } = ele;
-        let keyTitle = "customServiceParamSet";
+        let keyTitle = 'customServiceParamSet';
         return {
           isValid,
           serviceType,
-          subKey: isValid ? ele[keyTitle].subKey : "",
-          paramKey: isValid ? ele[keyTitle].paramKey : "",
-          flowJson: isValid ? ele[keyTitle].flowJson : "",
+          subKey: isValid ? ele[keyTitle].subKey : '',
+          paramKey: isValid ? ele[keyTitle].paramKey : '',
+          flowJson: isValid ? ele[keyTitle].flowJson : '',
         };
       });
     },

@@ -1,39 +1,21 @@
 <template>
   <div class="land-detail-popup">
     <div class="title">
-      <span>{{ assetName || "--" }}</span>
+      <span>{{ assetName || '--' }}</span>
       <a-icon @click="doClosePopup" class="close-icon" type="close" />
     </div>
     <div class="content">
       <div class="base-info">
-        <SimpleAssetLandInfo
-          :popupDataSource="popupDataSource"
-          :assetId="assetId"
-          :assetNameShow="false"
-          style="padding: 0"
-        />
+        <SimpleAssetLandInfo :popupDataSource="popupDataSource" :assetId="assetId" :assetNameShow="false" style="padding: 0" />
       </div>
-      <SG-Title
-        style="margin-top: 10px; margin-bottom: 20px"
-        title="业务信息"
-      />
+      <SG-Title style="margin-top: 10px; margin-bottom: 20px" title="业务信息" />
       <div class="wrapper">
         <div v-if="attrData.length" class="attr-block">
-          <div
-            class="item"
-            v-for="(item, index) in attrData"
-            :key="item.attrCode"
-          >
-            <span
-              class="attr-name"
-              :class="{ 'attr-name-top-border': index === 0 }"
-            >
+          <div class="item" v-for="(item, index) in attrData" :key="item.attrCode">
+            <span class="attr-name" :class="{ 'attr-name-top-border': index === 0 }">
               {{ item.attrName }}
             </span>
-            <span
-              class="attr-value"
-              :class="{ 'attr-value-top-border': index === 0 }"
-            >
+            <span class="attr-value" :class="{ 'attr-value-top-border': index === 0 }">
               {{ item.attrValue }}
             </span>
           </div>
@@ -45,10 +27,10 @@
 </template>
 
 <script>
-import SimpleAssetLandInfo from "@/views/mapDrawLand/components/SimpleAssetLandInfo";
+import SimpleAssetLandInfo from '@/views/mapDrawLand/components/SimpleAssetLandInfo';
 
 export default {
-  name: "landDetailPopup",
+  name: 'landDetailPopup',
   props: {
     mapInstance: {
       type: Object,
@@ -68,44 +50,44 @@ export default {
   },
   data() {
     return {
-      assetName: "",
+      assetName: '',
       baseInfoOptions: {
         data: {},
         formatBasicInfoList: [
           [
             {
-              title: "项目名称/物业名称",
-              key: "projectName",
+              title: '项目名称/物业名称',
+              key: 'projectName',
             },
             {
-              title: "地块编号",
-              key: "assetCode",
-            },
-          ],
-          [
-            {
-              title: "宗地号",
-              key: "theNo",
-            },
-            {
-              title: "土地面积",
-              key: "landArea",
+              title: '地块编号',
+              key: 'assetCode',
             },
           ],
           [
             {
-              title: "土地性质",
-              key: "landProperties",
+              title: '宗地号',
+              key: 'theNo',
             },
             {
-              title: "经营方式",
-              key: "modelOperName",
+              title: '土地面积',
+              key: 'landArea',
             },
           ],
           [
             {
-              title: "使用期限",
-              key: "startAndEndTime",
+              title: '土地性质',
+              key: 'landProperties',
+            },
+            {
+              title: '经营方式',
+              key: 'modelOperName',
+            },
+          ],
+          [
+            {
+              title: '使用期限',
+              key: 'startAndEndTime',
               render(h, data, value) {
                 return value;
               },
@@ -116,8 +98,8 @@ export default {
           ],
           [
             {
-              title: "地理位置",
-              key: "position",
+              title: '地理位置',
+              key: 'position',
               colProps: {
                 span: 24,
               },
@@ -125,8 +107,8 @@ export default {
           ],
           [
             {
-              title: "运营项目",
-              key: "communityName",
+              title: '运营项目',
+              key: 'communityName',
               colProps: {
                 span: 24,
               },
@@ -148,22 +130,19 @@ export default {
       this.assetName = data.assetName;
     },
     initAttrData(allData) {
-      const fieldNameArr = this.popupDataSource.map(ele=>ele.fieldName)
+      const fieldNameArr = this.popupDataSource.map((ele) => ele.fieldName);
 
       this.attrData = allData.assetAttrDtos || [];
 
       // 过滤 已经在基础属性中的业务属性信息
-      this.attrData = this.attrData.filter(ele=>{
-        return !fieldNameArr.includes(ele.attrName)
-      })
+      this.attrData = this.attrData.filter((ele) => {
+        return !fieldNameArr.includes(ele.attrName);
+      });
     },
     initBaseInfo(allData) {
       this.baseInfoOptions.data = {
         ...allData,
-        startAndEndTime:
-          allData.startDate && allData.endDate
-            ? [allData.startDate, allData.endDate]
-            : "",
+        startAndEndTime: allData.startDate && allData.endDate ? [allData.startDate, allData.endDate] : '',
       };
     },
   },

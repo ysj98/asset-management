@@ -95,20 +95,20 @@
   background-color: transparent;
 }
 .nav_name {
-  color: #1890FF;
+  color: #1890ff;
   cursor: pointer;
 }
 .btn_click {
-  color: #0084FF;
+  color: #0084ff;
   cursor: pointer;
 }
 .down_btn {
-  color: #959DAB;
+  color: #959dab;
   text-decoration: underline;
   cursor: pointer;
 }
 .down_btn:hover {
-  color: #0084FF;
+  color: #0084ff;
 }
 .dialog-footer {
   background: #fafafa;
@@ -118,22 +118,22 @@
   border-top: 1px solid #e8e8e8;
 }
 .must-write {
-  color: #FB7474;
+  color: #fb7474;
   font-size: 16px;
 }
 .btn-text.btn-blue {
-  color: #0084FF;
+  color: #0084ff;
   font-size: 12px;
   cursor: pointer;
   margin: 0 5px;
 }
 .btn-bg-blur {
   background: #f0f8ff !important;
-  color: #0084FF !important;
+  color: #0084ff !important;
 }
 .btn-bg-fff {
   background: #fff !important;
-  color: #959DAB !important;
+  color: #959dab !important;
   border: 1px solid #e6eaef !important;
   padding-left: 30px !important;
   padding-right: 30px !important;

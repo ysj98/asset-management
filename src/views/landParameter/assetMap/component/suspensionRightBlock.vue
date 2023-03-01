@@ -16,9 +16,7 @@
     <div class="map-search-box" v-show="toggle">
       <div class="search-title">
         <span>查询条件</span>
-        <span class="fr pointer" @click="handleSwitch"
-          ><a-icon type="close"
-        /></span>
+        <span class="fr pointer" @click="handleSwitch"><a-icon type="close" /></span>
       </div>
       <!-- 查询主体 -->
       <div class="search-content">
@@ -30,17 +28,9 @@
         <div class="search-item">
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
-            <SG-CheckboxGroup
-              :value="assetTypes"
-              @change="checkboxGroupChnage"
-            >
-              <span
-                class="search-checkbox"
-                v-for="item in assetTypeListOpt"
-                :key="item.value"
-                ><SG-Checkbox :value="item.value" :key="item.value">{{
-                  item.label
-                }}</SG-Checkbox></span
+            <SG-CheckboxGroup :value="assetTypes" @change="checkboxGroupChnage">
+              <span class="search-checkbox" v-for="item in assetTypeListOpt" :key="item.value"
+                ><SG-Checkbox :value="item.value" :key="item.value">{{ item.label }}</SG-Checkbox></span
               >
             </SG-CheckboxGroup>
           </div>
@@ -95,7 +85,7 @@
         </div>
         <!-- 详细地址 -->
         <div>
-          <a-input v-model="queryCondition.address" class="searchwidth"></a-input><a-button @click="searchDetail" type='primary'>查询</a-button>
+          <a-input v-model="queryCondition.address" class="searchwidth"></a-input><a-button @click="searchDetail" type="primary">查询</a-button>
         </div>
         <!-- 表格 -->
         <div>
@@ -109,40 +99,35 @@
 </template>
 
 <script>
-import {dataIndexs} from '../lib/dict'
-import TreeSelect from '@/views/common/treeSelect'
-import Tools, {calc, getFormat} from "@/utils/utils"
-import organTreeSelect from "./organTreeSelect"
-import {
-  columns,
-  arrkeys,
-  getColumns,
-  getDataIndexs,
-} from "../lib/dict.js"
+import { dataIndexs } from '../lib/dict';
+import TreeSelect from '@/views/common/treeSelect';
+import Tools, { calc, getFormat } from '@/utils/utils';
+import organTreeSelect from './organTreeSelect';
+import { columns, arrkeys, getColumns, getDataIndexs } from '../lib/dict.js';
 let provinceOptFrist = {
-  label: "全国",
-  value: "",
+  label: '全国',
+  value: '',
   key: Tools.getUuid(),
-}
-let cityOptFrist = { label: "全省", value: "", key: Tools.getUuid() }
-let regionOptFrist = { label: "全市", value: "", key: Tools.getUuid() }
+};
+let cityOptFrist = { label: '全省', value: '', key: Tools.getUuid() };
+let regionOptFrist = { label: '全市', value: '', key: Tools.getUuid() };
 export default {
-  name: "suspensionRightBlock",
+  name: 'suspensionRightBlock',
   components: {
     organTreeSelect,
-    TreeSelect
+    TreeSelect,
   },
   data() {
     return {
       currentProvince: '',
       currentCity: '',
-      currentRegion:'',
+      currentRegion: '',
       toggle: true,
       // menus: ["海文花园", "广东省", "深圳市"],
       assetTypeListOpt: [], // 请求资产类型
       provinceOpt: [{ ...provinceOptFrist }], // 省份
       cityOpt: [{ ...cityOptFrist }],
-      regionOpt:[{...regionOptFrist}],
+      regionOpt: [{ ...regionOptFrist }],
       loading: false,
       // 表格数据
       table: {
@@ -152,91 +137,81 @@ export default {
       },
       // 查询参数
       queryCondition: {
-        province: "",
-        city: "",
-        region:'',
-        organId: "",
-        organName: "",
-        address:''
+        province: '',
+        city: '',
+        region: '',
+        organId: '',
+        organName: '',
+        address: '',
       },
       assetTypes: [],
       // 路由查询参数
       routeQueryStore: {},
-    }
+    };
   },
   computed: {
     iconType() {
-      return this.toggle ? "up" : "down"
+      return this.toggle ? 'up' : 'down';
     },
     // 显示菜单
     showMenuStr() {
-      return this.menus.join(" > ")
+      return this.menus.join(' > ');
     },
     menus() {
-      let provinceLabel = this.provinceOpt.find(
-        (item) => item.value === this.queryCondition.province
-      )
-      let cityLabel = this.cityOpt.find(
-        (item) => item.value === this.queryCondition.city
-      )
-      console.log("provinceLabel", provinceLabel, cityLabel)
-      return [
-        this.queryCondition.organName,
-        provinceLabel && provinceLabel.label,
-        cityLabel && cityLabel.label,
-      ]
+      let provinceLabel = this.provinceOpt.find((item) => item.value === this.queryCondition.province);
+      let cityLabel = this.cityOpt.find((item) => item.value === this.queryCondition.city);
+      console.log('provinceLabel', provinceLabel, cityLabel);
+      return [this.queryCondition.organName, provinceLabel && provinceLabel.label, cityLabel && cityLabel.label];
     },
   },
   created() {
-    this.platformDict("asset_type")
-    this.queryProvinceList()
-    this.$textReplace()
+    this.platformDict('asset_type');
+    this.queryProvinceList();
+    this.$textReplace();
   },
   methods: {
     /*
-    * 省市 code 转成 label
-    * 301 => 北京
-    * */
+     * 省市 code 转成 label
+     * 301 => 北京
+     * */
     codeToLabel(type, code) {
-      let res = null
+      let res = null;
       if (type === 'province') {
-        res = this.provinceOpt.find(
-          (item) => item.value === code
-        )
+        res = this.provinceOpt.find((item) => item.value === code);
       }
       if (type === 'city') {
-        res = this.cityOpt.find(
-          (item) => item.value === code
-        )
+        res = this.cityOpt.find((item) => item.value === code);
       }
-      return res && res.label
+      return res && res.label;
     },
-    searchDetail(){
-      let payload={
+    searchDetail() {
+      let payload = {
         ...this.queryCondition,
-        assetTypes: this.assetTypes.join(",")
-      }
-      payload._periphery=this.queryCondition.address
+        assetTypes: this.assetTypes.join(','),
+      };
+      payload._periphery = this.queryCondition.address;
       // this.$emit('search',payload)
-      this.query()
+      this.query();
     },
     // 获取默认位置
-    async getDefaultLocation(organId){
-      let { data: { data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+    async getDefaultLocation(organId) {
+      let {
+        data: { data },
+      } = await this.$api.paramsConfig.queryParamsConfigDetail({
         // 参考 serviceTypeAll.js 文件
         serviceType: 1001,
         organId,
-      })
+      });
       let defaultProvince = {
-        label: this.codeToLabel('province',data.paramKey),
-        value: data.paramKey
-      }
-      await this.handleSelectAdress('province',defaultProvince,true)
+        label: this.codeToLabel('province', data.paramKey),
+        value: data.paramKey,
+      };
+      await this.handleSelectAdress('province', defaultProvince, true);
       let defaultCity = {
-        label:  this.codeToLabel('city',data.subKey),
-        value: data.subKey
-      }
-      await this.handleSelectAdress('city',defaultCity,true)
+        label: this.codeToLabel('city', data.subKey),
+        value: data.subKey,
+      };
+      await this.handleSelectAdress('city', defaultCity, true);
       // let defaultRegion = {
       //   label:  this.codeToLabel('city',data.subKey,true),
       //   value: data.subKey
@@ -247,21 +222,21 @@ export default {
     query() {
       let data = {
         ...this.queryCondition,
-        assetTypes: this.assetTypes.join(","),
-      }
-      this.$emit("search", data)
+        assetTypes: this.assetTypes.join(','),
+      };
+      this.$emit('search', data);
       // this.loading = true
       this.$api.land
         .overview(data)
         .then((res) => {
           if (+res.data.code === 0) {
-            let result = res.data.data || {}
-            let keysArr = getDataIndexs(this.assetTypes)
+            let result = res.data.data || {};
+            let keysArr = getDataIndexs(this.assetTypes);
             let dataSource = arrkeys.map((item) => {
-              let key = item[1]
-              let o = { key: Tools.getUuid(), name: item[0] }
-              let assetManagementLang = localStorage.getItem("assetManagementLang")
-              if (typeof assetManagementLang === "string") {
+              let key = item[1];
+              let o = { key: Tools.getUuid(), name: item[0] };
+              let assetManagementLang = localStorage.getItem('assetManagementLang');
+              if (typeof assetManagementLang === 'string') {
                 assetManagementLang = JSON.parse(assetManagementLang);
               }
               if (o.name.search(/m²|㎡|ft²/g) !== -1) {
@@ -272,213 +247,209 @@ export default {
               }
               keysArr.forEach((dataIndex) => {
                 // 如果是面积
-                if (key === "assetArea") {
-                  result[dataIndex][key] = Number(result[dataIndex][key])
-                    ? Number(result[dataIndex][key]).toFixed(4)
-                    : result[dataIndex][key]
+                if (key === 'assetArea') {
+                  result[dataIndex][key] = Number(result[dataIndex][key]) ? Number(result[dataIndex][key]).toFixed(4) : result[dataIndex][key];
                 }
                 // 如果是价值
-                if (key === "assetValue") {
+                if (key === 'assetValue') {
                   result[dataIndex][key] = Number(result[dataIndex][key])
                     ? Math.floor(calc.divide(Number(result[dataIndex][key]), 10000) * 100) / 100
-                    : result[dataIndex][key]
+                    : result[dataIndex][key];
                 }
-                o[dataIndex] = result[dataIndex][key]
-              })
-              return o
-            })
+                o[dataIndex] = result[dataIndex][key];
+              });
+              return o;
+            });
             // 数据中面积、价值添加分位符
             const keyArr = [
               {
-                keyStr:'面积(㎡)',
-                decimal: 4
+                keyStr: '面积(㎡)',
+                decimal: 4,
               },
               {
                 keyStr: '价值(万元)',
-                decimal: 2
-              }
-            ]
-            let assetManagementLang = localStorage.getItem("assetManagementLang")
-            if (typeof assetManagementLang === "string") {
+                decimal: 2,
+              },
+            ];
+            let assetManagementLang = localStorage.getItem('assetManagementLang');
+            if (typeof assetManagementLang === 'string') {
               assetManagementLang = JSON.parse(assetManagementLang);
             }
             keyArr[0].keyStr = keyArr[0].keyStr.replace(/m²|㎡|ft²/g, assetManagementLang.areaUnit);
             keyArr[1].keyStr = keyArr[1].keyStr.replace(/元|港元/g, assetManagementLang.monetaryUnit);
-            dataSource = dataSource.map(ele=>{
-              let res  = ele
-              let item = keyArr.find(e=>e.keyStr===ele.name)
-              if (item){
-                Object.keys(ele).forEach(itemKey=>{
-                  if (dataIndexs.includes(itemKey)){
-                    res[itemKey] = getFormat(String(ele[itemKey] || ""),item.decimal)
+            dataSource = dataSource.map((ele) => {
+              let res = ele;
+              let item = keyArr.find((e) => e.keyStr === ele.name);
+              if (item) {
+                Object.keys(ele).forEach((itemKey) => {
+                  if (dataIndexs.includes(itemKey)) {
+                    res[itemKey] = getFormat(String(ele[itemKey] || ''), item.decimal);
                   }
-                })
+                });
               }
-              return res
-            })
-            this.table.dataSource = dataSource
-            console.log("得到表格数据=>", this.table.dataSource)
+              return res;
+            });
+            this.table.dataSource = dataSource;
+            console.log('得到表格数据=>', this.table.dataSource);
           } else {
-            this.$message.error(res.data.message || res.data.msg)
+            this.$message.error(res.data.message || res.data.msg);
           }
         })
         .finally(() => {
-          this.loading = false
-        })
+          this.loading = false;
+        });
     },
     // 拼接处导航栏
     // 选择省市区
     async handleSelectAdress(type, item, transferFlag) {
-
-      let payload  = {
+      let payload = {
         ...this.queryCondition,
-        assetTypes: this.assetTypes.join(",")
-      }
-      let { label, value } = item
-      console.log("选择省市区", type, item)
-      if (type === "province") {
-        let flag = this.queryCondition.province === value
+        assetTypes: this.assetTypes.join(','),
+      };
+      let { label, value } = item;
+      console.log('选择省市区', type, item);
+      if (type === 'province') {
+        let flag = this.queryCondition.province === value;
         if (flag) {
-          return
+          return;
         }
         Object.assign(this.queryCondition, {
           province: value,
-          city: "",
-        })
-        this.cityOpt = [{...cityOptFrist}]
-        if (label !== '全国'){
-          this.currentProvince = label
-          await this.queryCityAndAreaList(value, type)
+          city: '',
+        });
+        this.cityOpt = [{ ...cityOptFrist }];
+        if (label !== '全国') {
+          this.currentProvince = label;
+          await this.queryCityAndAreaList(value, type);
         }
-        if (!transferFlag){
-          payload._periphery = label
-          this.$emit('search', payload)
+        if (!transferFlag) {
+          payload._periphery = label;
+          this.$emit('search', payload);
         }
       }
-      if (type === "city") {
-        this.queryCondition.region=''
-        let address = label
-        let flag = this.queryCondition.city === value
+      if (type === 'city') {
+        this.queryCondition.region = '';
+        let address = label;
+        let flag = this.queryCondition.city === value;
         if (flag) {
-          return
+          return;
         }
-        this.queryCondition.city = value
-        if ( label === '全省' ){
-          address = this.currentProvince
-        }else{
-          this.currentCity = label
-          address = this.currentProvince + address
-          await this.queryCityAndAreaList(value, type)
-        }
-        payload._periphery = address
-        this.$emit('search', payload)
-      }
-      if(type=='region'){
-        let address = label
-        let flag = this.queryCondition.region === value
-        if (flag) {
-          return
-        }
-        this.queryCondition.region = value
-        if ( label === '全市' ){
-          payload._periphery = this.currentProvince + this.currentCity
+        this.queryCondition.city = value;
+        if (label === '全省') {
+          address = this.currentProvince;
         } else {
-          payload._periphery = this.currentProvince + this.currentCity + address
+          this.currentCity = label;
+          address = this.currentProvince + address;
+          await this.queryCityAndAreaList(value, type);
         }
-        this.$emit('search', payload)
+        payload._periphery = address;
+        this.$emit('search', payload);
       }
-      this.query()
+      if (type == 'region') {
+        let address = label;
+        let flag = this.queryCondition.region === value;
+        if (flag) {
+          return;
+        }
+        this.queryCondition.region = value;
+        if (label === '全市') {
+          payload._periphery = this.currentProvince + this.currentCity;
+        } else {
+          payload._periphery = this.currentProvince + this.currentCity + address;
+        }
+        this.$emit('search', payload);
+      }
+      this.query();
     },
     // 地址选项开关
     handleSwitch() {
-      this.toggle = !this.toggle
+      this.toggle = !this.toggle;
     },
     // 多选框改变
     checkboxGroupChnage(checkedValues) {
-      console.log('checkedValues',checkedValues)
-      if (checkedValues && checkedValues.length === 0){
-        this.$message.warn('至少保留一种业态')
-        return null
+      console.log('checkedValues', checkedValues);
+      if (checkedValues && checkedValues.length === 0) {
+        this.$message.warn('至少保留一种业态');
+        return null;
       }
-      console.log("checked = ", checkedValues)
-      this.assetTypes = checkedValues
-      this.table.columns = getColumns(checkedValues)
-      this.query()
+      console.log('checked = ', checkedValues);
+      this.assetTypes = checkedValues;
+      this.table.columns = getColumns(checkedValues);
+      this.query();
     },
     // 获取选择的组织机构
     async changeTree(organId, organName) {
       Object.assign(this.queryCondition, {
         organName,
         organId,
-      })
-      console.log("没有进来吗=>", organId, organName)
-      await this.getDefaultLocation(organId)
-      await this.query()
+      });
+      console.log('没有进来吗=>', organId, organName);
+      await this.getDefaultLocation(organId);
+      await this.query();
     },
     // 平台字典
     platformDict(code) {
       this.$api.assets.platformDict({ code }).then((res) => {
-        if (res.data.code === "0") {
-          let result = res.data.data || []
+        if (res.data.code === '0') {
+          let result = res.data.data || [];
           let arr = result.map((item) => ({
             label: item.name,
             ...item,
             key: Tools.getUuid(),
-          }))
+          }));
           // 资产类型
-          if (code === "asset_type") {
-            this.assetTypeListOpt = arr
+          if (code === 'asset_type') {
+            this.assetTypeListOpt = arr;
             this.assetTypes = arr.map((item) => {
-              return item.value
-            })
-            this.table.columns = getColumns(this.assetTypes)
+              return item.value;
+            });
+            this.table.columns = getColumns(this.assetTypes);
           }
         }
-      })
+      });
     },
     // 请求省
     queryProvinceList() {
       return this.$api.basics.queryProvinceList().then((res) => {
-        if (res.data.code === "0") {
-          let data = res.data.data || []
+        if (res.data.code === '0') {
+          let data = res.data.data || [];
           this.provinceOpt = data.map((item) => {
             return {
               label: item.name,
               value: item.regionId,
               key: Tools.getUuid(),
-            }
-          })
-          this.provinceOpt.unshift({ ...provinceOptFrist })
+            };
+          });
+          this.provinceOpt.unshift({ ...provinceOptFrist });
         }
-      })
+      });
     },
     // 请求市区
     async queryCityAndAreaList(parentRegionId, type) {
-      return new Promise(resolve => {
-        console.log('args',...arguments)
+      return new Promise((resolve) => {
+        console.log('args', ...arguments);
         this.$api.basics.queryCityAndAreaList({ parentRegionId }).then((res) => {
-          if (res.data.code === "0") {
-            let data = res.data.data || []
+          if (res.data.code === '0') {
+            let data = res.data.data || [];
             let result = data.map((item) => {
-              return { label: item.name, value: item.regionId }
-            })
+              return { label: item.name, value: item.regionId };
+            });
             // 市
-            if (type === "province") {
-              this.cityOpt = result
-              this.cityOpt.unshift({ ...cityOptFrist })
+            if (type === 'province') {
+              this.cityOpt = result;
+              this.cityOpt.unshift({ ...cityOptFrist });
             }
-            if(type=='city'){
-             this.regionOpt = result
-              this.regionOpt.unshift({ ...regionOptFrist })
-            
+            if (type == 'city') {
+              this.regionOpt = result;
+              this.regionOpt.unshift({ ...regionOptFrist });
             }
           }
-          resolve()
-        })
-      })
+          resolve();
+        });
+      });
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 .suspensionRightBlock-page {
@@ -526,7 +497,7 @@ export default {
       color: #0084ff;
     }
   }
-  .searchwidth{
+  .searchwidth {
     width: 85%;
   }
   .search-item {

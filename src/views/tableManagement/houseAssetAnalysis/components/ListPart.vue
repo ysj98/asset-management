@@ -64,60 +64,60 @@
 </template>
 
 <script>
-import EditTableHeader from "./EditTableHeader";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { exportDataAsExcel } from "src/views/common/commonQueryApi";
-import { getFormat, getMutipSort, getSort, utils } from "@/utils/utils";
-import { handleTableScrollHeight } from "utils/share";
-import { math } from "@/utils/math";
+import EditTableHeader from './EditTableHeader';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
+import { getFormat, getMutipSort, getSort, utils } from '@/utils/utils';
+import { handleTableScrollHeight } from 'utils/share';
+import { math } from '@/utils/math';
 export default {
-  name: "ListPart",
+  name: 'ListPart',
   components: { EditTableHeader },
-  props: ["queryInfo", "titleList"],
+  props: ['queryInfo', 'titleList'],
   data() {
     return {
       // scroll:{x: 1500, y: 600},
       tableScroll: {
-        x: "80%",
+        x: '80%',
         y: 600,
       },
       getFormat,
-      penetrateData: "2",
-      organQueryType: "2", // 统计维度设置
+      penetrateData: '2',
+      organQueryType: '2', // 统计维度设置
       ASSET_MANAGEMENT, // 权限对象
       tableLoading: false,
       exportBtnLoading: false, // 导出button loading标志
       paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10 },
       dataSource: [], // Table数据源
       columnsPC: [
-        { title: "省份", dataIndex: "provinceName", width: 80 },
-        { title: "城市", dataIndex: "cityName", width: 80 },
-      ], 
+        { title: '省份', dataIndex: 'provinceName', width: 80 },
+        { title: '城市', dataIndex: 'cityName', width: 80 },
+      ],
       // 省份城市字段跟随地区展示
       columnsFixed: [
-        { title: "资产数量", dataIndex: "assetNum", width: 100 },
-        { title: "资产面积(㎡)", dataIndex: "area", scopedSlots: { customRender: "area" }, width: 150 },
-        { title: "运营(㎡)", dataIndex: "transferOperationArea", scopedSlots: { customRender: "transferOperationArea" }, width: 150, code: "1001" },
-        { title: "自用(㎡)", dataIndex: "selfUserArea", scopedSlots: { customRender: "selfUserArea" }, width: 150, code: "1003" },
-        { title: "闲置(㎡)", dataIndex: "idleArea", scopedSlots: { customRender: "idleArea" }, width: 150, code: "1002" },
-        { title: "占用(㎡)", dataIndex: "occupationArea", scopedSlots: { customRender: "occupationArea" }, width: 150, code: "1004" },
-        { title: "其它(㎡)", dataIndex: "otherArea", scopedSlots: { customRender: "otherArea" }, width: 150, code: "1005" },
-        { title: "资产原值", dataIndex: "originalValue", scopedSlots: { customRender: "originalValue" }, width: 150 },
-        { title: "首次评估原值", dataIndex: "firstOriginalValue", scopedSlots: { customRender: "firstOriginalValue" }, width: 150 },
-        { title: "最新估值", dataIndex: "latestValuationValue", scopedSlots: { customRender: "latestValuationValue" }, width: 150 },
-        { title: "", scopedSlots: { customRender: "detail" }, width: 100, align: "center" },
+        { title: '资产数量', dataIndex: 'assetNum', width: 100 },
+        { title: '资产面积(㎡)', dataIndex: 'area', scopedSlots: { customRender: 'area' }, width: 150 },
+        { title: '运营(㎡)', dataIndex: 'transferOperationArea', scopedSlots: { customRender: 'transferOperationArea' }, width: 150, code: '1001' },
+        { title: '自用(㎡)', dataIndex: 'selfUserArea', scopedSlots: { customRender: 'selfUserArea' }, width: 150, code: '1003' },
+        { title: '闲置(㎡)', dataIndex: 'idleArea', scopedSlots: { customRender: 'idleArea' }, width: 150, code: '1002' },
+        { title: '占用(㎡)', dataIndex: 'occupationArea', scopedSlots: { customRender: 'occupationArea' }, width: 150, code: '1004' },
+        { title: '其它(㎡)', dataIndex: 'otherArea', scopedSlots: { customRender: 'otherArea' }, width: 150, code: '1005' },
+        { title: '资产原值', dataIndex: 'originalValue', scopedSlots: { customRender: 'originalValue' }, width: 150 },
+        { title: '首次评估原值', dataIndex: 'firstOriginalValue', scopedSlots: { customRender: 'firstOriginalValue' }, width: 150 },
+        { title: '最新估值', dataIndex: 'latestValuationValue', scopedSlots: { customRender: 'latestValuationValue' }, width: 150 },
+        { title: '', scopedSlots: { customRender: 'detail' }, width: 100, align: 'center' },
       ], // Table 列头固定部分
       sortFactor: [
-        { title: "管理机构", dataIndex: "organName", fixed: "left", width: 180 },
-        { title: "资产项目", dataIndex: "projectName", width: 160 },
-        { title: "经营单位", dataIndex: "businessUnit", width: 150 },
-        { title: "资产分类", dataIndex: "objectTypeName", width: 100 },
-        { title: "权属情况", dataIndex: "ownershipStatusName", width: 100 },
-        { title: "地区", dataIndex: "regionName", width: 80 },
+        { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 180 },
+        { title: '资产项目', dataIndex: 'projectName', width: 160 },
+        { title: '经营单位', dataIndex: 'businessUnit', width: 150 },
+        { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },
+        { title: '权属情况', dataIndex: 'ownershipStatusName', width: 100 },
+        { title: '地区', dataIndex: 'regionName', width: 80 },
       ], // 统计维度的集合
       columnsDynamic: [], // Table 列头动态部分, 用于合成columns
       columns: [], // // Table 列头 = columnsDynamic合并单元格处理后 + columnsFixed
-      modalObj: { title: "展示列表设置", status: false, okText: "应用", width: 600 },
+      modalObj: { title: '展示列表设置', status: false, okText: '应用', width: 600 },
       checkedHeaderArr: [], // 格式如['name', 'age']
       key: 0, // 更新Modal包裹的子组件, 防止Modal关闭后仍保留组件状态
       sortIndex: {
@@ -166,14 +166,14 @@ export default {
         .then((r) => {
           this.tableLoading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             const { count, data } = res.data;
-            const arr = ["organName", "projectName", "objectTypeName", "regionName", "ownershipStatusName", "businessUnit"];
+            const arr = ['organName', 'projectName', 'objectTypeName', 'regionName', 'ownershipStatusName', 'businessUnit'];
             const sortArr = this.sortFactor.map((ele) => ele.dataIndex);
             sortArr.forEach((ele, index) => {
               // regionName 代表 三个字段合并前后顺序 固定 省/市/区
-              if (ele === "regionName") {
-                sortArr.splice(index, 1, "provinceName", "cityName", "regionName");
+              if (ele === 'regionName') {
+                sortArr.splice(index, 1, 'provinceName', 'cityName', 'regionName');
               }
             });
             const sortFnArr = sortArr.map((ele) => {
@@ -184,7 +184,7 @@ export default {
             this.dataSource = (data || []).map((m, key) => {
               let obj = {};
               // 防止排序时出现字段值为null,无法使用localeCompare
-              arr.forEach((n) => (obj[n] = m[n] || ""));
+              arr.forEach((n) => (obj[n] = m[n] || ''));
               return { ...m, ...obj, key };
             });
             this.dataSource.sort((a, b) => {
@@ -202,7 +202,7 @@ export default {
         })
         .catch((err) => {
           this.tableLoading = false;
-          this.$message.error(err || "查询列表接口出错");
+          this.$message.error(err || '查询列表接口出错');
         });
     },
     //获取自定义表头
@@ -210,7 +210,7 @@ export default {
       this.titleList.forEach((item) => {
         this.columns.forEach((ele) => {
           if (ele.code == item.code) {
-            ele.title = item.alias + "(㎡)";
+            ele.title = item.alias + '(㎡)';
           }
         });
       });
@@ -223,11 +223,11 @@ export default {
     },
     // 列表设置Modal保存
     handleModalOk() {
-      let { checkedList, options, penetrateValue } = this.$refs["tableHeader"];
+      let { checkedList, options, penetrateValue } = this.$refs['tableHeader'];
       this.penetrateData = penetrateValue;
-      this.organQueryType = checkedList.includes("organName") ? penetrateValue : "";
+      this.organQueryType = checkedList.includes('organName') ? penetrateValue : '';
       if (!checkedList.length) {
-        return this.$message.info("请至少选中一项!");
+        return this.$message.info('请至少选中一项!');
       }
       const { columnsPC } = this;
       // 同步sortFactor数据顺序
@@ -239,24 +239,24 @@ export default {
       let arrData = [];
       // 给每个选中的压入一个标识
       arr.forEach((item) => {
-        item.keys = "1";
+        item.keys = '1';
         if (!checkedList.includes(item.dataIndex)) {
-          item.keys = "0";
+          item.keys = '0';
         }
-        if (item.keys === "1") {
+        if (item.keys === '1') {
           arrData.push(item);
         }
       });
       // 在通过选中的标识拿到要在第几位添加省市区
       let isHasRegionIndex = 0;
       arrData.forEach((item, index) => {
-        if (item.dataIndex === "regionName") {
+        if (item.dataIndex === 'regionName') {
           isHasRegionIndex = index;
         }
         columnsDynamic.push(item);
       });
       // 如果包含地区维度，则添加省份、城市列头
-      checkedList.includes("regionName") && columnsDynamic.splice(isHasRegionIndex, 0, ...columnsPC);
+      checkedList.includes('regionName') && columnsDynamic.splice(isHasRegionIndex, 0, ...columnsPC);
       this.columnsDynamic = columnsDynamic;
       // this.handleColumns()
       this.queryTableData({});
@@ -272,49 +272,49 @@ export default {
       // 没有对(a[columns[0]['dataIndex']]值的有无做判断，要保证有值，即使是''
       return (a, b) => {
         // 第一维度
-        if (!columns[0] || !columns[0]["dataIndex"]) {
+        if (!columns[0] || !columns[0]['dataIndex']) {
           return false;
         }
-        if (a[columns[0]["dataIndex"]].localeCompare(b[columns[0]["dataIndex"]]) === 0) {
+        if (a[columns[0]['dataIndex']].localeCompare(b[columns[0]['dataIndex']]) === 0) {
           // 第二维度
-          if (!columns[1] || !columns[1]["dataIndex"]) {
+          if (!columns[1] || !columns[1]['dataIndex']) {
             return false;
           }
-          if (a[columns[1]["dataIndex"]].localeCompare(b[columns[1]["dataIndex"]]) === 0) {
+          if (a[columns[1]['dataIndex']].localeCompare(b[columns[1]['dataIndex']]) === 0) {
             // 第三维度
-            if (!columns[2] || !columns[2]["dataIndex"]) {
+            if (!columns[2] || !columns[2]['dataIndex']) {
               return false;
             }
-            if (a[columns[2]["dataIndex"]].localeCompare(b[columns[2]["dataIndex"]]) === 0) {
+            if (a[columns[2]['dataIndex']].localeCompare(b[columns[2]['dataIndex']]) === 0) {
               // 第四维度
-              if (!columns[3] || !columns[3]["dataIndex"]) {
+              if (!columns[3] || !columns[3]['dataIndex']) {
                 return false;
               }
-              if (a[columns[3]["dataIndex"]].localeCompare(b[columns[3]["dataIndex"]]) === 0) {
+              if (a[columns[3]['dataIndex']].localeCompare(b[columns[3]['dataIndex']]) === 0) {
                 // 第五维度
-                if (!columns[4] || !columns[4]["dataIndex"]) {
+                if (!columns[4] || !columns[4]['dataIndex']) {
                   return false;
                 }
-                if (a[columns[4]["dataIndex"]].localeCompare(b[columns[4]["dataIndex"]]) === 0) {
+                if (a[columns[4]['dataIndex']].localeCompare(b[columns[4]['dataIndex']]) === 0) {
                   // 第六维度
-                  if (!columns[5] || !columns[5]["dataIndex"]) {
+                  if (!columns[5] || !columns[5]['dataIndex']) {
                     return false;
                   }
-                  return a[columns[5]["dataIndex"]].localeCompare(b[columns[5]["dataIndex"]]);
+                  return a[columns[5]['dataIndex']].localeCompare(b[columns[5]['dataIndex']]);
                 } else {
-                  return a[columns[4]["dataIndex"]].localeCompare(b[columns[4]["dataIndex"]]);
+                  return a[columns[4]['dataIndex']].localeCompare(b[columns[4]['dataIndex']]);
                 }
               } else {
-                return a[columns[3]["dataIndex"]].localeCompare(b[columns[3]["dataIndex"]]);
+                return a[columns[3]['dataIndex']].localeCompare(b[columns[3]['dataIndex']]);
               }
             } else {
-              return a[columns[2]["dataIndex"]].localeCompare(b[columns[2]["dataIndex"]]);
+              return a[columns[2]['dataIndex']].localeCompare(b[columns[2]['dataIndex']]);
             }
           } else {
-            return a[columns[1]["dataIndex"]].localeCompare(b[columns[1]["dataIndex"]]);
+            return a[columns[1]['dataIndex']].localeCompare(b[columns[1]['dataIndex']]);
           }
         } else {
-          return a[columns[0]["dataIndex"]].localeCompare(b[columns[0]["dataIndex"]]);
+          return a[columns[0]['dataIndex']].localeCompare(b[columns[0]['dataIndex']]);
         }
       };
     },
@@ -329,7 +329,7 @@ export default {
         // 形如该格式的数据集合，存在dataSource每行中,存储的是相同值的开始位置标记
         // rowSpanInfo = { organName: true, projectName: true, ... }，true为需要设置rowSpan
         arr.forEach((n, i) => {
-          let name = "";
+          let name = '';
           for (let c = 0; c <= i; c++) {
             name += `_${m[arr[c].dataIndex]}`;
           }
@@ -363,16 +363,16 @@ export default {
 
       // 表格添加合计和小计
       let sumarr = [
-        "assetNum",
-        "area",
-        "transferOperationArea",
-        "selfUserArea",
-        "idleArea",
-        "occupationArea",
-        "otherArea",
-        "originalValue",
-        "firstOriginalValue",
-        "latestValuationValue",
+        'assetNum',
+        'area',
+        'transferOperationArea',
+        'selfUserArea',
+        'idleArea',
+        'occupationArea',
+        'otherArea',
+        'originalValue',
+        'firstOriginalValue',
+        'latestValuationValue',
       ];
       let sumObj = {};
       // sumarr.forEach(key => {
@@ -395,35 +395,35 @@ export default {
       dimension.splice(dimension.indexOf(6), 1);
       try {
         let res = await this.$api.tableManage.pageListStatistics({ ...queryInfo, dimension, organQueryType: this.organQueryType });
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           this.totalData = res.data.data;
         }
       } catch (error) {
-        this.$message.error(error || "合计查询失败");
+        this.$message.error(error || '合计查询失败');
       }
       // 处理合计数据
       let totalObj = {};
       Object.keys(this.totalData).forEach((key) => {
-        if (key === "assetAreaCount") {
+        if (key === 'assetAreaCount') {
           totalObj.area = this.totalData[key];
         } else {
-          let str = key.split("C")[0];
+          let str = key.split('C')[0];
           totalObj[str] = this.totalData[key];
         }
       });
 
       this.dataSource &&
         this.dataSource.length > 0 &&
-        this.dataSource.push({ organName: "当前页-合计", ...sumObj }, { ...totalObj, organName: "所有页-合计" }); // ,
+        this.dataSource.push({ organName: '当前页-合计', ...sumObj }, { ...totalObj, organName: '所有页-合计' }); // ,
     },
 
     // 合并单元格
     renderCellContent(value, row, dataIndex, i, columnsDynamic, gatherInfo) {
-      if (row.organName !== "当前页-合计" && row.organName !== "所有页-合计") {
+      if (row.organName !== '当前页-合计' && row.organName !== '所有页-合计') {
         let attrs = {};
         let rowSpanInfo = row.rowSpanInfo;
         if (rowSpanInfo[dataIndex]) {
-          let name = "";
+          let name = '';
           for (let c = 0; c <= i; c++) {
             name += `_${row[columnsDynamic[c].dataIndex]}`;
           }
@@ -441,13 +441,13 @@ export default {
     handleExport() {
       const { queryInfo, dataSource, sortIndex, columnsDynamic } = this;
       if (!dataSource.length) {
-        return this.$message.info("暂无可导出数据");
+        return this.$message.info('暂无可导出数据');
       }
       this.exportBtnLoading = true;
       let dimension = columnsDynamic.map((m) => sortIndex[m.dataIndex]);
       dimension.splice(dimension.indexOf(4), 1);
       dimension.push(4);
-      exportDataAsExcel({ ...queryInfo, dimension }, this.$api.tableManage.exportAssetHouseList, "房屋资产统计分析列表.xls", this).then(() => {
+      exportDataAsExcel({ ...queryInfo, dimension }, this.$api.tableManage.exportAssetHouseList, '房屋资产统计分析列表.xls', this).then(() => {
         this.exportBtnLoading = false;
       });
     },
@@ -460,11 +460,11 @@ export default {
         province: record.province,
         city: record.city,
         region: record.region,
-        type: "across",
+        type: 'across',
       };
       window.parent.openPortalMenu(
         `/asset-management/#/assetView?organIds=${record.organId}&projectId=${record.projectId}&objectType=${record.objectType}&ownershipStatus=${record.ownershipStatus}&province=${record.province}&city=${record.city}&region=${record.region}`,
-        "房屋资产视图"
+        '房屋资产视图'
       );
       // this.$router.push({
       //   path: '/assetView',

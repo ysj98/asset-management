@@ -15,9 +15,11 @@
           style="width: 100%"
           :top-organ-id="organId"
           v-model="objectType"
-          :options-data-format="(data)=>{
-            return [{label: '全部资产分类', value: '-1', isLeaf: true},...data]
-          }"
+          :options-data-format="
+            (data) => {
+              return [{ label: '全部资产分类', value: '-1', isLeaf: true }, ...data];
+            }
+          "
           @select="fetchData"
         />
         <a-select
@@ -28,23 +30,19 @@
           :options="$addTitle(objectTypeOptions)"
           placeholder="请选择资产类别"
           :getPopupContainer="
-          (triggerNode) => {
-            return triggerNode.parentNode || document.body
-          }
+            (triggerNode) => {
+              return triggerNode.parentNode || document.body;
+            }
           "
         />
       </a-col>
       <a-col :span="6">
-        <a-input-search
-          v-model.trim="assetNameCode"
-          style="width: 100%"
-          @search="fetchData"
-          @pressEnter="fetchData"
-          placeholder="请输入资产名称"
-        />
+        <a-input-search v-model.trim="assetNameCode" style="width: 100%" @search="fetchData" @pressEnter="fetchData" placeholder="请输入资产名称" />
       </a-col>
       <a-col :span="6" :offset="3">
-        <div style="line-height: 32px">已选：<span style="color: #49505E; font-weight: bold">{{selectedList.length}}</span></div>
+        <div style="line-height: 32px">
+          已选：<span style="color: #49505e; font-weight: bold">{{ selectedList.length }}</span>
+        </div>
       </a-col>
     </a-row>
     <a-row :gutter="8">
@@ -58,18 +56,22 @@
               :loading="loading"
               :pagination="false"
               :dataSource="dataSource"
-              :scroll="{x: 1200}"
-              :rowSelection="{selectedRowKeys, onChange: handleSelectChange}"
+              :scroll="{ x: 1200 }"
+              :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }"
             />
           </div>
-          <SG-FooterPagination ref="footerPagination" v-bind="paginationObj" @change="({pageNo, pageLength}) => fetchData({pageNo, pageLength})"/>
+          <SG-FooterPagination
+            ref="footerPagination"
+            v-bind="paginationObj"
+            @change="({ pageNo, pageLength }) => fetchData({ pageNo, pageLength })"
+          />
         </div>
       </a-col>
       <a-col :span="6">
         <div class="col_div" :style="`overflow-y: auto; height: ${height}px; max-height: ${height}px`">
           <div class="item_div" v-for="item in selectedList" :key="item.assetId">
-            {{item.assetName}}
-            <a-icon type="close" class="remove_icon" @click="removeItem(item.assetId)"/>
+            {{ item.assetName }}
+            <a-icon type="close" class="remove_icon" @click="removeItem(item.assetId)" />
           </div>
         </div>
       </a-col>
@@ -78,253 +80,274 @@
 </template>
 
 <script>
-  import EquipmentSelectTree from '@/views/common/EquipmentSelectTree'
-  export default {
-    name: 'SelectAssetList',
-    components:{EquipmentSelectTree},
-    props: {
-      // 是否获取全部属性，默认获取userId字符串构成的数组
-      allAttrs: { type: Boolean, default: () => false },
-      // organId
-      organId: { type: [Number, String], default: () => '' },
-      // 设置table高度
-      height: { type: [Number, String], default: () => 450 },
-      // 初始选中的值，以v-model方式传入
-      // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{assetId: 'UID001'}],
-      value: { type: Array, default: () => [] },
-      // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
-      queryType: { type: [Number, String], default: () => 2 },
-      // 资产项目projectId
-      proId: { type: [Number, String], default: () => '' },
-      // 资产类型
-      assetType: { type: [Number, String], default: () => '' },
-      isSelectedEquipment:{ type:Boolean, default:false }
-    },
-    data () {
-      return {
-        assetNameCode: '', // 资产名
-        // assetType: undefined, // 类型
-        // assetTypeOptions: [], // 类型选项
-        projectId: undefined, // 资产项目
-        projectOptions: [], // 资产项目选项
-        objectType: '-1', // 资产类别
-        objectTypeOptions: [], // 类别选项
-        dataSource: [], // Table数据源
-        loading: false, // Table loading
-        selectedList: [], // 选中人员list
-        selectedRowKeys: [], // Table选中项
-        paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: false },
-        columns: [
-          { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 120 },
-          { title: '资产名称', dataIndex: 'assetName' },
-          { title: '所属机构', dataIndex: 'organName' },
-          { title: '资产项目', dataIndex: 'projectName' },
-          { title: '资产类型', dataIndex: 'assetTypeName' },
-          { title: '资产分类', dataIndex: 'assetCategoryName' },
-          { title: '位置', dataIndex: 'address' },
-          { title: '状态', dataIndex: 'assetStatusName' }
-        ]
-      }
-    },
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+export default {
+  name: 'SelectAssetList',
+  components: { EquipmentSelectTree },
+  props: {
+    // 是否获取全部属性，默认获取userId字符串构成的数组
+    allAttrs: { type: Boolean, default: () => false },
+    // organId
+    organId: { type: [Number, String], default: () => '' },
+    // 设置table高度
+    height: { type: [Number, String], default: () => 450 },
+    // 初始选中的值，以v-model方式传入
+    // !注意：默认格式['UID001', 'UID001']，如果 allAttrs 为true, 传入格式为[{assetId: 'UID001'}],
+    value: { type: Array, default: () => [] },
+    // 查询类型 必须 1 资产变动，2 资产清理 3 权属登记
+    queryType: { type: [Number, String], default: () => 2 },
+    // 资产项目projectId
+    proId: { type: [Number, String], default: () => '' },
+    // 资产类型
+    assetType: { type: [Number, String], default: () => '' },
+    isSelectedEquipment: { type: Boolean, default: false },
+  },
+  data() {
+    return {
+      assetNameCode: '', // 资产名
+      // assetType: undefined, // 类型
+      // assetTypeOptions: [], // 类型选项
+      projectId: undefined, // 资产项目
+      projectOptions: [], // 资产项目选项
+      objectType: '-1', // 资产类别
+      objectTypeOptions: [], // 类别选项
+      dataSource: [], // Table数据源
+      loading: false, // Table loading
+      selectedList: [], // 选中人员list
+      selectedRowKeys: [], // Table选中项
+      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute', noPageTools: false },
+      columns: [
+        { title: '资产编码', dataIndex: 'assetCode', fixed: 'left', width: 120 },
+        { title: '资产名称', dataIndex: 'assetName' },
+        { title: '所属机构', dataIndex: 'organName' },
+        { title: '资产项目', dataIndex: 'projectName' },
+        { title: '资产类型', dataIndex: 'assetTypeName' },
+        { title: '资产分类', dataIndex: 'assetCategoryName' },
+        { title: '位置', dataIndex: 'address' },
+        { title: '状态', dataIndex: 'assetStatusName' },
+      ],
+    };
+  },
 
-    methods: {
-      // 向父组件传值
-      getReceiveAssetInfo() {
-        this.$emit('getReceiveAssetInfo', this.selectedList)
-      },
-      // 获取列表数据
-      fetchData ({ pageLength = 10, pageNo = 1}) {
-        const {objectType, assetNameCode, assetType, proId: projectId, queryType, organId} = this
-        if (!projectId) { return this.$message.warn('资产项目Id不存在')}
-        this.loading = true
-        let form = {
-          queryType, assetNameCode, projectId, organId,
-          // projectId: projectId === '-1' ? '' : projectId, 改前
-          assetType: assetType === '-1' ? '' : assetType,
-          objectType: objectType === '-1' ? '' : objectType,
-          pageSize: pageLength, pageNum: pageNo, areaType: 1
-        }
-        return this.$api.assets.assetListPage(form).then(r => {
-          let res = r.data
+  methods: {
+    // 向父组件传值
+    getReceiveAssetInfo() {
+      this.$emit('getReceiveAssetInfo', this.selectedList);
+    },
+    // 获取列表数据
+    fetchData({ pageLength = 10, pageNo = 1 }) {
+      const { objectType, assetNameCode, assetType, proId: projectId, queryType, organId } = this;
+      if (!projectId) {
+        return this.$message.warn('资产项目Id不存在');
+      }
+      this.loading = true;
+      let form = {
+        queryType,
+        assetNameCode,
+        projectId,
+        organId,
+        // projectId: projectId === '-1' ? '' : projectId, 改前
+        assetType: assetType === '-1' ? '' : assetType,
+        objectType: objectType === '-1' ? '' : objectType,
+        pageSize: pageLength,
+        pageNum: pageNo,
+        areaType: 1,
+      };
+      return this.$api.assets
+        .assetListPage(form)
+        .then((r) => {
+          let res = r.data;
           if (res && res.code.toString() === '0') {
-            this.loading = false
-            const {count, data} = res.data
-            this.dataSource = data
+            this.loading = false;
+            const { count, data } = res.data;
+            this.dataSource = data;
             Object.assign(this.paginationObj, {
               pageLength,
               location: 'absolute',
               pageNo: Number(pageNo),
-              totalCount: Number(count)
-            })
-            return false
+              totalCount: Number(count),
+            });
+            return false;
           }
-          throw res.msg
-        }).catch(err => {
-          this.loading = false
-          this.$message.error(err || `列表查询请求错误`)
+          throw res.msg;
         })
-      },
+        .catch((err) => {
+          this.loading = false;
+          this.$message.error(err || `列表查询请求错误`);
+        });
+    },
 
-      // 处理选中的数据
-      handleSelectChange (selectedRowKeys) {
-        this.selectedRowKeys = selectedRowKeys
-      },
+    // 处理选中的数据
+    handleSelectChange(selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys;
+    },
 
-      // 移除选中的人员
-      removeItem (id) {
-        this.selectedRowKeys = this.selectedRowKeys.filter(i => i !== id)
-      },
+    // 移除选中的人员
+    removeItem(id) {
+      this.selectedRowKeys = this.selectedRowKeys.filter((i) => i !== id);
+    },
 
-      // 平台字典获取资产类型
-      queryAssetTypeDict () {
-        this.$api.assets.platformDict({code: 'asset_type'}).then(res => {
+    // 平台字典获取资产类型
+    queryAssetTypeDict() {
+      this.$api.assets
+        .platformDict({ code: 'asset_type' })
+        .then((res) => {
           if (Number(res.data.code) === 0) {
-            let { data } = res.data
-            let list = data.map( m => ({
+            let { data } = res.data;
+            let list = data.map((m) => ({
               title: m.name,
-              key: m.value
-            }))
-            list.unshift({ title: '全部资产类型', key: '-1' })
-            this.assetTypeOptions = list
-            return false
+              key: m.value,
+            }));
+            list.unshift({ title: '全部资产类型', key: '-1' });
+            this.assetTypeOptions = list;
+            return false;
           }
-          throw res.message || '查询资产类型失败'
-        }).catch(err => {
-          this.$message.error(err || '查询资产类型失败')
+          throw res.message || '查询资产类型失败';
         })
-      },
+        .catch((err) => {
+          this.$message.error(err || '查询资产类型失败');
+        });
+    },
 
-      // 资产项目
-      queryProjectByOrganId () {
-        this.$api.assets.getObjectKeyValueByOrganId({organId: this.organId, projectName: ''}).then(res => {
+    // 资产项目
+    queryProjectByOrganId() {
+      this.$api.assets
+        .getObjectKeyValueByOrganId({ organId: this.organId, projectName: '' })
+        .then((res) => {
           if (Number(res.data.code) === 0) {
-            let { data } = res.data
-            let arr = data.map(m => ({
+            let { data } = res.data;
+            let arr = data.map((m) => ({
               title: m.projectName,
-              key: m.projectId
-            }))
+              key: m.projectId,
+            }));
             // arr.unshift({title: '全部项目', key: '-1'}) 改前
-            this.projectId = arr.length ? arr[0].key : undefined
-            this.projectOptions = arr
-            return this.fetchData({})
+            this.projectId = arr.length ? arr[0].key : undefined;
+            this.projectOptions = arr;
+            return this.fetchData({});
           }
-          throw res.message || '查询资产项目失败'
-        }).catch(err => {
-          this.$message.error(err || '查询资产项目失败')
+          throw res.message || '查询资产项目失败';
         })
-      },
+        .catch((err) => {
+          this.$message.error(err || '查询资产项目失败');
+        });
+    },
 
-      // 根据资产类型查资产分类列表
-      queryObjectType (assetType) {
-        this.objectType = '-1'
-        this.objectTypeOptions = []
-        if (!assetType) { return false }
-        const { organId } = this
-        this.$api.assets.getList({ assetType, organId }).then(res => {
+    // 根据资产类型查资产分类列表
+    queryObjectType(assetType) {
+      this.objectType = '-1';
+      this.objectTypeOptions = [];
+      if (!assetType) {
+        return false;
+      }
+      const { organId } = this;
+      this.$api.assets
+        .getList({ assetType, organId })
+        .then((res) => {
           if (Number(res.data.code) === 0) {
-            let { data } = res.data
-            let list = data.map( m => ({
+            let { data } = res.data;
+            let list = data.map((m) => ({
               title: m.professionName,
-              key: m.professionCode
-            }))
-            list.unshift({ title: '全部资产分类', key: '-1' })
-            this.objectTypeOptions = list
-            return false
+              key: m.professionCode,
+            }));
+            list.unshift({ title: '全部资产分类', key: '-1' });
+            this.objectTypeOptions = list;
+            return false;
           }
-          throw res.message || '查询资产类别失败'
-        }).catch(err => {
-          this.$message.error(err || '查询资产类别失败')
+          throw res.message || '查询资产类别失败';
         })
-      }
+        .catch((err) => {
+          this.$message.error(err || '查询资产类别失败');
+        });
     },
-    mounted () {
-      const {allAttrs, value, assetType} = this
+  },
+  mounted() {
+    const { allAttrs, value, assetType } = this;
 
-      this.fetchData({}).then(() => this.selectedRowKeys = allAttrs ? value.map(i => i.assetId) : value)
-      if (!this.isSelectedEquipment){
-        this.queryObjectType(String(assetType))
-      }
-      // 添加可以选择不同数量分页
-      this.$nextTick(function () {
-        let arr = this.$refs.footerPagination.pageLists
-        if (!arr.includes(200)) {
-          this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100, 200]
-        }
-      })
-    },
-    watch: {
-      value: function (value) {
-        this.selectedRowKeys = this.allAttrs ? value.map(i => i.assetId) : value
-      },
-
-      selectedRowKeys: function (keys) {
-        // let {dataSource, allAttrs, selectedList} = this
-        // let primaryKeys = []
-        // let primaryList = selectedList.filter(n => {
-        //   let flag = keys.includes(n.assetId)
-        //   flag && primaryKeys.push(n.assetId)
-        //   return flag
-        // })
-        // let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
-        // this.selectedList = primaryList.concat(newList)
-        // this.$emit('input', allAttrs ? selectedList : keys)
-        // this.getReturnAssetInfo()
-        let {dataSource, allAttrs, selectedList, list} = this
-        let primaryKeys = []
-        let primaryList = selectedList.filter(n => {
-          let flag = keys.includes(n.assetId)
-          flag && primaryKeys.push(n.assetId)
-          return flag
-        })
-        let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
-        this.selectedList = primaryList.concat(newList)
-        this.$emit('input', allAttrs ? selectedList : keys)
-        this.getReceiveAssetInfo()
-      },
-
-      // assetType: function (assetType) {
-      //   this.queryObjectType(assetType)
-      // }
+    this.fetchData({}).then(() => (this.selectedRowKeys = allAttrs ? value.map((i) => i.assetId) : value));
+    if (!this.isSelectedEquipment) {
+      this.queryObjectType(String(assetType));
     }
-  }
+    // 添加可以选择不同数量分页
+    this.$nextTick(function () {
+      let arr = this.$refs.footerPagination.pageLists;
+      if (!arr.includes(200)) {
+        this.$refs.footerPagination.pageLists = [10, 20, 30, 50, 100, 200];
+      }
+    });
+  },
+  watch: {
+    value: function (value) {
+      this.selectedRowKeys = this.allAttrs ? value.map((i) => i.assetId) : value;
+    },
+
+    selectedRowKeys: function (keys) {
+      // let {dataSource, allAttrs, selectedList} = this
+      // let primaryKeys = []
+      // let primaryList = selectedList.filter(n => {
+      //   let flag = keys.includes(n.assetId)
+      //   flag && primaryKeys.push(n.assetId)
+      //   return flag
+      // })
+      // let newList = dataSource.filter(i => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId))
+      // this.selectedList = primaryList.concat(newList)
+      // this.$emit('input', allAttrs ? selectedList : keys)
+      // this.getReturnAssetInfo()
+      let { dataSource, allAttrs, selectedList, list } = this;
+      let primaryKeys = [];
+      let primaryList = selectedList.filter((n) => {
+        let flag = keys.includes(n.assetId);
+        flag && primaryKeys.push(n.assetId);
+        return flag;
+      });
+      let newList = dataSource.filter((i) => !primaryKeys.includes(i.assetId) && keys.includes(i.assetId));
+      this.selectedList = primaryList.concat(newList);
+      this.$emit('input', allAttrs ? selectedList : keys);
+      this.getReceiveAssetInfo();
+    },
+
+    // assetType: function (assetType) {
+    //   this.queryObjectType(assetType)
+    // }
+  },
+};
 </script>
 
-<style lang='less' scoped>
-  .select-detail {
-    min-width: 650px;
-    .col_div {
-      /*height: 450px;*/
-      /*max-height: 450px;*/
-      position: relative;
-      border-radius: 3px;
-      border: 1px solid #DCE1E6;
-      & /deep/ .sg-FooterPagination {
-        margin-bottom: 0 !important;
-        padding: 5px 20px !important;
-      }
-      .item_div {
-        /*width: 100%;*/
-        padding: 10px;
-        cursor: default;
-        overflow: hidden;
-        &:hover {
-          background-color: #e6f7ff;
-        }
-        .remove_icon {
-          float: right;
-          margin-top: 5px;
-          cursor: pointer;
-        }
-      }
+<style lang="less" scoped>
+.select-detail {
+  min-width: 650px;
+  .col_div {
+    /*height: 450px;*/
+    /*max-height: 450px;*/
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid #dce1e6;
+    & /deep/ .sg-FooterPagination {
+      margin-bottom: 0 !important;
+      padding: 5px 20px !important;
     }
-    .custom-table {
-      /*if you want to set scroll: { x: true }*/
-      /*you need to add style .ant-table td { white-space: nowrap; }*/
-      & /deep/ .ant-table {
-        .ant-table-thead th {
-          white-space: nowrap;
-        }
+    .item_div {
+      /*width: 100%;*/
+      padding: 10px;
+      cursor: default;
+      overflow: hidden;
+      &:hover {
+        background-color: #e6f7ff;
+      }
+      .remove_icon {
+        float: right;
+        margin-top: 5px;
+        cursor: pointer;
       }
     }
   }
+  .custom-table {
+    /*if you want to set scroll: { x: true }*/
+    /*you need to add style .ant-table td { white-space: nowrap; }*/
+    & /deep/ .ant-table {
+      .ant-table-thead th {
+        white-space: nowrap;
+      }
+    }
+  }
+}
 </style>

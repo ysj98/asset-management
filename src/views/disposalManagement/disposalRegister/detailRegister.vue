@@ -8,69 +8,28 @@
       <span class="section-title blue">基本信息</span>
       <div class="countingTaskDetail-obj">
         <a-row class="playground-row">
-          <a-col class="playground-col" :span="8"
-            >处置单编号：{{
-              particularsData.disposeRegisterOrderId || "--"
-            }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >资产处置名称：{{ particularsData.disposeName || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >状态：{{ particularsData.approvalStatusName || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >所属组织机构：{{ particularsData.organName || "--" }}</a-col
-          >
+          <a-col class="playground-col" :span="8">处置单编号：{{ particularsData.disposeRegisterOrderId || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">资产处置名称：{{ particularsData.disposeName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">状态：{{ particularsData.approvalStatusName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">所属组织机构：{{ particularsData.organName || '--' }}</a-col>
           <!-- <a-col class="playground-col" :span="8">所属处置计划：{{particularsData.disposePlanName || '--'}}</a-col> -->
+          <a-col class="playground-col" :span="8">资产项目：{{ particularsData.projectName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">资产类型：{{ particularsData.assetTypeName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">处置类型：{{ particularsData.disposeTypeName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">处置方式：{{ particularsData.disposeModeName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">处置时间：{{ particularsData.disposeDate || '--' }}</a-col>
           <a-col class="playground-col" :span="8"
-            >资产项目：{{ particularsData.projectName || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >资产类型：{{ particularsData.assetTypeName || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >处置类型：{{ particularsData.disposeTypeName || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >处置方式：{{ particularsData.disposeModeName || "--" }}</a-col
+            >处置成本(元)：{{ conditionalJudgment.includes(particularsData.disposeCost) ? '--' : particularsData.disposeCost }}</a-col
           >
           <a-col class="playground-col" :span="8"
-            >处置时间：{{ particularsData.disposeDate || "--" }}</a-col
+            >处置收入(元)：{{ conditionalJudgment.includes(particularsData.disposeReceive) ? '--' : particularsData.disposeReceive }}</a-col
           >
-          <a-col class="playground-col" :span="8"
-            >处置成本(元)：{{
-              conditionalJudgment.includes(particularsData.disposeCost)
-                ? "--"
-                : particularsData.disposeCost
-            }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >处置收入(元)：{{
-              conditionalJudgment.includes(particularsData.disposeReceive)
-                ? "--"
-                : particularsData.disposeReceive
-            }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >资产接收人：{{ particularsData.assetReceiver || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >提交人：{{ particularsData.createByName || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="8"
-            >提交时间：{{ particularsData.submitDate || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="24"
-            >处置原因：{{ particularsData.disposeReason || "--" }}</a-col
-          >
-          <a-col class="playground-col" :span="24"
-            >备注：{{ particularsData.remark || "--" }}</a-col
-          >
-          <a-col
-            class="playground-col"
-            :class="{ 'files-style': files.length > 0 }"
-            :span="24"
+          <a-col class="playground-col" :span="8">资产接收人：{{ particularsData.assetReceiver || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">提交人：{{ particularsData.createByName || '--' }}</a-col>
+          <a-col class="playground-col" :span="8">提交时间：{{ particularsData.submitDate || '--' }}</a-col>
+          <a-col class="playground-col" :span="24">处置原因：{{ particularsData.disposeReason || '--' }}</a-col>
+          <a-col class="playground-col" :span="24">备注：{{ particularsData.remark || '--' }}</a-col>
+          <a-col class="playground-col" :class="{ 'files-style': files.length > 0 }" :span="24"
             >附件： <span v-if="files.length === 0">无</span>
             <div class="umImg" v-if="files.length > 0">
               <UploadFile v-model="files" type="all" :show="true" />
@@ -80,21 +39,13 @@
       </div>
     </div>
     <div class="countingTaskDetail-nav">
-      <span class="section-title blue"
-        >资产处置清单 (资产总数：{{ queryCondition.count || 0 }})</span
-      >
+      <span class="section-title blue">资产处置清单 (资产总数：{{ queryCondition.count || 0 }})</span>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :loading="loading"
-            :columns="columnsData"
-            :dataSource="tableData"
-            size="middle"
-            :pagination="false"
-          >
+          <a-table :loading="loading" :columns="columnsData" :dataSource="tableData" size="middle" :pagination="false">
             <!-- 是否需协助办证 -->
             <template #isAssistAccreditation="text, record">
-              {{ record.isAssistAccreditation ? "是" : "否" }}
+              {{ record.isAssistAccreditation ? '是' : '否' }}
             </template>
             <!-- 处置成本 -->
             <template slot="disposeCost">
@@ -127,17 +78,8 @@
       <span class="section-title blue">收付款计划</span>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :loading="loading"
-            :columns="receivingColumnsData"
-            :dataSource="inventoryReportData"
-            size="middle"
-            :pagination="false"
-          >
-          </a-table>
-          <no-data-tips
-            v-show="inventoryReportData.length === 0"
-          ></no-data-tips>
+          <a-table :loading="loading" :columns="receivingColumnsData" :dataSource="inventoryReportData" size="middle" :pagination="false"> </a-table>
+          <no-data-tips v-show="inventoryReportData.length === 0"></no-data-tips>
         </div>
       </div>
     </div>
@@ -145,13 +87,7 @@
       <span class="section-title blue">转让单列表</span>
       <div class="countingTaskDetail-obj">
         <div class="table-layout-fixed table-border">
-          <a-table
-            :columns="transferColumns"
-            :dataSource="transfertData"
-            size="middle"
-            :pagination="false"
-          >
-          </a-table>
+          <a-table :columns="transferColumns" :dataSource="transfertData" size="middle" :pagination="false"> </a-table>
           <no-data-tips v-show="transfertData.length === 0"></no-data-tips>
         </div>
       </div>
@@ -159,119 +95,97 @@
     <!--审批轨迹-->
     <div class="countingTaskDetail-nav">
       <SG-Title title="审批轨迹" />
-      <step
-        v-stepstyleplus
-        v-if="stepList.length"
-        :stepList="stepList"
-        @getFile="getFile"
-        style="margin-left: 45px"
-      />
+      <step v-stepstyleplus v-if="stepList.length" :stepList="stepList" @getFile="getFile" style="margin-left: 45px" />
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
     </div>
     <div class="countingTaskDetail-nav" v-if="isApprove">
       <SG-Title title="审核意见" />
-      <a-textarea
-        :rows="4"
-        style="resize: none; margin-left: 45px"
-        placeholder="请输入审核意见"
-        v-model="advice"
-      />
+      <a-textarea :rows="4" style="resize: none; margin-left: 45px" placeholder="请输入审核意见" v-model="advice" />
     </div>
     <div style="height: 70px"></div>
     <div v-if="isApprove">
       <!--底部审批操作按钮组-->
       <form-footer location="fixed">
         <SG-Button type="primary" @click="handleBtn(1)">审批通过</SG-Button>
-        <SG-Button
-          type="dangerous"
-          @click="handleBtn(0)"
-          style="margin-right: 8px"
-        >
-          驳回
-        </SG-Button>
+        <SG-Button type="dangerous" @click="handleBtn(0)" style="margin-right: 8px"> 驳回 </SG-Button>
       </form-footer>
     </div>
   </div>
 </template>
 
 <script>
-import FormFooter from "@/components/FormFooter";
-import noDataTips from "@/components/noDataTips";
-import Step from '@/components/step'
-import { utils } from "@/utils/utils.js";
-import {
-  columns,
-  receivingData,
-  conditionalJudgment,
-  transfer,
-} from "./beat.js";
-import moment from "moment";
+import FormFooter from '@/components/FormFooter';
+import noDataTips from '@/components/noDataTips';
+import Step from '@/components/step';
+import { utils } from '@/utils/utils.js';
+import { columns, receivingData, conditionalJudgment, transfer } from './beat.js';
+import moment from 'moment';
 export default {
-  components: { noDataTips, FormFooter,Step },
+  components: { noDataTips, FormFooter, Step },
   props: {},
   data() {
     return {
-      apprId: "",
+      apprId: '',
       stepList: [],
-      advice: "",
+      advice: '',
       isApprove: false,
       conditionalJudgment,
-      detailData: "",
+      detailData: '',
       inventoryAssetCount: 0,
-      taskId: "",
-      changeType: "",
-      changeOrderId: "",
+      taskId: '',
+      changeType: '',
+      changeOrderId: '',
       particularsData: {},
       files: [],
       columnsData: [],
       receivingColumnsData: [],
       transferColumns: [
         {
-          title: "申请单ID",
-          dataIndex: "applyId",
-          width: "10%",
+          title: '申请单ID',
+          dataIndex: 'applyId',
+          width: '10%',
         },
         {
-          title: "所属机构",
-          dataIndex: "organName",
-          width: "10%",
+          title: '所属机构',
+          dataIndex: 'organName',
+          width: '10%',
         },
         {
-          title: "申请单名称",
-          dataIndex: "name",
-          width: "10%",
+          title: '申请单名称',
+          dataIndex: 'name',
+          width: '10%',
         },
         {
-          title: "资产项目",
-          dataIndex: "projectName",
-          width: "10%",
+          title: '资产项目',
+          dataIndex: 'projectName',
+          width: '10%',
         },
         {
-          title: "挂牌价格(元)",
-          dataIndex: "listingPrice",
-          width: "10%",
+          title: '挂牌价格(元)',
+          dataIndex: 'listingPrice',
+          width: '10%',
         },
         {
-          title: "提交人",
-          dataIndex: "create",
-          width: "10%",
+          title: '提交人',
+          dataIndex: 'create',
+          width: '10%',
         },
         {
-          title: "提交时间",
-          dataIndex: "createTime",
-          width: "10%",
+          title: '提交时间',
+          dataIndex: 'createTime',
+          width: '10%',
         },
       ],
       transfertData: [],
       loading: false,
       tableData: [], // 资产列表表格数据
       inventoryReportData: [], // 盘点报告表格数据
-      location: "",
+      location: '',
       noPageTools: false,
       queryCondition: {
         pageSize: 10,
         pageNum: 1,
-        count: "",
+        count: '',
       },
     };
   },
@@ -284,54 +198,53 @@ export default {
         busId: disposeRegisterOrderId,
         organId: relatedOrganId,
       };
-      this.$api.approve
-        .queryApprovalRecordByBus(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            if (message === "审批单不存在") {
-              if (this.detailData.type === "approval") {
-                this.isApprove = true;
-              }
-            } else {
-              this.apprId = data.amsApprovalResDto.apprId;
-              this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
-                return {
-                      date: ele.operDateStr
-                        ? moment(ele.operDateStr)
-                        : moment(),
-                      title: ele.operOpinion,
-                      desc: "",
-                      isDone: false,
-                      operation: ele.files&&ele.files.length>0?JSON.parse(ele.files).map(ele=>{
-                        return{
-                          buttonName:ele.name,
-                          funcName:'getFile',
-                          fileID:ele.id,
-                          fileName:ele.name
-                        }
-                      }):[],
-                    };
-              });
-              this.stepList.length && (this.stepList[0].isDone = true);
-              if (this.detailData.type === "approval") {
-                this.isApprove = data.amsApprovalResDto.isAbRole === 1;
-              }
+      this.$api.approve.queryApprovalRecordByBus(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          if (message === '审批单不存在') {
+            if (this.detailData.type === 'approval') {
+              this.isApprove = true;
             }
           } else {
-            this.$message.error(message);
+            this.apprId = data.amsApprovalResDto.apprId;
+            this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
+              return {
+                date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
+                title: ele.operOpinion,
+                desc: '',
+                isDone: false,
+                operation:
+                  ele.files && ele.files.length > 0
+                    ? JSON.parse(ele.files).map((ele) => {
+                        return {
+                          buttonName: ele.name,
+                          funcName: 'getFile',
+                          fileID: ele.id,
+                          fileName: ele.name,
+                        };
+                      })
+                    : [],
+              };
+            });
+            this.stepList.length && (this.stepList[0].isDone = true);
+            if (this.detailData.type === 'approval') {
+              this.isApprove = data.amsApprovalResDto.isAbRole === 1;
+            }
           }
-        });
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
     //审批流程获取文件
-    getFile(item){
-      console.log(item)
-       this.$api.approve.getFile({fileId:item.fileID});
+    getFile(item) {
+      console.log(item);
+      this.$api.approve.getFile({ fileId: item.fileID });
     },
     // 按钮操作
     handleBtn(operResult) {
       if (operResult === 0) {
         if (!this.advice) {
-          this.$message.error("驳回必填审核意见");
+          this.$message.error('驳回必填审核意见');
           return null;
         }
       }
@@ -343,8 +256,8 @@ export default {
       this.$api.approve
         .uniformSubmit(req)
         .then(({ data: res }) => {
-          if (res && String(res.code) === "0") {
-            this.$message.success(operResult ? "审批成功" : "驳回成功");
+          if (res && String(res.code) === '0') {
+            this.$message.success(operResult ? '审批成功' : '驳回成功');
             // 跳回列表路由
             this.$router.go(-1);
           } else {
@@ -353,7 +266,7 @@ export default {
         })
         .catch((err) => {
           console.error(err);
-          this.$message.error(err || `${operResult ? "审批失败" : "驳回失败"}`);
+          this.$message.error(err || `${operResult ? '审批失败' : '驳回失败'}`);
         });
     },
     // 资产列表分页查询
@@ -424,8 +337,8 @@ export default {
             (item.key = index), (item.indexKey = index + 1);
             item.feeSubject = item.feeSubjectName;
             item.receivecostType = item.receivecostTypeName;
-            item.payee = item.payee ? item.payee : "--";
-            item.payer = item.payer ? item.payer : "--";
+            item.payee = item.payee ? item.payee : '--';
+            item.payer = item.payer ? item.payer : '--';
           });
           this.inventoryReportData = data;
           this.loading = false;
@@ -441,7 +354,7 @@ export default {
         disposeRegisterOrderId: this.disposeRegisterOrderId,
       };
       this.$api.disposalManagement.listByDisposeRegisterOrderId(obj).then((res) => {
-        console.log('res',res)
+        console.log('res', res);
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
           this.transfertData = data;
@@ -467,14 +380,14 @@ export default {
     this.query();
     this.getRegisterDetailListPage();
     this.getreceivecostPlanList();
-    this.listByDisposeRegisterOrderId()
+    this.listByDisposeRegisterOrderId();
 
-    if (["detail", "approval"].includes(this.detailData.type)) {
+    if (['detail', 'approval'].includes(this.detailData.type)) {
       this.queryApprovalRecordByBus();
     }
   },
   beforeRouteEnter(to, from, next) {
-    to.meta.noShowProBreadNav = from.path === "/approve";
+    to.meta.noShowProBreadNav = from.path === '/approve';
     next((vm) => {
       const {
         params: { fromBpmApprove },
@@ -510,4 +423,3 @@ export default {
   }
 }
 </style>
-

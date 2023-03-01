@@ -153,220 +153,220 @@
 </template>
 
 <script>
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import provinceCityDistrict from "@/views/common/ProvinceCityDistrict";
-import SearchContainer from "@/views/common/SearchContainer";
-import OverviewNumber from "@/views/common/OverviewNumber";
-import TreeSelect from "@/views/common/treeSelect";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import { SET_AMS_USE_DIRECTION } from "@/store/types/platformDictTypes";
-import { handleTableScrollHeight, initTableColumns } from "@/utils/share";
-import { handleDownloadFile } from "utils/utils";
-import TableHeaderSettings from "src/components/TableHeaderSettings";
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import provinceCityDistrict from '@/views/common/ProvinceCityDistrict';
+import SearchContainer from '@/views/common/SearchContainer';
+import OverviewNumber from '@/views/common/OverviewNumber';
+import TreeSelect from '@/views/common/treeSelect';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+import { SET_AMS_USE_DIRECTION } from '@/store/types/platformDictTypes';
+import { handleTableScrollHeight, initTableColumns } from '@/utils/share';
+import { handleDownloadFile } from 'utils/utils';
+import TableHeaderSettings from 'src/components/TableHeaderSettings';
 const detailColumns = [
   {
-    title: "资产名称",
-    dataIndex: "assetName",
+    title: '资产名称',
+    dataIndex: 'assetName',
     width: 200,
-    fixed: "left",
+    fixed: 'left',
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
+    title: '资产编码',
+    dataIndex: 'assetCode',
     width: 200,
   },
   {
-    title: "资产分类",
-    dataIndex: "equipmentTypeName",
+    title: '资产分类',
+    dataIndex: 'equipmentTypeName',
     width: 120,
   },
   {
-    title: "管理机构",
-    dataIndex: "organName",
+    title: '管理机构',
+    dataIndex: 'organName',
     width: 200,
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 200,
   },
   {
-    title: "规格型号",
-    dataIndex: "equipmentModel",
+    title: '规格型号',
+    dataIndex: 'equipmentModel',
     width: 120,
   },
   {
-    title: "所在位置",
-    dataIndex: "address",
+    title: '所在位置',
+    dataIndex: 'address',
     width: 300,
   },
   {
-    title: "使用方向",
-    dataIndex: "useType",
+    title: '使用方向',
+    dataIndex: 'useType',
     width: 120,
   },
   {
-    title: "设备厂家",
-    dataIndex: "factory",
+    title: '设备厂家',
+    dataIndex: 'factory',
     width: 120,
   },
   {
-    title: "出厂日期",
-    dataIndex: "dateOfProduction",
+    title: '出厂日期',
+    dataIndex: 'dateOfProduction',
     width: 200,
   },
   {
-    title: "报废日期",
-    dataIndex: "scrapDate",
+    title: '报废日期',
+    dataIndex: 'scrapDate',
     width: 200,
   },
   {
-    title: "接管日期",
-    dataIndex: "startDate",
+    title: '接管日期',
+    dataIndex: 'startDate',
     width: 200,
   },
   {
-    title: "财务卡片编码",
-    dataIndex: "financialCode",
+    title: '财务卡片编码',
+    dataIndex: 'financialCode',
     width: 200,
   },
   {
-    title: "资产原值(元)",
-    dataIndex: "originalValue",
+    title: '资产原值(元)',
+    dataIndex: 'originalValue',
     width: 120,
   },
   {
-    title: "最新估值(元)",
-    dataIndex: "assetValuation",
+    title: '最新估值(元)',
+    dataIndex: 'assetValuation',
     width: 120,
   },
   {
-    title: "资产状态",
-    dataIndex: "statusName",
+    title: '资产状态',
+    dataIndex: 'statusName',
     width: 120,
   },
   {
-    title: "资产标签",
-    dataIndex: "label",
+    title: '资产标签',
+    dataIndex: 'label',
     width: 120,
   },
   {
-    title: "资产原始来源方",
-    dataIndex: "originSource",
+    title: '资产原始来源方',
+    dataIndex: 'originSource',
     width: 120,
   },
 ];
 const requiredColumn = [
   {
-    title: "操作",
-    key: "action",
+    title: '操作',
+    key: 'action',
     width: 120,
-    fixed: "right",
-    scopedSlots: { customRender: "action" },
+    fixed: 'right',
+    scopedSlots: { customRender: 'action' },
   },
 ];
 const allColumns = [
   {
-    title: "资产名称",
-    dataIndex: "assetName",
+    title: '资产名称',
+    dataIndex: 'assetName',
     width: 200,
-    fixed: "left",
+    fixed: 'left',
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
+    title: '资产编码',
+    dataIndex: 'assetCode',
     width: 200,
   },
   {
-    title: "资产分类",
-    dataIndex: "equipmentTypeName",
+    title: '资产分类',
+    dataIndex: 'equipmentTypeName',
     width: 120,
   },
   {
-    title: "管理机构",
-    dataIndex: "organName",
+    title: '管理机构',
+    dataIndex: 'organName',
     width: 200,
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 200,
   },
   {
-    title: "规格型号",
-    dataIndex: "equipmentModel",
+    title: '规格型号',
+    dataIndex: 'equipmentModel',
     width: 120,
   },
   {
-    title: "所在位置",
-    dataIndex: "address",
+    title: '所在位置',
+    dataIndex: 'address',
     width: 300,
   },
   {
-    title: "使用方向",
-    dataIndex: "useType",
+    title: '使用方向',
+    dataIndex: 'useType',
     width: 120,
   },
   {
-    title: "设备厂家",
-    dataIndex: "factory",
+    title: '设备厂家',
+    dataIndex: 'factory',
     width: 120,
   },
   {
-    title: "出厂日期",
-    dataIndex: "dateOfProduction",
+    title: '出厂日期',
+    dataIndex: 'dateOfProduction',
     width: 200,
   },
   {
-    title: "报废日期",
-    dataIndex: "scrapDate",
+    title: '报废日期',
+    dataIndex: 'scrapDate',
     width: 200,
   },
   {
-    title: "接管日期",
-    dataIndex: "startDate",
+    title: '接管日期',
+    dataIndex: 'startDate',
     width: 200,
   },
   {
-    title: "财务卡片编码",
-    dataIndex: "financialCode",
+    title: '财务卡片编码',
+    dataIndex: 'financialCode',
     width: 200,
   },
   {
-    title: "资产原值(元)",
-    dataIndex: "originalValue",
+    title: '资产原值(元)',
+    dataIndex: 'originalValue',
     width: 120,
   },
   {
-    title: "最新估值(元)",
-    dataIndex: "assetValuation",
+    title: '最新估值(元)',
+    dataIndex: 'assetValuation',
     width: 120,
   },
   {
-    title: "资产状态",
-    dataIndex: "statusName",
+    title: '资产状态',
+    dataIndex: 'statusName',
     width: 120,
   },
   {
-    title: "资产标签",
-    dataIndex: "label",
+    title: '资产标签',
+    dataIndex: 'label',
     width: 120,
   },
   {
-    title: "资产原始来源方",
-    dataIndex: "originSource",
+    title: '资产原始来源方',
+    dataIndex: 'originSource',
     width: 120,
   },
   {
-    title: "操作",
-    key: "action",
+    title: '操作',
+    key: 'action',
     width: 120,
-    fixed: "right",
-    scopedSlots: { customRender: "action" },
+    fixed: 'right',
+    scopedSlots: { customRender: 'action' },
   },
 ];
 export default {
-  name: "equipmentviewAssetView",
+  name: 'equipmentviewAssetView',
   components: {
     SearchContainer,
     provinceCityDistrict,
@@ -385,85 +385,85 @@ export default {
       modalList: {
         setAssetLabel: {
           show: false,
-          title: "资产标签设置",
+          title: '资产标签设置',
         },
         setTableHeader: {
           show: false,
-          title: "列表表头设置",
+          title: '列表表头设置',
         },
       },
       selectedLabel: [],
       labelOptions: [],
       totalLoadingFlag: false,
       statusListOpt: [
-        { title: "未生效", key: "0" },
-        { title: "正常", key: "1" },
-        { title: "报废", key: "2" },
-        { title: "转让", key: "3" },
-        { title: "报损", key: "4" },
-        { title: "已清理", key: "5" },
-        { title: "已取消", key: "6" },
-        { title: "入库中", key: "7" },
+        { title: '未生效', key: '0' },
+        { title: '正常', key: '1' },
+        { title: '报废', key: '2' },
+        { title: '转让', key: '3' },
+        { title: '报损', key: '4' },
+        { title: '已清理', key: '5' },
+        { title: '已取消', key: '6' },
+        { title: '入库中', key: '7' },
       ],
       projectData: [],
       paginationObj: {
         pageLength: 10,
         pageNo: 1,
         totalCount: 0,
-        location: "fixed",
+        location: 'fixed',
       },
       provinceCityDistrictValue: {},
       fold: true,
       queryForm: {
-        organIds: "",
-        assetName: "",
-        province: "",
-        city: "",
-        region: "",
+        organIds: '',
+        assetName: '',
+        province: '',
+        city: '',
+        region: '',
         labels: [],
         projectIdList: [],
         useTypes: [],
         statusList: [],
         equipmentTypes: [],
-        originSource: "",
+        originSource: '',
       },
       numList: [
-        { title: "资产数量", key: "total", value: 0, fontColor: "#324057" },
+        { title: '资产数量', key: 'total', value: 0, fontColor: '#324057' },
         {
-          title: "运营",
-          key: "operate",
+          title: '运营',
+          key: 'operate',
           value: 0,
-          bgColor: "#4BD288",
+          bgColor: '#4BD288',
         },
         {
-          title: "闲置",
-          key: "idle",
+          title: '闲置',
+          key: 'idle',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#1890FF',
         },
         {
-          title: "自用",
-          key: "self",
+          title: '自用',
+          key: 'self',
           value: 0,
-          bgColor: "#DD81E6",
+          bgColor: '#DD81E6',
         },
         {
-          title: "其他",
-          key: "other",
+          title: '其他',
+          key: 'other',
           value: 0,
-          bgColor: "#BBC8D6",
+          bgColor: '#BBC8D6',
         },
         {
-          title: "资产原值(元)",
-          key: "originalValue",
+          title: '资产原值(元)',
+          key: 'originalValue',
           value: 0,
-          bgColor: "#FD7474",
+          bgColor: '#FD7474',
         },
         {
-          title: "最新价值(元)",
-          key: "marketValue",
+          title: '最新价值(元)',
+          key: 'marketValue',
           value: 0,
-          bgColor: "#808080",
+          bgColor: '#808080',
         },
       ],
       selectedRowKeys: [],
@@ -472,14 +472,14 @@ export default {
         columns: allColumns,
         dataSource: [],
         pagination: false,
-        rowKey: "assetEquipmentId",
+        rowKey: 'assetEquipmentId',
         // y: "max-content"
         scroll: { x: 3000, y: 600 },
       },
     };
   },
   watch: {
-    "tableOptions.columns"(val) {
+    'tableOptions.columns'(val) {
       this.tableOptions.scroll.x = val.length * 150;
       console.log(val);
     },
@@ -514,15 +514,15 @@ export default {
       this.$api.equipmentview
         .exportExcel(req)
         .then(async ({ data }) => {
-          console.log("data", data);
+          console.log('data', data);
           const { err } = await handleDownloadFile({
             data,
-            fileName: "设备设施资产视图列表.xls",
+            fileName: '设备设施资产视图列表.xls',
           });
           if (err) {
             this.$message.error(err);
           } else {
-            this.$message.success("导出成功");
+            this.$message.success('导出成功');
           }
         })
         .finally(() => {
@@ -534,24 +534,24 @@ export default {
     },
     // 列表设置弹窗 保存
     setTableHeaderPopSave() {
-      console.log("this.selectedColumns", this.selectedColumns);
+      console.log('this.selectedColumns', this.selectedColumns);
       this.tableOptions.columns = this.allColumns.filter((ele) => {
         const keyStr = ele.dataIndex || ele.key;
         return this.selectedColumns.includes(keyStr);
       });
-      this.$message.success("操作成功");
-      this.doClosePop("setTableHeader");
+      this.$message.success('操作成功');
+      this.doClosePop('setTableHeader');
     },
     // 资产标签弹窗 保存
     setAssetLabelPopSave() {
       const req = {
-        labelCode: this.selectedLabel.join(","),
-        assetEquipmentIds: this.selectedRowKeys.join(","),
+        labelCode: this.selectedLabel.join(','),
+        assetEquipmentIds: this.selectedRowKeys.join(','),
       };
       console.log({ req });
       this.$api.equipmentview.updateLabel(req).then(({ data: { code, message } }) => {
-        if (code === "0") {
-          this.$message.success("操作成功");
+        if (code === '0') {
+          this.$message.success('操作成功');
           this.modalList.setAssetLabel.show = false;
           this.queryTableDataAndTotal(true);
         } else {
@@ -574,9 +574,9 @@ export default {
     // 获取 资产标签
     getAssetLabel({ organId }) {
       this.$api.publicCode
-        .queryAssetLabelConfig({ organId: organId.split(",")[0] })
+        .queryAssetLabelConfig({ organId: organId.split(',')[0] })
         .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
+          if (code === '0') {
             if (data.data) {
               this.labelOptions = data.data.map((ele) => {
                 return {
@@ -606,15 +606,15 @@ export default {
       };
       console.log({ queryParams });
       this.$router.push({
-        path: "/equipmentview/detail",
+        path: '/equipmentview/detail',
         query: queryParams,
       });
     },
     // 地址级联 处理搜索入参
     handleAddress({ province, city, district }) {
-      this.queryForm.province = province || "";
-      this.queryForm.city = city || "";
-      this.queryForm.region = district || "";
+      this.queryForm.province = province || '';
+      this.queryForm.city = city || '';
+      this.queryForm.region = district || '';
     },
     doSearch() {
       this.paginationObj.pageNo = 1;
@@ -659,7 +659,7 @@ export default {
             data: { data, count },
           },
         }) => {
-          if (code === "0") {
+          if (code === '0') {
             console.log({ data });
             this.paginationObj.totalCount = count;
             this.tableOptions.dataSource = data || [];
@@ -674,7 +674,7 @@ export default {
     queryTotal(options) {
       this.totalLoadingFlag = true;
       this.$api.equipmentview.getTotal(options).then(({ data: { code, message, data } }) => {
-        if (code === "0") {
+        if (code === '0') {
           console.log({ data });
           this.numList.forEach((ele) => {
             ele.value = Number(data[ele.key] || 0).toLocaleString();
@@ -716,8 +716,8 @@ export default {
     initTableColumns({ columns: this.tableOptions.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   mounted() {
-    this.$store.dispatch("platformDict/getPlatformDict", {
-      code: "AMS_USE_DIRECTION",
+    this.$store.dispatch('platformDict/getPlatformDict', {
+      code: 'AMS_USE_DIRECTION',
       type: SET_AMS_USE_DIRECTION,
     });
   },

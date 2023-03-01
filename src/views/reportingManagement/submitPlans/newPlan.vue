@@ -293,98 +293,98 @@
 </template>
 
 <script>
-import selectStaffOrPost from "@/views/common/selectStaffOrPost";
-import noDataTips from "@/components/noDataTips";
-import projectModal from "../../common/projectModal";
-import FormFooter from "@/components/FormFooter";
-import { utils } from "@/utils/utils.js";
-import moment from "moment";
+import selectStaffOrPost from '@/views/common/selectStaffOrPost';
+import noDataTips from '@/components/noDataTips';
+import projectModal from '../../common/projectModal';
+import FormFooter from '@/components/FormFooter';
+import { utils } from '@/utils/utils.js';
+import moment from 'moment';
 const previewColumns = [
   {
-    title: "编号",
-    dataIndex: "indexs",
-    width: "10%",
+    title: '编号',
+    dataIndex: 'indexs',
+    width: '10%',
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
-    width: "10%",
+    title: '资产项目',
+    dataIndex: 'projectName',
+    width: '10%',
   },
   {
-    slots: { title: "informant" },
-    dataIndex: "informant",
-    scopedSlots: { customRender: "informant" },
-    width: "30%",
+    slots: { title: 'informant' },
+    dataIndex: 'informant',
+    scopedSlots: { customRender: 'informant' },
+    width: '30%',
   },
   {
-    slots: { title: "auditor" },
-    dataIndex: "auditor",
-    scopedSlots: { customRender: "auditor" },
-    width: "30%",
+    slots: { title: 'auditor' },
+    dataIndex: 'auditor',
+    scopedSlots: { customRender: 'auditor' },
+    width: '30%',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    width: "10%",
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
+    width: '10%',
   },
 ];
 let preUnitOpt = [
-  { label: "天", key: "1" },
-  { label: "时", key: "2" },
+  { label: '天', key: '1' },
+  { label: '时', key: '2' },
 ];
-let dayOpt = [{ label: "天", key: "1" }];
+let dayOpt = [{ label: '天', key: '1' }];
 let exePreData = [
-  { label: "单次", key: "1" },
-  { label: "每天", key: "2" },
-  { label: "每周", key: "3" },
-  { label: "每月", key: "4" },
-  { label: "每季度", key: "5" },
-  { label: "每半年", key: "6" },
-  { label: "每年", key: "7" },
+  { label: '单次', key: '1' },
+  { label: '每天', key: '2' },
+  { label: '每周', key: '3' },
+  { label: '每月', key: '4' },
+  { label: '每季度', key: '5' },
+  { label: '每半年', key: '6' },
+  { label: '每年', key: '7' },
 ];
 //每周
 let onweek = [
-  { label: "周一", key: "1" },
-  { label: "周二", key: "2" },
-  { label: "周三", key: "3" },
-  { label: "周四", key: "4" },
-  { label: "周五", key: "5" },
-  { label: "周六", key: "6" },
-  { label: "周日", key: "7" },
+  { label: '周一', key: '1' },
+  { label: '周二', key: '2' },
+  { label: '周三', key: '3' },
+  { label: '周四', key: '4' },
+  { label: '周五', key: '5' },
+  { label: '周六', key: '6' },
+  { label: '周日', key: '7' },
 ];
 
 // 每月
-let oneMonth = [{ label: "每月", key: "1" }];
+let oneMonth = [{ label: '每月', key: '1' }];
 // 每季度
 let oneQuarter = [
-  { label: "每季度第1个月", key: "1" },
-  { label: "每季度第2个月", key: "2" },
-  { label: "每季度第3个月", key: "3" },
+  { label: '每季度第1个月', key: '1' },
+  { label: '每季度第2个月', key: '2' },
+  { label: '每季度第3个月', key: '3' },
 ];
 // 每半年
 let halfYear = [
-  { label: "每半年第1个月", key: "1" },
-  { label: "每半年第2个月", key: "2" },
-  { label: "每半年第3个月", key: "3" },
-  { label: "每半年第4个月", key: "4" },
-  { label: "每半年第5个月", key: "5" },
-  { label: "每半年第6个月", key: "6" },
+  { label: '每半年第1个月', key: '1' },
+  { label: '每半年第2个月', key: '2' },
+  { label: '每半年第3个月', key: '3' },
+  { label: '每半年第4个月', key: '4' },
+  { label: '每半年第5个月', key: '5' },
+  { label: '每半年第6个月', key: '6' },
 ];
 // 每年
 let oneHasYear = [
-  { label: "每年第1个月", key: "1" },
-  { label: "每年第2个月", key: "2" },
-  { label: "每年第3个月", key: "3" },
-  { label: "每年第4个月", key: "4" },
-  { label: "每年第5个月", key: "5" },
-  { label: "每年第6个月", key: "6" },
-  { label: "每年第7个月", key: "7" },
-  { label: "每年第8个月", key: "8" },
-  { label: "每年第9个月", key: "9" },
-  { label: "每年第10个月", key: "10" },
-  { label: "每年第11个月", key: "11" },
-  { label: "每年第12个月", key: "12" },
+  { label: '每年第1个月', key: '1' },
+  { label: '每年第2个月', key: '2' },
+  { label: '每年第3个月', key: '3' },
+  { label: '每年第4个月', key: '4' },
+  { label: '每年第5个月', key: '5' },
+  { label: '每年第6个月', key: '6' },
+  { label: '每年第7个月', key: '7' },
+  { label: '每年第8个月', key: '8' },
+  { label: '每年第9个月', key: '9' },
+  { label: '每年第10个月', key: '10' },
+  { label: '每年第11个月', key: '11' },
+  { label: '每年第12个月', key: '12' },
 ];
 const beginDayOpt = Array.from({ length: 31 }).map((v, i) => ({ label: `${i + 1}日`, value: `${i + 1}`, key: `${i + 1}` }));
 export default {
@@ -393,16 +393,16 @@ export default {
   data() {
     return {
       formData: [],
-      batch: "", // 批量设置
+      batch: '', // 批量设置
       reportBillId: undefined, // 呈报表单id
-      backupsReportBillId: "", // 呈报表单备份！用于编辑时选择表单时的判断
-      deadline: "3", // 任务执行期限
-      dayData: "1", // 任务执行期限单位
-      preNum: "1", // 提前生成任务时间
-      preUnit: "1", // 提前生成任务时间单位
-      reportPlanId: "", // 计划id
-      tabType: "",
-      selectType: "staff", // staff选人 post选岗位
+      backupsReportBillId: '', // 呈报表单备份！用于编辑时选择表单时的判断
+      deadline: '3', // 任务执行期限
+      dayData: '1', // 任务执行期限单位
+      preNum: '1', // 提前生成任务时间
+      preUnit: '1', // 提前生成任务时间单位
+      reportPlanId: '', // 计划id
+      tabType: '',
+      selectType: 'staff', // staff选人 post选岗位
       selectOptList: [],
       checkedData: [], // 资产id
       showBeginMonth: true,
@@ -416,9 +416,9 @@ export default {
       dayOpt,
       organIdData: [], // 所属机构
       form: this.$form.createForm(this),
-      allWidth: "width: 214px",
+      allWidth: 'width: 214px',
       reportBillData: [],
-      widthBox: "width: 85%",
+      widthBox: 'width: 85%',
       formItemTextarea: {
         labelCol: {
           xs: { span: 24 },
@@ -448,17 +448,17 @@ export default {
       beginDayOpt: beginDayOpt,
       beginMonthOpt: [],
       newCardData: {
-        planName: "", // 计划名称
-        planCode: "", // 计划编号
-        organId: "", // 所属机构
+        planName: '', // 计划名称
+        planCode: '', // 计划编号
+        organId: '', // 所属机构
         defaultValue: [], // 计划执行日期
-        remark: "", // 备注
+        remark: '', // 备注
         files: [], // 附件
         exePre: undefined, // 实施频次
       },
       exePreData: exePreData, // 实施频次
-      changeType: "",
-      registerId: "",
+      changeType: '',
+      registerId: '',
       columns: [],
       dataSourceReportBill: [],
       loading: false,
@@ -466,14 +466,14 @@ export default {
         tableData: [],
         loading: false,
         previewColumns: [...previewColumns],
-        activeRowIndex: "",
+        activeRowIndex: '',
       },
-      location: "",
+      location: '',
       noPageTools: false,
       queryCondition: {
         pageSize: 10,
         pageNum: 1,
-        count: "",
+        count: '',
       },
     };
   },
@@ -483,7 +483,7 @@ export default {
     // 表头选择
     openSubjectModal(val) {
       if (this.table.tableData.length === 0) {
-        this.$message.info("请先选择资产项目");
+        this.$message.info('请先选择资产项目');
         return;
       }
       this.batch = val; // 用于判断批量设置
@@ -499,9 +499,9 @@ export default {
       this.reportBillId = value;
       // 选择之前编辑的就用计划id查！切换别的就不穿计划id
       if (this.backupsReportBillId === value) {
-        this.queryReportBillColumn(value, "edit");
+        this.queryReportBillColumn(value, 'edit');
       } else {
-        this.queryReportBillColumn(value, "change");
+        this.queryReportBillColumn(value, 'change');
       }
     },
     // 查询呈报表单字段
@@ -509,10 +509,10 @@ export default {
     queryReportBillColumn(value, str) {
       let obj = {
         reportBillId: value,
-        reportPlanId: "",
+        reportPlanId: '',
       };
       this.$api.reportManage.queryReportBillColumn(obj).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = [];
           let columnNeed = {}; // 是否必填 0-非必填 1-必填
@@ -524,16 +524,16 @@ export default {
               scopedSlots: { customRender: item.columnName },
             });
             columnNeed[item.columnName] = !!item.columnNeed;
-            columnNeed[item.columnName + "disabled"] = !!item.columnNeed;
+            columnNeed[item.columnName + 'disabled'] = !!item.columnNeed;
             columnDisplay[item.columnName] = !!item.columnDisplay;
-            columnDisplay[item.columnName + "disabled"] = !!item.columnDisplay;
+            columnDisplay[item.columnName + 'disabled'] = !!item.columnDisplay;
           });
-          this.columns = [{ title: "字段名称", dataIndex: "ieldNames" }, ...arr];
+          this.columns = [{ title: '字段名称', dataIndex: 'ieldNames' }, ...arr];
           // 编辑时候那查询详情的接口回填
-          if (this.type === "edit" && str === "edit") {
+          if (this.type === 'edit' && str === 'edit') {
             let arrData = [
-              { ieldNames: "必填字段", key: "0", ...columnNeed },
-              { ieldNames: "展示字段", key: "1", ...columnDisplay },
+              { ieldNames: '必填字段', key: '0', ...columnNeed },
+              { ieldNames: '展示字段', key: '1', ...columnDisplay },
             ];
             this.formData.forEach((vv) => {
               arrData[0][vv.columnName] = !!vv.columnNeed;
@@ -542,8 +542,8 @@ export default {
             this.dataSourceReportBill = arrData;
           } else {
             this.dataSourceReportBill = [
-              { ieldNames: "必填字段", key: "0", ...columnNeed },
-              { ieldNames: "展示字段", key: "1", ...columnDisplay },
+              { ieldNames: '必填字段', key: '0', ...columnNeed },
+              { ieldNames: '展示字段', key: '1', ...columnDisplay },
             ];
           }
           this.reportBillColumnList = result; // 总的数据
@@ -555,7 +555,7 @@ export default {
     // 查询全部呈报表单列表
     queryAllReportBill() {
       this.$api.reportManage.queryAllReportBill({}).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = [];
           result.forEach((item) => {
@@ -572,49 +572,49 @@ export default {
     },
     // 频次变化
     exePreSelectChange(e, str) {
-      if (e === "1" || e === "2") {
+      if (e === '1' || e === '2') {
         this.showBeginMonth = false;
       } else {
         this.showBeginMonth = true;
       }
-      this.showBeginDay = e === "3" ? false : true;
+      this.showBeginDay = e === '3' ? false : true;
       switch (e) {
-        case "1":
+        case '1':
           this.beginMonthOpt = [];
           break;
-        case "2":
+        case '2':
           this.beginMonthOpt = [];
           break;
-        case "3":
+        case '3':
           this.beginDayOpt = onweek;
           break;
-        case "4":
+        case '4':
           this.beginMonthOpt = oneMonth;
           this.beginDayOpt = beginDayOpt;
           break;
-        case "5":
+        case '5':
           this.beginMonthOpt = oneQuarter;
           this.beginDayOpt = beginDayOpt;
           break;
-        case "6":
+        case '6':
           this.beginMonthOpt = halfYear;
           this.beginDayOpt = beginDayOpt;
           break;
-        case "7":
+        case '7':
           this.beginMonthOpt = oneHasYear;
           this.beginDayOpt = beginDayOpt;
           break;
       }
       this.$nextTick(() => {
-        if (str !== "edit") {
+        if (str !== 'edit') {
           if (this.showBeginMonth && this.showBeginDay) {
             this.form.setFieldsValue({
-              beginMonth: "1",
+              beginMonth: '1',
             });
           }
           if (this.showBeginMonth) {
             this.form.setFieldsValue({
-              beginDay: "1",
+              beginDay: '1',
             });
           }
         }
@@ -624,7 +624,7 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log("Received values of form: ", values);
+          console.log('Received values of form: ', values);
         }
       });
     },
@@ -646,8 +646,8 @@ export default {
     deleteFn(record) {
       let _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要删除吗？",
+        title: '提示',
+        content: '确认要删除吗？',
         onOk() {
           _this.table.tableData.forEach((item, index) => {
             if (item.projectId === record.projectId) {
@@ -667,11 +667,11 @@ export default {
       this.$refs.selectStaffOrPost.visible = true;
       this.tabType = type;
       this.table.activeRowIndex = index;
-      this.batch = "";
-      if (this.tabType === "informant") {
-        this.selectOptList = this.table.tableData[index]["informantOptArr"];
-      } else if (this.tabType === "auditor") {
-        this.selectOptList = this.table.tableData[index]["auditorOptArr"];
+      this.batch = '';
+      if (this.tabType === 'informant') {
+        this.selectOptList = this.table.tableData[index]['informantOptArr'];
+      } else if (this.tabType === 'auditor') {
+        this.selectOptList = this.table.tableData[index]['auditorOptArr'];
       }
     },
     // 监听选人弹窗改变事件
@@ -682,21 +682,21 @@ export default {
       let row = this.table.tableData[this.table.activeRowIndex];
       let obj = opt.reduce(
         (pre, next) => {
-          pre.label = pre.label + (pre.label ? "," : "") + next.label;
-          pre.key = pre.key + (pre.key ? "," : "") + next.key;
+          pre.label = pre.label + (pre.label ? ',' : '') + next.label;
+          pre.key = pre.key + (pre.key ? ',' : '') + next.key;
           return pre;
         },
-        { label: "", key: "" }
+        { label: '', key: '' }
       );
       // 批量设置
       if (this.batch) {
-        if (this.batch === "informant") {
+        if (this.batch === 'informant') {
           this.table.tableData.forEach((list) => {
             list.informant = obj.key;
             list.informantOpt = [obj];
             list.informantOptArr = opt;
           });
-        } else if (this.batch === "auditor") {
+        } else if (this.batch === 'auditor') {
           this.table.tableData.forEach((list) => {
             list.auditor = obj.key;
             list.auditorOpt = [obj];
@@ -706,16 +706,16 @@ export default {
       } else {
         // 单个设置
         // 填报人
-        if (this.tabType === "informant") {
-          this.$set(row, "informant", obj.key);
-          this.$set(row, "informantOpt", [obj]);
-          this.$set(row, "informantOptArr", opt);
+        if (this.tabType === 'informant') {
+          this.$set(row, 'informant', obj.key);
+          this.$set(row, 'informantOpt', [obj]);
+          this.$set(row, 'informantOptArr', opt);
         }
         // 审核人的
-        if (this.tabType === "auditor") {
-          this.$set(row, "auditor", obj.key);
-          this.$set(row, "auditorOpt", [obj]);
-          this.$set(row, "auditorOptArr", opt);
+        if (this.tabType === 'auditor') {
+          this.$set(row, 'auditor', obj.key);
+          this.$set(row, 'auditorOpt', [obj]);
+          this.$set(row, 'auditorOptArr', opt);
         }
       }
       this.$refs.selectStaffOrPost.visible = false;
@@ -732,10 +732,10 @@ export default {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           this.formData = data.reportBillColumnList; // 编辑给回来的表单
-          this.exePreSelectChange(data.exePre, "edit");
+          this.exePreSelectChange(data.exePre, 'edit');
           this.reportBillId = Number(data.reportBillId);
           this.backupsReportBillId = utils.deepClone(this.reportBillId);
-          this.queryReportBillColumn(this.reportBillId, "edit");
+          this.queryReportBillColumn(this.reportBillId, 'edit');
           // 插入编辑数据
           this.form.setFieldsValue({
             remark: data.remark, // 备注
@@ -769,8 +769,8 @@ export default {
     queryReportTaskTempPageListFn() {
       let obj = {
         reportPlanId: this.reportPlanId,
-        pageNum: "",
-        pageSize: "",
+        pageNum: '',
+        pageSize: '',
       };
       this.$api.reportManage.queryReportTaskTempPageList(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -811,10 +811,10 @@ export default {
                 item.auditorName.push(v.userName);
               }
             });
-            item.informant = item.informantSet.join(",");
-            item.auditor = item.auditorSet.join(",");
-            item.informantOpt = [{ label: item.informantName.join(","), key: item.informant }];
-            item.auditorOpt = [{ label: item.auditorName.join(","), key: item.auditor }];
+            item.informant = item.informantSet.join(',');
+            item.auditor = item.auditorSet.join(',');
+            item.informantOpt = [{ label: item.informantName.join(','), key: item.informant }];
+            item.auditorOpt = [{ label: item.auditorName.join(','), key: item.auditor }];
           });
           this.table.tableData = data;
           this.checkedData = checkedData;
@@ -825,7 +825,7 @@ export default {
     },
     // 取消
     cancel() {
-      this.$router.push({ path: "/reportingManagement/submitPlans" });
+      this.$router.push({ path: '/reportingManagement/submitPlans' });
     },
     // 提交详情
     save(str) {
@@ -841,21 +841,21 @@ export default {
             });
           }
           if (this.table.tableData.length === 0) {
-            this.$message.info("请填写任务执行设置");
+            this.$message.info('请填写任务执行设置');
             return;
           } else {
             for (let i = 0; i < this.table.tableData.length; i++) {
               if (!this.table.tableData[i].informant) {
-                this.$message.info("请选择填报人");
+                this.$message.info('请选择填报人');
                 return;
               } else if (!this.table.tableData[i].auditor) {
-                this.$message.info("请选择审核人");
+                this.$message.info('请选择审核人');
                 return;
               }
             }
           }
           if (!this.reportBillId) {
-            this.$message.info("请选择呈报表单设置");
+            this.$message.info('请选择呈报表单设置');
             return;
           }
           // 呈报表单数据
@@ -872,14 +872,14 @@ export default {
               userList.push({
                 userId: v.userId,
                 userName: v.name,
-                type: "1",
+                type: '1',
               });
             });
             item.auditorOptArr.forEach((t) => {
               userList.push({
                 userId: t.userId,
                 userName: t.name,
-                type: "2",
+                type: '2',
               });
             });
             taskTempList.push({
@@ -895,24 +895,24 @@ export default {
             planName: values.planName, // 计划名称
             organId: this.newCardData.organId, // 组织机构
             exePre: values.exePre, // 实施频次
-            effDate: values.defaultValue[0].format("YYYY-MM-DD"), // 计划生效时间
-            expDate: values.defaultValue[1].format("YYYY-MM-DD"), // 计划失效时间
+            effDate: values.defaultValue[0].format('YYYY-MM-DD'), // 计划生效时间
+            expDate: values.defaultValue[1].format('YYYY-MM-DD'), // 计划失效时间
             beginDay: values.beginDay, // 任务开始天数或星期几
             beginMonth: values.beginMonth, // 任务开始月份
             preUnit: values.preUnit, // 提前生成单位1-天 2-时
             preNum: values.preNum, // 提前生成单位数量
-            approvalStatus: str === "save" ? "1" : "0", // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+            approvalStatus: str === 'save' ? '1' : '0', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
             deadline: values.deadline, // 任务执行期限
             taskTempList: taskTempList, // 计划明细
             attachmentList: files, // 附件
             reportBillColumnList: report,
           };
-          let loadingName = this.SG_Loding("保存中...");
+          let loadingName = this.SG_Loding('保存中...');
           this.$api.reportManage.saveReportPlan(obj).then((res) => {
-            if (res.data.code === "0") {
+            if (res.data.code === '0') {
               this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success("提交成功");
-                this.$router.push({ path: "/reportingManagement/submitPlans", query: { refresh: true } });
+                this.$SG_Message.success('提交成功');
+                this.$router.push({ path: '/reportingManagement/submitPlans', query: { refresh: true } });
               });
             } else {
               this.DE_Loding(loadingName).then(() => {
@@ -935,10 +935,10 @@ export default {
         value: arr[0].organId,
       },
     ];
-    this.reportPlanId = arr[0].reportPlanId || "";
+    this.reportPlanId = arr[0].reportPlanId || '';
     this.newCardData.organId = arr[0].organId;
     // 编辑
-    if (this.type === "edit") {
+    if (this.type === 'edit') {
       this.query();
       this.queryReportTaskTempPageListFn();
     }

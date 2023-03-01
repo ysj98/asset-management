@@ -12,7 +12,7 @@ const keys = {
       takeOverDate: '接管日期',
       isTransferOperation: '是否转运营',
       // transferOperationTime: '转运营日期',
-      isTransfer: '是否转物业'
+      isTransfer: '是否转物业',
       // transferTime: '转物业日期',
     },
     table: {
@@ -23,16 +23,16 @@ const keys = {
         { title: '交付时间', dataIndex: 'changeDate' },
         { title: '交付面积(㎡)', dataIndex: 'deliverArea' },
         { title: '接收单位', dataIndex: 'deliveryCompany' },
-        { title: '终止日期', dataIndex: 'expiryDate' }
-      ]
-    }
+        { title: '终止日期', dataIndex: 'expiryDate' },
+      ],
+    },
   },
   // 权属信息
   ownInfo: {
     title: '权属信息',
     details: {
       ownerTypeName: '权属形式',
-      ownershipStatusName: '权属状态'
+      ownershipStatusName: '权属状态',
     },
     table: {
       tableTitle: '当前权证信息', // 非必须
@@ -45,8 +45,8 @@ const keys = {
         { title: '宗地号', dataIndex: 'lotNo' },
         { title: '不动产单元号', dataIndex: 'estateUnitCode' },
         { title: '坐落位置', dataIndex: 'seatingPosition' },
-        { title: '用途', dataIndex: 'ownershipUseName' }
-      ]
+        { title: '用途', dataIndex: 'ownershipUseName' },
+      ],
     },
     table2: {
       tableTitle: '权属办理记录',
@@ -56,9 +56,9 @@ const keys = {
         { title: '原权证号', dataIndex: 'oldWarrantNbr' },
         { title: '新权证号', dataIndex: 'warrantNbr' },
         { title: '申请人', dataIndex: 'createByName' },
-        { title: '申请日期', dataIndex: 'createTime' }
-      ]
-    }
+        { title: '申请日期', dataIndex: 'createTime' },
+      ],
+    },
   },
   // 变动信息
   changeInfo: {
@@ -72,9 +72,9 @@ const keys = {
         { title: '变动前信息', dataIndex: 'oldChangeInfo' },
         { title: '变动后信息', dataIndex: 'changeInfo' },
         { title: '变动时间', dataIndex: 'changeDate' },
-        { title: '变动人', dataIndex: 'createByName' }
-      ]
-    }
+        { title: '变动人', dataIndex: 'createByName' },
+      ],
+    },
   },
   // 账面信息
   billInfo: {
@@ -82,7 +82,7 @@ const keys = {
     details: {
       cardCode: '财务卡片编号',
       originalValue: '划转时原值(元)',
-      netValue: '资产净值(元)'
+      netValue: '资产净值(元)',
     },
     table: {
       rowKey: 'index',
@@ -91,9 +91,9 @@ const keys = {
         { title: '评估基准日', dataIndex: 'assessmenBaseDate' },
         { title: '评估机构', dataIndex: 'assessmentOrganName' },
         { title: '评估方法', dataIndex: 'assessmentMethodName' },
-        { title: '评估价值', dataIndex: 'assessmentValue' }
-      ]
-    }
+        { title: '评估价值', dataIndex: 'assessmentValue' },
+      ],
+    },
   },
   // 附属&配套
   accessoryInfo: {
@@ -112,9 +112,9 @@ const keys = {
         { title: '计量单位', dataIndex: 'unitOfMeasurementName' },
         { title: '使用情况', dataIndex: 'statusName' },
         { title: '是否接管前配套&配套', dataIndex: 'isBeforeName' },
-        { title: '备注', dataIndex: 'remark' }
-      ]
-    }
+        { title: '备注', dataIndex: 'remark' },
+      ],
+    },
   },
   // 资产处置
   disposeInfo: {
@@ -122,7 +122,7 @@ const keys = {
     details: {
       cleaningOrderId: '出库单编号',
       createTime: '出库时间',
-      cleanupTypeName: '出库原因'
+      cleanupTypeName: '出库原因',
     },
     table: {
       rowKey: 'disposeRegisterOrderId',
@@ -136,15 +136,14 @@ const keys = {
         { title: '相关人(机构)', dataIndex: 'organName' },
         { title: '处置成本(元)', dataIndex: 'disposeCost' },
         { title: '处置收入(元)', dataIndex: 'disposeReceive' },
-        { title: '备注', dataIndex: 'remark' }
-      ]
-    }
+        { title: '备注', dataIndex: 'remark' },
+      ],
+    },
   },
   // 相关费用
-  relatedExpenses : {
+  relatedExpenses: {
     title: '相关费用',
-    details: {
-    },
+    details: {},
     table: {
       rowKey: 'keyId',
       pagination: true,
@@ -158,15 +157,14 @@ const keys = {
         { title: '读数', dataIndex: 'readNumber' },
         { title: '用量', dataIndex: 'useLevel' },
         { title: '是否结清', dataIndex: 'settleUpName' },
-        { title: '备注', dataIndex: 'remark' }
-      ]
-    }
+        { title: '备注', dataIndex: 'remark' },
+      ],
+    },
   },
   // 巡查记录
-  patrolRecord : {
+  patrolRecord: {
     title: '巡查记录',
-    details: {
-    },
+    details: {},
     table: {
       rowKey: 'recordId',
       pagination: true,
@@ -179,15 +177,14 @@ const keys = {
         { title: '巡查图片', dataIndex: 'attachmentList', scopedSlots: { customRender: 'attachmentList' } },
         { title: '现场处理措施', dataIndex: 'sceneHandleMeasure' },
         { title: '整改后图片', dataIndex: 'rectifyAttachmentList', scopedSlots: { customRender: 'rectifyAttachmentList' } },
-        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
-      ]
-    }
+        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } },
+      ],
+    },
   },
   // 档案文件
-  archive : {
+  archive: {
     title: '档案文件',
-    details: {
-    },
+    details: {},
     table: {
       rowKey: 'archiveId',
       pagination: true,
@@ -202,10 +199,10 @@ const keys = {
         { title: '建档人', dataIndex: 'createByName' },
         { title: '存放位置', dataIndex: 'positionName' },
         { title: '备注', dataIndex: 'description' },
-        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } }
-      ]
-    }
-  }
-}
+        { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' } },
+      ],
+    },
+  },
+};
 
-export default keys
+export default keys;

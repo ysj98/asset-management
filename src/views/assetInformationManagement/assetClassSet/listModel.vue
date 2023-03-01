@@ -17,43 +17,20 @@
         </SG-Button>
       </div>
       <div slot="headRight" style="display: flex">
-        <topOrganByUser
-          @change="organIdChange"
-          :formStyle="allStyle"
-          v-model="organId"
-          :hasAll="false"
-          :selectFirst="true"
-        />
+        <topOrganByUser @change="organIdChange" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true" />
         <a-select :style="allStyle" v-model="status" :options="$addTitle(statusOptions)" @change="queryClick"></a-select>
-        <a-input-search
-          placeholder="类别名称/编码"
-          :style="allStyle"
-          v-model="codeName"
-          @search="queryClick"
-        />
+        <a-input-search placeholder="类别名称/编码" :style="allStyle" v-model="codeName" @search="queryClick" />
       </div>
     </SG-SearchContainer>
     <div>
-      <a-table
-        :scroll="{ x: 2360 }"
-        :columns="columns"
-        :dataSource="dataSource"
-        size="middle"
-        :pagination="false"
-      >
+      <a-table :scroll="{ x: 2360 }" :columns="columns" :dataSource="dataSource" size="middle" :pagination="false">
         <template slot="operation" slot-scope="text, record">
           <!-- 状态修改 -->
-          <a
-            class="operation-btn"
-            v-if="changePower"
-            @click="operationFun(String(record.status) === '0'?'start': 'stop', record)"
-          >{{String(record.status) === '0'?'启用':'停用'}}</a>
+          <a class="operation-btn" v-if="changePower" @click="operationFun(String(record.status) === '0' ? 'start' : 'stop', record)">{{
+            String(record.status) === '0' ? '启用' : '停用'
+          }}</a>
           <!-- 编辑权限，及状态 -->
-          <a
-            class="operation-btn"
-            @click="operationFun('edit', record)"
-            v-if="editPower&&String(record.status) === '1'"
-          >编辑</a>
+          <a class="operation-btn" @click="operationFun('edit', record)" v-if="editPower && String(record.status) === '1'">编辑</a>
           <!-- <a
             class="operation-btn"
             @click="operationFun('delete', record)"
@@ -63,13 +40,8 @@
         </template>
         <template slot="statusName" slot-scope="text, record, index">
           <div>
-            <SG-Switch
-              disabled
-              :checked="String(record.status) === '1'"
-              :id="String(record.key)"
-              style="margin-right: 10px;"
-            ></SG-Switch>
-            {{String(record.status) === '1'?'启用':'停用'}}
+            <SG-Switch disabled :checked="String(record.status) === '1'" :id="String(record.key)" style="margin-right: 10px"></SG-Switch>
+            {{ String(record.status) === '1' ? '启用' : '停用' }}
           </div>
         </template>
       </a-table>
@@ -94,14 +66,14 @@
 </template>
 
 <script>
-import segiIcon from "@/components/segiIcon.vue";
-import topOrganByUser from "@/views/common/topOrganByUser";
-import noDataTips from "@/components/noDataTips";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { getTargetObject } from "@/utils/utils";
-import { statusOptions, pageTypeMap, typeMap } from "./child/dict";
-import createClassModal from "./child/createClassModal";
-import Tools from "@/utils/utils";
+import segiIcon from '@/components/segiIcon.vue';
+import topOrganByUser from '@/views/common/topOrganByUser';
+import noDataTips from '@/components/noDataTips';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { getTargetObject } from '@/utils/utils';
+import { statusOptions, pageTypeMap, typeMap } from './child/dict';
+import createClassModal from './child/createClassModal';
+import Tools from '@/utils/utils';
 const columns = [
   // {
   //   title: "分类编号",
@@ -109,83 +81,83 @@ const columns = [
   //   width: 160
   // },
   {
-    title: "所属机构",
-    dataIndex: "organName",
-    width: 200
+    title: '所属机构',
+    dataIndex: 'organName',
+    width: 200,
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    width: 160
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: 160,
   },
   {
-    title: "分类名称",
-    dataIndex: "professionName",
-    width: 160
+    title: '分类名称',
+    dataIndex: 'professionName',
+    width: 160,
   },
   {
-    title: "分类编码",
-    dataIndex: "professionCode",
-    width: 160
+    title: '分类编码',
+    dataIndex: 'professionCode',
+    width: 160,
   },
   {
-    title: "计量单位",
-    dataIndex: "unitName",
-    width: 160
+    title: '计量单位',
+    dataIndex: 'unitName',
+    width: 160,
   },
   {
-    title: "折旧年限",
-    dataIndex: "depreciationAge",
-    width: 160
+    title: '折旧年限',
+    dataIndex: 'depreciationAge',
+    width: 160,
   },
   {
-    title: "净残值率(%)",
-    dataIndex: "netSalvageRate",
-    width: 160
+    title: '净残值率(%)',
+    dataIndex: 'netSalvageRate',
+    width: 160,
   },
   {
-    title: "折旧方法",
-    dataIndex: "depreciationMethodName",
-    width: 200
+    title: '折旧方法',
+    dataIndex: 'depreciationMethodName',
+    width: 200,
   },
   {
-    title: "状态",
-    dataIndex: "statusName",
+    title: '状态',
+    dataIndex: 'statusName',
     width: 180,
-    scopedSlots: { customRender: "statusName" }
+    scopedSlots: { customRender: 'statusName' },
   },
   {
-    title: "操作",
-    dataIndex: "operation",
+    title: '操作',
+    dataIndex: 'operation',
     width: 180,
-    scopedSlots: { customRender: "operation" }
-  }
+    scopedSlots: { customRender: 'operation' },
+  },
 ];
 const paginator = {
   pageNo: 1,
-  pageLength: 10
+  pageLength: 10,
 };
 const allStyle = `width: 150px; marginLeft: 10px;`;
 export default {
   props: {
-    type: {default: ''},
-    curTab: { default: ''}
+    type: { default: '' },
+    curTab: { default: '' },
   },
   components: {
     segiIcon,
     topOrganByUser,
     noDataTips,
-    createClassModal
+    createClassModal,
   },
   data() {
     return {
       toggle: false,
       ASSET_MANAGEMENT,
       allStyle,
-      organId: "",
-      organName: "",
-      status: "",
-      codeName: "",
+      organId: '',
+      organName: '',
+      status: '',
+      codeName: '',
       statusOptions,
       columns,
       dataSource: [],
@@ -193,12 +165,12 @@ export default {
       totalCount: 0,
       showNoDataTips: false,
       storeDetail: {}, // 存储弹窗需要数据
-      action: "create", // 是编辑还是信息，或者详情
-      categoryConfId: "", // 当前点击分类id
+      action: 'create', // 是编辑还是信息，或者详情
+      categoryConfId: '', // 当前点击分类id
       createPower: false, // 创建权限
       editPower: false, // 编辑权限
       changePower: false, // 状态改变权限
-      deletePower: false // 删除权限
+      deletePower: false, // 删除权限
     };
   },
   watch: {
@@ -207,13 +179,13 @@ export default {
         this.columns = JSON.parse(JSON.stringify(columns));
       } else {
         let idColumns = {
-          title: "分类编号",
-          dataIndex: "professionId",
-          width: 160
+          title: '分类编号',
+          dataIndex: 'professionId',
+          width: 160,
         };
         this.columns = [idColumns, ...columns];
       }
-    }
+    },
   },
   mounted() {
     this.handlePower();
@@ -227,10 +199,10 @@ export default {
         codeName: this.codeName,
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength,
-        assetType: pageTypeMap[this.type]
+        assetType: pageTypeMap[this.type],
       };
-      this.$api.assets.getPage(form).then(res => {
-        if (res.data.code === "0") {
+      this.$api.assets.getPage(form).then((res) => {
+        if (res.data.code === '0') {
           if (!res.data || !res.data.data || !res.data.data.data) {
             this.dataSource = [];
             this.totalCount = 0;
@@ -244,8 +216,8 @@ export default {
           data.forEach((item, index) => {
             item.key = Tools.getUuid();
             for (let key in item) {
-              if (item[key] === "") {
-                item[key] = "--";
+              if (item[key] === '') {
+                item[key] = '--';
               }
             }
           });
@@ -264,60 +236,58 @@ export default {
     organIdChange(obj) {
       this.storeDetail = {
         organName: obj.name,
-        organId: obj.value
+        organId: obj.value,
       };
       this.queryClick();
     },
     // 操作回调
     operationFun(editType, record) {
       let self = this;
-      if (["edit", "detail"].includes(editType)) {
+      if (['edit', 'detail'].includes(editType)) {
         this.categoryConfId = record.categoryConfId;
-        this.storeDetail.professionCode = record.professionCode
+        this.storeDetail.professionCode = record.professionCode;
       }
       // 新增编辑详情
-      if (["create", "edit", "detail"].includes(editType)) {
+      if (['create', 'edit', 'detail'].includes(editType)) {
         this.action = editType;
         this.$refs.createClassModal.visible = true;
         return;
       }
       // 如果开启
-      if (["start"].includes(editType)) {
+      if (['start'].includes(editType)) {
         this.changeStatus(1, record.categoryConfId, record.professionCode, record.professionName);
         return;
       }
       // 如果暂停
-      if (["stop"].includes(editType)) {
+      if (['stop'].includes(editType)) {
         this.$confirm({
-          title: "提示",
-          content: "确认要停用该资产分类吗？",
+          title: '提示',
+          content: '确认要停用该资产分类吗？',
           onOk() {
             self.changeStatus(0, record.categoryConfId, record.professionCode, record.professionName);
-          }
+          },
         });
         return;
       }
       // 如果是删除
-      if (["delete"].includes(editType)) {
+      if (['delete'].includes(editType)) {
         this.$confirm({
-          title: "提示",
-          content: "确认要删除该资产分类吗？",
+          title: '提示',
+          content: '确认要删除该资产分类吗？',
           onOk: () => {
             let data = {
               orginId: this.organId,
-              blankId: record.blankId
+              blankId: record.blankId,
             };
-            this.$api.building.blankApiDelete(data).then(res => {
-              if (res.data.code === "0") {
-                this.$message.success("删除成功");
+            this.$api.building.blankApiDelete(data).then((res) => {
+              if (res.data.code === '0') {
+                this.$message.success('删除成功');
                 this.queryList();
               } else {
-                this.$message.error(
-                  res.data.message || res.data.msg || "删除失败"
-                );
+                this.$message.error(res.data.message || res.data.msg || '删除失败');
               }
             });
-          }
+          },
         });
       }
     },
@@ -329,11 +299,11 @@ export default {
         organId: this.organId,
         professionCode: professionCode,
         professionName: professionName,
-        assetType: pageTypeMap[this.type]
+        assetType: pageTypeMap[this.type],
       };
-      this.$api.assets.updateStatus(form).then(res => {
-        if (res.data.code === "0") {
-          this.$message.success("修改成功");
+      this.$api.assets.updateStatus(form).then((res) => {
+        if (res.data.code === '0') {
+          this.$message.success('修改成功');
           this.queryList();
         } else {
           this.$message.error(res.data.message);
@@ -345,15 +315,15 @@ export default {
         organId: this.organId,
         status: this.status,
         codeName: this.codeName,
-        assetType: pageTypeMap[this.type]
+        assetType: pageTypeMap[this.type],
       };
-      this.$api.assets.exportList(form).then(res => {
+      this.$api.assets.exportList(form).then((res) => {
         console.log(res);
         let blob = new Blob([res.data]);
-        let a = document.createElement("a");
+        let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
         a.download = `资产${typeMap[this.type]}分类.xls`;
-        a.style.display = "none";
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -362,7 +332,7 @@ export default {
     // 处理按钮权限
     handlePower() {
       // 如果是房屋权限判断
-      if (["house"].includes(this.type)) {
+      if (['house'].includes(this.type)) {
         if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_SET_EDIT)) {
           this.editPower = true;
         }
@@ -371,7 +341,7 @@ export default {
         }
       }
       // 如果是土地权限判断
-      if (["land"].includes(this.type)) {
+      if (['land'].includes(this.type)) {
         if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_LAND_CREATE)) {
           this.createPower = true;
         }
@@ -385,7 +355,7 @@ export default {
           this.deletePower = true;
         }
       }
-      if (["carPark"].includes(this.type)) {
+      if (['carPark'].includes(this.type)) {
         if (this.$power.has(ASSET_MANAGEMENT.ASSET_CLASS_CAR_PARK_CREATE)) {
           this.createPower = true;
         }
@@ -405,8 +375,8 @@ export default {
       this.paginator.pageNo = page.pageNo;
       this.paginator.pageLength = page.pageLength;
       this.queryList();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -418,15 +388,15 @@ export default {
 .custom-table {
   padding-bottom: 50px;
 }
-.search-content-box{
+.search-content-box {
   display: flex;
   justify-content: space-between;
-  .search-from-box{
+  .search-from-box {
     flex: 1;
     flex-wrap: wrap;
     text-align: right;
   }
-  .two-row-box{
+  .two-row-box {
     padding-top: 14px;
     flex: 0 0 190px;
   }

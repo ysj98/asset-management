@@ -46,85 +46,85 @@
 </template>
 
 <script>
-import NoDataTip from "src/components/noDataTips";
-import TreeSelect from "src/views/common/treeSelect";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OverviewNumber from "src/views/common/OverviewNumber";
+import NoDataTip from 'src/components/noDataTips';
+import TreeSelect from 'src/views/common/treeSelect';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OverviewNumber from 'src/views/common/OverviewNumber';
 export default {
-  name: "index",
+  name: 'index',
   components: { OverviewNumber, NoDataTip, TreeSelect },
   data() {
     return {
-      organName: "",
+      organName: '',
       ASSET_MANAGEMENT, // 权限对象
-      organId: "", // 查询条件-组织机构
+      organId: '', // 查询条件-组织机构
       exportBtnLoading: false, // 导出按钮loading
       overviewNumSpinning: false, // 查询视图面积概览数据loading
       numList: [
-        { title: "所有资产(㎡)", key: "area", value: 0, fontColor: "#324057", code: "1000", isAble: "Y" },
-        { title: "运营(㎡)", key: "transferOperationArea", value: 0, bgColor: "#4BD288", code: "1001", isAble: "Y" },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF", code: "1002", isAble: "Y" },
-        { title: "自用(㎡)", key: "selfUserArea", value: 0, bgColor: "#DD81E6", code: "1003", isAble: "Y" },
-        { title: "占用(㎡)", key: "occupationArea", value: 0, bgColor: "#FD7474", code: "1004", isAble: "Y" },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6", code: "1005", isAble: "Y" },
+        { title: '所有资产(㎡)', key: 'area', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
+        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
       ], // 概览数据，title 标题，value 数值，color 背景色
       tableObj: {
         scroll: { y: 420 },
         dataSource: [],
         loading: false,
         pagination: false,
-        rowKey: "organId",
+        rowKey: 'organId',
         columns: [
-          { title: "管理机构", dataIndex: "organName" },
-          { title: "建筑面积(㎡)", dataIndex: "area" },
-          { title: "楼栋数", dataIndex: "buildNum" },
-          { title: "资产数量", dataIndex: "assetNum" },
-          { title: "运营(㎡)", dataIndex: "transferOperationArea" },
-          { title: "自用(㎡)", dataIndex: "selfUserArea" },
-          { title: "闲置(㎡)", dataIndex: "idleArea" },
-          { title: "占用(㎡)", dataIndex: "occupationArea" },
-          { title: "其它(㎡)", dataIndex: "otherArea" },
-          { title: "资产原值(元)", dataIndex: "originalValue" },
-          { title: "最新估值(元)", dataIndex: "marketValue" },
-          { title: "操作", key: "action", scopedSlots: { customRender: "action" }, width: 90 },
+          { title: '管理机构', dataIndex: 'organName' },
+          { title: '建筑面积(㎡)', dataIndex: 'area' },
+          { title: '楼栋数', dataIndex: 'buildNum' },
+          { title: '资产数量', dataIndex: 'assetNum' },
+          { title: '运营(㎡)', dataIndex: 'transferOperationArea' },
+          { title: '自用(㎡)', dataIndex: 'selfUserArea' },
+          { title: '闲置(㎡)', dataIndex: 'idleArea' },
+          { title: '占用(㎡)', dataIndex: 'occupationArea' },
+          { title: '其它(㎡)', dataIndex: 'otherArea' },
+          { title: '资产原值(元)', dataIndex: 'originalValue' },
+          { title: '最新估值(元)', dataIndex: 'marketValue' },
+          { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90 },
         ],
       },
       paginationObj: {
         pageNo: 1,
         totalCount: 0,
         pageLength: 10,
-        location: "absolute",
+        location: 'absolute',
       },
       sumObj: {
-        area: "",
-        buildNum: "",
-        assetNum: "",
-        transferOperationArea: "",
-        selfUserArea: "",
-        idleArea: "",
-        occupationArea: "",
-        otherArea: "",
-        originalValue: "",
-        marketValue: "",
+        area: '',
+        buildNum: '',
+        assetNum: '',
+        transferOperationArea: '',
+        selfUserArea: '',
+        idleArea: '',
+        occupationArea: '',
+        otherArea: '',
+        originalValue: '',
+        marketValue: '',
       }, // 求和用的对象
       current: null, // 当前选中的概览区域下标，与后台入参一一对应
       statusList: [], // 资产分类
       statusListOpt: [
-        { title: "全部状态", key: "all" },
-        { title: "待入库", key: "0" },
-        { title: "正常", key: "1" },
-        { title: "报废", key: "2" },
-        { title: "转让", key: "3" },
-        { title: "报损", key: "4" },
-        { title: "入库中", key: "7" },
+        { title: '全部状态', key: 'all' },
+        { title: '待入库', key: '0' },
+        { title: '正常', key: '1' },
+        { title: '报废', key: '2' },
+        { title: '转让', key: '3' },
+        { title: '报损', key: '4' },
+        { title: '入库中', key: '7' },
       ],
     };
   },
   watch: {
     // 全选与其他选项互斥处理
     statusList: function (val) {
-      if (val && val.length !== 1 && val.includes("all")) {
-        this.statusList = ["all"];
+      if (val && val.length !== 1 && val.includes('all')) {
+        this.statusList = ['all'];
       }
     },
   },
@@ -144,48 +144,48 @@ export default {
             });
             // 同步修改表头的字段名称
             this.tableObj.columns.forEach((m, i) => {
-              let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
-              let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
-              let isSelfUserArea = item.code == 1003 && m.dataIndex === "selfUserArea";
-              let isOccupationArea = item.code == 1004 && m.dataIndex === "occupationArea";
-              let isOthernArea = item.code == 1005 && m.dataIndex === "otherArea";
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
               let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
               if (flag) {
                 m.title = item.alias || item.statusName;
-                if (item.isAble === "N") {
+                if (item.isAble === 'N') {
                   this.tableObj.columns.splice(i, 1);
                 }
               }
             });
           });
           this.numList = this.numList.filter((i) => {
-            return i.isAble === "Y";
+            return i.isAble === 'Y';
           });
         } else {
-          this.$message.error(res.message || "系统内部错误");
+          this.$message.error(res.message || '系统内部错误');
         }
       });
     },
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: "" });
+      this.queryTableData({ type: '' });
     },
 
     // 查看组织机构视图详情
     handleViewDetail(record) {
       let query = {
         organId: record.organId,
-        statusList: this.statusList.includes("all") ? [] : this.statusList,
+        statusList: this.statusList.includes('all') ? [] : this.statusList,
       };
-      this.$router.push({ path: "/organView/detail", query: query || {} });
+      this.$router.push({ path: '/organView/detail', query: query || {} });
     },
 
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const { sumObj, organId, current, statusList } = this;
       if (!organId) {
-        return this.$message.info("请选择组织机构");
+        return this.$message.info('请选择组织机构');
       }
       this.tableObj.loading = true;
       this.$api.assets
@@ -193,12 +193,12 @@ export default {
           organIds: organId.toString(),
           pageSize: pageLength,
           pageNum: pageNo,
-          flag: current ? current - 1 : "",
-          statusList: statusList.includes("all") ? [] : statusList,
+          flag: current ? current - 1 : '',
+          statusList: statusList.includes('all') ? [] : statusList,
         })
         .then(({ data: res }) => {
           this.tableObj.loading = false;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             // let pageSum = {};
             data.forEach((item, index) => {
@@ -219,11 +219,11 @@ export default {
             //     })
             //   : [];
             // 查询楼栋面积统计数据
-            if (type !== "search") {
+            if (type !== 'search') {
               data.length &&
                 this.tableObj.dataSource.push({
                   ...sumObj,
-                  organName: "全部合计",
+                  organName: '全部合计',
                   organId: Date.now(),
                   totalRow: true,
                 });
@@ -240,7 +240,7 @@ export default {
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询列表接口出错");
+          this.$message.error(err || '查询列表接口出错');
         });
     },
 
@@ -258,12 +258,12 @@ export default {
       this.$api.assets
         .queryOrganArea({
           organIds: organId.toString(),
-          flag: current ? current - 1 : "",
-          statusList: statusList.includes("all") ? [] : statusList,
+          flag: current ? current - 1 : '',
+          statusList: statusList.includes('all') ? [] : statusList,
         })
         .then(({ data: res }) => {
           this.overviewNumSpinning = false;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             let obj = {};
             let list = res.data || {};
             /**
@@ -273,9 +273,9 @@ export default {
             Object.keys(sumObj).forEach(
               (key) =>
                 (obj[key] = list[key]
-                  ? ["buildNum", "assetNum"].includes(key)
+                  ? ['buildNum', 'assetNum'].includes(key)
                     ? Number(list[key])
-                    : ["originalValue", "marketValue"].includes(key)
+                    : ['originalValue', 'marketValue'].includes(key)
                     ? Math.round(list[key] * 100) / 100
                     : Math.round(list[key] * 10000) / 10000
                   : 0)
@@ -284,7 +284,7 @@ export default {
             dataSource.length &&
               this.tableObj.dataSource.push({
                 ...obj,
-                organName: "全部合计",
+                organName: '全部合计',
                 organId: Date.now(),
                 totalRow: true,
               });
@@ -296,7 +296,7 @@ export default {
         })
         .catch((err) => {
           this.overviewNumSpinning = false;
-          this.$message.error(err || "查询组织机构视图面积统计出错");
+          this.$message.error(err || '查询组织机构视图面积统计出错');
         });
     },
 
@@ -307,26 +307,26 @@ export default {
       this.$api.assets
         .exportOrganView({
           organIds: organId.toString(),
-          flag: current ? current - 1 : "",
+          flag: current ? current - 1 : '',
           pageSize: 1,
           pageNum: 1,
         })
         .then((res) => {
           this.exportBtnLoading = false;
           if (res.status === 200 && res.data && res.data.size) {
-            let a = document.createElement("a");
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(new Blob([res.data]));
-            a.download = "组织机构视图导出列表.xls";
-            a.style.display = "none";
+            a.download = '组织机构视图导出列表.xls';
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             return a.remove();
           }
-          throw res.message || "导出组织机构视图失败";
+          throw res.message || '导出组织机构视图失败';
         })
         .catch((err) => {
           this.exportBtnLoading = false;
-          this.$message.error(err || "导出组织机构视图失败");
+          this.$message.error(err || '导出组织机构视图失败');
         });
     },
 
@@ -335,7 +335,7 @@ export default {
       this.organName = name;
       this.organId = organId;
       this.useForConfig();
-      organId && this.queryTableData({ type: "search" });
+      organId && this.queryTableData({ type: 'search' });
     },
   },
 

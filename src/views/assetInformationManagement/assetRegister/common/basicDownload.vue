@@ -12,7 +12,11 @@
       okText="下载模板"
       title="下载模板"
       @ok="commonFn"
-      @cancel="()=>{modalShow=false}"
+      @cancel="
+        () => {
+          modalShow = false;
+        }
+      "
     >
       <DownLoadTemplate
         :key="checkboxAssetType"
@@ -27,30 +31,27 @@
 </template>
 
 <script>
-import DownLoadTemplate from "@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate";
-import {
-  commonFn,
-  checkBuildsObjectTypeFn, confirmDownloadTemplate
-} from "./share";
+import DownLoadTemplate from '@/views/assetInformationManagement/assetRegister/common/DownLoadTemplate';
+import { commonFn, checkBuildsObjectTypeFn, confirmDownloadTemplate } from './share';
 export default {
   components: {
-    DownLoadTemplate
+    DownLoadTemplate,
   },
   props: {},
   data() {
     return {
-      checkboxAssetType: "",
-      scope: ["1", "2"],
-      organId: "",
+      checkboxAssetType: '',
+      scope: ['1', '2'],
+      organId: '',
       modalShow: false,
       positionIds: [],
-      userSelectedOrganId: ""
+      userSelectedOrganId: '',
     };
   },
   computed: {
     ASSET_TYPE_CODE() {
       return this.$store.state.ASSET_TYPE_CODE;
-    }
+    },
   },
   methods: {
     changeOrganId(userSelectedOrganId) {
@@ -63,7 +64,7 @@ export default {
       if (type !== this.checkboxAssetType) {
         this.checkboxAssetType = type;
         this.positionIds = [];
-        this.scope = ["1", "2"];
+        this.scope = ['1', '2'];
       }
     },
     // 下载模板确认
@@ -76,13 +77,13 @@ export default {
     },
     // 资产登记-导出数据校验
     checkBuildsObjectTypeFn(val) {
-      checkBuildsObjectTypeFn.call(this,val);
+      checkBuildsObjectTypeFn.call(this, val);
     },
     // 模板下载
     confirmDownloadTemplate() {
-      confirmDownloadTemplate.call(this,this.$api.assets.downloadTemplate)
-    }
-  }
+      confirmDownloadTemplate.call(this, this.$api.assets.downloadTemplate);
+    },
+  },
 };
 </script>
 <style lang="less" scoped>

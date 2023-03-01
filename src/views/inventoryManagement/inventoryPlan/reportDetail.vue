@@ -3,9 +3,8 @@
  * @Description: 任务详情
  -->
 <script>
-  import handleInventoryReport from '../inventoryReport/handleInventoryReport'
-  export default {
-    extends: handleInventoryReport
-  }
+import handleInventoryReport from '../inventoryReport/handleInventoryReport';
+export default {
+  extends: handleInventoryReport,
+};
 </script>
-

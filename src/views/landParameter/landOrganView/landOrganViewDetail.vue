@@ -6,7 +6,7 @@
 <template>
   <div class="organViewDetail-page">
     <!-- 标题 -->
-    <div class="mb30" style="margin-left:-12px">
+    <div class="mb30" style="margin-left: -12px">
       <SG-Title noMargin title="权属概况" />
     </div>
     <!-- 权属表格 -->
@@ -17,10 +17,10 @@
       :pagination="false"
       :columns="tableFirst.columns"
       :dataSource="tableFirst.dataSource"
-      :locale="{emptyText: '暂无数据'}"
+      :locale="{ emptyText: '暂无数据' }"
     ></a-table>
     <!-- 标题 -->
-    <div class="mb30 mt30" style="margin-left:-12px">
+    <div class="mb30 mt30" style="margin-left: -12px">
       <SG-Title noMargin title="资产概况" />
     </div>
     <!--数据概览信息-->
@@ -28,13 +28,7 @@
       <overview-number :numList="numList" />
     </a-spin>
     <div class="table-layout-fixed">
-      <a-table
-        :loading="table.loading"
-        :columns="table.columns"
-        :dataSource="table.dataSource"
-        size="middle"
-        :pagination="false"
-      />
+      <a-table :loading="table.loading" :columns="table.columns" :dataSource="table.dataSource" size="middle" :pagination="false" />
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -48,87 +42,87 @@
   </div>
 </template>
 <script>
-import OverviewNumber from "@/views/common/OverviewNumber";
-import noDataTips from "@/components/noDataTips";
+import OverviewNumber from '@/views/common/OverviewNumber';
+import noDataTips from '@/components/noDataTips';
 let columnsFrist = [
   {
-    title: "有证",
-    dataIndex: "yesCount",
+    title: '有证',
+    dataIndex: 'yesCount',
   },
   {
-    title: "无证",
-    dataIndex: "noCount",
+    title: '无证',
+    dataIndex: 'noCount',
   },
   {
-    title: "待办",
-    dataIndex: "waitCount",
+    title: '待办',
+    dataIndex: 'waitCount',
   },
   {
-    title: "权属办理进度",
-    dataIndex: "progress",
+    title: '权属办理进度',
+    dataIndex: 'progress',
     width: 200,
   },
 ];
 let columns = [
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
   },
   {
-    title: "资产项目编码",
-    dataIndex: "projectCode",
+    title: '资产项目编码',
+    dataIndex: 'projectCode',
   },
   {
     title: '管理机构',
-    dataIndex: 'organName'
+    dataIndex: 'organName',
   },
   {
-    title: "来源方式",
-    dataIndex: "sourceTypeName",
+    title: '来源方式',
+    dataIndex: 'sourceTypeName',
   },
   {
-    title: "来源方式说明",
-    dataIndex: "souceChannelType",
+    title: '来源方式说明',
+    dataIndex: 'souceChannelType',
   },
   {
-    title: "接管时间",
-    dataIndex: "takeOverDate",
+    title: '接管时间',
+    dataIndex: 'takeOverDate',
   },
   {
-    title: "土地面积(㎡)",
-    dataIndex: "landArea",
+    title: '土地面积(㎡)',
+    dataIndex: 'landArea',
   },
   {
-    title: "土地数量",
-    dataIndex: "landCount",
+    title: '土地数量',
+    dataIndex: 'landCount',
   },
   {
-    title: "运营(㎡)",
-    dataIndex: "transferOperationAreaTotal",
+    title: '运营(㎡)',
+    dataIndex: 'transferOperationAreaTotal',
   },
   {
-    title: "自用(㎡)",
-    dataIndex: "selfUserAreaTotal",
+    title: '自用(㎡)',
+    dataIndex: 'selfUserAreaTotal',
   },
   {
-    title: "闲置(㎡)",
-    dataIndex: "idleAreaTotal",
+    title: '闲置(㎡)',
+    dataIndex: 'idleAreaTotal',
   },
   {
-    title: "占用(㎡)",
-    dataIndex: "occupationAreaTotal",
+    title: '占用(㎡)',
+    dataIndex: 'occupationAreaTotal',
   },
   {
-    title: "其他(㎡)",
-    dataIndex: "otherAreaTotal",
+    title: '其他(㎡)',
+    dataIndex: 'otherAreaTotal',
   },
   {
-    title: "资产原值(元)",
-    dataIndex: "originalValueTotal",
+    title: '资产原值(元)',
+    dataIndex: 'originalValueTotal',
   },
   {
-    title: "最新估值(元)",
-    dataIndex: "marketValueTotal",
+    title: '最新估值(元)',
+    dataIndex: 'marketValueTotal',
   },
 ];
 export default {
@@ -146,42 +140,42 @@ export default {
       overviewNumSpinning: false,
       numList: [
         {
-          title: "土地面积(㎡)",
-          key: "landArea",
+          title: '土地面积(㎡)',
+          key: 'landArea',
           value: 0,
-          fontColor: "#324057",
+          fontColor: '#324057',
         },
         {
-          title: "运营(㎡)",
-          key: "transferOperationArea",
+          title: '运营(㎡)',
+          key: 'transferOperationArea',
           value: 0,
-          bgColor: "#4BD288",
+          bgColor: '#4BD288',
         },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
         {
-          title: "自用(㎡)",
-          key: "selfUserArea",
+          title: '自用(㎡)',
+          key: 'selfUserArea',
           value: 0,
-          bgColor: "#DD81E6",
-        },
-        {
-          title: "占用(㎡)",
-          key: "occupationArea",
-          value: 0,
-          bgColor: "#FD7474",
-        },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
-        {
-          title: "资产原值(万元)",
-          key: "originalValue",
-          value: 0,
-          bgColor: "#DD81E6",
+          bgColor: '#DD81E6',
         },
         {
-          title: "最新估值(万元)",
-          key: "marketValue",
+          title: '占用(㎡)',
+          key: 'occupationArea',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#FD7474',
+        },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+        {
+          title: '资产原值(万元)',
+          key: 'originalValue',
+          value: 0,
+          bgColor: '#DD81E6',
+        },
+        {
+          title: '最新估值(万元)',
+          key: 'marketValue',
+          value: 0,
+          bgColor: '#1890FF',
         },
       ],
       table: {
@@ -199,7 +193,7 @@ export default {
         // location: "absolute",
       },
       routeQueryStore: {
-        organId: "",
+        organId: '',
         statusList: [],
       },
     };
@@ -231,7 +225,7 @@ export default {
             });
             this.table.totalCount = res.data.data.count || 0;
           } else {
-            this.$message.error(res.data.message || res.data.msg || "请求错误");
+            this.$message.error(res.data.message || res.data.msg || '请求错误');
           }
         })
         .finally(() => {
@@ -254,7 +248,7 @@ export default {
               };
             });
           } else {
-            this.$message.error(res.data.message || res.data.msg || "请求错误");
+            this.$message.error(res.data.message || res.data.msg || '请求错误');
           }
         })
         .finally(() => {
@@ -271,11 +265,11 @@ export default {
           if (Number(res.data.code) === 0) {
             let result = res.data.data || {};
             if (Object.keys(result).length) {
-              result.progress = result.progress + "%";
+              result.progress = result.progress + '%';
               this.tableFirst.dataSource = [{ ...result, key: 1 }];
             }
           } else {
-            this.$message.error(res.data.message || res.data.msg || "请求错误");
+            this.$message.error(res.data.message || res.data.msg || '请求错误');
           }
         })
         .finally(() => {

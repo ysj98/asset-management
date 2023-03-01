@@ -1,5 +1,5 @@
-import { axiosGet, axiosPost } from "utils/axios";
-import { bpm } from "@/config/config.url";
+import { axiosGet, axiosPost } from 'utils/axios';
+import { bpm } from '@/config/config.url';
 export function bpmFileUpload(data, { params }) {
   return axiosPost(bpm.bpmFileUpload, data, true, false, {
     params,

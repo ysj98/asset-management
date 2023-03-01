@@ -1,17 +1,17 @@
-import * as apiAssets from "@/api/assets.js";
-import * as transferApi from "@/api/transfer";
-import { message as $message } from "ant-design-vue";
+import * as apiAssets from '@/api/assets.js';
+import * as transferApi from '@/api/transfer';
+import { message as $message } from 'ant-design-vue';
 export const mortgageOptions = [
   {
-    title: "有",
+    title: '有',
     value: 1,
   },
   {
-    title: "无质押",
+    title: '无质押',
     value: 0,
   },
   {
-    title: "其它",
+    title: '其它',
     value: 2,
   },
 ];
@@ -53,7 +53,7 @@ export async function getDetail({ applyId }) {
     };
     transferApi.detail(req).then(
       ({ data: { code, message, data } }) => {
-        if (code === "0") {
+        if (code === '0') {
           resolve(data);
         } else {
           $message.error(message);

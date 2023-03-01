@@ -16,7 +16,7 @@
             </div>
             <a-form-item>
               <a-input :style="allStyle" v-model="organName" type="text" disabled v-if="editable"></a-input>
-              <span class="label-value" v-else>{{ organName || "--" }}</span>
+              <span class="label-value" v-else>{{ organName || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -32,7 +32,7 @@
                 <a-radio :value="1">是</a-radio>
                 <a-radio :value="0">否</a-radio>
               </a-radio-group>
-              <span class="label-value" v-else>{{ detail.currentOrganName || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.currentOrganName || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -52,7 +52,7 @@
                   },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.obligeeName || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.obligeeName || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -69,7 +69,7 @@
                 v-decorator="['obligeeType', { rules: [{ required: true, message: '请选择权属人类型' }], initialValue: detail.obligeeType }]"
                 v-if="editable"
               ></a-select>
-              <span class="label-value" v-else>{{ detail.obligeeTypeName || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.obligeeTypeName || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -87,7 +87,7 @@
                 v-decorator="['certificateType', { rules: [{ required: true, message: '请选择证件类型' }], initialValue: detail.certificateType }]"
                 v-if="editable"
               ></a-select>
-              <span class="label-value" v-else>{{ detail.certificateTypeName || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.certificateTypeName || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -110,7 +110,7 @@
                   },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.certificateNo || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.certificateNo || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -128,7 +128,7 @@
                   { rules: [{ max: 100, whitespace: true, message: '通讯地址长度最多为100' }], initialValue: detail.mailingAddress },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.mailingAddress || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.mailingAddress || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -149,7 +149,7 @@
                   },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.postalCode || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.postalCode || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -167,7 +167,7 @@
                   { rules: [{ max: 50, whitespace: true, message: '法定代表长度最多为50' }], initialValue: detail.legalAgent },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.legalAgent || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.legalAgent || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -188,7 +188,7 @@
                   },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.legalAgentTel || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.legalAgentTel || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -203,7 +203,7 @@
                 v-if="editable"
                 v-decorator="['agent', { rules: [{ max: 50, whitespace: true, message: '代理人(机构)长度最多为50' }], initialValue: detail.agent }]"
               />
-              <span class="label-value" v-else>{{ detail.agent || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.agent || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item">
@@ -224,7 +224,7 @@
                   },
                 ]"
               />
-              <span class="label-value" v-else>{{ detail.agentTel || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.agentTel || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
@@ -241,7 +241,7 @@
                 v-decorator="['remark', { rules: [{ max: 200, whitespace: true, message: '描述长度最多为200' }], initialValue: detail.remark }]"
               >
               </a-textarea>
-              <span class="label-value" v-else>{{ detail.remark || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.remark || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item total-width">
@@ -265,7 +265,7 @@
                 v-if="editable"
                 v-decorator="['appId', { rules: [{ max: 60, whitespace: true, message: 'AppID长度最多为60' }], initialValue: detail.appId }]"
               />
-              <span class="label-value" v-else>{{ detail.appId || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.appId || '--' }}</span>
             </a-form-item>
           </div>
           <div class="edit-box-content-item" v-if="checkNick">
@@ -280,7 +280,7 @@
                 v-if="editable"
                 v-decorator="['secretKey', { rules: [{ max: 60, whitespace: true, message: '秘钥长度最多为60' }], initialValue: detail.secretKey }]"
               />
-              <span class="label-value" v-else>{{ detail.secretKey || "--" }}</span>
+              <span class="label-value" v-else>{{ detail.secretKey || '--' }}</span>
             </a-form-item>
           </div>
         </div>
@@ -290,56 +290,56 @@
 </template>
 
 <script>
-import { reg } from "@/config/config.rules";
+import { reg } from '@/config/config.rules';
 export default {
   props: {
     modalType: {
       type: String,
-      default: "new",
+      default: 'new',
     },
     organId: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
     organName: {
       type: String,
-      default: "",
+      default: '',
     },
     ownerId: {
       type: [String, Number],
-      default: "",
+      default: '',
     },
   },
   data() {
     return {
       checkNick: false,
       modal: {
-        title: "新建权属人",
-        width: "860px",
+        title: '新建权属人',
+        width: '860px',
         show: false,
       },
       form: this.$form.createForm(this),
-      allStyle: "width: 215px;",
+      allStyle: 'width: 215px;',
       editable: true,
       detail: {
-        obligeeName: "",
+        obligeeName: '',
         currentOrgan: 1,
-        currentOrganName: "",
+        currentOrganName: '',
         obligeeType: undefined,
-        obligeeTypeName: "",
+        obligeeTypeName: '',
         certificateType: undefined,
-        certificateTypeName: "",
-        certificateNo: "",
-        mailingAddress: "",
-        postalCode: "",
-        legalAgent: "",
-        legalAgentTel: "",
-        agent: "",
-        agentTel: "",
-        remark: "",
+        certificateTypeName: '',
+        certificateNo: '',
+        mailingAddress: '',
+        postalCode: '',
+        legalAgent: '',
+        legalAgentTel: '',
+        agent: '',
+        agentTel: '',
+        remark: '',
         attachment: [],
-        appId: "",
-        secretKey: "",
+        appId: '',
+        secretKey: '',
       },
       obligeeTypeOptions: [],
       certificateTypeOptions: [],
@@ -347,45 +347,45 @@ export default {
   },
   watch: {
     modalType(val) {
-      if (val === "detail") {
+      if (val === 'detail') {
         this.editable = false;
       } else {
         this.editable = true;
       }
     },
-    "modal.show"(val) {
+    'modal.show'(val) {
       if (val) {
         switch (this.modalType) {
-          case "new":
-            this.modal.title = "新建权属人";
+          case 'new':
+            this.modal.title = '新建权属人';
             break;
-          case "edit":
-            this.modal.title = "编辑权属人";
+          case 'edit':
+            this.modal.title = '编辑权属人';
             break;
-          case "detail":
-            this.modal.title = "权属人详情";
+          case 'detail':
+            this.modal.title = '权属人详情';
             break;
           default:
             break;
         }
-        if (this.modalType === "edit" || this.modalType === "detail") {
+        if (this.modalType === 'edit' || this.modalType === 'detail') {
           this.getDetail();
         }
       } else {
         if (this.editable) {
           this.form.setFieldsValue({
-            obligeeName: "",
+            obligeeName: '',
             currentOrgan: 1,
             obligeeType: undefined,
             certificateType: undefined,
-            certificateNo: "",
-            mailingAddress: "",
-            postalCode: "",
-            legalAgent: "",
-            legalAgentTel: "",
-            agent: "",
-            agentTel: "",
-            remark: "",
+            certificateNo: '',
+            mailingAddress: '',
+            postalCode: '',
+            legalAgent: '',
+            legalAgentTel: '',
+            agent: '',
+            agentTel: '',
+            remark: '',
           });
         }
         this.detail.attachment = [];
@@ -407,19 +407,19 @@ export default {
         // 校验身份证号码
         if (+this.detail.certificateType === 1) {
           if (!reg.idCard.test(value)) {
-            callback("请输入有效的身份证号码");
+            callback('请输入有效的身份证号码');
           }
         }
         // 校验统一社会信用代码
         if (+this.detail.certificateType === 2) {
           if (!this.checkSocialCreditCode(value)) {
-            callback("请输入有效的统一信用代码");
+            callback('请输入有效的统一信用代码');
           }
         }
         // 校验护照
         if (+this.detail.certificateType === 3) {
           if (!reg.passport.test(value)) {
-            callback("请输入有效的护照号码");
+            callback('请输入有效的护照号码');
           }
         }
       }
@@ -429,7 +429,7 @@ export default {
     validatePostalCode(rule, value, callback) {
       if (value) {
         if (!reg.postalCode.test(value)) {
-          callback("请输入有效的邮编");
+          callback('请输入有效的邮编');
         }
       }
       callback();
@@ -439,7 +439,7 @@ export default {
       let reg = /^((0\d{2,3}-\d{7,8})|(1[3456789]\d{9}))$/;
       if (value) {
         if (!reg.test(value)) {
-          callback("请输入有效的联系方式");
+          callback('请输入有效的联系方式');
         }
       }
       callback();
@@ -449,14 +449,14 @@ export default {
       let patrn = /^[0-9A-Z]+$/;
       //18位校验及大写校验
       if (Code.length !== 18 || patrn.test(Code) === false) {
-        console.info("不是有效的统一社会信用编码！");
+        console.info('不是有效的统一社会信用编码！');
         return false;
       } else {
         let Ancode; //统一社会信用代码的每一个值
         let Ancodevalue; //统一社会信用代码每一个值的权重
         let total = 0;
         let weightedfactors = [1, 3, 9, 27, 19, 26, 16, 17, 20, 29, 25, 13, 8, 24, 10, 30, 28]; //加权因子
-        let str = "0123456789ABCDEFGHJKLMNPQRTUWXY";
+        let str = '0123456789ABCDEFGHJKLMNPQRTUWXY';
         // 不用I、O、S、V、Z
         for (let i = 0; i < Code.length - 1; i++) {
           Ancode = Code.substring(i, i + 1);
@@ -468,8 +468,8 @@ export default {
         if (logiccheckcode === 31) {
           logiccheckcode = 0;
         }
-        let Str = "0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,T,U,W,X,Y";
-        let Array_Str = Str.split(",");
+        let Str = '0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F,G,H,J,K,L,M,N,P,Q,R,T,U,W,X,Y';
+        let Array_Str = Str.split(',');
         logiccheckcode = Array_Str[logiccheckcode];
 
         let checkcode = Code.substring(17, 18);
@@ -483,10 +483,10 @@ export default {
     // 获取权属人类型下拉列表
     getObligeeTypeOptions() {
       let form = {
-        code: "AMS_OBLIGEE_TYPE",
+        code: 'AMS_OBLIGEE_TYPE',
       };
       this.$api.basics.platformDict(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let arr = [];
           res.data.data.forEach((item) => {
             let obj = {
@@ -498,7 +498,7 @@ export default {
           this.obligeeTypeOptions = arr;
         } else {
           this.$error({
-            title: "提示",
+            title: '提示',
             content: res.data.message,
           });
         }
@@ -507,10 +507,10 @@ export default {
     // 获取证件类型下拉列表
     getCertificateTypeOptions() {
       let form = {
-        code: "AMS_CERTIFICATE_TYPE",
+        code: 'AMS_CERTIFICATE_TYPE',
       };
       this.$api.basics.platformDict(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let arr = [];
           res.data.data.forEach((item) => {
             let obj = {
@@ -522,7 +522,7 @@ export default {
           this.certificateTypeOptions = arr;
         } else {
           this.$error({
-            title: "提示",
+            title: '提示',
             content: res.data.message,
           });
         }
@@ -543,17 +543,17 @@ export default {
             attachment.push(obj);
           });
           form.amsAttachmentList = attachment;
-          if (this.modalType === "edit") {
+          if (this.modalType === 'edit') {
             form.obligeeId = this.ownerId;
           }
           this.$api.assets.saveOrUpdateOwner(form).then((res) => {
-            if (res.data.code === "0") {
+            if (res.data.code === '0') {
               this.modal.show = false;
-              this.$message.success("提交成功");
+              this.$message.success('提交成功');
               this.$parent.queryClick();
             } else {
               this.$error({
-                title: "提示",
+                title: '提示',
                 content: res.data.message,
               });
             }
@@ -571,7 +571,7 @@ export default {
         obligeeId: this.ownerId,
       };
       this.$api.assets.detail(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
           this.detail = data.amsOwnershipObligee;
           let attachment = [];
@@ -601,7 +601,7 @@ export default {
           }
         } else {
           this.$error({
-            title: "提示",
+            title: '提示',
             content: res.data.message,
           });
         }
@@ -616,7 +616,7 @@ export default {
         serviceType: 1014,
         organId: this.organId,
       });
-      if (code === "0") {
+      if (code === '0') {
         const { isValid } = data;
         if (isValid === 1) {
           this.checkNick = true;
@@ -698,7 +698,7 @@ export default {
             position: absolute;
             left: 0px;
             width: 6px;
-            content: "*";
+            content: '*';
             color: #f5222d;
             line-height: 36px;
             font-family: SimSun;

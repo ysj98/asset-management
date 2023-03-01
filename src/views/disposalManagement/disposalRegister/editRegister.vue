@@ -3,8 +3,8 @@
  * @Description: 处置登记 编辑
  -->
 <script>
-  import createRegister from './createRegister'
-  export default {
-    extends: createRegister
-  }
+import createRegister from './createRegister';
+export default {
+  extends: createRegister,
+};
 </script>

@@ -19,13 +19,17 @@
     okText="确定"
     title="列表设置"
     @ok="commonFn"
-    @cancel="()=>{ modalShow = false }"
+    @cancel="
+      () => {
+        modalShow = false;
+      }
+    "
   >
     <div>
       <a-checkbox-group v-model="listValue">
         <a-row>
           <a-col class="p10" :span="8" v-for="(item, index) in columnsData" :key="index">
-            <a-checkbox :value="item.dataIndex" :disabled="item.disabled ? item.disabled : false">{{item.title}}</a-checkbox>
+            <a-checkbox :value="item.dataIndex" :disabled="item.disabled ? item.disabled : false">{{ item.title }}</a-checkbox>
           </a-col>
         </a-row>
       </a-checkbox-group>
@@ -38,27 +42,26 @@ export default {
   components: {},
   props: {
     columnsData: {
-      style: Array, default: () =>{ return []}
-    }
+      style: Array,
+      default: () => {
+        return [];
+      },
+    },
   },
-  data () {
+  data() {
     return {
       modalShow: false,
       listValue: [],
-    }
+    };
   },
-  computed: {
-  },
-  created () {
-  },
-  mounted () {
-  },
+  computed: {},
+  created() {},
+  mounted() {},
   methods: {
-    commonFn () {
-      this.$emit('determineSet', this.listValue)
-    }
-  }
-}
+    commonFn() {
+      this.$emit('determineSet', this.listValue);
+    },
+  },
+};
 </script>
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

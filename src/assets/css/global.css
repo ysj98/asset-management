@@ -4,16 +4,16 @@
 .custom-popup .leaflet-popup-content {
   margin: 0;
 }
-.sg-search-container{
+.sg-search-container {
   position: relative;
 }
 /* .sg-uploadFile>.preview {
   overflow: auto;
 } */
 
-.sg-FooterPagination.absolute{
+.sg-FooterPagination.absolute {
   z-index: 10;
 }
-.h100{
+.h100 {
   height: 100px;
 }

@@ -1,15 +1,15 @@
-@import "./var.less";
-.sg-datePicker-wrapper{
+@import './var.less';
+.sg-datePicker-wrapper {
   // 升级segi-ant组件库,组件库样式不太行,加上这个属性,撑开容器
   min-width: 360px !important;
 }
-.table-space-pagination{
+.table-space-pagination {
   height: 70px;
 }
 /*
 此样式使表格滚动条高度变粗
 */
-.custom-scroll{
+.custom-scroll {
   .ant-table {
     ::-webkit-scrollbar {
       // 表格横向滚动条高度
@@ -20,9 +20,10 @@
 /*
 带合计的表格（当前页面合计和所有合计两行 字体加粗样式）
 */
-.custom-total{
+.custom-total {
   .ant-table {
-    .ant-table-thead th, td {
+    .ant-table-thead th,
+    td {
       white-space: nowrap;
     }
     .ant-table-tbody tr:nth-last-child(-n + 2) {
@@ -34,9 +35,10 @@
 /*
 带合计的表格（当前页面合计和所有合计一行 字体加粗样式）
 */
-.custom-total-one{
+.custom-total-one {
   .ant-table {
-    .ant-table-thead th, td {
+    .ant-table-thead th,
+    td {
       white-space: nowrap;
     }
     .ant-table-tbody tr:nth-last-child(-n + 1) {

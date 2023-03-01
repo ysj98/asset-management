@@ -3,8 +3,8 @@
  * @Author: chen han
  * @Description: 权证详情
  -->
- <template>
-   <SG-Modal
+<template>
+  <SG-Modal
     @cancel="hiddeModal"
     title="权证详情"
     v-model="visible"
@@ -14,10 +14,10 @@
     :maskClosable="false"
     :noPadding="true"
     :footer="null"
-    :bodyStyle="{ 'overflow-y': 'auto',padding: '0 0px'}"
+    :bodyStyle="{ 'overflow-y': 'auto', padding: '0 0px' }"
   >
-   <div class="content-box">
-     <div class="mb30">
+    <div class="content-box">
+      <div class="mb30">
         <SG-Title noMargin title="基础信息" />
       </div>
       <!-- 主体内容 -->
@@ -169,61 +169,59 @@
         <div class="body-item">
           <div class="body-item-left">
             <span class="body-label">备注：</span>
-            <span class="body-content">该资产有部分项目需要继续核实，请相关人员 
-              做好审核工作,对于接管的问题，需要具体核对。</span>
+            <span class="body-content">该资产有部分项目需要继续核实，请相关人员 做好审核工作,对于接管的问题，需要具体核对。</span>
           </div>
         </div>
       </div>
-   </div>
-   </SG-Modal>
- </template>
- <script>
- export default {
-   data () {
-     return {
-       visible: false,
-     }
-   },
-   watch: {
-     visible (nv) {
-        if (!nv) {
-          this.hiddeModal()
-        }
-      },
-   },
-   
-    methods: {
-      hiddeModal () {
-      },
-      handleSave () {}
+    </div>
+  </SG-Modal>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      visible: false,
+    };
+  },
+  watch: {
+    visible(nv) {
+      if (!nv) {
+        this.hiddeModal();
+      }
+    },
+  },
+
+  methods: {
+    hiddeModal() {},
+    handleSave() {},
+  },
+};
+</script>
+<style lang="less" scoped>
+.content-box {
+  padding: 39px 82px 30px 71px;
+  .main-body {
+    margin-left: 30px;
+  }
+  .body-item {
+    color: #282d5b;
+    margin-bottom: 24px;
+    display: flex;
+    .body-item-left {
+      padding-right: 106px;
+      flex: 0 0 398px;
+      display: flex;
+      .body-label {
+        display: inline-block;
+        flex: 0 0 auto;
+      }
     }
- }
- </script>
- <style lang="less" scoped>
- .content-box{
-   padding: 39px 82px 30px 71px;
-   .main-body{
-     margin-left: 30px;
-   }
-   .body-item{
-     color: #282D5B;
-     margin-bottom: 24px;
-     display: flex;
-     .body-item-left{
-       padding-right: 106px;
-       flex: 0 0 398px;
-       display: flex;
-       .body-label{
-         display: inline-block;
-         flex: 0 0 auto;
-       }
-     }
-     .body-item-right{
-       .body-label{
-         display: inline-block;
-         flex: 0 0 auto;
-       }
-     }
-   }
- }
- </style>
+    .body-item-right {
+      .body-label {
+        display: inline-block;
+        flex: 0 0 auto;
+      }
+    }
+  }
+}
+</style>

@@ -10,7 +10,7 @@
   </div>
 </template>
 <script>
-import proBreadNav from "@/components/proBreadNav";
+import proBreadNav from '@/components/proBreadNav';
 export default {
   components: {
     proBreadNav,

@@ -66,104 +66,104 @@
 </template>
 
 <script>
-import TreeSelect from "../../common/treeSelect";
-import noDataTips from "@/components/noDataTips";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import { exportDataAsExcel } from "src/views/common/commonQueryApi";
+import TreeSelect from '../../common/treeSelect';
+import noDataTips from '@/components/noDataTips';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
 const columns = [
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 160,
-    fixed: "left",
+    fixed: 'left',
   },
   {
-    title: "资产项目编码",
-    dataIndex: "projectCode",
+    title: '资产项目编码',
+    dataIndex: 'projectCode',
     width: 140,
-    fixed: "left",
+    fixed: 'left',
   },
   {
-    title: "接管机构",
-    dataIndex: "organName",
+    title: '接管机构',
+    dataIndex: 'organName',
     width: 120,
   },
   {
-    title: "来源方式",
-    dataIndex: "sourceTypeName",
+    title: '来源方式',
+    dataIndex: 'sourceTypeName',
     width: 120,
   },
   {
-    title: "来源方式说明",
-    dataIndex: "souceChannelType",
+    title: '来源方式说明',
+    dataIndex: 'souceChannelType',
     width: 120,
   },
   {
-    title: "接管时间",
-    dataIndex: "takeOverDate",
+    title: '接管时间',
+    dataIndex: 'takeOverDate',
     width: 100,
   },
   {
-    title: "接管人",
-    dataIndex: "receiver",
+    title: '接管人',
+    dataIndex: 'receiver',
     width: 100,
   },
   {
-    title: "建筑面积(㎡)",
-    dataIndex: "area",
+    title: '建筑面积(㎡)',
+    dataIndex: 'area',
     width: 100,
   },
   {
-    title: "楼栋数",
-    dataIndex: "buildNum",
+    title: '楼栋数',
+    dataIndex: 'buildNum',
     width: 100,
   },
   {
-    title: "资产数量",
-    dataIndex: "assetNum",
+    title: '资产数量',
+    dataIndex: 'assetNum',
     width: 100,
   },
   {
-    title: "运营(㎡)",
-    dataIndex: "transferOperationArea",
+    title: '运营(㎡)',
+    dataIndex: 'transferOperationArea',
     width: 100,
   },
   {
-    title: "自用(㎡)",
-    dataIndex: "selfUserArea",
+    title: '自用(㎡)',
+    dataIndex: 'selfUserArea',
     width: 100,
   },
   {
-    title: "闲置(㎡)",
-    dataIndex: "idleArea",
+    title: '闲置(㎡)',
+    dataIndex: 'idleArea',
     width: 100,
   },
   {
-    title: "占用(㎡)",
-    dataIndex: "occupationArea",
+    title: '占用(㎡)',
+    dataIndex: 'occupationArea',
     width: 100,
   },
   {
-    title: "其他(㎡)",
-    dataIndex: "otherArea",
+    title: '其他(㎡)',
+    dataIndex: 'otherArea',
     width: 100,
   },
   {
-    title: "资产原值",
-    dataIndex: "originalValue",
+    title: '资产原值',
+    dataIndex: 'originalValue',
     width: 120,
   },
   {
-    title: "最新估值",
-    dataIndex: "marketValue",
+    title: '最新估值',
+    dataIndex: 'marketValue',
     width: 120,
   },
   {
-    title: "操作",
-    dataIndex: "operation",
+    title: '操作',
+    dataIndex: 'operation',
     width: 100,
-    scopedSlots: { customRender: "operation" },
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 
@@ -177,29 +177,29 @@ export default {
     return {
       scroll: { x: 1000, y: 300 },
       ASSET_MANAGEMENT, // 权限对象
-      allStyle: "width: 170px; margin-right: 10px;",
-      organId: "",
-      assetProject: "",
+      allStyle: 'width: 170px; margin-right: 10px;',
+      organId: '',
+      assetProject: '',
       assetProjectOptions: [],
       onlyCurrentOrgan: false,
-      status: "all",
+      status: 'all',
       exportBtnLoading: false, // 导出button loading标志
       statusOptions: [
-        { title: "全部资产状态", key: "all" },
-        { title: "待入库", key: "0" },
-        { title: "正常", key: "1" },
-        { title: "报废", key: "2" },
-        { title: "已转让", key: "3" },
-        { title: "报损", key: "4" },
-        { title: "入库中", key: "7" },
+        { title: '全部资产状态', key: 'all' },
+        { title: '待入库', key: '0' },
+        { title: '正常', key: '1' },
+        { title: '报废', key: '2' },
+        { title: '已转让', key: '3' },
+        { title: '报损', key: '4' },
+        { title: '入库中', key: '7' },
       ], // 查询条件-资产状态选项
       numList: [
-        { title: "所有资产(㎡)", key: "measuredArea", value: 0, fontColor: "#324057", code: "1000", isAble: "Y" },
-        { title: "运营(㎡)", key: "transferOperationArea", value: 0, bgColor: "#4BD288", code: "1001", isAble: "Y" },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF", code: "1002", isAble: "Y" },
-        { title: "自用(㎡)", key: "selfUserArea", value: 0, bgColor: "#DD81E6", code: "1003", isAble: "Y" },
-        { title: "占用(㎡)", key: "occupationArea", value: 0, bgColor: "#FD7474", code: "1004", isAble: "Y" },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6", code: "1005", isAble: "Y" },
+        { title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
+        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
       ], // 概览数据，title 标题，value 数值，color 背景色
       columns,
       dataSource: [],
@@ -210,16 +210,16 @@ export default {
       },
       showNoDataTips: false,
       sumObj: {
-        area: "",
-        buildNum: "",
-        assetNum: "",
-        transferOperationArea: "",
-        selfUserArea: "",
-        idleArea: "",
-        occupationArea: "",
-        otherArea: "",
-        originalValue: "",
-        marketValue: "",
+        area: '',
+        buildNum: '',
+        assetNum: '',
+        transferOperationArea: '',
+        selfUserArea: '',
+        idleArea: '',
+        occupationArea: '',
+        otherArea: '',
+        originalValue: '',
+        marketValue: '',
       }, // 求和用的对象
       current: null, // 当前选中的概览区域下标，与后台入参一一对应
     };
@@ -240,32 +240,32 @@ export default {
             });
             // 同步修改表头的字段名称
             this.columns.forEach((m, i) => {
-              let isTransferOperationArea = item.code == 1001 && m.dataIndex === "transferOperationArea";
-              let isIdleArea = item.code == 1002 && m.dataIndex === "idleArea";
-              let isSelfUserArea = item.code == 1003 && m.dataIndex === "selfUserArea";
-              let isOccupationArea = item.code == 1004 && m.dataIndex === "occupationArea";
-              let isOthernArea = item.code == 1005 && m.dataIndex === "otherArea";
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
               let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
               if (flag) {
                 m.title = item.alias || item.statusName;
-                if (item.isAble === "N") {
+                if (item.isAble === 'N') {
                   this.columns.splice(i, 1);
                 }
               }
             });
           });
           this.numList = this.numList.filter((i) => {
-            return i.isAble === "Y";
+            return i.isAble === 'Y';
           });
         } else {
-          this.$message.error(res.message || "系统内部错误");
+          this.$message.error(res.message || '系统内部错误');
         }
       });
     },
     // 导出
     handleExport() {
       this.exportBtnLoading = true;
-      exportDataAsExcel(this.queryList("export"), this.$api.assets.exportAssetProjectViewList, "资产项目视图列表.xls", this).finally(
+      exportDataAsExcel(this.queryList('export'), this.$api.assets.exportAssetProjectViewList, '资产项目视图列表.xls', this).finally(
         () => (this.exportBtnLoading = false)
       );
     },
@@ -273,14 +273,14 @@ export default {
     // 全选与其他选项互斥处理
     statusChange(value) {
       let lastIndex = value.length - 1;
-      this.status = value[lastIndex] === "all" ? ["all"] : value.filter((m) => m !== "all");
+      this.status = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
     },
 
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
       // this.queryClick()
-      this.queryList("click");
+      this.queryList('click');
     },
 
     changeTree(value) {
@@ -297,7 +297,7 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     toDetail(record) {
-      this.$router.push({ path: "/houseStandingBook/assetProjectViewDetail", query: { projectId: record.projectId } });
+      this.$router.push({ path: '/houseStandingBook/assetProjectViewDetail', query: { projectId: record.projectId } });
     },
     // 页码发生变化
     handlePageChange(page) {
@@ -308,7 +308,7 @@ export default {
     // 点击查询
     queryClick() {
       this.paginator.pageNo = 1;
-      this.queryList("click").then(() => this.queryStatistics());
+      this.queryList('click').then(() => this.queryStatistics());
     },
     queryList(type) {
       let {
@@ -327,13 +327,13 @@ export default {
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
         flag: current ? current - 1 : null,
-        statusList: status.includes("all") ? [] : status,
+        statusList: status.includes('all') ? [] : status,
       };
-      if (type === "export") {
+      if (type === 'export') {
         return form;
       }
       return this.$api.assets.viewGetAssetHouseList(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data.data;
           if (data.length === 0) {
             this.showNoDataTips = true;
@@ -350,27 +350,27 @@ export default {
             Object.keys(sumObj).forEach((key) => {
               !pageSum[key] && (pageSum[key] = 0);
               pageSum[key] += item[key]
-                ? ["buildNum", "assetNum"].includes(key)
+                ? ['buildNum', 'assetNum'].includes(key)
                   ? Number(item[key])
-                  : ["originalValue", "marketValue"].includes(key)
+                  : ['originalValue', 'marketValue'].includes(key)
                   ? Math.round(item[key] * 100) / 100
                   : Math.round(item[key] * 10000) / 10000
                 : 0;
               if (index === data.length - 1) {
-                pageSum[key] = ["buildNum", "assetNum"].includes(key)
+                pageSum[key] = ['buildNum', 'assetNum'].includes(key)
                   ? pageSum[key]
-                  : ["originalValue", "marketValue"].includes(key)
+                  : ['originalValue', 'marketValue'].includes(key)
                   ? Math.round(pageSum[key] * 100) / 100
                   : Math.round(pageSum[key] * 10000) / 10000;
               }
             });
             for (let key in item) {
-              item[key] = item[key] || "--";
+              item[key] = item[key] || '--';
             }
           });
-          this.dataSource = data.length ? data.concat({ ...pageSum, projectCode: "当前页-合计", key: Date.now() }) : [];
-          if (type !== "click" && this.dataSource.length) {
-            this.dataSource.push({ ...sumObj, projectCode: "所有页-合计", key: Date.now() + 100 });
+          this.dataSource = data.length ? data.concat({ ...pageSum, projectCode: '当前页-合计', key: Date.now() }) : [];
+          if (type !== 'click' && this.dataSource.length) {
+            this.dataSource.push({ ...sumObj, projectCode: '所有页-合计', key: Date.now() + 100 });
           }
           this.paginator.totalCount = res.data.data.count;
         } else {
@@ -386,7 +386,7 @@ export default {
         flag: this.current ? this.current - 1 : null,
       };
       this.$api.assets.viewGetAssetHouseStatistics(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let temp = res.data.data || {};
           let { measuredArea } = temp;
           let { numList, dataSource, sumObj } = this;
@@ -396,16 +396,16 @@ export default {
           Object.keys(sumObj).forEach(
             (key) =>
               (sumObj[key] = temp[key]
-                ? ["buildNum", "assetNum"].includes(key)
+                ? ['buildNum', 'assetNum'].includes(key)
                   ? Number(temp[key])
-                  : ["originalValue", "marketValue"].includes(key)
+                  : ['originalValue', 'marketValue'].includes(key)
                   ? Math.round(temp[key] * 100) / 100
                   : Math.round(temp[key] * 10000) / 10000
                 : 0)
           );
           sumObj.area = measuredArea ? Math.round(measuredArea * 10000) / 10000 : 0;
           this.sumObj = sumObj;
-          dataSource.length && this.dataSource.push({ ...sumObj, projectCode: "所有页-合计", key: Date.now() });
+          dataSource.length && this.dataSource.push({ ...sumObj, projectCode: '所有页-合计', key: Date.now() });
         } else {
           this.$message.error(res.data.message);
         }
@@ -416,8 +416,8 @@ export default {
         organIds: this.organId.toString(),
       };
       this.$api.assets.getObjectKeyValueByOrganId(form).then((res) => {
-        if (res.data.code === "0") {
-          let arr = [{ label: "全部资产项目", value: "" }];
+        if (res.data.code === '0') {
+          let arr = [{ label: '全部资产项目', value: '' }];
           res.data.data.forEach((item) => {
             let obj = {
               label: item.projectName,

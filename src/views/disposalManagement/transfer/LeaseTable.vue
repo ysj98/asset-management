@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "LeaseTable",
+  name: 'LeaseTable',
   props: {
     dataSource: {
       type: Array,
@@ -48,41 +48,41 @@ export default {
         dataSource: [],
         columns: [
           {
-            title: "序号",
+            title: '序号',
             customRender: (text, record, index) => {
               return (this.pageInfo.pageNum - 1) * 10 + 1 + index;
             },
           },
           {
-            title: "房间",
-            dataIndex: "resName",
+            title: '房间',
+            dataIndex: 'resName',
           },
           {
-            title: "历史承租人",
-            dataIndex: "secondName",
+            title: '历史承租人',
+            dataIndex: 'secondName',
           },
           {
-            title: "承租时间",
+            title: '承租时间',
             width: 200,
-            key: "startAndEndDateFormat",
+            key: 'startAndEndDateFormat',
             customRender(text, record) {
               if (record.startDateFormat && record.endDateFormat) {
                 return `${record.startDateFormat} 至 ${record.endDateFormat}`;
               } else {
-                return "";
+                return '';
               }
             },
           },
           {
-            title: "承租金额（元）",
-            dataIndex: "allRent",
+            title: '承租金额（元）',
+            dataIndex: 'allRent',
           },
           {
-            title: "承租单价（元）",
-            dataIndex: "rentAveragePrice",
+            title: '承租单价（元）',
+            dataIndex: 'rentAveragePrice',
           },
         ],
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
       },
     };

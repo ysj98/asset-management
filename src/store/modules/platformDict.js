@@ -1,5 +1,5 @@
 // 字典编码
-import * as apiAsset from "api/assets";
+import * as apiAsset from 'api/assets';
 
 import {
   SET_DEPRECIATION_METHOD,
@@ -7,8 +7,8 @@ import {
   SET_EQUIPMENT_CODE_SUB,
   SET_PARKING_OBJ_TYPE,
   SET_PARKING_PLACE_RESOURCE_TYPE,
-  SET_AMS_PLEDGE_SITUATION
-} from "../types/platformDictTypes";
+  SET_AMS_PLEDGE_SITUATION,
+} from '../types/platformDictTypes';
 const state = {
   // 折旧方法
   DEPRECIATION_METHOD: [],
@@ -17,11 +17,11 @@ const state = {
   // 专业设备
   EQUIPMENT_CODE_SUB: [],
   // 车位分类
-  PARKING_OBJ_TYPE:[],
+  PARKING_OBJ_TYPE: [],
   // 车场分类
   PARKING_PLACE_RESOURCE_TYPE: [],
   // 质押情况
-  AMS_PLEDGE_SITUATION:[]
+  AMS_PLEDGE_SITUATION: [],
 };
 const mutations = {
   [SET_DEPRECIATION_METHOD](state, payload) {
@@ -33,33 +33,33 @@ const mutations = {
   [SET_EQUIPMENT_CODE_SUB](state, payload) {
     state.EQUIPMENT_CODE_SUB = payload;
   },
-  [SET_PARKING_OBJ_TYPE](state,payload){
-    state.PARKING_OBJ_TYPE = payload
+  [SET_PARKING_OBJ_TYPE](state, payload) {
+    state.PARKING_OBJ_TYPE = payload;
   },
-  [SET_PARKING_PLACE_RESOURCE_TYPE](state,payload){
-    state.PARKING_PLACE_RESOURCE_TYPE = payload
+  [SET_PARKING_PLACE_RESOURCE_TYPE](state, payload) {
+    state.PARKING_PLACE_RESOURCE_TYPE = payload;
   },
-  [SET_AMS_PLEDGE_SITUATION](state,payload){
-    state.AMS_PLEDGE_SITUATION = payload
+  [SET_AMS_PLEDGE_SITUATION](state, payload) {
+    state.AMS_PLEDGE_SITUATION = payload;
   },
 };
 
 const actions = {
   getPlatformDict({ commit }, { code, type }) {
-    apiAsset.platformDict({ code: code }).then(res => {
-      if (res.data.code === "0") {
+    apiAsset.platformDict({ code: code }).then((res) => {
+      if (res.data.code === '0') {
         let data = res.data.data;
         commit(type, data);
       } else {
         this.$message.error(res.data.message);
       }
     });
-  }
+  },
 };
 
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
 };

@@ -5,12 +5,12 @@
    rowHeight: 默认height: 67px
 -->
 <template>
-  <div class="wrapper" :style="{height: rowHeight}">
+  <div class="wrapper" :style="{ height: rowHeight }">
     <a-row>
-      <a-col class="col-l nav" :style="{height: rowHeight}" :span="leftCol">
+      <a-col class="col-l nav" :style="{ height: rowHeight }" :span="leftCol">
         <slot name="col-l"></slot>
       </a-col>
-      <a-col class="col-r nav" :style="{height: rowHeight}" :span="rightCol">
+      <a-col class="col-r nav" :style="{ height: rowHeight }" :span="rightCol">
         <div class="commom">
           <slot name="col-r"></slot>
         </div>
@@ -20,40 +20,35 @@
 </template>
 
 <script>
-import {Row, Col} from 'ant-design-vue'
+import { Row, Col } from 'ant-design-vue';
 export default {
   components: {
     ARow: Row,
-    ACol: Col
+    ACol: Col,
     // AButton: Button
   },
   props: {
     rowHeight: {
       type: String,
-      default: '67px'
+      default: '67px',
     },
     leftCol: {
       type: Number,
-      default: 6
+      default: 6,
     },
     rightCol: {
       type: Number,
-      default: 18
-    }
+      default: 18,
+    },
   },
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
-  computed: {
-  },
-  methods: {
-  },
-  created () {
-  },
-  mounted () {
-  }
-}
+  computed: {},
+  methods: {},
+  created() {},
+  mounted() {},
+};
 </script>
 <style lang="less" scoped>
 .wrapper {

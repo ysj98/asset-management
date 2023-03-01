@@ -73,20 +73,26 @@
     </SG-Modal>
 
     <!-- 资产卡片 -->
-    <assetCard v-if="assetCardShow" :assetType="dynamicData.assetType" :organId="organId" :projectId="dynamicData.projectId" @assetCardSubmit="assetCardSubmit"></assetCard>
+    <assetCard
+      v-if="assetCardShow"
+      :assetType="dynamicData.assetType"
+      :organId="organId"
+      :projectId="dynamicData.projectId"
+      @assetCardSubmit="assetCardSubmit"
+    ></assetCard>
   </div>
 </template>
 
 <script>
-import SelectAssetList from "./SelectAssetList";
-import SetAsset from "./SetAssetValue";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import TooltipText from "src/views/common/TooltipText";
-import assetCard from "./assetCard.vue";
+import SelectAssetList from './SelectAssetList';
+import SetAsset from './SetAssetValue';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import TooltipText from 'src/views/common/TooltipText';
+import assetCard from './assetCard.vue';
 export default {
-  name: "WorthListPart",
+  name: 'WorthListPart',
   components: { SelectAssetList, OverviewNumber, SetAsset, TooltipText, assetCard },
-  props: ["type", "registerId", "organId", "dynamicData"],
+  props: ['type', 'registerId', 'organId', 'dynamicData'],
   data() {
     return {
       assetCardShow: false,
@@ -95,26 +101,26 @@ export default {
         loading: false,
         pagination: false,
         scroll: { x: 3200 },
-        rowKey: "assetId",
+        rowKey: 'assetId',
         selectedRowKeys: [], // Table选中的key数据
         columns: [
-          { title: "编号", dataIndex: "index", fixed: "left", width: 70 },
-          { title: "资产名称", dataIndex: "assetName", fixed: "left", width: 250, scopedSlots: { customRender: "assetName" } },
-          { title: "资产编码", dataIndex: "assetCode", width: 150, scopedSlots: { customRender: "assetCode" } },
-          { title: "所属机构", dataIndex: "organName", width: 250, scopedSlots: { customRender: "organName" } },
-          { title: "所属资产项目", dataIndex: "projectName" },
-          { title: "资产类型", dataIndex: "assetTypeName" },
-          { title: "资产分类", dataIndex: "assetCategoryName" },
-          { title: "资产原值(元)", dataIndex: "originalValue" },
-          { title: "首次成本法估值(元)", dataIndex: "assetValuation" },
-          { title: "首次市场法估值", dataIndex: "firstMarketValue" },
-          { title: "原值评估基准日", dataIndex: "originalAssessmenBaseDate" },
-          { title: "上次评估方法", dataIndex: "lastAssessmentMethodName" },
-          { title: "上次评估值", dataIndex: "lastAssessmentValue" },
-          { title: "本次评估方法", dataIndex: "assessmentMethodName" },
-          { title: "评估机构", dataIndex: "assessmentOrganName", width: 150, scopedSlots: { customRender: "assessmentOrganName" } },
-          { title: "本次估值(元)", dataIndex: "assessmentValue", scopedSlots: { customRender: "assessmentValue" }, fixed: "right", width: 130 },
-          { title: "上浮比", dataIndex: "upRate", fixed: "right", width: 120 },
+          { title: '编号', dataIndex: 'index', fixed: 'left', width: 70 },
+          { title: '资产名称', dataIndex: 'assetName', fixed: 'left', width: 250, scopedSlots: { customRender: 'assetName' } },
+          { title: '资产编码', dataIndex: 'assetCode', width: 150, scopedSlots: { customRender: 'assetCode' } },
+          { title: '所属机构', dataIndex: 'organName', width: 250, scopedSlots: { customRender: 'organName' } },
+          { title: '所属资产项目', dataIndex: 'projectName' },
+          { title: '资产类型', dataIndex: 'assetTypeName' },
+          { title: '资产分类', dataIndex: 'assetCategoryName' },
+          { title: '资产原值(元)', dataIndex: 'originalValue' },
+          { title: '首次成本法估值(元)', dataIndex: 'assetValuation' },
+          { title: '首次市场法估值', dataIndex: 'firstMarketValue' },
+          { title: '原值评估基准日', dataIndex: 'originalAssessmenBaseDate' },
+          { title: '上次评估方法', dataIndex: 'lastAssessmentMethodName' },
+          { title: '上次评估值', dataIndex: 'lastAssessmentValue' },
+          { title: '本次评估方法', dataIndex: 'assessmentMethodName' },
+          { title: '评估机构', dataIndex: 'assessmentOrganName', width: 150, scopedSlots: { customRender: 'assessmentOrganName' } },
+          { title: '本次估值(元)', dataIndex: 'assessmentValue', scopedSlots: { customRender: 'assessmentValue' }, fixed: 'right', width: 130 },
+          { title: '上浮比', dataIndex: 'upRate', fixed: 'right', width: 120 },
         ],
       },
       exportBtnLoading: false, // 导出按钮loading
@@ -125,19 +131,19 @@ export default {
       modalObj: {
         width: 1000, // Modal宽度
         height: 450, // Modal高度
-        title: "选择资产",
-        okText: "确定选择",
-        cancelText: "取消",
+        title: '选择资产',
+        okText: '确定选择',
+        cancelText: '取消',
         isShow: false,
       },
       isEditAll: false, // 批量修改本次估值列
       numList: [
-        { title: "资产总数", key: "total", value: 0, fontColor: "#324057" },
-        { title: "资产原值(元)", key: "originalValue", value: 0, fontColor: "#324057" },
-        { title: "首次成本法估值(元)", key: "assetValuation", value: 0, fontColor: "#324057" },
-        { title: "首次市场法估值(元)", key: "firstMarketValue", value: 0, fontColor: "#324057" },
-        { title: "上次估值(元)", key: "lastAssessmentValue", value: 0, fontColor: "#324057" },
-        { title: "本次估值(元)", key: "assessmentValue", value: 0, fontColor: "#324057" },
+        { title: '资产总数', key: 'total', value: 0, fontColor: '#324057' },
+        { title: '资产原值(元)', key: 'originalValue', value: 0, fontColor: '#324057' },
+        { title: '首次成本法估值(元)', key: 'assetValuation', value: 0, fontColor: '#324057' },
+        { title: '首次市场法估值(元)', key: 'firstMarketValue', value: 0, fontColor: '#324057' },
+        { title: '上次估值(元)', key: 'lastAssessmentValue', value: 0, fontColor: '#324057' },
+        { title: '本次估值(元)', key: 'assessmentValue', value: 0, fontColor: '#324057' },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
     };
   },
@@ -157,7 +163,10 @@ export default {
         lastAssessmentValue += m.lastAssessmentValue ? Number(m.lastAssessmentValue) : 0;
         firstMarketValue += m.firstMarketValue ? Number(m.firstMarketValue) : 0;
         // 上浮比例=本次评估/上次估值*100%-100%
-        m.upRate = m.lastAssessmentValue && m.lastAssessmentValue !== "0.00" ? `${((Number(m.assessmentValue || 0) / Number(m.lastAssessmentValue) - 1) * 100).toFixed(2)}%` : "--";
+        m.upRate =
+          m.lastAssessmentValue && m.lastAssessmentValue !== '0.00'
+            ? `${((Number(m.assessmentValue || 0) / Number(m.lastAssessmentValue) - 1) * 100).toFixed(2)}%`
+            : '--';
         return m;
       });
       let temp = {
@@ -172,7 +181,7 @@ export default {
         return { ...m, value: temp[m.key] || 0 };
       });
       // 返回给上层组件,用于保存
-      this.$emit("backAssetList", data);
+      this.$emit('backAssetList', data);
     },
 
     // 批量删除资产
@@ -181,7 +190,7 @@ export default {
         tableObj: { selectedRowKeys, dataSource },
       } = this;
       if (!selectedRowKeys.length) {
-        return this.$message.warn("请选择数据");
+        return this.$message.warn('请选择数据');
       }
       let data = dataSource.filter((m) => !selectedRowKeys.includes(m.assetId));
       if (!data.length) {
@@ -200,11 +209,11 @@ export default {
         } = this;
         // 校验是否已选择资产项目
         if (!assetType || !projectId) {
-          return this.$emit("validateProject");
+          return this.$emit('validateProject');
         }
         let list = dataSource.map((m) => Number(m.assetId));
         Object.assign(this, {
-          modalObj: { width: 1000, height: 450, title: "选择资产", okText: "确定选择", cancelText: "取消", isShow: false },
+          modalObj: { width: 1000, height: 450, title: '选择资产', okText: '确定选择', cancelText: '取消', isShow: false },
           isEditAll: false,
           initList: list,
           selectedList: list,
@@ -222,7 +231,7 @@ export default {
       } = this;
       // 校验是否已选择资产项目
       if (!assetType || !projectId) {
-        this.$emit("validateProject");
+        this.$emit('validateProject');
         return;
       }
       this.assetCardShow = bool;
@@ -252,7 +261,7 @@ export default {
     getAssetList() {
       let { selectedList } = this;
       if (!selectedList.length) {
-        return this.$message.warn("请选择资产数据");
+        return this.$message.warn('请选择资产数据');
       }
       this.modalObj.isShow = !selectedList.length;
       // 去重处理，比较arr 与 tableObj.dataSource
@@ -277,24 +286,24 @@ export default {
       // type === 'approval' || type === 'detail'时后端计算求和数据
       const { registerId } = this;
       if (!registerId) {
-        return this.$message.info("登记Id不存在");
+        return this.$message.info('登记Id不存在');
       }
       this.$api.worthRegister
         .queryListSum({ registerId })
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             let temp = { ...res.data, total };
             return (this.numList = this.numList.map((m) => {
               return { ...m, value: temp[m.key] || 0 };
             }));
           }
-          throw res.message || "查询登记资产汇总接口出错";
+          throw res.message || '查询登记资产汇总接口出错';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询登记资产汇总接口出错");
+          this.$message.error(err || '查询登记资产汇总接口出错');
         });
     },
 
@@ -302,7 +311,7 @@ export default {
     queryAssetListByRegisterId({ pageNo = 1, pageLength = 10, type }) {
       const { registerId } = this;
       if (!registerId) {
-        return this.$message.info("登记Id不存在");
+        return this.$message.info('登记Id不存在');
       }
       this.tableObj.loading = true;
       this.$api.worthRegister
@@ -310,7 +319,7 @@ export default {
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             this.tableObj.dataSource = (data || []).map((m, i) => ({ ...m, index: i + 1 }));
             Object.assign(this.paginationObj, {
@@ -318,13 +327,13 @@ export default {
               pageNo,
               pageLength,
             });
-            return type === "init" ? this.queryTotalData(count) : "";
+            return type === 'init' ? this.queryTotalData(count) : '';
           }
-          throw res.message || "查询登记资产接口出错";
+          throw res.message || '查询登记资产接口出错';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询登记资产接口出错");
+          this.$message.error(err || '查询登记资产接口出错');
         });
     },
 
@@ -337,13 +346,13 @@ export default {
         dynamicData,
         selectedList,
       } = this;
-      if (status === "init") {
+      if (status === 'init') {
         form.registerId = registerId;
       } else {
         if (!selectedRows.length) {
           return false;
         }
-        form.assetId = selectedRows.join(",");
+        form.assetId = selectedRows.join(',');
       }
       this.tableObj.loading = true;
       this.$api.worthRegister
@@ -351,12 +360,12 @@ export default {
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             let addData = res.data.data || [];
             if (!addData.length) {
               return false;
             }
-            if (status === "init") {
+            if (status === 'init') {
               dataSource = addData;
             } else {
               dataSource.push(...addData);
@@ -366,11 +375,11 @@ export default {
             let list = dataSource.map((m, i) => ({ ...m, index: i + 1, ...dynamicData }));
             return this.calcSum(list);
           }
-          throw res.message || "查询登记资产接口出错";
+          throw res.message || '查询登记资产接口出错';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询登记资产接口出错");
+          this.$message.error(err || '查询登记资产接口出错');
         });
     },
 
@@ -387,16 +396,16 @@ export default {
     // 批量修改Table本次估值列
     handleEditTableAll(bool) {
       if (!this.tableObj.dataSource.length) {
-        return this.$message.warn("请先添加资产");
+        return this.$message.warn('请先添加资产');
       }
       if (bool) {
         this.isEditAll = true;
         Object.assign(this.modalObj, {
           width: 750,
           isShow: true,
-          okText: "确定",
-          cancelText: "取消",
-          title: "快捷录入资产估值",
+          okText: '确定',
+          cancelText: '取消',
+          title: '快捷录入资产估值',
         });
       } else {
         this.modalObj.isShow = false;
@@ -407,19 +416,19 @@ export default {
       const {
         tableObj: { dataSource },
       } = this;
-      let { typeValue, assetValue, methodValue } = this.$refs["setAsset"].transferData();
-      if (assetValue === "") {
-        return this.$message.warn("请输入估值金额");
+      let { typeValue, assetValue, methodValue } = this.$refs['setAsset'].transferData();
+      if (assetValue === '') {
+        return this.$message.warn('请输入估值金额');
       }
       let list = [];
       // 按单个资产估值
-      if (typeValue === "2") {
+      if (typeValue === '2') {
         list = dataSource.map((m) => {
           return { ...m, assessmentValue: assetValue };
         });
       } else {
         // 按资产个数估值
-        if (methodValue === "1") {
+        if (methodValue === '1') {
           let rest = (assetValue * 100) % dataSource.length;
           let val = Math.floor((assetValue * 100) / dataSource.length);
           list = dataSource.map((m, i) => {
@@ -458,15 +467,15 @@ export default {
 
   created() {
     const { type } = this;
-    if (type === "add" || type === "edit") {
+    if (type === 'add' || type === 'edit') {
       // 允许多选
       this.tableObj.rowSelection = this.rowSelection();
       // 列表查询结果不分页，且前端计算求和数据
-      type === "edit" && this.queryAssetListByAssetId([], "init");
+      type === 'edit' && this.queryAssetListByAssetId([], 'init');
     } else {
       // type === 'approval' || type === 'detail'时
       // 列表查询结果分页，且后端计算求和数据
-      this.queryAssetListByRegisterId({ type: "init" });
+      this.queryAssetListByRegisterId({ type: 'init' });
     }
   },
 
@@ -478,7 +487,7 @@ export default {
         type,
         numList,
       } = this;
-      if ((type === "add" || type === "edit") && dataSource.length) {
+      if ((type === 'add' || type === 'edit') && dataSource.length) {
         const { projectId, assetType } = data;
         // 如果切换资产项目\资产类型，则清空Table dataSource
         if ((assetType && String(assetType) !== String(dataSource[0].assetType)) || String(projectId) !== String(dataSource[0].projectId)) {

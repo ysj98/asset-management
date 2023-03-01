@@ -17,43 +17,43 @@
 </template>
 
 <script>
-import { throttle } from '@/utils/utils'
-import rules from '@/config/config.rules'
+import { throttle } from '@/utils/utils';
+import rules from '@/config/config.rules';
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 16 },
-}
+};
 const formTailLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 16, offset: 4 },
-}
+};
 export default {
-  data () {
+  data() {
     return {
       formItemLayout,
       formTailLayout,
       formData: this.$form.createForm(this),
       formDataRules: {
         username: ['username', { rules: rules.username }],
-        password: ['password', { rules: rules.password }]
-      }
-    }
+        password: ['password', { rules: rules.password }],
+      },
+    };
   },
   methods: {
     // 表单是否包含错误
-    hasErrors (fieldsError) {
-      return Object.keys(fieldsError).some(field => fieldsError[field]);
+    hasErrors(fieldsError) {
+      return Object.keys(fieldsError).some((field) => fieldsError[field]);
     },
     // 登录请求
     handleLogin: throttle(function (e) {
-      e.preventDefault()
+      e.preventDefault();
       this.formData.validateFields((errors, values) => {
-        console.log(errors, values)
+        console.log(errors, values);
         if (!errors) {
-          this.$store.dispatch('auth/login', values)
+          this.$store.dispatch('auth/login', values);
         }
-      })
-    }, 1000)
-  }
-}
+      });
+    }, 1000),
+  },
+};
 </script>

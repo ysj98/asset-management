@@ -3,12 +3,7 @@
     <a-form-model :model="formData" ref="formRef" :rules="rules">
       <a-table size="middle" v-bind="tableOptions">
         <template #action="text, record">
-          <a
-            @click="handleDelete({ assetId: record.assetId })"
-            style="color: #fd7474"
-          >
-            删除
-          </a>
+          <a @click="handleDelete({ assetId: record.assetId })" style="color: #fd7474"> 删除 </a>
         </template>
       </a-table>
     </a-form-model>
@@ -16,11 +11,11 @@
 </template>
 
 <script>
-import { baseColumns } from "@/views/assetOperating/share";
-import { cloneDeep } from "lodash";
+import { baseColumns } from '@/views/assetOperating/share';
+import { cloneDeep } from 'lodash';
 
 export default {
-  name: "TableAsset",
+  name: 'TableAsset',
   props: {
     dataSource: {
       type: Array,
@@ -35,7 +30,7 @@ export default {
       required: true,
     },
   },
-  inject: ["sonData"],
+  inject: ['sonData'],
   data() {
     return {
       formData: {},
@@ -56,7 +51,7 @@ export default {
           this.tableOptions.dataSource = cloneDeep(newValue).map((ele) => {
             const res = {};
             this.customParams.forEach((ele) => {
-              res[ele.transferOperationCode] = "";
+              res[ele.transferOperationCode] = '';
             });
             return {
               ...res,
@@ -83,12 +78,10 @@ export default {
     handleDelete({ assetId }) {
       const _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认删除吗？",
+        title: '提示',
+        content: '确认删除吗？',
         onOk() {
-          const idx = _this.tableOptions.dataSource.findIndex(
-            (ele) => ele.assetId === assetId
-          );
+          const idx = _this.tableOptions.dataSource.findIndex((ele) => ele.assetId === assetId);
           if (idx !== -1) {
             _this.tableOptions.dataSource.splice(idx, 1);
           }
@@ -100,18 +93,18 @@ export default {
         if (this.tableOptions.dataSource.length) {
           this.$refs.formRef.validate((valid) => {
             if (valid) {
-              resolve("");
+              resolve('');
             } else {
-              resolve("请输入必填字段信息");
+              resolve('请输入必填字段信息');
             }
           });
         } else {
-          resolve("请添加资产");
+          resolve('请添加资产');
         }
       });
     },
     handleTableColumns(paramsList) {
-      console.log("paramsList", paramsList);
+      console.log('paramsList', paramsList);
       const res = paramsList.map((ele) => {
         return {
           dataIndex: ele.transferOperationCode,
@@ -125,10 +118,10 @@ export default {
         ...baseColumns,
         ...res,
         {
-          title: "操作",
+          title: '操作',
           width: 120,
           scopedSlots: {
-            customRender: "action",
+            customRender: 'action',
           },
         },
       ];
@@ -137,9 +130,7 @@ export default {
       return this.tableOptions.dataSource.map((ele) => {
         let paramList = [];
         Object.keys(ele).forEach((e) => {
-          const res = this.customParams.filter(
-            (ele) => ele.transferOperationCode === e
-          );
+          const res = this.customParams.filter((ele) => ele.transferOperationCode === e);
           if (res.length) {
             paramList.push({
               transferOperationCode: e,
@@ -148,13 +139,9 @@ export default {
             });
           }
         });
-        if (type === "edit") {
+        if (type === 'edit') {
           paramList.forEach((paramItem) => {
-            const res = ele.paramList.filter(
-              (eleParamItem) =>
-                paramItem.transferOperationCode ===
-                eleParamItem.transferOperationCode
-            )[0];
+            const res = ele.paramList.filter((eleParamItem) => paramItem.transferOperationCode === eleParamItem.transferOperationCode)[0];
             if (res) {
               paramItem.assetOperationDetailId = res.assetOperationDetailId;
             }
@@ -172,8 +159,8 @@ export default {
       const _h = this.$createElement;
       const keyStr = curColumn.transferOperationCode;
       const props = {
-        placeholder: "请输入",
-        size: "small",
+        placeholder: '请输入',
+        size: 'small',
         // 为了编辑的时候校验生效
         value: record[keyStr],
       };
@@ -184,21 +171,21 @@ export default {
       if (curColumn.required === 1) {
         _this.rules[formItemProp] = {
           validator: (rule, value, callback) => {
-            if (["", undefined, null].includes(record[keyStr])) {
-              callback(new Error(""));
+            if (['', undefined, null].includes(record[keyStr])) {
+              callback(new Error(''));
             } else {
               callback();
             }
           },
-          trigger: "blur",
+          trigger: 'blur',
           required: true,
           // TODO:如何取消错误提醒文字
-          message: " ",
+          message: ' ',
         };
       }
-      const inputVnode = _h("a-input", {
+      const inputVnode = _h('a-input', {
         style: {
-          width: "80px",
+          width: '80px',
         },
         props,
         domProps,
@@ -209,7 +196,7 @@ export default {
         },
       });
       resultNode = _h(
-        "a-form-model-item",
+        'a-form-model-item',
         {
           props: {
             prop: formItemProp,

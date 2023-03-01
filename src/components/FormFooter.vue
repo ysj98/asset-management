@@ -4,94 +4,93 @@
   rightButtonName: 自定义名称  默认为：取消
 -->
 <template>
-  <div class="form-footer" :class="{'absolute': location === 'absolute', 'fixed': location === 'fixed'}">
+  <div class="form-footer" :class="{ absolute: location === 'absolute', fixed: location === 'fixed' }">
     <slot>
-      <a-button v-if="showSave" type="primary" :style="buttonStyle" @click="$emit('save')">{{leftButtonName}}</a-button>
-      <a-button v-if="showDarft" type="primary" :style="buttonStyle" @click="$emit('darft')">{{midButtonName}}</a-button>
-      <a-button v-if="showCancel" :type="rightButtonType" :style="buttonStyle" @click="$emit('cancel')">{{rightButtonName}}</a-button>
+      <a-button v-if="showSave" type="primary" :style="buttonStyle" @click="$emit('save')">{{ leftButtonName }}</a-button>
+      <a-button v-if="showDarft" type="primary" :style="buttonStyle" @click="$emit('darft')">{{ midButtonName }}</a-button>
+      <a-button v-if="showCancel" :type="rightButtonType" :style="buttonStyle" @click="$emit('cancel')">{{ rightButtonName }}</a-button>
     </slot>
   </div>
 </template>
 
 <script>
-import {Button} from 'ant-design-vue'
+import { Button } from 'ant-design-vue';
 export default {
   name: 'FormFooter', // componentName
   components: {
-    AButton: Button
+    AButton: Button,
   },
   props: {
     buttonStyle: {
       type: String,
-      default: 'width: 90px;'
+      default: 'width: 90px;',
     },
     rightButtonName: {
       type: String,
-      default: '取消'
+      default: '取消',
     },
     leftButtonName: {
       type: String,
-      default: '提交'
+      default: '提交',
     },
     midButtonName: {
       type: String,
-      default: '保存草稿'
+      default: '保存草稿',
     },
     showDarft: {
       type: Boolean,
-      default: false
+      default: false,
     },
     showSave: {
       type: Boolean,
-      default: true
+      default: true,
     },
     showCancel: {
       type: Boolean,
-      default: true
+      default: true,
     },
     rightButtonType: {
       type: String,
-      default: 'default'
+      default: 'default',
     },
     location: {
       type: String,
-      default: 'absolute'
-    }
+      default: 'absolute',
+    },
   },
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
-  mounted () {
-    console.log(this.location)
-  }
-}
+  mounted() {
+    console.log(this.location);
+  },
+};
 </script>
 
-<style lang='less' scoped>
-  .form-footer{
-    width: 100%;
-    text-align: center;
-    padding: 18px 20px;
-    border-top: 1px solid #E6EAEF;
-    box-shadow:0px -2px 6px 0px rgba(66,155,255,0.08);
-    background-color: #fff;
-    button {
-      &:not(:first-child) {
-        margin-left: 10px;
-      }
+<style lang="less" scoped>
+.form-footer {
+  width: 100%;
+  text-align: center;
+  padding: 18px 20px;
+  border-top: 1px solid #e6eaef;
+  box-shadow: 0px -2px 6px 0px rgba(66, 155, 255, 0.08);
+  background-color: #fff;
+  button {
+    &:not(:first-child) {
+      margin-left: 10px;
     }
   }
-  .absolute {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    z-index: 999;
-  }
-  .fixed {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    z-index: 999;
-  }
+}
+.absolute {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
+}
+.fixed {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
+}
 </style>

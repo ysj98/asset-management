@@ -23,19 +23,15 @@ export const reg = {
   // qq号码
   qq: /[1-9][0-9]{4,}/,
   // ip
-  ip:  /\d+\.\d+\.\d+\.\d+/,
+  ip: /\d+\.\d+\.\d+\.\d+/,
   // 中文
   zh: /^[\u4e00-\u9fa5]*$/,
-}
+};
 // 保留2位小数 /^(\.*)(\d+)(\.?)(\d{0,2}).*$/
 // 验证规则配置
 export default {
   // 用户名验证
-  username: [
-    { required: true, message: '请输入用户名!' }
-  ],
+  username: [{ required: true, message: '请输入用户名!' }],
   // 密码验证
-  password: [
-    { required: true, message: '请输入密码!' }
-  ]
-}
+  password: [{ required: true, message: '请输入密码!' }],
+};

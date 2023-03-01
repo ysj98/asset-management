@@ -7,8 +7,17 @@
   <div class="buildingDict-page">
     <div class="custom-tabs">
       <div class="top-select">
-        <a-checkbox :checked="Boolean(isCurrent)" @change="changeChecked" style="margin-top: 7px; margin-right: 10px"> 仅当前机构下{{ tabName }} </a-checkbox>
-        <treeSelect @changeTree="organIdChange" :typeFilter="typeFilter" placeholder="请选择组织机构" :allowClear="false" :style="allWidth" :showSearch="true"></treeSelect>
+        <a-checkbox :checked="Boolean(isCurrent)" @change="changeChecked" style="margin-top: 7px; margin-right: 10px">
+          仅当前机构下{{ tabName }}
+        </a-checkbox>
+        <treeSelect
+          @changeTree="organIdChange"
+          :typeFilter="typeFilter"
+          placeholder="请选择组织机构"
+          :allowClear="false"
+          :style="allWidth"
+          :showSearch="true"
+        ></treeSelect>
       </div>
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
         <a-tab-pane v-for="tabPane in tabList" :key="tabPane.keyStr" v-show="$power.has(tabPane.auth)" :tab="tabPane.title">
@@ -22,51 +31,51 @@
 const tabList = [
   {
     auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_BUILD,
-    title: "楼栋信息",
-    keyStr: "building",
-    components: "buildingInfo",
+    title: '楼栋信息',
+    keyStr: 'building',
+    components: 'buildingInfo',
   },
   {
     auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_HOUSE,
-    title: "房间信息",
-    keyStr: "house",
-    components: "houseInfo",
+    title: '房间信息',
+    keyStr: 'house',
+    components: 'houseInfo',
   },
   {
     auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_LAND,
-    title: "土地信息",
-    keyStr: "land",
-    components: "landInfo",
+    title: '土地信息',
+    keyStr: 'land',
+    components: 'landInfo',
   },
   {
     auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK,
-    title: "车场信息",
-    keyStr: "park",
-    components: "parkInfo",
+    title: '车场信息',
+    keyStr: 'park',
+    components: 'parkInfo',
   },
   {
     auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_PARK_ITEM,
-    title: "车位信息",
-    keyStr: "stall",
-    components: "stallInfo",
+    title: '车位信息',
+    keyStr: 'stall',
+    components: 'stallInfo',
   },
   {
     auth: ASSET_MANAGEMENT.ASSET_SOURCE_TAB_EQ,
-    title: "设备信息",
-    keyStr: "equipment",
-    components: "equipmentInfo",
+    title: '设备信息',
+    keyStr: 'equipment',
+    components: 'equipmentInfo',
   },
 ];
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import buildingInfo from "./buildingInfo";
-import houseInfo from "./houseInfo";
-import landInfo from "./land/landInfo";
-import parkInfo from "./park/ParkInfo";
-import StallInfo from "./stall/StallInfo";
-import TreeSelect from "../common/treeSelect";
-import { typeFilter } from "./buildingDictConfig";
-import EquipmentInfo from "./equipment/EquipmentInfo";
-const allWidth = { width: "250px", zIndex: 99999 };
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import buildingInfo from './buildingInfo';
+import houseInfo from './houseInfo';
+import landInfo from './land/landInfo';
+import parkInfo from './park/ParkInfo';
+import StallInfo from './stall/StallInfo';
+import TreeSelect from '../common/treeSelect';
+import { typeFilter } from './buildingDictConfig';
+import EquipmentInfo from './equipment/EquipmentInfo';
+const allWidth = { width: '250px', zIndex: 99999 };
 export default {
   components: {
     EquipmentInfo,
@@ -91,9 +100,9 @@ export default {
       ASSET_MANAGEMENT,
       typeFilter,
       isCurrent: 0, // 查询条件-是否仅当前机构
-      showKey: "building",
+      showKey: 'building',
       allWidth,
-      organIdInfo: { organId: "", organName: "" },
+      organIdInfo: { organId: '', organName: '' },
       tabList: tabList,
     };
   },
@@ -122,11 +131,11 @@ export default {
       this.isCurrent = Number(e.target.checked);
     },
     tabChange(v) {
-      console.log(this.organIdInfo, "切换tab", v);
+      console.log(this.organIdInfo, '切换tab', v);
       this.showKey = v;
     },
     organIdChange(organId, organName) {
-      console.log(organId, organName, "顶部组织机构");
+      console.log(organId, organName, '顶部组织机构');
       this.organIdInfo.organId = organId;
       this.organIdInfo.organName = organName;
     },

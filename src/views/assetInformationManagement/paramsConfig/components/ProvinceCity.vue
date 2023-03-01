@@ -34,7 +34,7 @@
 
 <script>
 export default {
-  name: "ProvinceCity",
+  name: 'ProvinceCity',
   props: {
     test: {
       type: Object,
@@ -44,11 +44,11 @@ export default {
     },
     paramKey: {
       type: String,
-      default: "",
+      default: '',
     },
     subKey: {
       type: String,
-      default: "",
+      default: '',
     },
     // 是否可搜索
     showSearch: {
@@ -63,7 +63,7 @@ export default {
     // 尺寸大小default large small
     size: {
       type: String,
-      default: () => "default",
+      default: () => 'default',
     },
   },
   data() {
@@ -80,7 +80,7 @@ export default {
 
   methods: {
     handleChangeProvince() {
-      console.log("change");
+      console.log('change');
       this.isChange = true;
     },
     // 搜索过滤选项
@@ -93,27 +93,27 @@ export default {
       return new Promise((resolve, reject) => {
         this.loading = true;
         const api = {
-          provinces: "queryProvinceList",
-          cities: "queryCityAndAreaList",
+          provinces: 'queryProvinceList',
+          cities: 'queryCityAndAreaList',
         };
-        let form = type === "provinces" ? {} : { parentRegionId };
+        let form = type === 'provinces' ? {} : { parentRegionId };
         this.$api.basics[api[type]](form)
           .then((r) => {
             this.loading = false;
             let res = r.data;
-            if (res && String(res.code) === "0") {
+            if (res && String(res.code) === '0') {
               this[type] = (res.data || []).map((item) => {
                 return { key: item.regionId, title: item.name };
               });
               resolve();
               return false;
             }
-            let errorMsg = res.message || "区域查询失败";
+            let errorMsg = res.message || '区域查询失败';
             reject(errorMsg);
             throw errorMsg;
           })
           .catch((err) => {
-            let errorMsg = err || "区域查询失败";
+            let errorMsg = err || '区域查询失败';
             this.loading = false;
             this.$message.error(errorMsg);
             reject(errorMsg);
@@ -137,10 +137,10 @@ export default {
     sendData() {
       if (this.handleValidate()) {
         const { province, city } = this;
-        this.$emit("sendData", { paramKey: province, subKey: city });
+        this.$emit('sendData', { paramKey: province, subKey: city });
       } else {
         // console.log("校验未通过,请选择省市");
-        return "请选择省市";
+        return '请选择省市';
       }
     },
   },
@@ -148,7 +148,7 @@ export default {
   created() {
     const { allowClear, size, showSearch, subKey, paramKey } = this;
     this.properties = { allowClear, size, showSearch };
-    this.queryData("provinces").then(() => {
+    this.queryData('provinces').then(() => {
       this.city = subKey || undefined;
       this.province = paramKey || undefined;
     });
@@ -162,7 +162,7 @@ export default {
           cities: [],
         });
       }
-      province && this.queryData("cities", province);
+      province && this.queryData('cities', province);
     },
   },
 };

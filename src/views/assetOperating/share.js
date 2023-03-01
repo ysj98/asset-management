@@ -1,36 +1,36 @@
-import { queryTopOrganByOrganID } from "@/views/buildingDict/publicFn";
-import * as apiOperationParams from "@/api/operationParams";
-import * as apiToOperation from "@/api/toOperation";
-import { message as $message } from "ant-design-vue";
+import { queryTopOrganByOrganID } from '@/views/buildingDict/publicFn';
+import * as apiOperationParams from '@/api/operationParams';
+import * as apiToOperation from '@/api/toOperation';
+import { message as $message } from 'ant-design-vue';
 export const baseColumns = [
   {
-    title: "资产名称",
-    dataIndex: "assetName",
+    title: '资产名称',
+    dataIndex: 'assetName',
     // width: 160
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
+    title: '资产编码',
+    dataIndex: 'assetCode',
     // width: 120
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    width: 120
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    width: 120,
   },
   {
-    title: "资产分类",
-    dataIndex: "objectTypeName",
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
     // width: 120
   },
   {
-    title: "所在位置",
-    dataIndex: "address",
+    title: '所在位置',
+    dataIndex: 'address',
     // width: 200
   },
   {
-    title: "来源方式",
-    dataIndex: "sourceModeName",
+    title: '来源方式',
+    dataIndex: 'sourceModeName',
     // width: 120
   },
 ];
@@ -39,19 +39,19 @@ export function generateColumnsByParamList({ paramList }, mapFn) {
     console.error(`错误入参${arguments}`);
     return null;
   }
-  if (typeof mapFn === "function") {
+  if (typeof mapFn === 'function') {
     return paramList.map(mapFn);
   }
   return paramList.map((ele) => {
     return {
       dataIndex: ele.transferOperationCode,
       title: ele.transferOperationName,
-      width: 120
+      width: 120,
     };
   });
 }
 export async function getColumns({ organId, assetType }, mapFn) {
-  const errorArr = ["", undefined, null];
+  const errorArr = ['', undefined, null];
   if (errorArr.includes(organId) || errorArr.includes(assetType)) {
     console.error(arguments);
     return null;
@@ -71,14 +71,14 @@ export async function getColumns({ organId, assetType }, mapFn) {
     apiOperationParams.getPage(req).then(
       (value) => {
         let result = value.data.data ? value.data.data.data : [];
-        if (typeof mapFn === "function") {
+        if (typeof mapFn === 'function') {
           result = result.map(mapFn);
         } else {
           result = result.map((ele) => {
             return {
               dataIndex: ele.transferOperationCode,
               title: ele.transferOperationName,
-              width: 120
+              width: 120,
             };
           });
         }
@@ -102,7 +102,7 @@ export function getBaseInfo({ assetOperationRegisterId }) {
     };
     apiToOperation.getBasicMessage(req).then(
       ({ data: { code, message, data } }) => {
-        if (code === "0") {
+        if (code === '0') {
           resolve(data);
         } else {
           $message.error(message);
@@ -116,11 +116,7 @@ export function getBaseInfo({ assetOperationRegisterId }) {
   });
 }
 
-export function getOperationDetailListPage({
-  assetOperationRegisterId,
-  pageNum,
-  pageSize,
-}) {
+export function getOperationDetailListPage({ assetOperationRegisterId, pageNum, pageSize }) {
   return new Promise((resolve, reject) => {
     if (!assetOperationRegisterId || !pageNum || !pageSize) {
       console.error(arguments);
@@ -133,7 +129,7 @@ export function getOperationDetailListPage({
     };
     apiToOperation.getOperationDetailListPage(req).then(
       ({ data: { code, message, data } }) => {
-        if (code === "0") {
+        if (code === '0') {
           resolve(data);
         } else {
           $message.error(message);
@@ -146,7 +142,7 @@ export function getOperationDetailListPage({
     );
   });
 }
-export function flatTableDataSource({ dataSource },keyStr='paramList') {
+export function flatTableDataSource({ dataSource }, keyStr = 'paramList') {
   if (!Array.isArray(dataSource)) {
     console.error(arguments);
     return null;
@@ -157,7 +153,7 @@ export function flatTableDataSource({ dataSource },keyStr='paramList') {
       ele[keyStr].forEach((ele) => {
         res[ele.transferOperationCode] = ele.transferOperationValue;
       });
-    console.log('res',res)
+    console.log('res', res);
     return {
       ...ele,
       ...res,

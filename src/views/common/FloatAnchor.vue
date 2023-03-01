@@ -17,12 +17,7 @@
  -->
 <template>
   <div class="float_anchor" id="float_anchor">
-    <div
-      v-for="item in anchorList"
-      :key="item.id"
-      @click="selectItem(item.id)"
-      :class="['anchor_item', { item_active: selectedId === item.id }]"
-    >
+    <div v-for="item in anchorList" :key="item.id" @click="selectItem(item.id)" :class="['anchor_item', { item_active: selectedId === item.id }]">
       {{ item.title }}
     </div>
   </div>
@@ -30,59 +25,58 @@
 
 <script>
 export default {
-  name: "FloatAnchor",
+  name: 'FloatAnchor',
   props: {
     anchorList: {
       type: Array,
       default: () => [
         // 示例 { title: '标题', id: 'DOMNodeID' }
-      ]
+      ],
     },
     value: {
       type: [String, Number],
-      default: () => ""
-    }
+      default: () => '',
+    },
   },
   data() {
     return {
-      selectedId: "", // 选中的锚点Id
-      timeoutId: 0 // 监听页面滚动的定时器ID
+      selectedId: '', // 选中的锚点Id
+      timeoutId: 0, // 监听页面滚动的定时器ID
     };
   },
 
   mounted() {
     const { anchorList, value } = this;
-    this.selectedId = value || (anchorList[0] ? anchorList[0].id : "");
-    let div = document.getElementById("float_anchor");
+    this.selectedId = value || (anchorList[0] ? anchorList[0].id : '');
+    let div = document.getElementById('float_anchor');
     let { offsetWidth, offsetHeight } = div;
     div.style.marginTop = `-${offsetHeight}px`;
     if (div.parentElement) {
       // 设置父元素定位
-      div.parentElement.style = "postion: relative; height: 100%;";
+      div.parentElement.style = 'postion: relative; height: 100%;';
     }
     let sibling = div.nextElementSibling;
     if (sibling) {
       // 设置兄弟元素样式
-      sibling.style = `padding-right: 40px; margin-left: ${offsetWidth +
-        80}px; height: 100%; overflow-y: auto;`;
+      sibling.style = `padding-right: 40px; margin-left: ${offsetWidth + 80}px; height: 100%; overflow-y: auto;`;
       // 监听兄弟元素滚动
       sibling.onscroll = this.calcScrollHeight;
     }
   },
 
   watch: {
-    value: function(val) {
+    value: function (val) {
       this.selectedId = val;
-    }
+    },
   },
 
   methods: {
     // 跳转到指定锚点
     jumpTo(id) {
-      let node = id ? document.getElementById(id) : "";
-      if (node){
-        let parentNode = node.parentNode
-        parentNode.scrollTop = node.offsetTop - 60
+      let node = id ? document.getElementById(id) : '';
+      if (node) {
+        let parentNode = node.parentNode;
+        parentNode.scrollTop = node.offsetTop - 60;
       }
       // node && node.scrollIntoView();
     },
@@ -94,11 +88,11 @@ export default {
       timeoutId && clearTimeout(timeoutId);
       this.timeoutId = setTimeout(() => {
         let {
-          target: { scrollTop }
+          target: { scrollTop },
         } = e;
         for (let obj of anchorList) {
           let id = obj.id;
-          let node = id ? document.getElementById(id) : "";
+          let node = id ? document.getElementById(id) : '';
           if (node && node.offsetTop + 50 > scrollTop) {
             _this.selectedId = id;
             break;
@@ -110,10 +104,10 @@ export default {
     // 选中锚点时
     selectItem(id) {
       this.selectedId = id;
-      this.$emit("input", id); // 用于组件v-model
+      this.$emit('input', id); // 用于组件v-model
       this.jumpTo(id);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -135,7 +129,7 @@ export default {
     color: #6d7585;
     padding: 18px 0 17px;
     &:before {
-      content: "";
+      content: '';
       height: 14px;
       border-left: 4px transparent solid;
       border-radius: 2px;

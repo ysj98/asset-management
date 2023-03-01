@@ -3,11 +3,17 @@
     <a-row style="margin: 24px 0 32px">
       <a-col :span="12">
         <span>估值类型：</span>
-        <a-select v-model="typeValue" style="width: 250px;" :options="$addTitle(typeOptions)" @change="changeType" :getPopupContainer="
-          (triggerNode) => {
-            return triggerNode.parentNode || document.body
-          }
-          "/>
+        <a-select
+          v-model="typeValue"
+          style="width: 250px"
+          :options="$addTitle(typeOptions)"
+          @change="changeType"
+          :getPopupContainer="
+            (triggerNode) => {
+              return triggerNode.parentNode || document.body;
+            }
+          "
+        />
       </a-col>
       <a-col :sapn="12">
         <span>估值金额(元)：</span>
@@ -32,7 +38,9 @@
           </div>
           <div style="margin-top: 16px">
             <a-radio value="2" style="vertical-align: top; margin-right: 50px">按照资产面积均摊</a-radio>
-            <span style="display: inline-block; width: 400px; color: #bfbfbf">*说明：估值总金额为100万，资产1面积10㎡，资产02面积30㎡，则资产1估值25万，资产2估值75万</span>
+            <span style="display: inline-block; width: 400px; color: #bfbfbf"
+              >*说明：估值总金额为100万，资产1面积10㎡，资产02面积30㎡，则资产1估值25万，资产2估值75万</span
+            >
           </div>
         </a-radio-group>
       </a-col>
@@ -41,39 +49,42 @@
 </template>
 
 <script>
-  export default {
-    name: 'SetAssetValue',
-    props: ['assetType'],
-    data () {
+export default {
+  name: 'SetAssetValue',
+  props: ['assetType'],
+  data() {
+    return {
+      assetValue: '', // 估值金额
+      typeValue: '2', // 估值类型
+      isShowMethod: false, //是否显示分摊方式
+      methodValue: '1', // 分摊方式： 1 按个数， 2 按面积
+      typeOptions: [
+        { title: '单个资产估值', value: '2' },
+        { title: '所选资产总估值', value: '1' },
+      ], // 估值类型选项
+    };
+  },
+
+  methods: {
+    // 改变估值类型
+    changeType(value) {
+      this.isShowMethod = value === '1';
+    },
+
+    // 传递到外层组件值
+    transferData() {
+      const { assetValue, typeValue, methodValue } = this;
       return {
-        assetValue: '', // 估值金额
-        typeValue: '2', // 估值类型
-        isShowMethod: false, //是否显示分摊方式
-        methodValue: '1', // 分摊方式： 1 按个数， 2 按面积
-        typeOptions: [{title: '单个资产估值', value: '2'}, {title: '所选资产总估值', value: '1'}], // 估值类型选项
-      }
+        typeValue,
+        assetValue,
+        methodValue,
+      };
     },
-
-    methods: {
-      // 改变估值类型
-      changeType (value) {
-        this.isShowMethod = value === '1'
-      },
-
-      // 传递到外层组件值
-      transferData () {
-        const {assetValue, typeValue, methodValue} = this
-        return {
-          typeValue, assetValue, methodValue
-        }
-      }
-    },
-    // mounted () {
-    //   this.methodValue = this.assetType === '房屋' ? '1' : '2'
-    // }
-  }
+  },
+  // mounted () {
+  //   this.methodValue = this.assetType === '房屋' ? '1' : '2'
+  // }
+};
 </script>
 
-<style lang='less' scoped>
-
-</style>
+<style lang="less" scoped></style>

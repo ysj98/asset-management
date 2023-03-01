@@ -1,13 +1,8 @@
 <template>
   <div>
-    <a-select style="width: 300px;" v-bind="$attrs" :value.sync="value">
+    <a-select style="width: 300px" v-bind="$attrs" :value.sync="value">
       <slot v-if="options.length > 0">
-        <a-select-option
-          v-for="item in options"
-          :key="item.value"
-          :value="item.value"
-          :title="item.label"
-        >
+        <a-select-option v-for="item in options" :key="item.value" :value="item.value" :title="item.label">
           {{ item.label }}
         </a-select-option>
       </slot>
@@ -17,23 +12,23 @@
 
 <script>
 export default {
-  name: "SegiSelect",
+  name: 'SegiSelect',
   props: {
     value: {
       type: [String, Number],
-      default: ""
+      default: '',
     },
     options: {
       type: [Array, Object],
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   methods: {
     handleSelectValue(one, two) {
       console.log(one, two);
-      this.$emit("input");
-    }
-  }
+      this.$emit('input');
+    },
+  },
 };
 </script>
 

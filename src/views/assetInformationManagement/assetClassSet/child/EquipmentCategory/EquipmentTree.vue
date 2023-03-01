@@ -1,12 +1,7 @@
 <template>
   <div class="container">
     <div v-if="searchAble">
-      <a-input
-        placeholder="请输入分类名称"
-        v-model="searchValueInput"
-        @input="onChange"
-      >
-      </a-input>
+      <a-input placeholder="请输入分类名称" v-model="searchValueInput" @input="onChange"> </a-input>
     </div>
     <div class="tree-main" :key="treeUuid + ''">
       <div class="table-no-data" v-if="gData.length === 0">暂无数据</div>
@@ -20,20 +15,9 @@
         @select="handleSelect"
       >
         <template slot="title" slot-scope="scope">
-          <div
-            class="tree-bg-box"
-            :key="scope.key"
-            :class="[scope.key === activeKey && 'active']"
-            @click="handleOper(scope)"
-          >
+          <div class="tree-bg-box" :key="scope.key" :class="[scope.key === activeKey && 'active']" @click="handleOper(scope)">
             <!-- 标题及搜索 -->
-            <span
-              style="color: #1890ff"
-              class="tree-node-title"
-              v-if="
-                scope.title.indexOf(searchValueInput) > -1 && searchValueInput
-              "
-            >
+            <span style="color: #1890ff" class="tree-node-title" v-if="scope.title.indexOf(searchValueInput) > -1 && searchValueInput">
               {{ scope.title }}
             </span>
             <span class="tree-node-title" v-else>{{ scope.title }}</span>
@@ -44,8 +28,12 @@
   </div>
 </template>
 <script>
-import { utils } from "@/utils/utils";
-let getUuid = ((uuid = 1) => () => ++uuid)();
+import { utils } from '@/utils/utils';
+let getUuid = (
+  (uuid = 1) =>
+  () =>
+    ++uuid
+)();
 // 递归找到对应的id 挂在子节点
 function fetchItem(data = [], id, type) {
   for (let i = 0; i < data.length; i++) {
@@ -62,38 +50,38 @@ function fetchItem(data = [], id, type) {
 }
 // 写死顶层项
 const topItem = {
-  label: "设备设施管理",
+  label: '设备设施管理',
   value: -1,
   key: -1,
   id: -1,
   upEquipmentId: -1,
   equipmentId: -1,
-  title: "设备设施分类",
-  scopedSlots: { title: "title" }
+  title: '设备设施分类',
+  scopedSlots: { title: 'title' },
 };
 export default {
   props: {
     organId: {
       type: [String, Number],
-      default: ""
+      default: '',
     },
     // 是否可搜索
     searchAble: {
       type: Boolean,
-      default: true
+      default: true,
     },
     selectedKeysDefault: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     expandedKeysDefault: {
       type: Array,
       default() {
         return [];
-      }
-    }
+      },
+    },
   },
   watch: {
     organId(nv) {
@@ -102,11 +90,11 @@ export default {
       }
     },
     selectedKeys(newValue) {
-      this.$emit("update:selectedKeysDefault", newValue);
+      this.$emit('update:selectedKeysDefault', newValue);
     },
     expandedKeys(newValue) {
-      this.$emit("update:expandedKeysDefault", newValue);
-    }
+      this.$emit('update:expandedKeysDefault', newValue);
+    },
   },
   mounted() {
     if (this.organId) {
@@ -122,7 +110,7 @@ export default {
   data() {
     return {
       selectedKeys: [-1],
-      activeKey: "",
+      activeKey: '',
       expandedKeys: [topItem.key],
       autoExpandParent: false,
       gData: [{ ...topItem }],
@@ -131,7 +119,7 @@ export default {
       store: {},
       selectItem: {}, // 当前添加项
       treeUuid: getUuid(),
-      searchValueInput: "" // 搜索框的值
+      searchValueInput: '', // 搜索框的值
     };
   },
   computed: {
@@ -141,8 +129,8 @@ export default {
         const collect = [];
         // 向上找树节点
         const filterList = Object.values(this.store)
-          .filter(v => v.title.includes(this.searchValueInput))
-          .map(v => v.key);
+          .filter((v) => v.title.includes(this.searchValueInput))
+          .map((v) => v.key);
         this.upwardCollectOrgan(filterList, collect);
         // 向下找树节点
 
@@ -150,15 +138,15 @@ export default {
       } else {
         return Object.keys(this.store);
       }
-    }
+    },
   },
   methods: {
     handleSelect(selectedKeys, e) {
       const {
-        node: { dataRef }
+        node: { dataRef },
       } = e;
       this.selectedKeys = selectedKeys;
-      this.$emit("handleSelect", dataRef);
+      this.$emit('handleSelect', dataRef);
     },
     emptyTreeData() {
       this.gData = [{ ...topItem }];
@@ -166,7 +154,7 @@ export default {
       this.selectItem = {};
       this.store = { [topItem.key]: topItem };
       this.copyGdata = utils.deepClone(this.gData);
-      this.searchValueInput = "";
+      this.searchValueInput = '';
     },
     handleOper(scope) {
       if (this.activeKey === scope.key) {
@@ -174,7 +162,7 @@ export default {
       }
       this.selectItem = { ...scope };
       this.activeKey = scope.key;
-      this.$emit("change", { ...scope });
+      this.$emit('change', { ...scope });
     },
     // 根据id返回对象
     mapStoreOrganIdItem(organId) {
@@ -184,14 +172,14 @@ export default {
     upwardCollectOrgan(list, store) {
       if (list.length) {
         const upwardList = list
-          .map(v => {
+          .map((v) => {
             if (!store.includes(v)) {
               store.push(v);
             }
             return this.mapStoreOrganIdItem(v).parentKey;
           })
-          .filter(v => v)
-          .map(v => this.mapStoreOrganIdItem(v).key);
+          .filter((v) => v)
+          .map((v) => this.mapStoreOrganIdItem(v).key);
         this.upwardCollectOrgan(upwardList, store);
       }
     },
@@ -199,14 +187,14 @@ export default {
     upCreateTree() {
       // 重组树列表
       let treeList = this.dataList
-        .filter(item => {
+        .filter((item) => {
           return this.containTreeNodes.includes(item.key);
         })
-        .map(item => {
+        .map((item) => {
           return { ...item };
         });
       // 重组树树结构
-      return utils.buildTree(treeList, "key", "parentKey");
+      return utils.buildTree(treeList, 'key', 'parentKey');
     },
     onChange(e) {
       this.searchValueInput = e.target.value;
@@ -219,7 +207,7 @@ export default {
       this.gData = this.upCreateTree();
       Object.assign(this, {
         expandedKeys: [topItem.key],
-        autoExpandParent: true
+        autoExpandParent: true,
       });
       this.treeUuid = getUuid();
     },
@@ -236,12 +224,9 @@ export default {
       if (this.organId) {
         let data = {
           upEquipmentId: treeNode.dataRef.id,
-          organId: this.organId
+          organId: this.organId,
         };
-        return this.queryEquipmentListByUpEquipmentId(
-          data,
-          treeNode.dataRef.key
-        );
+        return this.queryEquipmentListByUpEquipmentId(data, treeNode.dataRef.key);
       } else {
         return Promise.resolve();
       }
@@ -251,53 +236,51 @@ export default {
       let data = {
         organId: this.organId,
         isCurrent: this.isCurrent,
-        upEquipmentId: -1
+        upEquipmentId: -1,
       };
-      return this.$api.building
-        .getEquipmentListByUpEquipmentId(data)
-        .then(res => {
-          if (res.data.code === 0) {
-            let result = res.data.data ? res.data.data.resultList : [];
-            this.gData[0].children = result.map(item => {
-              item.key = item.equipmentId;
-              item.id = item.equipmentId;
-              item.title = item.equipmentName;
-              item.scopedSlots = { title: "title" };
-              item.parentKey = topItem.key;
-              this.store[item.key] = this.store[item.key] || item;
-              this.dataList.push({ ...item });
-              return { ...item };
-            });
-            this.copyGdata = utils.deepClone(this.gData);
-            this.treeUuid = getUuid();
-            this.handleOper(this.gData[0]);
-          } else {
-            this.$message.error(res.data.message);
-          }
-        });
+      return this.$api.building.getEquipmentListByUpEquipmentId(data).then((res) => {
+        if (res.data.code === 0) {
+          let result = res.data.data ? res.data.data.resultList : [];
+          this.gData[0].children = result.map((item) => {
+            item.key = item.equipmentId;
+            item.id = item.equipmentId;
+            item.title = item.equipmentName;
+            item.scopedSlots = { title: 'title' };
+            item.parentKey = topItem.key;
+            this.store[item.key] = this.store[item.key] || item;
+            this.dataList.push({ ...item });
+            return { ...item };
+          });
+          this.copyGdata = utils.deepClone(this.gData);
+          this.treeUuid = getUuid();
+          this.handleOper(this.gData[0]);
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
     },
     queryEquipmentListByUpEquipmentId(data = {}, key) {
       return this.$api.building.getEquipmentListByUpEquipmentId(data).then(
-        res => {
+        (res) => {
           if (res.data.code === 0) {
             let result = res.data.data ? res.data.data.resultList : [];
-            let _item = fetchItem(this.gData, key, "key");
+            let _item = fetchItem(this.gData, key, 'key');
             for (let i = 0; i < result.length; i++) {
               let item = result[i];
               item.key = item.equipmentId;
               item.id = item.equipmentId;
               item.title = item.equipmentName;
-              item.scopedSlots = { title: "title" };
+              item.scopedSlots = { title: 'title' };
               item.parentKey = key;
               this.store[item.key] = this.store[item.key] || item;
               this.dataList.push({ ...item });
             }
-            let _copyItem = fetchItem(this.copyGdata, key, "key");
+            let _copyItem = fetchItem(this.copyGdata, key, 'key');
             this.expandedKeys.push(key);
             this.expandedKeys = [...new Set(this.expandedKeys)];
             if (_item) {
-              this.$set(_item, "children", result);
-              this.$set(_copyItem, "children", result);
+              this.$set(_item, 'children', result);
+              this.$set(_copyItem, 'children', result);
             }
           } else {
             this.$message.error(res.data.message);
@@ -305,8 +288,8 @@ export default {
         },
         () => {}
       );
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="less" scoped>

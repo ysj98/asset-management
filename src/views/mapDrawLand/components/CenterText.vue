@@ -6,13 +6,7 @@
       </template>
       <template v-else #title></template>
       <div class="content">
-        <a-input
-          v-model="centralName"
-          :maxLength="100"
-          placeholder="请输入"
-          @focus="initDefault"
-          @blur="handleBlur"
-        />
+        <a-input v-model="centralName" :maxLength="100" placeholder="请输入" @focus="initDefault" @blur="handleBlur" />
         <!--  按钮形式保存 交互      -->
         <!--        <a-button-->
         <!--          shape="circle"-->
@@ -29,7 +23,7 @@
 
 <script>
 export default {
-  name: "CenterText",
+  name: 'CenterText',
   props: {
     layerId: {
       type: [String, Number],
@@ -39,14 +33,14 @@ export default {
     },
     defaultCentralName: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   data() {
     return {
-      centralName: "",
+      centralName: '',
       saveIngFlag: false,
-      oldText: "",
+      oldText: '',
     };
   },
   mounted() {
@@ -55,7 +49,7 @@ export default {
   methods: {
     initDefault() {
       this.oldText = this.centralName;
-      console.log("this.oldText", this.oldText);
+      console.log('this.oldText', this.oldText);
     },
     handleBlur() {
       console.log(this.centralName, this.oldText);
@@ -71,19 +65,22 @@ export default {
       };
       this.saveIngFlag = true;
       console.log(req);
-      this.$api.drawMap.updateLayerScheme(req).then(({data:{code,message,data}})=>{
-        if (code==='0'){
-          console.log('data',data)
-          this.$emit("saveSuccess", this.centralName);
-          this.$message.success("中心点保存成功");
+      this.$api.drawMap.updateLayerScheme(req).then(
+        ({ data: { code, message, data } }) => {
+          if (code === '0') {
+            console.log('data', data);
+            this.$emit('saveSuccess', this.centralName);
+            this.$message.success('中心点保存成功');
+            this.saveIngFlag = false;
+          } else {
+            this.$message.error(message);
+          }
+        },
+        (reason) => {
+          console.error(reason);
           this.saveIngFlag = false;
-        }else {
-          this.$message.error(message)
         }
-      },reason => {
-        console.error(reason)
-        this.saveIngFlag = false;
-      })
+      );
     },
     cancel() {
       this.centralName = this.defaultCentralName;

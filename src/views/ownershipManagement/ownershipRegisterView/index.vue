@@ -11,7 +11,14 @@
           <SG-Button v-if="hasRegisterViewExport" type="primary" @click="exportData"><segiIcon type="#icon-ziyuan10" class="mr10" />导出</SG-Button>
         </div>
         <div slot="headerForm" style="float: right; text-align: left">
-          <treeSelect @changeTree="changeTree" :multiple="true" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
+          <treeSelect
+            @changeTree="changeTree"
+            :multiple="true"
+            placeholder="请选择组织机构"
+            :allowClear="false"
+            :style="allStyle"
+            :showSearch="true"
+          ></treeSelect>
           <!-- 资产项目 -->
           <a-select
             showSearch
@@ -156,15 +163,15 @@
   </div>
 </template>
 <script>
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import noDataTips from "@/components/noDataTips";
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "@/views/common/treeSelect";
-import segiIcon from "@/components/segiIcon.vue";
-import Tools from "@/utils/utils";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OperationPopover from "@/components/OperationPopover";
-import SegiRangePicker from "@/components/SegiRangePicker";
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+import noDataTips from '@/components/noDataTips';
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '@/views/common/treeSelect';
+import segiIcon from '@/components/segiIcon.vue';
+import Tools from '@/utils/utils';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OperationPopover from '@/components/OperationPopover';
+import SegiRangePicker from '@/components/SegiRangePicker';
 import {
   allStyle,
   allWidth,
@@ -175,11 +182,11 @@ import {
   approvalStatusListOpt,
   registerTypeListOpt,
   objectTypeListOpt,
-} from "./lib/dict.js";
-import OverviewNumber from "@/views/common/OverviewNumber";
+} from './lib/dict.js';
+import OverviewNumber from '@/views/common/OverviewNumber';
 
 export default {
-  name: "ownershipRegisterView",
+  name: 'ownershipRegisterView',
   components: {
     SearchContainer,
     TreeSelect,
@@ -202,15 +209,15 @@ export default {
       registerTypeListOpt,
       objectTypeListOpt,
       toggle: true,
-      organName: "",
+      organName: '',
       overviewNumSpinning: false,
       numList: [
-        { title: "全部", key: "total", value: 0, fontColor: "#324057" },
-        { title: "草稿", key: "zero", value: 0, bgColor: "#5b8ff9" },
-        { title: "待审批", key: "two", value: 0, bgColor: "#d48265" },
-        { title: "已驳回", key: "three", value: 0, bgColor: "#4BD288" },
-        { title: "已审批", key: "one", value: 0, bgColor: "#1890FF" },
-        { title: "已取消", key: "four", value: 0, bgColor: "#DD81E6" },
+        { title: '全部', key: 'total', value: 0, fontColor: '#324057' },
+        { title: '草稿', key: 'zero', value: 0, bgColor: '#5b8ff9' },
+        { title: '待审批', key: 'two', value: 0, bgColor: '#d48265' },
+        { title: '已驳回', key: 'three', value: 0, bgColor: '#4BD288' },
+        { title: '已审批', key: 'one', value: 0, bgColor: '#1890FF' },
+        { title: '已取消', key: 'four', value: 0, bgColor: '#DD81E6' },
       ],
       // 表格数据
       table: {
@@ -238,22 +245,22 @@ export default {
   },
   created() {
     this.handleBtnPower();
-    this.platformDictFn("asset_type");
-    this.platformDictFn("AMS_REGISTER_TYPE");
+    this.platformDictFn('asset_type');
+    this.platformDictFn('AMS_REGISTER_TYPE');
   },
   methods: {
     query() {
       let data = {
         ...this.queryCondition,
       };
-      data.organIds = data.organId
-      delete data.organId
+      data.organIds = data.organId;
+      delete data.organId;
       // 资产类型参数改变
-      data.projectIdList = Tools.deepClone(data.projectIdList).filter((item) => item !== "");
-      data.assetTypeList = Tools.deepClone(data.assetTypeList).filter((item) => item !== "");
-      data.approvalStatusList = Tools.deepClone(data.approvalStatusList).filter((item) => item !== "");
-      data.registerTypeList = Tools.deepClone(data.registerTypeList).filter((item) => item !== "");
-      data.objectTypeList = Tools.deepClone(data.objectTypeList).filter((item) => item !== "");
+      data.projectIdList = Tools.deepClone(data.projectIdList).filter((item) => item !== '');
+      data.assetTypeList = Tools.deepClone(data.assetTypeList).filter((item) => item !== '');
+      data.approvalStatusList = Tools.deepClone(data.approvalStatusList).filter((item) => item !== '');
+      data.registerTypeList = Tools.deepClone(data.registerTypeList).filter((item) => item !== '');
+      data.objectTypeList = Tools.deepClone(data.objectTypeList).filter((item) => item !== '');
       if (!data.startDate) {
         delete data.startDate;
       }
@@ -265,7 +272,7 @@ export default {
       this.$api.ownership
         .registerList(data)
         .then((res) => {
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map((item) => {
               return {
@@ -298,7 +305,7 @@ export default {
                 value: data[item.key] || 0,
               };
             });
-            console.log("this.numList", this.numList);
+            console.log('this.numList', this.numList);
           } else {
             this.$message.error(res.data.message);
           }
@@ -312,14 +319,14 @@ export default {
       let data = {
         ...this.queryCondition,
       };
-      data.organIds = data.organId
-      delete data.organId
+      data.organIds = data.organId;
+      delete data.organId;
       // 资产类型参数改变
-      data.projectIdList = Tools.deepClone(data.projectIdList).filter((item) => item !== "");
-      data.assetTypeList = Tools.deepClone(data.assetTypeList).filter((item) => item !== "");
-      data.approvalStatusList = Tools.deepClone(data.approvalStatusList).filter((item) => item !== "");
-      data.registerTypeList = Tools.deepClone(data.registerTypeList).filter((item) => item !== "");
-      data.objectTypeList = Tools.deepClone(data.objectTypeList).filter((item) => item !== "");
+      data.projectIdList = Tools.deepClone(data.projectIdList).filter((item) => item !== '');
+      data.assetTypeList = Tools.deepClone(data.assetTypeList).filter((item) => item !== '');
+      data.approvalStatusList = Tools.deepClone(data.approvalStatusList).filter((item) => item !== '');
+      data.registerTypeList = Tools.deepClone(data.registerTypeList).filter((item) => item !== '');
+      data.objectTypeList = Tools.deepClone(data.objectTypeList).filter((item) => item !== '');
       if (!data.startDate) {
         delete data.startDate;
       }
@@ -328,46 +335,46 @@ export default {
       }
       delete data.pageNum;
       delete data.pageSize;
-      let loadingName = this.SG_Loding("导出中...");
+      let loadingName = this.SG_Loding('导出中...');
       this.$api.ownership.registerExport(data).then(
         (res) => {
           this.$SG_Message.destroy(loadingName);
           let blob = new Blob([res.data]);
-          let a = document.createElement("a");
+          let a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
           // ${this.organName}
           a.download = `权属登记一览表.xls`;
-          a.style.display = "none";
+          a.style.display = 'none';
           document.body.appendChild(a);
           a.click();
           a.remove();
         },
         () => {
           this.$SG_Message.destroy(loadingName);
-          this.$SG_Message.error("权属登记一览表导出失败!");
+          this.$SG_Message.error('权属登记一览表导出失败!');
         }
       );
     },
     // 按钮权限
     handleBtnPower() {
       this.hasRegisterViewExport = this.$power.has(ASSET_MANAGEMENT.ASSET_REGISTERVIEW_EXPORT);
-      console.log("权限按钮=>", this.hasRegisterViewExport);
+      console.log('权限按钮=>', this.hasRegisterViewExport);
     },
     // 获取资产分类下拉列表
     getAssetClassifyOptions() {
-      console.log("输出=>", this.queryCondition.assetTypeList);
+      console.log('输出=>', this.queryCondition.assetTypeList);
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        assetType: this.queryCondition.assetTypeList.join(","),
+        assetType: this.queryCondition.assetTypeList.join(','),
       };
-      this.queryCondition.objectTypeList = [""];
+      this.queryCondition.objectTypeList = [''];
       this.objectTypeListOpt = Tools.deepClone(objectTypeListOpt);
       if (!obj.assetType) {
         return;
       }
       this.$api.assets.getList(obj).then((res) => {
-        if (res.data.code === "0") {
-          let arr = [{ label: "全部资产分类", value: "" }];
+        if (res.data.code === '0') {
+          let arr = [{ label: '全部资产分类', value: '' }];
           res.data.data.forEach((item) => {
             let obj = {
               label: item.professionName,
@@ -385,7 +392,7 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -435,7 +442,7 @@ export default {
     },
     // 起止日期发生变化
     onDateChange(val) {
-      console.log("时间改变=>", val);
+      console.log('时间改变=>', val);
       this.queryCondition.startDate = val[0];
       this.queryCondition.endDate = val[1];
     },
@@ -444,22 +451,22 @@ export default {
       this.organName = label;
       this.queryCondition.organId = value;
       this.projectIdListOpt = Tools.deepClone(projectIdListOpt);
-      this.queryCondition.projectIdList = [""]; // 清除项目
+      this.queryCondition.projectIdList = ['']; // 清除项目
       this.getObjectKeyValueByOrganIdFn();
       // this.getAssetClassifyOptions()
       this.searchQuery();
     },
     platformDictFn(code) {
       this.$api.assets.platformDict({ code }).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => ({ label: item.name, ...item }));
           // 资产类型
-          if (code === "asset_type") {
+          if (code === 'asset_type') {
             this.assetTypeListOpt = [...Tools.deepClone(assetTypeListOpt), ...arr];
           }
           // 登记类型
-          if (code === "AMS_REGISTER_TYPE") {
+          if (code === 'AMS_REGISTER_TYPE') {
             this.registerTypeListOpt = [...Tools.deepClone(registerTypeListOpt), ...arr];
           }
         } else {
@@ -479,19 +486,19 @@ export default {
     },
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      let hasAll = data.indexOf("") !== -1;
+      let hasAll = data.indexOf('') !== -1;
       let len = data.length;
       // 如果点击全选或者取消全选
-      if (data[len - 1] === "" || len === 0) {
-        return (data = [""]);
+      if (data[len - 1] === '' || len === 0) {
+        return (data = ['']);
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === dataOptions.length - 1) {
-        return (data = [""]);
+        return (data = ['']);
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
-        data.splice(data.indexOf(""), 1);
+        data.splice(data.indexOf(''), 1);
       }
       return data;
     },

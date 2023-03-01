@@ -1,12 +1,5 @@
 <template>
-  <SG-Modal
-    v-model="show"
-    :width="960"
-    wrapClassName="assetRentForm"
-    :noPadding="true"
-    :maskClosable="false"
-    :footer="null"
-  >
+  <SG-Modal v-model="show" :width="960" wrapClassName="assetRentForm" :noPadding="true" :maskClosable="false" :footer="null">
     <template #title>
       <div style="font-size: 16px">选择资产</div>
     </template>
@@ -60,31 +53,31 @@
 <script>
 const columns = [
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
     width: 70,
-    fixed: "left",
-    align: "center",
+    fixed: 'left',
+    align: 'center',
   },
   {
-    title: "资产编码",
-    align: "center",
-    dataIndex: "assetCode",
-    fixed: "left",
+    title: '资产编码',
+    align: 'center',
+    dataIndex: 'assetCode',
+    fixed: 'left',
     width: 120,
   },
-  { title: "资产名称", align: "center", dataIndex: "assetName" },
-  { title: "所属机构", align: "center", dataIndex: "organName" },
-  { title: "资产项目", align: "center", dataIndex: "projectName" },
-  { title: "资产类型", align: "center", dataIndex: "assetTypeName" },
-  { title: "资产分类", align: "center", dataIndex: "assetCategoryName" },
-  { title: "规格型号", align: "center", dataIndex: "model" },
-  { title: "所在位置", align: "center", dataIndex: "address" },
-  { title: "资产状态", align: "center", dataIndex: "assetStatusName" },
+  { title: '资产名称', align: 'center', dataIndex: 'assetName' },
+  { title: '所属机构', align: 'center', dataIndex: 'organName' },
+  { title: '资产项目', align: 'center', dataIndex: 'projectName' },
+  { title: '资产类型', align: 'center', dataIndex: 'assetTypeName' },
+  { title: '资产分类', align: 'center', dataIndex: 'assetCategoryName' },
+  { title: '规格型号', align: 'center', dataIndex: 'model' },
+  { title: '所在位置', align: 'center', dataIndex: 'address' },
+  { title: '资产状态', align: 'center', dataIndex: 'assetStatusName' },
 ];
-import moment from "moment";
-import TooltipText from "../../common/TooltipText";
+import moment from 'moment';
+import TooltipText from '../../common/TooltipText';
 export default {
   data() {
     return {
@@ -93,8 +86,8 @@ export default {
       loading: false,
       objectType: undefined, // 资产类别
       objectTypeOptions: [], // 类别选项
-      contractStatus: [""], // 当前合同状态
-      assetNameCode: "", // 资产名称/编码
+      contractStatus: [''], // 当前合同状态
+      assetNameCode: '', // 资产名称/编码
       tableData: [],
       count: 0, // 总条数
       pagination: {
@@ -103,14 +96,14 @@ export default {
       },
     };
   },
-  props: ["organId", "assetType", "proId", "assetType"],
+  props: ['organId', 'assetType', 'proId', 'assetType'],
   components: { TooltipText },
   watch: {
     show(newVal) {
       if (newVal === true) {
         this.query();
       } else {
-        this.$emit("input", newVal);
+        this.$emit('input', newVal);
       }
     },
     assetType(val) {
@@ -136,9 +129,9 @@ export default {
         let res = r.data;
         res.data.data.forEach((item, index) => {
           item.key = item.assetId;
-          item.model = "/";
+          item.model = '/';
         });
-        if (res && res.code.toString() === "0") {
+        if (res && res.code.toString() === '0') {
           this.loading = false;
           const { count, data } = res.data;
           this.tableData = data;
@@ -159,7 +152,7 @@ export default {
     },
     // 选择按钮
     chose(record) {
-      this.$emit("getAsset", record);
+      this.$emit('getAsset', record);
       this.show = false;
     },
     // 页码改变
@@ -184,16 +177,16 @@ export default {
               title: m.professionName,
               key: m.professionCode,
             }));
-            list.unshift({ title: "全部资产分类", key: "-1" });
+            list.unshift({ title: '全部资产分类', key: '-1' });
             this.objectTypeOptions = list;
             return false;
           } else {
             this.$message.error(res.data.message);
           }
-          throw res.message || "查询资产类别失败";
+          throw res.message || '查询资产类别失败';
         })
         .catch((err) => {
-          this.$message.error(err || "查询资产类别失败");
+          this.$message.error(err || '查询资产类别失败');
         });
     },
     objectTypeChange(val) {

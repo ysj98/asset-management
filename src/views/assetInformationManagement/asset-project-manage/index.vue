@@ -69,7 +69,7 @@
       <!--<span slot="ownershipProgress" slot-scope="text">-->
       <!--<a-progress :percent="text || 0" :format="a => a" size="small"/>-->
       <!--</span>-->
-      <span slot="takeOver" slot-scope="text">{{ text ? "已接管" : "未接管" }}</span>
+      <span slot="takeOver" slot-scope="text">{{ text ? '已接管' : '未接管' }}</span>
       <template slot="organName" slot-scope="text">
         <tooltip-text :text="text" />
       </template>
@@ -144,86 +144,86 @@
 </template>
 
 <script>
-import NoDataTip from "src/components/noDataTips";
-import TooltipText from "src/views/common/TooltipText";
-import TreeSelect from "src/views/common/treeSelect";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import BaseInfo from "./components/components/BaseInfoPart";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import SearchContainer from "src/views/common/SearchContainer";
-import BatchImport from "src/views/common/eportAndDownFile";
-import { exportDataAsExcel } from "src/views/common/commonQueryApi";
+import NoDataTip from 'src/components/noDataTips';
+import TooltipText from 'src/views/common/TooltipText';
+import TreeSelect from 'src/views/common/treeSelect';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import BaseInfo from './components/components/BaseInfoPart';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import SearchContainer from 'src/views/common/SearchContainer';
+import BatchImport from 'src/views/common/eportAndDownFile';
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
 export default {
-  name: "index",
+  name: 'index',
   components: { BaseInfo, SearchContainer, OverviewNumber, TreeSelect, NoDataTip, BatchImport, TooltipText },
   data() {
     return {
       fold: true, // 查询条件折叠
       ASSET_MANAGEMENT, // 权限对象
       overviewNumSpinning: false, // 统计查询loading
-      projectName: "", // 查询条件-资源项目名称
+      projectName: '', // 查询条件-资源项目名称
       takeOver: undefined, // 查询条件-是否接管
       takeOverOptions: [
-        { key: "all", title: "全部接管状态" },
-        { key: 1, title: "已接管" },
-        { key: 0, title: "未接管" },
+        { key: 'all', title: '全部接管状态' },
+        { key: 1, title: '已接管' },
+        { key: 0, title: '未接管' },
       ], // 查询条件-是否接管选项
       isCurrent: false, // 查询条件-是否仅当前机构
-      organId: "", // 查询条件-组织Id
-      organName: "", // 查询条件-组织Id
+      organId: '', // 查询条件-组织Id
+      organName: '', // 查询条件-组织Id
       approvalStatusList: undefined, // 查询条件-项目状态
       statusOptions: [
-        { key: "all", title: "全部状态" },
-        { key: 0, title: "草稿" },
-        { key: 2, title: "待审批" },
-        { key: 3, title: "已驳回" },
-        { key: 1, title: "已审批" },
+        { key: 'all', title: '全部状态' },
+        { key: 0, title: '草稿' },
+        { key: 2, title: '待审批' },
+        { key: 3, title: '已驳回' },
+        { key: 1, title: '已审批' },
       ], // 查询条件-项目状态选项-查字典接口 {key: 4, title: '已取消'}
       sourceTypeList: undefined, // 查询条件-来源方式
       sourceTypeOptions: [], // 查询条件-来源方式选项-查字典接口
       transferToOperation: undefined, // 查询条件-是否转运营
       operateOptions: [
-        { key: "all", title: "全部运营状态" },
-        { key: 1, title: "已转运营" },
-        { key: 0, title: "未转运营" },
+        { key: 'all', title: '全部运营状态' },
+        { key: 1, title: '已转运营' },
+        { key: 0, title: '未转运营' },
       ], // 查询条件-是否转运营选项
       numList: [
-        { title: "所有资产项目", value: 0, num: "projectNum", fontColor: "#324057" },
-        { title: "待审核", value: 0, num: "toBeAuditedNum", percent: "toBeAuditedPercent", fontColor: "#324057" },
-        { title: "未接管", value: 0, num: "takeOverNum", percent: "takeOverPercent", fontColor: "#324057" },
-        { title: "已接管", value: 0, num: "takeOveredNum", percent: "takeOveredPercent", fontColor: "#324057" },
-        { title: "转运营", value: 0, num: "transferOperationNum", percent: "transferOperationNumPercent", fontColor: "#324057" },
+        { title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057' },
+        { title: '待审核', value: 0, num: 'toBeAuditedNum', percent: 'toBeAuditedPercent', fontColor: '#324057' },
+        { title: '未接管', value: 0, num: 'takeOverNum', percent: 'takeOverPercent', fontColor: '#324057' },
+        { title: '已接管', value: 0, num: 'takeOveredNum', percent: 'takeOveredPercent', fontColor: '#324057' },
+        { title: '转运营', value: 0, num: 'transferOperationNum', percent: 'transferOperationNumPercent', fontColor: '#324057' },
       ], // 概览数据，title 标题，value 数值，bgColor 背景色
-      modalObj: { title: "", status: false, okText: "", cancelText: "", bodyStyle: {}, type: "", projectId: "", maskClosable: false, width: 820 },
+      modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '', maskClosable: false, width: 820 },
       tableObj: {
         dataSource: [],
         loading: false,
         pagination: false,
-        rowKey: "projectId",
+        rowKey: 'projectId',
         scroll: { x: 1800, y: 300 },
         columns: [
-          { title: "权属单位", dataIndex: "organName", scopedSlots: { customRender: "organName" }, width: 200, fixed: "left" },
-          { title: "资产项目名称", dataIndex: "projectName", scopedSlots: { customRender: "projectName" }, width: 200, fixed: "left" },
-          { title: "经营单位", dataIndex: "businessUnit", width: 200 },
-          { title: "资产项目编码", dataIndex: "projectCode", width: 150 },
-          { title: "来源方式", dataIndex: "sourceTypeName" },
-          { title: "来源方式说明", dataIndex: "souceChannelType" },
-          { title: "资产数量", dataIndex: "assetsNum" },
-          { title: "是否接管", dataIndex: "takeOver", scopedSlots: { customRender: "takeOver" } },
-          { title: "接管日期", dataIndex: "takeOverDate" },
-          { title: "接管人", dataIndex: "receiver" },
-          { title: "创建人", dataIndex: "createByName" },
-          { title: "创建日期", dataIndex: "createTime" },
-          { title: "资产项目状态", dataIndex: "approvalStatusName" },
+          { title: '权属单位', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 200, fixed: 'left' },
+          { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200, fixed: 'left' },
+          { title: '经营单位', dataIndex: 'businessUnit', width: 200 },
+          { title: '资产项目编码', dataIndex: 'projectCode', width: 150 },
+          { title: '来源方式', dataIndex: 'sourceTypeName' },
+          { title: '来源方式说明', dataIndex: 'souceChannelType' },
+          { title: '资产数量', dataIndex: 'assetsNum' },
+          { title: '是否接管', dataIndex: 'takeOver', scopedSlots: { customRender: 'takeOver' } },
+          { title: '接管日期', dataIndex: 'takeOverDate' },
+          { title: '接管人', dataIndex: 'receiver' },
+          { title: '创建人', dataIndex: 'createByName' },
+          { title: '创建日期', dataIndex: 'createTime' },
+          { title: '资产项目状态', dataIndex: 'approvalStatusName' },
           // { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
-          { title: "操作", dataIndex: "action", scopedSlots: { customRender: "action" }, fixed: "right", width: 180 },
+          { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 },
         ],
       },
-      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: "absolute" },
+      paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
       modalTextObj: {
-        add: { title: "新建资产项目", okText: "提交", cancelText: "取消" },
-        edit: { title: "编辑资产项目", okText: "提交", cancelText: "取消" },
-        approval: { title: "审核资产项目", okText: "审核通过", cancelText: "驳回" },
+        add: { title: '新建资产项目', okText: '提交', cancelText: '取消' },
+        edit: { title: '编辑资产项目', okText: '提交', cancelText: '取消' },
+        approval: { title: '审核资产项目', okText: '审核通过', cancelText: '驳回' },
       },
       maxDate: null,
       minDate: null,
@@ -245,7 +245,7 @@ export default {
     // 查询数据来源方式、审批状态字典接口
     querySourceTypeList() {
       let codeList = [
-        { code: "ams_source_type", type: "sourceTypeOptions", name: "来源" },
+        { code: 'ams_source_type', type: 'sourceTypeOptions', name: '来源' },
         // { code: 'approval_status_type', type: 'statusOptions', name: '状态' } // 暂不查字典
       ];
       codeList.forEach((item) => {
@@ -255,11 +255,11 @@ export default {
           .platformDict({ code })
           .then((r) => {
             let res = r.data;
-            if (res && String(res.code) === "0") {
+            if (res && String(res.code) === '0') {
               let temp = (res.data || []).map((item) => {
                 return { key: item.value, title: item.name };
               });
-              this[type] = [{ key: "all", title: `全部${name}` }].concat(temp);
+              this[type] = [{ key: 'all', title: `全部${name}` }].concat(temp);
               return false;
             }
             throw res.message || `查询机构${name}字典失败`;
@@ -278,20 +278,20 @@ export default {
         paginationObj: { pageNo, pageLength },
       } = this;
       // 编辑基本信息时保存
-      if (type === "add" || type === "edit") {
+      if (type === 'add' || type === 'edit') {
         new Promise((resolve, reject) => {
           this.tableObj.loading = true;
-          this.$refs["baseInfo"].handleSubmit(resolve, reject);
+          this.$refs['baseInfo'].handleSubmit(resolve, reject);
         })
           .then(() => {
             this.tableObj.loading = false;
             this.modalObj.status = false;
-            this.queryTableData({ pageNo, pageLength, type: "search" });
+            this.queryTableData({ pageNo, pageLength, type: 'search' });
           })
           .catch(() => {
             this.tableObj.loading = false;
           });
-      } else if (type === "approval") {
+      } else if (type === 'approval') {
         // 审核提交
         this.tableObj.loading = true;
         this.$api.assets
@@ -299,29 +299,29 @@ export default {
           .then((r) => {
             this.tableObj.loading = false;
             let res = r.data;
-            if (res && String(res.code) === "0") {
-              this.$message.success("审核成功");
+            if (res && String(res.code) === '0') {
+              this.$message.success('审核成功');
               this.modalObj.status = false;
               // 更新列表
               const { pageNo, pageLength } = this.paginationObj;
-              return this.queryTableData({ pageNo, pageLength, type: "search" });
+              return this.queryTableData({ pageNo, pageLength, type: 'search' });
             }
-            throw res.message || "审核失败";
+            throw res.message || '审核失败';
           })
           .catch((err) => {
             this.tableObj.loading = false;
-            this.$message.error(err || "审核失败");
+            this.$message.error(err || '审核失败');
           });
       } else {
-        this.$message.error("操作不存在");
+        this.$message.error('操作不存在');
       }
     },
 
     // 编辑、新增、审核按钮控制Modal打开
-    handleModalOpen(type, projectId = "") {
+    handleModalOpen(type, projectId = '') {
       // type ：add 新增，edit 编辑，approval 审核
-      if (type === "add" && !this.organId) {
-        return this.$message.info("请先选择组织机构");
+      if (type === 'add' && !this.organId) {
+        return this.$message.info('请先选择组织机构');
       }
       const { modalTextObj } = this;
       Object.assign(this.modalObj, {
@@ -329,7 +329,7 @@ export default {
         projectId,
         status: true,
         ...modalTextObj[type],
-        bodyStyle: { maxHeight: `${document.documentElement.clientHeight - 180}px`, overflowY: "auto" },
+        bodyStyle: { maxHeight: `${document.documentElement.clientHeight - 180}px`, overflowY: 'auto' },
       });
     },
 
@@ -343,8 +343,8 @@ export default {
         modalObj: { type },
         projectId,
       } = this;
-      if (type === "approval") {
-        this.$message.info(projectId + "别点了，二期开发");
+      if (type === 'approval') {
+        this.$message.info(projectId + '别点了，二期开发');
         // 审核提交
         // this.tableObj.loading = true
         // this.$api.assets.doProjectManageAudit({ projectId }).then(r => {
@@ -375,17 +375,17 @@ export default {
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
-            this.$message.success("删除成功");
+          if (res && String(res.code) === '0') {
+            this.$message.success('删除成功');
             // 更新列表
             const { pageNo, pageLength } = this.paginationObj;
-            return this.queryTableData({ pageNo, pageLength, type: "search" });
+            return this.queryTableData({ pageNo, pageLength, type: 'search' });
           }
-          throw res.message || "删除失败";
+          throw res.message || '删除失败';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "删除失败");
+          this.$message.error(err || '删除失败');
         });
     },
 
@@ -397,17 +397,17 @@ export default {
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
-            this.$message.success("反审核成功");
+          if (res && String(res.code) === '0') {
+            this.$message.success('反审核成功');
             // 更新列表
             const { pageNo, pageLength } = this.paginationObj;
-            return this.queryTableData({ pageNo, pageLength, type: "search" });
+            return this.queryTableData({ pageNo, pageLength, type: 'search' });
           }
-          throw res.message || "反审核失败";
+          throw res.message || '反审核失败';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "反审核失败");
+          this.$message.error(err || '反审核失败');
         });
     },
 
@@ -415,26 +415,26 @@ export default {
     changeTree(id, name) {
       this.organId = id;
       this.organName = name;
-      id && this.queryTableData({ type: "search" });
+      id && this.queryTableData({ type: 'search' });
     },
 
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const { organId, approvalStatusList, sourceTypeList, takeOver, isCurrent, projectName, transferToOperation } = this;
       if (!organId) {
-        return this.$message.info("请选择组织机构");
+        return this.$message.info('请选择组织机构');
       }
       this.tableObj.loading = true;
       let form = {
-        takeOver: takeOver === "all" ? "" : takeOver,
+        takeOver: takeOver === 'all' ? '' : takeOver,
         organId,
         isCurrent,
         pageSize: pageLength,
         pageNum: pageNo,
         projectName,
-        transferToOperation: transferToOperation === "all" ? "" : transferToOperation,
-        sourceTypeList: sourceTypeList && sourceTypeList.includes("all") ? [] : sourceTypeList,
-        approvalStatusList: approvalStatusList && approvalStatusList.includes("all") ? [] : approvalStatusList,
+        transferToOperation: transferToOperation === 'all' ? '' : transferToOperation,
+        sourceTypeList: sourceTypeList && sourceTypeList.includes('all') ? [] : sourceTypeList,
+        approvalStatusList: approvalStatusList && approvalStatusList.includes('all') ? [] : approvalStatusList,
         minDate: this.minDate,
         maxDate: this.maxDate,
       };
@@ -443,7 +443,7 @@ export default {
         .then((r) => {
           this.tableObj.loading = false;
           let res = r.data;
-          if (res && String(res.code) === "0") {
+          if (res && String(res.code) === '0') {
             const { count, data } = res.data;
             this.tableObj.dataSource = data;
             Object.assign(this.paginationObj, {
@@ -453,14 +453,14 @@ export default {
             });
             return false;
           }
-          throw res.message || "查询接口出错";
+          throw res.message || '查询接口出错';
         })
         .catch((err) => {
           this.tableObj.loading = false;
-          this.$message.error(err || "查询接口出错");
+          this.$message.error(err || '查询接口出错');
         });
       // 查询面积统计数据
-      if (type === "search") {
+      if (type === 'search') {
         this.queryStatistics(form);
       }
     },
@@ -473,58 +473,58 @@ export default {
         .then((r) => {
           this.overviewNumSpinning = false;
           let { data, code, message } = r.data;
-          if (data && String(code) === "0") {
+          if (data && String(code) === '0') {
             return (this.numList = this.numList.map((m) => {
               const { num, percent } = m;
               return {
                 ...m,
-                value: `${data[num]}${percent ? `(${data[percent]})` : ""}`,
+                value: `${data[num]}${percent ? `(${data[percent]})` : ''}`,
               };
             }));
           }
-          throw message || "查询资产项目统计信息出错";
+          throw message || '查询资产项目统计信息出错';
         })
         .catch((err) => {
           this.overviewNumSpinning = false;
-          this.$message.error(err || "查询资产项目统计信息出错");
+          this.$message.error(err || '查询资产项目统计信息出错');
         });
     },
 
     // 打开批量导入Modal
     openImportModal() {
       if (!this.organId) {
-        return this.$message.info("请选择组织机构");
+        return this.$message.info('请选择组织机构');
       }
       this.$refs.batchImport.visible = true;
     },
 
     // 下载导入模板文件
     downTemplate() {
-      exportDataAsExcel("import_template_zcxm.xlsx", this.$api.tableManage.downloadTemplate, "资产项目批量导入模板.xlsx", this);
+      exportDataAsExcel('import_template_zcxm.xlsx', this.$api.tableManage.downloadTemplate, '资产项目批量导入模板.xlsx', this);
     },
 
     // 批量导入
     uploadFile(file) {
       const { organId } = this;
-      let name = this.$SG_Message.loading({ duration: 0, content: "批量导入中" });
+      let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' });
       let fileData = new FormData();
-      fileData.append("file", file);
+      fileData.append('file', file);
       let query = `?organId=${organId}`;
       this.$api.tableManage
         .importAssetProjectData(query, fileData)
         .then((r) => {
           this.$SG_Message.destroy(name);
           let res = r.data;
-          if (res && String(res.code) === "0") {
-            this.$SG_Message.success(res.message || "导入成功");
+          if (res && String(res.code) === '0') {
+            this.$SG_Message.success(res.message || '导入成功');
             this.$refs.batchImport.visible = false;
-            return this.queryTableData({ type: "search" });
+            return this.queryTableData({ type: 'search' });
           }
           throw res.message;
         })
         .catch((err) => {
           this.$SG_Message.destroy(name);
-          this.$SG_Message.error(err || "批量导入失败");
+          this.$SG_Message.error(err || '批量导入失败');
         });
     },
   },
@@ -536,38 +536,38 @@ export default {
 
   watch: {
     fold(val) {
-      this.$set(this.tableObj.scroll, "y", val ? 300 : 430);
+      this.$set(this.tableObj.scroll, 'y', val ? 300 : 430);
     },
     // 全选与其他选项互斥处理
     approvalStatusList: function (val) {
       const { statusOptions } = this;
-      if (val.length === 1 && val[0] === "all") {
+      if (val.length === 1 && val[0] === 'all') {
         return false;
-      } else if (val.length === 1 && val[0] === "all") {
+      } else if (val.length === 1 && val[0] === 'all') {
         return false;
-      } else if (val.length === statusOptions.length || (val.length === statusOptions.length - 1 && !val.includes("all"))) {
-        this.approvalStatusList = ["all"];
-      } else if (val.length > 1 && val.includes("all")) {
-        this.approvalStatusList = val[0] === "all" ? val.filter((m) => m !== "all") : "all";
+      } else if (val.length === statusOptions.length || (val.length === statusOptions.length - 1 && !val.includes('all'))) {
+        this.approvalStatusList = ['all'];
+      } else if (val.length > 1 && val.includes('all')) {
+        this.approvalStatusList = val[0] === 'all' ? val.filter((m) => m !== 'all') : 'all';
       }
     },
 
     // 全选与其他选项互斥处理
     sourceTypeList: function (val) {
       const { sourceTypeOptions } = this;
-      if (val.length === 1 && val[0] === "all") {
+      if (val.length === 1 && val[0] === 'all') {
         return false;
-      } else if (val.length === sourceTypeOptions.length || (val.length === sourceTypeOptions.length - 1 && !val.includes("all"))) {
-        this.sourceTypeList = ["all"];
-      } else if (val.length > 1 && val.includes("all")) {
-        this.sourceTypeList = val[0] === "all" ? val.filter((m) => m !== "all") : "all";
+      } else if (val.length === sourceTypeOptions.length || (val.length === sourceTypeOptions.length - 1 && !val.includes('all'))) {
+        this.sourceTypeList = ['all'];
+      } else if (val.length > 1 && val.includes('all')) {
+        this.sourceTypeList = val[0] === 'all' ? val.filter((m) => m !== 'all') : 'all';
       }
     },
 
     // 长度不能超过30字符
     projectName: function (val, pre) {
       if (val && val.length > 30) {
-        this.$message.warn("资产项目名称不能超30个字符");
+        this.$message.warn('资产项目名称不能超30个字符');
         this.projectName = pre;
       }
     },

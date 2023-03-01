@@ -1,3 +1,4 @@
+span
 <!--
  * @Author: LW
  * @Date: 2019-12-26 10:40:03
@@ -9,127 +10,126 @@
 <template>
   <div class="wrapper">
     <SG-Modal
-    class="inventoryResultRegistration"
-    width="1080px"
-    v-model="show"
-    :noPadding="true"
-    :title="newData === 'new' ? '登记盘点结果' : '编辑盘点结果'"
-    @ok="statusFn"
-    @cancel="handleCancel"
-  >
-  <div class="inventoryResultRegistration">
-    <div class="inventoryResultRegistration-nav">
-      <span class="section-title blue">资产信息</span>
-        <a-row class="playground-row">
-          <a-col class="playground-col" :span="12">资产编号：{{particularsData.assetCode || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">资产名称：{{particularsData.assetName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">所属组织：{{particularsData.organName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">资产类型：{{particularsData.assetTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">资产分类：{{particularsData.objectTypeName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">资产状态：{{particularsData.statusName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">资产项目：{{particularsData.projectName || '--'}}</a-col>
-          <a-col class="playground-col" :span="12">资产位置：{{particularsData.location || '--'}}</a-col>
-        </a-row>
-    </div>
-    <div class="inventoryResultRegistration-nav">
-      <span class="section-title blue">盘点结果</span>
-        <a-row class="playground-row">
-          <a-form :form="form" @submit="handleSubmit">
-            <a-col class="playground-col" :span="24">
-              <a-form-item v-bind="formItemLayout" label="盘点结果：">
-                <a-radio-group
-                  v-decorator="['checkResult',
-                    {rules: [{required: true}], initialValue: newCardData.checkResult}
-                  ]"
-                  @change="radioChange"
-                >
-                  <a-radio v-for="(item, index) in radioData" :key="index" :value="item.value">{{item.name}}</a-radio>
-                </a-radio-group>
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="24">
-              <a-form-item v-bind="formItemTextarea" label="异常说明：" :class="{'icon-color': requiredShow}">
-                <a-textarea placeholder="请输入异常说明"
-                  :style="widthBox"
-                  :autosize="{ minRows: 3, maxRows: 3 }"
-                  :maxLength="200"
-                  v-decorator="['remark',
-                  {rules: [{required: false, max: 200, message: '请输入异常说明(不超过200字符)'}], initialValue: newCardData.remark}
-                  ]"
+      class="inventoryResultRegistration"
+      width="1080px"
+      v-model="show"
+      :noPadding="true"
+      :title="newData === 'new' ? '登记盘点结果' : '编辑盘点结果'"
+      @ok="statusFn"
+      @cancel="handleCancel"
+    >
+      <div class="inventoryResultRegistration">
+        <div class="inventoryResultRegistration-nav">
+          <span class="section-title blue">资产信息</span>
+          <a-row class="playground-row">
+            <a-col class="playground-col" :span="12">资产编号：{{ particularsData.assetCode || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">资产名称：{{ particularsData.assetName || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">所属组织：{{ particularsData.organName || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">资产类型：{{ particularsData.assetTypeName || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">资产分类：{{ particularsData.objectTypeName || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">资产状态：{{ particularsData.statusName || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">资产项目：{{ particularsData.projectName || '--' }}</a-col>
+            <a-col class="playground-col" :span="12">资产位置：{{ particularsData.location || '--' }}</a-col>
+          </a-row>
+        </div>
+        <div class="inventoryResultRegistration-nav">
+          <span class="section-title blue">盘点结果</span>
+          <a-row class="playground-row">
+            <a-form :form="form" @submit="handleSubmit">
+              <a-col class="playground-col" :span="24">
+                <a-form-item v-bind="formItemLayout" label="盘点结果：">
+                  <a-radio-group
+                    v-decorator="['checkResult', { rules: [{ required: true }], initialValue: newCardData.checkResult }]"
+                    @change="radioChange"
+                  >
+                    <a-radio v-for="(item, index) in radioData" :key="index" :value="item.value">{{ item.name }}</a-radio>
+                  </a-radio-group>
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="24">
+                <a-form-item v-bind="formItemTextarea" label="异常说明：" :class="{ 'icon-color': requiredShow }">
+                  <a-textarea
+                    placeholder="请输入异常说明"
+                    :style="widthBox"
+                    :autosize="{ minRows: 3, maxRows: 3 }"
+                    :maxLength="200"
+                    v-decorator="[
+                      'remark',
+                      { rules: [{ required: false, max: 200, message: '请输入异常说明(不超过200字符)' }], initialValue: newCardData.remark },
+                    ]"
                   />
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="24" v-show="showHandleTip">
-              <a-form-item v-bind="formItemTextarea" label="处理建议：">
-                <a-textarea placeholder="请输入处理建议"
-                            :style="widthBox"
-                            :autosize="{ minRows: 3, maxRows: 3 }"
-                            :maxLength="200"
-                            v-decorator="['handleTip',
-                  {rules: [{required: false, max: 200, message: '请输入异常说明(不超过200字符)'}], initialValue: newCardData.handleTip}
-                  ]"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="24">
-            <a-form-item v-bind="formItemTextarea" label="上传图片：">
-              <UploadFile
-                type="all"
-                v-model="newCardData.files"
-                :maxSize="20480"
-                :customDownload="
-                  (value) => {
-                    return customDownload(
-                      value,
-                      $api.ownership.downLoadAnnex
-                    );
-                  }
-                "
-                :customUpload="
-                  (value) => {
-                    return customUpload(value, $api.ownership.uploadAnnex);
-                  }
-                "
-              >
-                <span slot="tips">(注：上传的附件最多为 5 个,且图片大小小于20M)</span>
-              </UploadFile>
-            </a-form-item>
-          </a-col>
-          </a-form>
-        </a-row>
-    </div>
-  </div>
-  </SG-Modal>
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="24" v-show="showHandleTip">
+                <a-form-item v-bind="formItemTextarea" label="处理建议：">
+                  <a-textarea
+                    placeholder="请输入处理建议"
+                    :style="widthBox"
+                    :autosize="{ minRows: 3, maxRows: 3 }"
+                    :maxLength="200"
+                    v-decorator="[
+                      'handleTip',
+                      { rules: [{ required: false, max: 200, message: '请输入异常说明(不超过200字符)' }], initialValue: newCardData.handleTip },
+                    ]"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col class="playground-col" :span="24">
+                <a-form-item v-bind="formItemTextarea" label="上传图片：">
+                  <UploadFile
+                    type="all"
+                    v-model="newCardData.files"
+                    :maxSize="20480"
+                    :customDownload="
+                      (value) => {
+                        return customDownload(value, $api.ownership.downLoadAnnex);
+                      }
+                    "
+                    :customUpload="
+                      (value) => {
+                        return customUpload(value, $api.ownership.uploadAnnex);
+                      }
+                    "
+                  >
+                    <span slot="tips">(注：上传的附件最多为 5 个,且图片大小小于20M)</span>
+                  </UploadFile>
+                </a-form-item>
+              </a-col>
+            </a-form>
+          </a-row>
+        </div>
+      </div>
+    </SG-Modal>
   </div>
 </template>
 
 <script>
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 export default {
   components: {},
   props: {},
-  mixins:[uploadAndDownLoadFIle],
-  data () {
+  mixins: [uploadAndDownLoadFIle],
+  data() {
     return {
       resultId: '',
-      checkId: '',   // 盘点单id
-      taskId: '',     // 任务id
-      assetId: '',   // 资产id
+      checkId: '', // 盘点单id
+      taskId: '', // 任务id
+      assetId: '', // 资产id
       requiredShow: false,
       showHandleTip: false, // 是否展示处理建议
-      radioData:[
+      radioData: [
         {
           value: '1',
-          name: '正常'
+          name: '正常',
         },
         {
           value: '0',
-          name: '盘亏'
+          name: '盘亏',
         },
         {
           value: '2',
-          name: '信息有误'
-        }
+          name: '信息有误',
+        },
       ],
       show: false,
       newData: '',
@@ -137,155 +137,156 @@ export default {
       formItemTextarea: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 3 }
-        }
+          sm: { span: 3 },
+        },
       },
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
-          sm: { span: 3 }
+          sm: { span: 3 },
         },
         wrapperCol: {
           xs: { span: 24 },
-          sm: { span: 21 }
-        }
+          sm: { span: 21 },
+        },
       },
       form: this.$form.createForm(this),
       widthBox: 'width: 86%',
       newCardData: {
         remark: '',
         checkResult: '1',
-        files: []
-      }
-    }
+        files: [],
+      },
+    };
   },
-  computed: {
-  },
+  computed: {},
   methods: {
-    radioChange (val) {
+    radioChange(val) {
       if (+val.target.value === 1) {
-        this.requiredShow = false
+        this.requiredShow = false;
       } else {
-        this.requiredShow = true
+        this.requiredShow = true;
       }
     },
     // 关闭弹窗
-    handleCancel (str) {
+    handleCancel(str) {
       if (str === 'success') {
-        this.$emit('successQuery')
+        this.$emit('successQuery');
       }
-      this.show = false
-      this.$emit('showFn', this.show)
+      this.show = false;
+      this.$emit('showFn', this.show);
     },
-    handleSubmit (e) {
-      e.preventDefault()
+    handleSubmit(e) {
+      e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
+          console.log('Received values of form: ', values);
         } else {
           // console.log('Received values of form: ', values)
         }
-      })
+      });
     },
     // 提交
-    statusFn () {
+    statusFn() {
       this.form.validateFields((err, values) => {
         if (!err) {
           if (+values.checkResult !== 1 && !values.remark) {
-            this.$message.info('请输入异常说明')
-            return
+            this.$message.info('请输入异常说明');
+            return;
           }
-          let files = []
+          let files = [];
           if (this.newCardData.files.length > 0) {
-            this.newCardData.files.forEach(list => {
+            this.newCardData.files.forEach((list) => {
               files.push({
                 attachmentPath: list.url,
-                oldAttachmentName: list.name
-              })
-            })
+                oldAttachmentName: list.name,
+              });
+            });
           }
           let obj = {
-            resultId: this.resultId,            // 盘点结果id
-            checkId: this.checkId,                 // 盘点单id
-            taskId: this.taskId,                  // 任务id
-            assetId: this.assetId,                 // 资产id
-            checkResult: values.checkResult,             // 盘点结果(0盘亏 1正常 2信息有误 3盘盈)
-            remark: values.remark,                  // 备注(异常说明)
-            assetName: '',               // 资产名称(非盘盈利为空)
-            assetType: '',               // 资产类型(非盘盈利为空)
-            objectType: '',              // 资产分类(非盘盈利为空)
-            assetAddress: '',            // 资产位置(非盘盈利为空)
-            attachmentList: files        // 附件
-          }
+            resultId: this.resultId, // 盘点结果id
+            checkId: this.checkId, // 盘点单id
+            taskId: this.taskId, // 任务id
+            assetId: this.assetId, // 资产id
+            checkResult: values.checkResult, // 盘点结果(0盘亏 1正常 2信息有误 3盘盈)
+            remark: values.remark, // 备注(异常说明)
+            assetName: '', // 资产名称(非盘盈利为空)
+            assetType: '', // 资产类型(非盘盈利为空)
+            objectType: '', // 资产分类(非盘盈利为空)
+            assetAddress: '', // 资产位置(非盘盈利为空)
+            attachmentList: files, // 附件
+          };
           if (this.showHandleTip) {
-            obj.handleTip = values.handleTip
+            obj.handleTip = values.handleTip;
           }
-          let loadingName = this.SG_Loding('保存中...')
-          this.$api.inventoryManagementApi.assetCheckInstCheckResult(obj).then(res => {
+          let loadingName = this.SG_Loding('保存中...');
+          this.$api.inventoryManagementApi.assetCheckInstCheckResult(obj).then((res) => {
             if (Number(res.data.code) === 0) {
-              let _this = this
+              let _this = this;
               this.DE_Loding(loadingName).then(() => {
-                this.$SG_Message.success('提交成功')
-                _this.handleCancel('success')
-              })
+                this.$SG_Message.success('提交成功');
+                _this.handleCancel('success');
+              });
             } else {
               this.DE_Loding(loadingName).then(() => {
-                this.$message.error(res.data.message)
-              })
+                this.$message.error(res.data.message);
+              });
             }
-          })
+          });
         }
-      })
+      });
     },
     // 查询详情
-    query (str, resultId, checkId, taskId, assetId, showHandleTip) {
-      this.newData = str
-      this.resultId = resultId
-      this.checkId = checkId   // 盘点单id
-      this.taskId = taskId     // 任务id
-      this.assetId = assetId   // 资产id
+    query(str, resultId, checkId, taskId, assetId, showHandleTip) {
+      this.newData = str;
+      this.resultId = resultId;
+      this.checkId = checkId; // 盘点单id
+      this.taskId = taskId; // 任务id
+      this.assetId = assetId; // 资产id
       if (showHandleTip) {
-        this.showHandleTip = true
+        this.showHandleTip = true;
       } else {
-        this.showHandleTip = false
+        this.showHandleTip = false;
       }
       let obj = {
-        resultId: this.resultId  // 盘点id
-      }
-      this.$api.inventoryManagementApi.assetCheckInstFailDetail(obj).then(res => {
+        resultId: this.resultId, // 盘点id
+      };
+      this.$api.inventoryManagementApi.assetCheckInstFailDetail(obj).then((res) => {
         if (Number(res.data.code) === 0) {
-          let data = res.data.data
-          this.particularsData = data
+          let data = res.data.data;
+          this.particularsData = data;
           if (this.newData !== 'new') {
             this.form.setFieldsValue({
               remark: this.particularsData.remark,
-              checkResult: String(this.particularsData.checkResult)
-            })
+              checkResult: String(this.particularsData.checkResult),
+            });
             if (this.showHandleTip) {
               this.form.setFieldsValue({
                 handleTip: this.particularsData.handleTip,
-              })
+              });
             }
             if (+this.particularsData.checkResult === 1) {
-              this.requiredShow = false
+              this.requiredShow = false;
             } else {
-              this.requiredShow = true
+              this.requiredShow = true;
             }
             if (data.attachmentList && data.attachmentList.length > 0) {
-              this.newCardData.files = data.attachmentList.map(ele=>({url: ele.attachmentPath,name:ele.oldAttachmentName,attachmentId:ele.attachmentId}))
+              this.newCardData.files = data.attachmentList.map((ele) => ({
+                url: ele.attachmentPath,
+                name: ele.oldAttachmentName,
+                attachmentId: ele.attachmentId,
+              }));
             }
           }
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
-      })
-    }
+      });
+    },
   },
-  created () {
-  },
-  mounted () {
-  }
-}
+  created() {},
+  mounted() {},
+};
 </script>
 <style lang="less" scoped>
 .inventoryResultRegistration {
@@ -326,4 +327,3 @@ export default {
   }
 }
 </style>
-

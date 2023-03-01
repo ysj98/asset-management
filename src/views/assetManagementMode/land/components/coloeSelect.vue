@@ -2,36 +2,33 @@
   <div>
     <div class="color-box">
       <p class="text">{{ valueCmp }}</p>
-      <div class="inner" :style="{'background-color': valueCmp }"></div>
+      <div class="inner" :style="{ 'background-color': valueCmp }"></div>
     </div>
   </div>
 </template>
 <script>
-
-
 export default {
   props: {
     value: {
-      default: ""
+      default: '',
     },
   },
   model: {
-    prop: "value",
-    event: "valueChange"
+    prop: 'value',
+    event: 'valueChange',
   },
-  data: ()=>({
-  }),
+  data: () => ({}),
   computed: {
     valueCmp: {
-      get (){
-        return this.value
+      get() {
+        return this.value;
       },
-      set(val){
-        this.$emit("valueChange", val)
-      }
-    }
+      set(val) {
+        this.$emit('valueChange', val);
+      },
+    },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 .color-box {

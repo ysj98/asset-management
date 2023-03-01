@@ -16,7 +16,7 @@
 </template>
 <script>
 export default {
-  name: "SelectApproval",
+  name: 'SelectApproval',
   props: {
     approvalOptions: {
       type: Array,
@@ -26,23 +26,23 @@ export default {
     },
     paramKey: {
       type: String,
-      default: "",
+      default: '',
     },
     subKey: {
       type: String,
-      default: "",
+      default: '',
     },
     serviceTypeText: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   data() {
     return {
       // 审批方式
-      approvalMethod: "0",
+      approvalMethod: '0',
       // 工作流 具体流程
-      approvalItem: "",
+      approvalItem: '',
     };
   },
   watch: {
@@ -64,7 +64,7 @@ export default {
     handleValidate() {
       if (!this.approvalMethod) {
         return `${this.serviceTypeText}--请选择审批方式`;
-      } else if (this.approvalMethod === "1" && !this.approvalItem) {
+      } else if (this.approvalMethod === '1' && !this.approvalItem) {
         return `${this.serviceTypeText}--请选择具体审批流程`;
       }
     },
@@ -77,15 +77,15 @@ export default {
       const payload = {
         paramKey: approvalMethod,
         // 如果审批方式是 工作流 flowJson就是 1,现在只有 bpm工作流，ab角的话，subKey和flowJson是空/0
-        subKey: approvalMethod === "1" ? approvalItem : "",
-        flowJson: approvalMethod === "1" ? 1 : 0,
+        subKey: approvalMethod === '1' ? approvalItem : '',
+        flowJson: approvalMethod === '1' ? 1 : 0,
       };
-      console.log("payload_son", payload);
-      this.$emit("sendData", payload);
+      console.log('payload_son', payload);
+      this.$emit('sendData', payload);
     },
     changeApprovalMethod(value) {
-      if (value === "1") {
-        this.approvalItem = "";
+      if (value === '1') {
+        this.approvalItem = '';
       }
     },
   },

@@ -1,14 +1,6 @@
 <template>
   <div>
-    <SG-Modal
-      :title="title"
-      :visible="show"
-      @ok="handlePopSave"
-      @cancel="doClosePop"
-      okText="保存"
-      cancelText="返回"
-      :maskClosable="false"
-    >
+    <SG-Modal :title="title" :visible="show" @ok="handlePopSave" @cancel="doClosePop" okText="保存" cancelText="返回" :maskClosable="false">
       <div class="wrapper">
         <div class="title">
           {{ `组织机构：${this.organName}` }}
@@ -19,26 +11,14 @@
             <div>
               <span>资产基本属性</span>
               <a-checkbox-group v-model="baseCheckboxValues">
-                <a-checkbox
-                  class="check-item"
-                  v-for="item in baseCheckboxOptions"
-                  :key="item"
-                  @change="onChange($event, item, 0)"
-                  :value="item"
-                >
+                <a-checkbox class="check-item" v-for="item in baseCheckboxOptions" :key="item" @change="onChange($event, item, 0)" :value="item">
                   {{ item }}
                 </a-checkbox>
               </a-checkbox-group>
 
               <span>资产业务属性</span>
               <a-checkbox-group v-model="attrCheckboxValues">
-                <a-checkbox
-                  class="check-item"
-                  v-for="item in attrCheckboxOptions"
-                  :key="item"
-                  @change="onChange($event, item, 1)"
-                  :value="item"
-                >
+                <a-checkbox class="check-item" v-for="item in attrCheckboxOptions" :key="item" @change="onChange($event, item, 1)" :value="item">
                   {{ item }}
                 </a-checkbox>
               </a-checkbox-group>
@@ -49,29 +29,16 @@
             <a-table size="middle" v-bind="tableOptions">
               <!--字段名称-->
               <template #fieldName="text, record">
-                {{
-                  `${["基础属性", "业务属性"][record.fieldFlag]}--${
-                    record.fieldName
-                  }`
-                }}
+                {{ `${['基础属性', '业务属性'][record.fieldFlag]}--${record.fieldName}` }}
               </template>
               <!--字段别名-->
               <template #fieldAliasName="text, record">
-                <a-input
-                  v-model="record.fieldAliasName"
-                  :maxLength="50"
-                  placeholer="请输入"
-                />
+                <a-input v-model="record.fieldAliasName" :maxLength="50" placeholer="请输入" />
               </template>
               <!--操作-->
               <template #action="text, record, index">
                 <div class="action">
-                  <a-icon
-                    v-if="index !== 0"
-                    style="cursor: pointer"
-                    type="arrow-up"
-                    @click="changeSort('up', index)"
-                  />
+                  <a-icon v-if="index !== 0" style="cursor: pointer" type="arrow-up" @click="changeSort('up', index)" />
                   <div v-else class="place"></div>
                   <a-icon
                     v-if="index !== tableOptions.dataSource.length - 1"
@@ -80,11 +47,7 @@
                     @click="changeSort('down', index)"
                   />
                   <div v-else style="margin-left: 20px" class="place"></div>
-                  <a-icon
-                    class="delete"
-                    type="delete"
-                    @click="doDelete(record)"
-                  />
+                  <a-icon class="delete" type="delete" @click="doDelete(record)" />
                 </div>
               </template>
             </a-table>
@@ -96,13 +59,13 @@
 </template>
 
 <script>
-import { allBaseFields } from "@/views/mapDrawLand/share";
-import {clone} from "lodash";
+import { allBaseFields } from '@/views/mapDrawLand/share';
+import { clone } from 'lodash';
 export default {
   /*
    * 浮层展示定义
    * */
-  name: "PopupParamsConfigModal",
+  name: 'PopupParamsConfigModal',
   props: {
     title: {
       type: String,
@@ -136,7 +99,7 @@ export default {
       attrCheckboxOptions: [],
       attrValues: [],
       tableOptions: {
-        rowKey: "fieldName",
+        rowKey: 'fieldName',
         dataSource: [],
         scroll: {
           x: 500,
@@ -144,24 +107,24 @@ export default {
         },
         columns: [
           {
-            title: "字段名称",
-            ket: "fieldName",
+            title: '字段名称',
+            ket: 'fieldName',
             scopedSlots: {
-              customRender: "fieldName",
+              customRender: 'fieldName',
             },
           },
           {
-            title: "字段别名",
-            ket: "fieldAliasName",
+            title: '字段别名',
+            ket: 'fieldAliasName',
             scopedSlots: {
-              customRender: "fieldAliasName",
+              customRender: 'fieldAliasName',
             },
           },
           {
-            title: "操作",
-            ket: "action",
+            title: '操作',
+            ket: 'action',
             scopedSlots: {
-              customRender: "action",
+              customRender: 'action',
             },
           },
         ],
@@ -183,23 +146,17 @@ export default {
      * 取消已选字段
      * */
     async doDelete(record) {
-      const idx = this.tableOptions.dataSource.findIndex(
-        (ele) => ele.fieldName === record.fieldName
-      );
+      const idx = this.tableOptions.dataSource.findIndex((ele) => ele.fieldName === record.fieldName);
       const res = this.tableOptions.dataSource.splice(idx, 1);
-      console.log("res", res);
-      this.baseCheckboxValues = this.baseCheckboxValues.filter(
-        (ele) => ele !== res[0].fieldName
-      );
-      this.attrCheckboxValues = this.attrCheckboxValues.filter(
-        (ele) => ele !== res[0].fieldName
-      );
+      console.log('res', res);
+      this.baseCheckboxValues = this.baseCheckboxValues.filter((ele) => ele !== res[0].fieldName);
+      this.attrCheckboxValues = this.attrCheckboxValues.filter((ele) => ele !== res[0].fieldName);
     },
     async changeSort(type, index) {
-      if (type === "up") {
+      if (type === 'up') {
         this.reactiveSwap(this.tableOptions.dataSource, index, index - 1);
       }
-      if (type === "down") {
+      if (type === 'down') {
         this.reactiveSwap(this.tableOptions.dataSource, index, index + 1);
       }
     },
@@ -214,13 +171,9 @@ export default {
     async initData() {
       this.tableOptions.dataSource = clone(this.dataSource);
       // 获取基础信息字段 默认值
-      this.baseCheckboxValues = this.tableOptions.dataSource
-        .filter((ele) => ele.fieldFlag === 0)
-        .map((ele) => ele.fieldName);
+      this.baseCheckboxValues = this.tableOptions.dataSource.filter((ele) => ele.fieldFlag === 0).map((ele) => ele.fieldName);
       // 获取 业务信息字段 默认值
-      this.attrCheckboxValues = this.tableOptions.dataSource
-        .filter((ele) => ele.fieldFlag === 1)
-        .map((ele) => ele.fieldName);
+      this.attrCheckboxValues = this.tableOptions.dataSource.filter((ele) => ele.fieldFlag === 1).map((ele) => ele.fieldName);
       this.queryLayerFields();
       const res = await this.queryAssetAttrConfig();
       if (res) {
@@ -231,16 +184,16 @@ export default {
     queryAssetAttrConfig() {
       return new Promise(async (resolve, reject) => {
         const req = {
-          assetType: "4",
+          assetType: '4',
           organId: this.organId,
           pageNum: 1,
           pageSize: 999,
-          status: "1",
+          status: '1',
         };
         const {
           data: { code, message, data },
         } = await this.$api.attrConfig.queryAssetAttrConfig(req);
-        if (code === "0") {
+        if (code === '0') {
           resolve(data);
         } else {
           this.$message.error(message);
@@ -257,41 +210,32 @@ export default {
     onChange(event, value, fieldFlag) {
       const checkFlag = event.target.checked;
       if (checkFlag) {
-        if (
-          this.tableOptions.dataSource.find((ele) => ele.fieldName === value)
-        ) {
-          this.$message.error("已经存在当前字段");
+        if (this.tableOptions.dataSource.find((ele) => ele.fieldName === value)) {
+          this.$message.error('已经存在当前字段');
           return null;
         }
         this.tableOptions.dataSource.push({
           fieldName: value,
-          fieldAliasName: "",
+          fieldAliasName: '',
           fieldFlag,
         });
       } else {
-        const idx = this.tableOptions.dataSource.findIndex(
-          (ele) => ele.fieldName === value
-        );
+        const idx = this.tableOptions.dataSource.findIndex((ele) => ele.fieldName === value);
         this.tableOptions.dataSource.splice(idx, 1);
       }
     },
     async handlePopSave() {
       // 已选字段-基础信息最少一个'
-      if (
-        this.tableOptions.dataSource.length &&
-        this.tableOptions.dataSource.filter((ele) => ele.fieldFlag === 0)
-      ) {
-        const layerFieldReqDtos = this.tableOptions.dataSource.map(
-          (ele, index) => {
-            return {
-              fieldName: ele.fieldName,
-              fieldAliasName: ele.fieldAliasName || "",
-              fieldFlag: ele.fieldFlag,
-              fieldSort: index,
-              organId: this.organId,
-            };
-          }
-        );
+      if (this.tableOptions.dataSource.length && this.tableOptions.dataSource.filter((ele) => ele.fieldFlag === 0)) {
+        const layerFieldReqDtos = this.tableOptions.dataSource.map((ele, index) => {
+          return {
+            fieldName: ele.fieldName,
+            fieldAliasName: ele.fieldAliasName || '',
+            fieldFlag: ele.fieldFlag,
+            fieldSort: index,
+            organId: this.organId,
+          };
+        });
         const req = {
           layerFieldReqDtos,
           topOrganId: this.organId,
@@ -300,22 +244,22 @@ export default {
         const {
           data: { code, message, data },
         } = await this.$api.drawMap.setLayerFields(req);
-        if (code === "0") {
+        if (code === '0') {
           console.log(data);
-          this.$message.success("保存成功");
-          this.$emit("success");
+          this.$message.success('保存成功');
+          this.$emit('success');
           this.doClosePop();
         } else {
           this.$message.error(message);
         }
       } else {
-        this.$message.error("基础信息字段至少选择一个");
+        this.$message.error('基础信息字段至少选择一个');
         return null;
       }
     },
     doClosePop() {
-      console.log('this.modalName',this.modalName)
-      this.$emit("doClosePop", this.modalName);
+      console.log('this.modalName', this.modalName);
+      this.$emit('doClosePop', this.modalName);
     },
   },
 };

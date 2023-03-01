@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import * as apiOwnership from "@/api/ownership";
+import * as apiOwnership from '@/api/ownership';
 export default {
   props: {
     // 是否显示设为封面按钮
@@ -63,12 +63,12 @@ export default {
     // 使用一个默认值使其变成可选项
     preview: {
       // 健名
-      from: "preview", // 来源
+      from: 'preview', // 来源
       default: true, // 默认值
     },
     download: {
       // 健名
-      from: "download", // 来源
+      from: 'download', // 来源
       default: true, // 默认值
     },
   },
@@ -77,43 +77,43 @@ export default {
       previewBtn: false,
       errorStatus: false,
       imgAutoStyle: {
-        width: "auto",
-        height: "auto",
+        width: 'auto',
+        height: 'auto',
       },
       previewTag: false,
       downloadTag: false,
     };
   },
   mounted() {
-    console.log("权证管理页面详情预览权限", this.preview);
-    console.log("权证管理页面详情下载权限", this.download);
+    console.log('权证管理页面详情预览权限', this.preview);
+    console.log('权证管理页面详情下载权限', this.download);
   },
   computed: {
     // 图片地址
     FileURL() {
-      let resUrl = "";
-      if (this.item.url.split("/")[0].indexOf("group") !== -1) {
+      let resUrl = '';
+      if (this.item.url.split('/')[0].indexOf('group') !== -1) {
         resUrl = this.hostImg + this.item.url;
       } else {
         // 兼容老文件
         // let host = window.__configs && window.__configs.hostImg;
-        let host = "https://pic.uhomecp.com";
+        let host = 'https://pic.uhomecp.com';
         resUrl = host + this.item.url;
       }
       return resUrl;
     },
     // 扩展名，即文件类型
     Ext() {
-      return this.item.url && this.item.url.split(".").pop().toLocaleLowerCase();
+      return this.item.url && this.item.url.split('.').pop().toLocaleLowerCase();
     },
     // 判断文件是否支持预览
     isPreview() {
-      const Dict = ["txt", "pdf", "doc", "docx", "xlsx", "xls", "ppt", "pptx", "jpg", "jpeg", "png", "bmp"];
+      const Dict = ['txt', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'bmp'];
       return Dict.includes(this.Ext);
     },
     // 判断是否是文件类型
     isFile() {
-      const Dict = ["txt", "pdf", "doc", "docx", "xlsx", "xls", "ppt", "pptx", "zip", "rar", "gz", "7z", "acd"];
+      const Dict = ['txt', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt', 'pptx', 'zip', 'rar', 'gz', '7z', 'acd'];
       return Dict.includes(this.Ext);
     },
   },
@@ -121,10 +121,10 @@ export default {
     toPreview() {
       // 如果是图片
       if (!this.isFile) {
-        this.$emit("preview", this.imageIndex);
+        this.$emit('preview', this.imageIndex);
         // 如果是其他支持预览的文件
       } else if (this.isPreview) {
-        let loadingName = this.SG_Loding("打开文件中...");
+        let loadingName = this.SG_Loding('打开文件中...');
         apiOwnership.reviewFile({ attachmentPath: this.item.url }).then(
           (res) => {
             this.DE_Loding(loadingName).then(() => {
@@ -134,7 +134,7 @@ export default {
           },
           () => {
             this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.error("打开文件失败！");
+              this.$SG_Message.error('打开文件失败！');
             });
           }
         );
@@ -147,9 +147,9 @@ export default {
     // 图片加载成功
     handleLoad(e) {
       if (e.target.width > e.target.height) {
-        this.imgAutoStyle.height = "100%";
+        this.imgAutoStyle.height = '100%';
       } else {
-        this.imgAutoStyle.width = "100%";
+        this.imgAutoStyle.width = '100%';
       }
     },
   },

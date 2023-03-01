@@ -49,11 +49,11 @@
   </div>
 </template>
 <script>
-import { Inspection, guarantee, checkColumns } from "./DevOpsColumns.js";
-import SGUploadFilePlus from "@/components/SGUploadFilePlus";
-import moment from "moment";
+import { Inspection, guarantee, checkColumns } from './DevOpsColumns.js';
+import SGUploadFilePlus from '@/components/SGUploadFilePlus';
+import moment from 'moment';
 export default {
-  name: "devOps",
+  name: 'devOps',
   props: {
     assetId: {
       type: [String, Number],
@@ -71,16 +71,16 @@ export default {
   components: { SGUploadFilePlus },
   data() {
     return {
-      activeKey: "Inspection", // tabs默认展示 第一项，巡检记录
+      activeKey: 'Inspection', // tabs默认展示 第一项，巡检记录
       otherTabOptions: {
         Inspection: {
-          tab: "巡检记录",
+          tab: '巡检记录',
         },
         maintain: {
-          tab: "保养记录",
+          tab: '保养记录',
         },
         guarantee: {
-          tab: "报障记录",
+          tab: '报障记录',
         },
       },
       loading: false,
@@ -91,12 +91,12 @@ export default {
         pageSize: 10,
         total: 0,
       },
-      startValue: moment().subtract(6, "M"),
+      startValue: moment().subtract(6, 'M'),
       endValue: moment(),
       endOpen: false,
-      triggerMode: { 1: "手动触发", 2: "自动触发" }, // 触发方式
-      snapCheckStatus: { 0: "未抽查", 1: "已抽查" }, // 抽查状态
-      statusName: { 0: "未执行", 1: "执行中", 2: "已完成", 3: "超时关闭" }, // 执行状态
+      triggerMode: { 1: '手动触发', 2: '自动触发' }, // 触发方式
+      snapCheckStatus: { 0: '未抽查', 1: '已抽查' }, // 抽查状态
+      statusName: { 0: '未执行', 1: '执行中', 2: '已完成', 3: '超时关闭' }, // 执行状态
       modelVisible: false,
       checkColumns: checkColumns,
       checkData: [],
@@ -105,7 +105,7 @@ export default {
   },
   watch: {
     activeKey(value) {
-      if (value === "guarantee") {
+      if (value === 'guarantee') {
         this.columns = guarantee;
         (this.scrollOptions = { y: 400 }), this.getEquipmentInstRecordOrder();
       } else {
@@ -142,19 +142,19 @@ export default {
       this.endOpen = open;
     },
     search(type) {
-      if (type !== "pagination") {
-        this.$set(this.pagination, "current", 1);
-        this.$set(this.pagination, "total", 0);
+      if (type !== 'pagination') {
+        this.$set(this.pagination, 'current', 1);
+        this.$set(this.pagination, 'total', 0);
       }
-      if (this.activeKey === "guarantee") {
+      if (this.activeKey === 'guarantee') {
         this.getEquipmentInstRecordOrder();
       } else {
         this.getEquipmentRecordTask();
       }
     },
     paginationChange(pagination) {
-      this.$set(this.pagination, "current", pagination.current);
-      this.search("pagination");
+      this.$set(this.pagination, 'current', pagination.current);
+      this.search('pagination');
     },
 
     // 获取参数
@@ -164,11 +164,11 @@ export default {
         pageLength: this.pagination.pageSize,
         organId: this.organId,
         equipmentInstId: this.equipmentId,
-        beginTime: this.startValue.format("YYYYMMDD"),
-        endTime: this.endValue.format("YYYYMMDD"),
+        beginTime: this.startValue.format('YYYYMMDD'),
+        endTime: this.endValue.format('YYYYMMDD'),
       };
-      if (this.activeKey !== "guarantee") {
-        parameter.dtType = this.activeKey === "Inspection" ? "1000" : "2000"; // 1000：巡检  2000：保养
+      if (this.activeKey !== 'guarantee') {
+        parameter.dtType = this.activeKey === 'Inspection' ? '1000' : '2000'; // 1000：巡检  2000：保养
       }
       return parameter;
     },
@@ -191,7 +191,7 @@ export default {
             };
           });
         } else {
-          this.$message.error(message || "数据加载失败");
+          this.$message.error(message || '数据加载失败');
         }
       });
     },
@@ -212,7 +212,7 @@ export default {
             };
           });
         } else {
-          this.$message.error(message || "数据加载失败");
+          this.$message.error(message || '数据加载失败');
         }
       });
     },
@@ -238,7 +238,7 @@ export default {
             };
           });
         } else {
-          this.$message.error(message || "数据加载失败");
+          this.$message.error(message || '数据加载失败');
         }
       });
     },

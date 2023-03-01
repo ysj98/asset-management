@@ -3,12 +3,19 @@
     <!-- 内容 -->
     <div class="ItemBox" :class="Ext">
       <a-spin v-if="loading"><a-icon slot="indicator" type="loading" style="font-size: 24px" spin /></a-spin>
-      <img v-if="!loading && !errorStatus && !noOperation && !isFile" :src="FileURL" @load="handleLoad" @error="handleError" @click="$emit('preview', imageIndex)" :style="imgAutoStyle">
+      <img
+        v-if="!loading && !errorStatus && !noOperation && !isFile"
+        :src="FileURL"
+        @load="handleLoad"
+        @error="handleError"
+        @click="$emit('preview', imageIndex)"
+        :style="imgAutoStyle"
+      />
     </div>
     <!-- 标题 -->
     <div class="ItemTitle">
       <a-tooltip>
-        <template slot='title'>
+        <template slot="title">
           {{ item.name }}
         </template>
         <div class="text">{{ item.name }}</div>
@@ -27,7 +34,7 @@
 
 <script>
 // 获取图片域名
-let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
+let hostImg = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/';
 export default {
   props: {
     // 是否显示设为封面按钮
@@ -39,71 +46,57 @@ export default {
     // 反向索引
     reverseIndex: {
       type: Number,
-      default: 0
+      default: 0,
     },
     // 加载状态
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     // 错误状态
     noOperation: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       errorStatus: false,
       imgAutoStyle: {
         width: 'auto',
-        height: 'auto'
+        height: 'auto',
       },
-    }
+    };
   },
   computed: {
     // 图片地址
-    FileURL () {
-      let resUrl = hostImg + this.item.url
-      return resUrl
+    FileURL() {
+      let resUrl = hostImg + this.item.url;
+      return resUrl;
     },
     // 扩展名，即文件类型
-    Ext () {
-      return this.item.url && this.item.url.split('.').pop().toLocaleLowerCase()
+    Ext() {
+      return this.item.url && this.item.url.split('.').pop().toLocaleLowerCase();
     },
     // 判断是否是文件类型
-    isFile () {
-      const Dict = [
-        'txt',
-        'pdf',
-        'doc',
-        'docx',
-        'xlsx',
-        'xls',
-        'ppt',
-        'pptx',
-        'zip',
-        'rar',
-        'gz',
-        '7z',
-        'acd'
-      ]
-      return Dict.includes(this.Ext)
-    }
+    isFile() {
+      const Dict = ['txt', 'pdf', 'doc', 'docx', 'xlsx', 'xls', 'ppt', 'pptx', 'zip', 'rar', 'gz', '7z', 'acd'];
+      return Dict.includes(this.Ext);
+    },
   },
   methods: {
     // 图片加载失败
-    handleError () {
-      this.errorStatus = true
+    handleError() {
+      this.errorStatus = true;
     },
     // 图片加载成功
-    handleLoad (e) {
+    handleLoad(e) {
       if (e.target.width > e.target.height) {
-        this.imgAutoStyle.height = '100%'
+        this.imgAutoStyle.height = '100%';
       } else {
-        this.imgAutoStyle.width = '100%'
+        this.imgAutoStyle.width = '100%';
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>

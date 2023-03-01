@@ -1,42 +1,42 @@
 <script>
-import { chunk } from "lodash";
+import { chunk } from 'lodash';
 /*
  * 基本信息
  * */
 export default {
-  name: "Information",
+  name: 'Information',
   props: {
     titleWidth: {
       type: String,
     },
     data: {
-      type: Object
+      type: Object,
     },
     BasicInfoList: {
       type: Array,
       default() {
         return [];
-      }
+      },
     },
     formatBasicInfoList: {
-      type: Array
+      type: Array,
     },
     rowProps: {
       type: Object,
       default() {
         return {
-          gutter: 16
+          gutter: 16,
         };
-      }
+      },
     },
     colProps: {
       type: Object,
       default() {
         return {
-          span: 10
+          span: 10,
         };
-      }
-    }
+      },
+    },
   },
   data() {
     return {};
@@ -46,24 +46,24 @@ export default {
       const _h = this.$createElement;
       const resValue = this.data ? this.data[data.key] : data.value;
       // 如果 值为空或者undefined 就显示 ''
-      const children = [undefined, "", null].includes(resValue)
-        ? ""
-        : (data.render && data.render(_h, data, resValue,this.BasicInfoList)) ||
+      const children = [undefined, '', null].includes(resValue)
+        ? ''
+        : (data.render && data.render(_h, data, resValue, this.BasicInfoList)) ||
           _h(
-            "span",
+            'span',
             {
-              class: "content",
+              class: 'content',
               attrs: {
-                title: resValue
-              }
+                title: resValue,
+              },
             },
             [resValue]
           );
 
       return _h(
-        "div",
+        'div',
         {
-          class: "content"
+          class: 'content',
         },
         [children]
       );
@@ -71,30 +71,29 @@ export default {
     generateACol(data) {
       const _this = this;
       const _h = this.$createElement;
-      const style = {
-      }
-      if (_this.titleWidth){
-        style.flexBasis = _this.titleWidth
+      const style = {};
+      if (_this.titleWidth) {
+        style.flexBasis = _this.titleWidth;
       }
       const title = _h(
-        "span",
+        'span',
         {
-          class: "title",
-          style
+          class: 'title',
+          style,
         },
         [data.title]
       );
       const children = _h(
-        "div",
+        'div',
         {
-          class: "col-block"
+          class: 'col-block',
         },
         [title, this.generateAColChildren(data)]
       );
       return _h(
-        "a-col",
+        'a-col',
         {
-          props: data.colProps || _this.colProps
+          props: data.colProps || _this.colProps,
         },
         [children]
       );
@@ -110,33 +109,36 @@ export default {
         resArr = chunk(this.BasicInfoList, resNum);
       }
       const children = resArr.map((groupItem, index) => {
-        const rowChildren = groupItem.map(ele => this.generateACol(ele));
+        const rowChildren = groupItem.map((ele) => this.generateACol(ele));
         return _h(
-          "a-row",
+          'a-row',
           {
             props: _this.rowProps,
-            style: index === 0 ? {
-              fontWeight: 'bold',
-              fontSize: '15px'
-            } : {}
+            style:
+              index === 0
+                ? {
+                    fontWeight: 'bold',
+                    fontSize: '15px',
+                  }
+                : {},
           },
           rowChildren
         );
       });
       return _h(
-        "div",
+        'div',
         {
           style: {
-            lineHeight: "40px"
+            lineHeight: '40px',
           },
         },
         children
       );
-    }
+    },
   },
   render() {
     return this.generateBasicInformation();
-  }
+  },
 };
 </script>
 
@@ -145,7 +147,7 @@ export default {
   color: rgba(0, 0, 0, 0.8);
   //text-align: right;
   &::after {
-    content: "：";
+    content: '：';
   }
 }
 .content {

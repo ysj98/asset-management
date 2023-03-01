@@ -14,47 +14,46 @@ const Item = {
     // 显示标签
     label: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  render () {
+  render() {
     return (
       <div class="item">
-        <div class="label">{ this.label }</div>
-        <div class="tool">{ this.$slots.default }</div>
+        <div class="label">{this.label}</div>
+        <div class="tool">{this.$slots.default}</div>
       </div>
-    )
-  }
-}
+    );
+  },
+};
 /**
  * 初始化设置项
  * @param {String} key 配置项
  */
-function initOpts (key) {
+function initOpts(key) {
   return {
-    get () {
-      return this.$store.state.dev.devOpts[key]
+    get() {
+      return this.$store.state.dev.devOpts[key];
     },
-    set (value) {
+    set(value) {
       this.$store.commit('dev/updateDevOpts', {
-        [key]: value
-      })
-    }
-  }
+        [key]: value,
+      });
+    },
+  };
 }
 export default {
   components: {
-    Item
+    Item,
   },
-  data () {
+  data() {
     return {
       // allPower: null
-    }
+    };
   },
   computed: {
-    allPower: initOpts('allPower')
+    allPower: initOpts('allPower'),
   },
-  methods: {
-  },
-}
+  methods: {},
+};
 </script>

@@ -9,20 +9,20 @@
 </template>
 
 <script>
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import store from "store";
-import TabContent from "@/views/assetOperatingParameters/TabContent";
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import store from 'store';
+import TabContent from '@/views/assetOperatingParameters/TabContent';
 export default {
   /*
    * 资产转运营参数
    * */
-  name: "assetOperationParameters",
+  name: 'assetOperationParameters',
   components: {
     TabContent,
   },
   data() {
     return {
-      currentKey: "",
+      currentKey: '',
       tabList: [
         {
           auth: ASSET_MANAGEMENT.CHANGE_ASSET_OPERATION_TAB_HOUSE,
@@ -49,12 +49,14 @@ export default {
   },
   methods: {},
   created() {
-    this.tabList = this.tabList.filter(ele=>{
-      return Object.values(this.$store.state.ASSET_TYPE_CODE).includes(ele.keyStr)
-    }).filter(ele=>{
-      return this.$power.has(ele.auth)
-    })
-    this.tabList.length && (this.currentKey = this.tabList[0].keyStr)
+    this.tabList = this.tabList
+      .filter((ele) => {
+        return Object.values(this.$store.state.ASSET_TYPE_CODE).includes(ele.keyStr);
+      })
+      .filter((ele) => {
+        return this.$power.has(ele.auth);
+      });
+    this.tabList.length && (this.currentKey = this.tabList[0].keyStr);
   },
 };
 </script>

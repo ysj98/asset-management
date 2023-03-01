@@ -64,7 +64,7 @@
     </a-row>
     <a-row class="a_row">
       <a-col :span="22" :offset="2">
-        <div>附件：<UploadFile type="all" v-model="uploadList" :show="true" class="mt20"/></div>
+        <div>附件：<UploadFile type="all" v-model="uploadList" :show="true" class="mt20" /></div>
       </a-col>
     </a-row>
     <SG-Title title="资产明细" />
@@ -72,14 +72,7 @@
       <div class="textNum pa">
         资产数量： {{ dataSource.length }}个<span v-if="!isSelectedEquipment">， 出租面积： {{ rentOutArea }}㎡</span>
       </div>
-      <a-table
-        :columns="columnsCom"
-        :data-source="dataSource"
-        :loading="loading"
-        bordered
-        :pagination="false"
-        size="middle"
-      >
+      <a-table :columns="columnsCom" :data-source="dataSource" :loading="loading" bordered :pagination="false" size="middle">
         <template slot="code" slot-scope="text, record, index">
           <div>
             {{ pagination.pageLength * (pagination.pageNo - 1) + index + 1 }}
@@ -98,14 +91,7 @@
     <SG-Title title="收益明细" />
     <div class="assetInfo pr">
       <div class="textNum pa">总收益： {{ earnings }}元</div>
-      <a-table
-        :columns="columns2"
-        :data-source="dataSource2"
-        :loading2="loading2"
-        bordered
-        :pagination="false"
-        size="middle"
-      >
+      <a-table :columns="columns2" :data-source="dataSource2" :loading2="loading2" bordered :pagination="false" size="middle">
         <template slot="code" slot-scope="text, record, index">
           <div>
             {{ pagination2.pageLength * (pagination2.pageNo - 1) + index + 1 }}
@@ -127,83 +113,83 @@
 <script>
 const columns = [
   {
-    title: "序号",
-    dataIndex: "code",
-    align: "center",
-    scopedSlots: { customRender: "code" },
+    title: '序号',
+    dataIndex: 'code',
+    align: 'center',
+    scopedSlots: { customRender: 'code' },
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
-    align: "center",
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    align: 'center',
   },
   {
-    title: "资产名称",
-    dataIndex: "assetName",
-    align: "center",
+    title: '资产名称',
+    dataIndex: 'assetName',
+    align: 'center',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    align: "center",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    align: 'center',
   },
   {
-    title: "资产分类",
-    dataIndex: "assetCategoryName",
-    align: "center",
+    title: '资产分类',
+    dataIndex: 'assetCategoryName',
+    align: 'center',
   },
   {
-    title: "规格型号",
-    dataIndex: "specificationTypeName",
-    align: "center",
+    title: '规格型号',
+    dataIndex: 'specificationTypeName',
+    align: 'center',
   },
   {
-    title: "资产面积(㎡)",
-    dataIndex: "assetArea",
-    align: "center",
+    title: '资产面积(㎡)',
+    dataIndex: 'assetArea',
+    align: 'center',
   },
   {
-    title: "出租面积(㎡)",
-    dataIndex: "leaseArea",
-    align: "center",
+    title: '出租面积(㎡)',
+    dataIndex: 'leaseArea',
+    align: 'center',
   },
   {
-    title: "备注",
-    dataIndex: "remark",
-    align: "center",
+    title: '备注',
+    dataIndex: 'remark',
+    align: 'center',
   },
 ];
 const columns2 = [
   {
-    title: "序号",
-    dataIndex: "code",
-    align: "center",
-    scopedSlots: { customRender: "code" },
+    title: '序号',
+    dataIndex: 'code',
+    align: 'center',
+    scopedSlots: { customRender: 'code' },
   },
   {
-    title: "收入编号",
-    dataIndex: "incomeId",
-    align: "center",
+    title: '收入编号',
+    dataIndex: 'incomeId',
+    align: 'center',
   },
   {
-    title: "费用科目",
-    dataIndex: "feeSubjectName",
-    align: "center",
+    title: '费用科目',
+    dataIndex: 'feeSubjectName',
+    align: 'center',
   },
   {
-    title: "账期",
-    dataIndex: "accountingPeriod",
-    align: "center",
+    title: '账期',
+    dataIndex: 'accountingPeriod',
+    align: 'center',
   },
   {
-    title: "收入金额(元)",
-    dataIndex: "amount",
-    align: "center",
+    title: '收入金额(元)',
+    dataIndex: 'amount',
+    align: 'center',
   },
   {
-    title: "备注",
-    dataIndex: "remark",
-    align: "center",
+    title: '备注',
+    dataIndex: 'remark',
+    align: 'center',
   },
 ];
 export default {
@@ -211,7 +197,7 @@ export default {
     return {
       columns,
       columns2,
-      leaseOrderId: "",
+      leaseOrderId: '',
       loading: false,
       loading2: false,
       assetInfo: {}, // 资产详情
@@ -244,62 +230,56 @@ export default {
       },
     };
   },
-  computed:{
-    isSelectedEquipment(){
-      return String(this.assetInfo.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+  computed: {
+    isSelectedEquipment() {
+      return String(this.assetInfo.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     },
-    columnsCom(){
-      if (this.isSelectedEquipment){
-          const arr = ['assetArea','leaseArea']
-          return this.columns.filter(ele=>{
-            return !arr.includes(ele.dataIndex)
-          })
-      }else {
-        return this.columns
+    columnsCom() {
+      if (this.isSelectedEquipment) {
+        const arr = ['assetArea', 'leaseArea'];
+        return this.columns.filter((ele) => {
+          return !arr.includes(ele.dataIndex);
+        });
+      } else {
+        return this.columns;
       }
-    }
+    },
   },
   methods: {
     // 获取资产明细
     getLeaseOrder() {
       if (this.leaseOrderId) {
-        this.$api.assetRent
-          .getLeaseOrder({ leaseOrderId: +this.leaseOrderId })
-          .then((res) => {
-            this.assetInfo = res.data.data;
-          });
+        this.$api.assetRent.getLeaseOrder({ leaseOrderId: +this.leaseOrderId }).then((res) => {
+          this.assetInfo = res.data.data;
+        });
       }
     },
     // 查询出租明细分页列表
     getLeaseDetailPageList() {
       if (this.leaseOrderId) {
         this.loading = true;
-        this.$api.assetRent
-          .getLeaseDetailPageList(this.rentOutObj)
-          .then((res) => {
-            this.pagination.totalCount = res.data.data.count;
-            let r = res.data.data.data;
-            r.forEach((item) => {
-              item.specificationTypeName = "/";
-              item.key = item.assetId;
-              this.rentOutArea += item.leaseArea;
-            });
-            this.dataSource = r;
-            this.loading = false;
+        this.$api.assetRent.getLeaseDetailPageList(this.rentOutObj).then((res) => {
+          this.pagination.totalCount = res.data.data.count;
+          let r = res.data.data.data;
+          r.forEach((item) => {
+            item.specificationTypeName = '/';
+            item.key = item.assetId;
+            this.rentOutArea += item.leaseArea;
           });
+          this.dataSource = r;
+          this.loading = false;
+        });
       }
     },
     // 资产出租/投资收益登记-分页查询收益明细
     getIncomeDetailPageList() {
       if (this.leaseOrderId) {
         this.loading2 = true;
-        this.$api.assetRent
-          .getIncomeDetailPageList(this.earningsObj)
-          .then((res) => {
-            this.pagination2.totalCount = res.data.data.count;
-            this.dataSource2 = res.data.data.data;
-            this.loading2 = false;
-          });
+        this.$api.assetRent.getIncomeDetailPageList(this.earningsObj).then((res) => {
+          this.pagination2.totalCount = res.data.data.count;
+          this.dataSource2 = res.data.data.data;
+          this.loading2 = false;
+        });
       }
     },
     // 资产出租/投资收益登记-查询收益明细合计
@@ -331,26 +311,24 @@ export default {
       if (!id) {
         return false;
       }
-      this.$api.basics
-        .attachment({ objectId: id, objectType: 19 })
-        .then((res) => {
-          if (+res.data.code === 0) {
-            let attachment = [];
-            res.data.data.forEach((item) => {
-              let obj = {
-                url: item.attachmentPath,
-                name: item.oldAttachmentName,
-              };
-              attachment.push(obj);
-              this.uploadList = attachment;
-            });
-          } else {
-            this.$error({
-              title: "提示",
-              content: res.data.message,
-            });
-          }
-        });
+      this.$api.basics.attachment({ objectId: id, objectType: 19 }).then((res) => {
+        if (+res.data.code === 0) {
+          let attachment = [];
+          res.data.data.forEach((item) => {
+            let obj = {
+              url: item.attachmentPath,
+              name: item.oldAttachmentName,
+            };
+            attachment.push(obj);
+            this.uploadList = attachment;
+          });
+        } else {
+          this.$error({
+            title: '提示',
+            content: res.data.message,
+          });
+        }
+      });
     },
   },
   created() {
@@ -359,7 +337,7 @@ export default {
     this.getLeaseDetailPageList(); // 获取资产明细列表
     this.getIncomeDetailPageList(); // 获取收益明细列表
     this.getIncomeDetailStatistics(); // 获取收益明细合计
-    this.getAttachmentList(this.leaseOrderId)
+    this.getAttachmentList(this.leaseOrderId);
   },
 };
 </script>

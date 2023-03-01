@@ -13,18 +13,16 @@
   
  -->
 <template>
-  <div class="operation"  v-if="operationData.length">
-    <a-popover overlayClassName="operation-popover" title="" placement="bottom" :overlayStyle="{zIndex: 2019}">
-      <a-icon type="ellipsis" style="font-size: 26px;cursor: pointer;"/>
-      <template slot="content" style="z-index:2019;">
+  <div class="operation" v-if="operationData.length">
+    <a-popover overlayClassName="operation-popover" title="" placement="bottom" :overlayStyle="{ zIndex: 2019 }">
+      <a-icon type="ellipsis" style="font-size: 26px; cursor: pointer" />
+      <template slot="content" style="z-index: 2019">
         <ul class="ul-operation">
           <template v-for="(item, index) in operationData">
-            <li
-              :key="index"
-              @click="jumpToEdit(item.editType)">
-              <segiIcon v-if="item.typeInterpretation" :type="item.iconType" class="segiIcon"/>
-              <a-icon v-else :type=item.iconType style="font-size: 14px"/>
-              <span>{{item.text}}</span>
+            <li :key="index" @click="jumpToEdit(item.editType)">
+              <segiIcon v-if="item.typeInterpretation" :type="item.iconType" class="segiIcon" />
+              <a-icon v-else :type="item.iconType" style="font-size: 14px" />
+              <span>{{ item.text }}</span>
               <i class="left-border"></i>
             </li>
           </template>
@@ -35,34 +33,34 @@
 </template>
 
 <script>
-import { Popover, Icon } from 'ant-design-vue'
-import segiIcon from './segiIcon.vue'
+import { Popover, Icon } from 'ant-design-vue';
+import segiIcon from './segiIcon.vue';
 
 export default {
   name: 'OperationPopover',
   components: {
     APopover: Popover,
     AIcon: Icon,
-    segiIcon
+    segiIcon,
   },
   props: {
     index: {
       type: [String, Number],
-      default: ''
+      default: '',
     },
     operationData: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     record: {
       type: Object,
       default: () => {
-        return {}
-      }
-    }
+        return {};
+      },
+    },
   },
-  data () {
-    return {}
+  data() {
+    return {};
   },
   computed: {},
   watch: {},
@@ -71,19 +69,19 @@ export default {
      * 点击操作列表中相应的操作跳转相应类型的页面
      * @param {string} editType 跳转页面的类型
      */
-    jumpToEdit (editType) {
-      let record = Object.assign({}, this.record)
-      this.$emit('operationFun', editType, record, this.index)
-    }
-  }
-}
+    jumpToEdit(editType) {
+      let record = Object.assign({}, this.record);
+      this.$emit('operationFun', editType, record, this.index);
+    },
+  },
+};
 </script>
 
-<style lang='less' scoped>
-.operation{
+<style lang="less" scoped>
+.operation {
   position: relative;
   &:hover {
-    color: #397DEB;
+    color: #397deb;
     cursor: pointer;
   }
 }
@@ -95,25 +93,27 @@ export default {
     line-height: 40px;
     border-bottom: 1px solid #ccc;
     position: relative;
-    .left-border{
+    .left-border {
       display: none;
       width: 3px;
       height: 19px;
-      background-color: #397DEB;
+      background-color: #397deb;
       position: absolute;
       left: -10px;
       top: 12px;
     }
-    &:hover .left-border{display: block;}
+    &:hover .left-border {
+      display: block;
+    }
     &:hover {
-      color: #397DEB;
+      color: #397deb;
       cursor: pointer;
     }
     &:last-child {
       border-bottom: 0;
     }
     span {
-      margin-left: 8px; 
+      margin-left: 8px;
     }
     .segiIcon {
       // margin-right: 8px;

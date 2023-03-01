@@ -2,9 +2,7 @@
   <div class="landMapDetail-page">
     <div class="detail-top-head">
       {{ detailInfo.communityName | filterNullValue }}（项目设备设施）
-      <span class="fr pointer" @click="handleSwitch"
-        ><a-icon type="close"
-      /></span>
+      <span class="fr pointer" @click="handleSwitch"><a-icon type="close" /></span>
     </div>
     <div class="detail-page">
       <!-- 详情部分 -->
@@ -51,10 +49,10 @@
           <SG-Title title="设备设施详情" noMargin />
         </div>
         <div class="detail-info">
-          <div style="margin-bottom: 15px;" v-for="(item,index) in detailInfo.equipmentDetailList" :key="index">
-            <span>{{item.equipmentName}}</span>
+          <div style="margin-bottom: 15px" v-for="(item, index) in detailInfo.equipmentDetailList" :key="index">
+            <span>{{ item.equipmentName }}</span>
             <span>：</span>
-            <span>{{item.assetNum}}</span>
+            <span>{{ item.assetNum }}</span>
           </div>
         </div>
       </div>
@@ -63,67 +61,67 @@
 </template>
 
 <script>
-import Tools from "@/utils/utils";
+import Tools from '@/utils/utils';
 // 获取图片域名
-let hostImg  = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/'
+let hostImg = window.__configs ? window.__configs.hostImg : 'https://betapic.uhomecp.com/';
 import { getFormat } from '../../../../utils/utils';
 const columns = [
   {
-    title: "资产数量(个)",
-    dataIndex: "assetNum"
+    title: '资产数量(个)',
+    dataIndex: 'assetNum',
   },
   {
-    title: "资产原值(万元)",
-    dataIndex: "originalValue"
+    title: '资产原值(万元)',
+    dataIndex: 'originalValue',
   },
   {
-    title: "资产价值(万元)",
-    dataIndex: "assetValue"
-  }
+    title: '资产价值(万元)',
+    dataIndex: 'assetValue',
+  },
 ];
 
 const columnsThree = [
   {
-    title: "运营",
-    dataIndex: "transferOperationAreaPercent"
+    title: '运营',
+    dataIndex: 'transferOperationAreaPercent',
   },
   {
-    title: "自用",
-    dataIndex: "selfUserAreaPercent"
+    title: '自用',
+    dataIndex: 'selfUserAreaPercent',
   },
   {
-    title: "闲置",
-    dataIndex: "idleAreaPercent"
+    title: '闲置',
+    dataIndex: 'idleAreaPercent',
   },
   {
-    title: "其他",
-    dataIndex: "otherAreaPercent"
-  }
+    title: '其他',
+    dataIndex: 'otherAreaPercent',
+  },
 ];
 let getDataRow = (obj, columns) => {
-  let keys = columns.map(item => item.dataIndex);
+  let keys = columns.map((item) => item.dataIndex);
   let o = { key: Tools.getUuid() };
-  keys.forEach(item => {
-    obj[item] = item === 'originalValue' || item === 'assetValue' ? getFormat(obj[item]) : obj[item]
+  keys.forEach((item) => {
+    obj[item] = item === 'originalValue' || item === 'assetValue' ? getFormat(obj[item]) : obj[item];
     // 给columnsThree中的数据加千分位，由于都有"()"以此判断
-    if(obj[item] && obj[item].toString().includes('(')){
-      let arr = obj[item].split('(')
-      obj[item] = `${getFormat(arr[0])}(${arr[1]}`
+    if (obj[item] && obj[item].toString().includes('(')) {
+      let arr = obj[item].split('(');
+      obj[item] = `${getFormat(arr[0])}(${arr[1]}`;
     }
     // 沿用 之前的逻辑
-    o[item] = obj[item] || "-";
+    o[item] = obj[item] || '-';
     // o[item] = [undefined, null].includes(obj[item]) ? "-" : obj[item];
   });
   return o;
 };
 export default {
   // 设备设施详情
-  name: "EquipmentDetail",
+  name: 'EquipmentDetail',
   props: {
     detailInfo: {
       type: Object,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -131,14 +129,14 @@ export default {
       table: {
         columns,
         dataSource: [],
-        pagination: false
+        pagination: false,
       },
       // 表格3
       tableThree: {
         columns: columnsThree,
         dataSource: [],
-        pagination: false
-      }
+        pagination: false,
+      },
     };
   },
   watch: {
@@ -147,25 +145,23 @@ export default {
         this.table.dataSource = [getDataRow(nv, columns)];
         this.tableThree.dataSource = [getDataRow(nv, columnsThree)];
       }
-    }
+    },
   },
   computed: {
     imgSrc() {
-      return this.detailInfo.picPath
-        ? hostImg + this.detailInfo.picPath
-        : "";
-    }
+      return this.detailInfo.picPath ? hostImg + this.detailInfo.picPath : '';
+    },
   },
   filters: {
     filterNullValue(val) {
-      return val ? val : "-";
-    }
+      return val ? val : '-';
+    },
   },
   methods: {
     handleSwitch() {
-      this.$emit("close", "land");
-    }
-  }
+      this.$emit('close', 'land');
+    },
+  },
 };
 </script>
 <style lang="less" scoped>

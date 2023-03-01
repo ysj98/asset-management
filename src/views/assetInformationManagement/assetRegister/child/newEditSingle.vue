@@ -8,11 +8,7 @@
   <div class="newEditSingle">
     <!-- 登记单第一步信息 -->
     <newInformation ref="newInformation" v-if="this.activeStepIndex === 0 && setType === 'new' && registerOrderId === ''"></newInformation>
-    <basicDetails
-      v-if="this.activeStepIndex !== 0 || setType === 'edit' || registerOrderId"
-      :registerOrderId="registerOrderId"
-    >
-    </basicDetails>
+    <basicDetails v-if="this.activeStepIndex !== 0 || setType === 'edit' || registerOrderId" :registerOrderId="registerOrderId"> </basicDetails>
     <span class="section-title blue">资产明细</span>
     <div class="newEditSingle-nav">
       <div class="mb15">
@@ -22,36 +18,48 @@
       </div>
       <!-- 房屋 -->
       <keep-alive>
-        <basic
-          v-if="this.activeStepIndex === 0"
-          ref="basicRef" 
-          :organId="organId"
-          :registerOrderId="registerOrderId"
-          :assetTypeId="assetType"
-        >
+        <basic v-if="this.activeStepIndex === 0" ref="basicRef" :organId="organId" :registerOrderId="registerOrderId" :assetTypeId="assetType">
           <!-- @handleSubmit="handSubmit" -->
         </basic>
       </keep-alive>
       <!-- 附属配套 -->
-      <necessaryCaaessories v-if="this.activeStepIndex === 1" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></necessaryCaaessories>
+      <necessaryCaaessories
+        v-if="this.activeStepIndex === 1"
+        :organId="organId"
+        :registerOrderId="registerOrderId"
+        :assetType="assetType"
+      ></necessaryCaaessories>
       <!-- 价值登记 -->
-      <valueToRegister v-if="this.activeStepIndex === 2" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></valueToRegister>
+      <valueToRegister
+        v-if="this.activeStepIndex === 2"
+        :organId="organId"
+        :registerOrderId="registerOrderId"
+        :assetType="assetType"
+      ></valueToRegister>
       <!-- 使用方向 -->
       <directionUse v-if="this.activeStepIndex === 3" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></directionUse>
       <!-- 相关费用 -->
-      <correlativeCharges v-if="this.activeStepIndex === 4" :organId="organId" :registerOrderId="registerOrderId" :assetType="assetType"></correlativeCharges>
+      <correlativeCharges
+        v-if="this.activeStepIndex === 4"
+        :organId="organId"
+        :registerOrderId="registerOrderId"
+        :assetType="assetType"
+      ></correlativeCharges>
     </div>
     <div class="step-footer-operation" v-if="setType === 'new'">
-      <tabFormFooter location="fixed" :rightButtonDisabled="rightButtonDisabled" :showSave="showSave" :showAloneCancel="true" @aloneCancel="aloneCancel" :leftButtonName="leftButtonName" :rightButtonName="rightButtonName" @save="confirmArea" @cancel="handleBackOrReset"></tabFormFooter>
+      <tabFormFooter
+        location="fixed"
+        :rightButtonDisabled="rightButtonDisabled"
+        :showSave="showSave"
+        :showAloneCancel="true"
+        @aloneCancel="aloneCancel"
+        :leftButtonName="leftButtonName"
+        :rightButtonName="rightButtonName"
+        @save="confirmArea"
+        @cancel="handleBackOrReset"
+      ></tabFormFooter>
     </div>
-    <SG-Modal
-      width="500px"
-      v-model="modelStatus"
-      title="确认登记"
-      confirmText="确定"
-      @ok="onConfirm"
-      @cancel="modelStatus=false"
-    >
+    <SG-Modal width="500px" v-model="modelStatus" title="确认登记" confirmText="确定" @ok="onConfirm" @cancel="modelStatus = false">
       <div>
         <p class="modalTips">{{ tips }}</p>
         <p class="modalContent">以上资产建筑面积与权证面积不一致，确定登记吗？</p>
@@ -61,141 +69,141 @@
 </template>
 
 <script>
-import tabFormFooter from '../../../common/tabFormFooter'
-import NewInformation from './newInformation'
-import basicDetails from './basicDetails'
-import necessaryCaaessories from './necessaryCaaessories'
-import valueToRegister from './valueToRegister'
-import directionUse from './directionUse'
-import correlativeCharges from './correlativeCharges'
-import basic from './basic'
-import {handleAssetTypeField} from "@/views/assetInformationManagement/assetRegister/common/share";
-import {SET_PARKING_PLACE_RESOURCE_TYPE, SET_PARKING_OBJ_TYPE} from "store/types/platformDictTypes";
+import tabFormFooter from '../../../common/tabFormFooter';
+import NewInformation from './newInformation';
+import basicDetails from './basicDetails';
+import necessaryCaaessories from './necessaryCaaessories';
+import valueToRegister from './valueToRegister';
+import directionUse from './directionUse';
+import correlativeCharges from './correlativeCharges';
+import basic from './basic';
+import { handleAssetTypeField } from '@/views/assetInformationManagement/assetRegister/common/share';
+import { SET_PARKING_PLACE_RESOURCE_TYPE, SET_PARKING_OBJ_TYPE } from 'store/types/platformDictTypes';
 export default {
-  components: {NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges},
+  components: { NewInformation, basic, tabFormFooter, basicDetails, necessaryCaaessories, valueToRegister, directionUse, correlativeCharges },
   props: {},
-  data () {
+  data() {
     return {
       modelStatus: false, // 确认登记模态框
       tips: '',
-      registerOrderId: '',      // 登记单id
+      registerOrderId: '', // 登记单id
       assetType: '',
-      showSave: true,              // 上一步展示
-      stepData: [
-        {title: '基础信息'},
-        {title: '附属配套'},
-        {title: '价值信息'},
-        {title: '使用方向'},
-        {title: '相关费用'}
-      ],
+      showSave: true, // 上一步展示
+      stepData: [{ title: '基础信息' }, { title: '附属配套' }, { title: '价值信息' }, { title: '使用方向' }, { title: '相关费用' }],
       titleData: {
         0: '登记基础信息',
         1: '登记配套附属',
         2: '登记价值信息',
         3: '登记使用方向',
-        4: '登记相关费用'
+        4: '登记相关费用',
       },
       organIdData: [],
       organId: '',
-      setType: '',                // 新增还是编辑
-      rightButtonDisabled: true,  // 下一步禁止选择
-      activeStepIndex: 0          // 第几步
-    }
+      setType: '', // 新增还是编辑
+      rightButtonDisabled: true, // 下一步禁止选择
+      activeStepIndex: 0, // 第几步
+    };
   },
   computed: {
     leftButtonName: function () {
       if (this.activeStepIndex === 0) {
-        return '保存'
+        return '保存';
       } else if (this.activeStepIndex < 4) {
-        return '上一步'
+        return '上一步';
       } else {
-        return '完成'
+        return '完成';
       }
     },
     rightButtonName: function () {
       if (this.activeStepIndex === 4) {
-        return '上一步'
+        return '上一步';
       } else {
-        return '下一步'
+        return '下一步';
       }
-    }
+    },
   },
-  created () {
-    this.organIdData = JSON.parse(this.$route.query.record)
-    this.organId = this.organIdData[0].value
-    this.setType = this.$route.query.setType
+  created() {
+    this.organIdData = JSON.parse(this.$route.query.record);
+    this.organId = this.organIdData[0].value;
+    this.setType = this.$route.query.setType;
     if (this.setType !== 'new') {
-      this.registerOrderId = this.organIdData[0].registerOrderId
-      this.assetType = String(this.organIdData[0].assetType)
-      this.activeStepIndex = Number(this.$route.query.activeStepIndex)
-      this.$store.commit('pro/updateNav', [{name: '资产管理', path: ''}, {name: '资产登记', path: '/assetRegister'}, {name: `${this.titleData[this.activeStepIndex]}`, path: ''}])
+      this.registerOrderId = this.organIdData[0].registerOrderId;
+      this.assetType = String(this.organIdData[0].assetType);
+      this.activeStepIndex = Number(this.$route.query.activeStepIndex);
+      this.$store.commit('pro/updateNav', [
+        { name: '资产管理', path: '' },
+        { name: '资产登记', path: '/assetRegister' },
+        { name: `${this.titleData[this.activeStepIndex]}`, path: '' },
+      ]);
     }
 
-    this.$store.dispatch('platformDict/getPlatformDict',{
+    this.$store.dispatch('platformDict/getPlatformDict', {
       code: 'PARKING_OBJ_TYPE',
-      type: SET_PARKING_OBJ_TYPE
-    })
-    this.$store.dispatch('platformDict/getPlatformDict',{
+      type: SET_PARKING_OBJ_TYPE,
+    });
+    this.$store.dispatch('platformDict/getPlatformDict', {
       code: 'PARKING_PLACE_RESOURCE_TYPE',
-      type: SET_PARKING_PLACE_RESOURCE_TYPE
-    })
+      type: SET_PARKING_PLACE_RESOURCE_TYPE,
+    });
   },
   watch: {
-    'activeStepIndex' (val) {
+    activeStepIndex(val) {
       if (val === 0 && this.registerOrderId) {
-        this.showSave = false
+        this.showSave = false;
       } else {
-        this.showSave = true
+        this.showSave = true;
       }
-    }
+    },
   },
-  mounted () {
-    this.$textReplace()
+  mounted() {
+    this.$textReplace();
   },
   methods: {
     onConfirm() {
-      this.modelStatus = false
-      this.handleSubmit()
+      this.modelStatus = false;
+      this.handleSubmit();
     },
     // 资产登记是否校验权证面积
-    async getApproveConfig(){
-      let { data:{ code,data } } = await this.$api.paramsConfig.queryParamsConfigDetail({
+    async getApproveConfig() {
+      let {
+        data: { code, data },
+      } = await this.$api.paramsConfig.queryParamsConfigDetail({
         serviceType: 1009,
         organId: this.organId,
-      })
-      if (code === "0"){
-        const {isValid} = data
-        if( isValid === 1){
-          return true
-        }else {
-          return false
+      });
+      if (code === '0') {
+        const { isValid } = data;
+        if (isValid === 1) {
+          return true;
+        } else {
+          return false;
         }
       } else {
-        return false
+        return false;
       }
     },
-    confirmArea (detail) {
+    confirmArea(detail) {
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
         if (detail) {
-          this.handleSubmit(detail)
-          return
+          this.handleSubmit(detail);
+          return;
         }
-        let tableData = this.$refs.basicRef.tableData
+        let tableData = this.$refs.basicRef.tableData;
         if (tableData.length === 0) {
-          this.$message.info('请导入资产明细')
-          return true
+          this.$message.info('请导入资产明细');
+          return true;
         }
-        let array = []
+        let array = [];
         // area 建筑面积  buildArea 权证面积 这里比较建筑面积和权证面积是否相等（权属情况为有证，有证则填了权证号），如果不等则提示
-        tableData.map(item => {
-          if (item.ownershipStatusName==='有证' && Number(item.area) !== Number(item.buildArea)) {
-            array.push(item.assetName)
+        tableData.map((item) => {
+          if (item.ownershipStatusName === '有证' && Number(item.area) !== Number(item.buildArea)) {
+            array.push(item.assetName);
           }
-        })
+        });
         // 有不相等的情况，且相关配置页面已经开启了权证号校验
         if (array.length && this.getApproveConfig()) {
-          this.tips = array.join('、')
-          this.modelStatus = true
+          this.tips = array.join('、');
+          this.modelStatus = true;
           // this.$SG_Message.confirmDelete({
           //   content: tips,
           //   confirmText: '确定',
@@ -207,102 +215,106 @@ export default {
           //   }
           // })
         } else {
-          this.handleSubmit()
+          this.handleSubmit();
         }
       } else {
-        this.handleSubmit()
+        this.handleSubmit();
       }
     },
     // 上一步
-    handleSubmit (detail) {
+    handleSubmit(detail) {
       // 保存(基本信息的单个保存全部放在这里)
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
         if (detail) {
-          this.$refs.newInformation.newEditSingleData.assetType = '1'
+          this.$refs.newInformation.newEditSingleData.assetType = '1';
         }
         setTimeout(() => {
-        this.$refs.newInformation.save()
-        let data = this.$refs.newInformation.saveValues
-        let filepaths = this.$refs.newInformation.getFilepaths()
-        if (!data) {return}
-        this.assetType = data.assetType
-        let basicData = []
-        if (!detail) {
-          if ( this.$refs.basicRef.save()) { return }
-          basicData = this.$refs.basicRef.basicData.map(ele=>{
-            delete ele.pasitionString
-            return {
-              ...ele
-            }
-          })
-        } else {
-          basicData = detail
-        }
-        let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType,'list')
-        console.log(ASSET_TYPE_LIST, '存储数据==================')
-        let obj = {
-          registerOrderId: this.registerOrderId,          // 资产变动单Id（新增为空）
-          registerOrderName: data.registerOrderName,    // 登记单名称
-          projectId: data.projectId,                    // 资产项目Id
-          assetType: this.assetType,                    // 资产类型Id
-          remark: data.remark,                          // 备注
-          organId: this.organId,                          // 组织机构id
-          [ASSET_TYPE_LIST]: basicData,
-          attachment:filepaths.map(ele=>({attachmentPath:ele.url,oldAttachmentName:ele.name}))
-        }
-        // 新增
-        let loadingName = this.SG_Loding('保存中...')
-        this.$api.assets.saveRegisterOrder(obj).then(res => {
-          if (Number(res.data.code) === 0) {
-            this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.success('提交成功')
-              if (detail) {
-                this.$router.push({path: '/assetRegister', query: {refresh: true}})
-                return
-              }
-              this.registerOrderId = res.data.data
-              this.showSave = false
-              this.rightButtonDisabled = false                     // 成功了才可以下一步
-              this.$nextTick(() => {
-                this.$refs.basicRef.query('sub')
-              })
-              return true
-            })
-          } else {
-            this.DE_Loding(loadingName).then(() => {
-              this.$message.error(res.data.message)
-            })
+          this.$refs.newInformation.save();
+          let data = this.$refs.newInformation.saveValues;
+          let filepaths = this.$refs.newInformation.getFilepaths();
+          if (!data) {
+            return;
           }
-        })
-        this.$refs.basicRef.setDetail(obj)
+          this.assetType = data.assetType;
+          let basicData = [];
+          if (!detail) {
+            if (this.$refs.basicRef.save()) {
+              return;
+            }
+            basicData = this.$refs.basicRef.basicData.map((ele) => {
+              delete ele.pasitionString;
+              return {
+                ...ele,
+              };
+            });
+          } else {
+            basicData = detail;
+          }
+          let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType, 'list');
+          console.log(ASSET_TYPE_LIST, '存储数据==================');
+          let obj = {
+            registerOrderId: this.registerOrderId, // 资产变动单Id（新增为空）
+            registerOrderName: data.registerOrderName, // 登记单名称
+            projectId: data.projectId, // 资产项目Id
+            assetType: this.assetType, // 资产类型Id
+            remark: data.remark, // 备注
+            organId: this.organId, // 组织机构id
+            [ASSET_TYPE_LIST]: basicData,
+            attachment: filepaths.map((ele) => ({ attachmentPath: ele.url, oldAttachmentName: ele.name })),
+          };
+          // 新增
+          let loadingName = this.SG_Loding('保存中...');
+          this.$api.assets.saveRegisterOrder(obj).then((res) => {
+            if (Number(res.data.code) === 0) {
+              this.DE_Loding(loadingName).then(() => {
+                this.$SG_Message.success('提交成功');
+                if (detail) {
+                  this.$router.push({ path: '/assetRegister', query: { refresh: true } });
+                  return;
+                }
+                this.registerOrderId = res.data.data;
+                this.showSave = false;
+                this.rightButtonDisabled = false; // 成功了才可以下一步
+                this.$nextTick(() => {
+                  this.$refs.basicRef.query('sub');
+                });
+                return true;
+              });
+            } else {
+              this.DE_Loding(loadingName).then(() => {
+                this.$message.error(res.data.message);
+              });
+            }
+          });
+          this.$refs.basicRef.setDetail(obj);
         }, 100);
-      }  else if (this.activeStepIndex === 4) {
+      } else if (this.activeStepIndex === 4) {
         // 点击完成
-        this.$router.push({path: '/assetRegister', query: {refresh: true}})
+        this.$router.push({ path: '/assetRegister', query: { refresh: true } });
       } else {
-        this.activeStepIndex--
-        this.showSave = true
+        this.activeStepIndex--;
+        this.showSave = true;
       }
     },
     // 点击下一步或重置
-    handleBackOrReset () {
+    handleBackOrReset() {
       // 最后一步时显示上一步
       if (this.activeStepIndex === 4) {
-        this.activeStepIndex--
+        this.activeStepIndex--;
       } else {
-        this.activeStepIndex++
+        this.activeStepIndex++;
       }
     },
     // 取消
-    aloneCancel () {
+    aloneCancel() {
       if (this.registerOrderId) {
-        this.$router.push({path: '/assetRegister', query: {refresh: true}})
+        this.$router.push({ path: '/assetRegister', query: { refresh: true } });
       } else {
-        this.$router.push({path: '/assetRegister'})
+        this.$router.push({ path: '/assetRegister' });
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="less" scoped>
 .newEditSingle {
@@ -311,11 +323,11 @@ export default {
     margin: 28px 20px;
   }
 }
-.modalTips{
+.modalTips {
   height: 150px;
   overflow-y: auto;
 }
-.modalContent{
+.modalContent {
   margin-left: 50%;
   transform: translateX(-50%);
 }

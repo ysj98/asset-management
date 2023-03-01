@@ -8,24 +8,24 @@
 
 <script>
 export default {
-  name: "SelectSwitchTwo",
+  name: 'SelectSwitchTwo',
   props: {
     paramKey: {
       type: String,
-      default: "",
+      default: '',
     },
     subKey: {
       type: String,
-      default: "",
+      default: '',
     },
     serviceTypeText: {
       type: String,
-      default: "",
+      default: '',
     },
   },
   data() {
     return {
-      value: "0",
+      value: '0',
     };
   },
   watch: {
@@ -40,8 +40,8 @@ export default {
   },
   methods: {
     onChange(value) {
-      if (value === "1") {
-        this.value = "";
+      if (value === '1') {
+        this.value = '';
       }
     },
     handleValidate() {
@@ -57,7 +57,7 @@ export default {
       const payload = {
         paramKey: this.value,
       };
-      this.$emit("sendData", payload);
+      this.$emit('sendData', payload);
     },
   },
 };

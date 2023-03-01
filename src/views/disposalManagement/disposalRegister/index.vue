@@ -145,14 +145,14 @@
   </div>
 </template>
 <script>
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "../../common/treeSelect";
-import moment from "moment";
-import noDataTips from "@/components/noDataTips";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { utils } from "@/utils/utils.js";
-import OperationPopover from "@/components/OperationPopover";
-import { exportDataAsExcel } from "src/views/common/commonQueryApi";
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '../../common/treeSelect';
+import moment from 'moment';
+import noDataTips from '@/components/noDataTips';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { utils } from '@/utils/utils.js';
+import OperationPopover from '@/components/OperationPopover';
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
 let getUuid = (
   (uuid = 1) =>
   () =>
@@ -160,128 +160,128 @@ let getUuid = (
 )();
 // 页面跳转
 const operationTypes = {
-  detail: "/disposalRegister/detail",
-  create: "/disposalRegister/create",
-  edit: "/disposalRegister/edit",
-  approval: "/disposalRegister/detail", // 待审核
+  detail: '/disposalRegister/detail',
+  create: '/disposalRegister/create',
+  edit: '/disposalRegister/edit',
+  approval: '/disposalRegister/detail', // 待审核
 };
 const allStyle = {
-  width: "170px",
-  "margin-right": "10px",
-  "margin-top": "14px",
-  "vertical-align": "middle",
+  width: '170px',
+  'margin-right': '10px',
+  'margin-top': '14px',
+  'vertical-align': 'middle',
 };
-const dateWidth = { width: "360px", "margin-right": "10px", "margin-top": "14px", display: "inline-block", "vertical-align": "middle" };
+const dateWidth = { width: '360px', 'margin-right': '10px', 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
 const columns = [
   {
-    title: "处置单ID",
-    dataIndex: "disposeRegisterOrderId",
+    title: '处置单ID',
+    dataIndex: 'disposeRegisterOrderId',
   },
   {
-    title: "所属机构",
-    dataIndex: "organName",
+    title: '所属机构',
+    dataIndex: 'organName',
   },
   {
-    title: "资产处置名称",
-    dataIndex: "disposeName",
+    title: '资产处置名称',
+    dataIndex: 'disposeName',
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
+    title: '资产项目',
+    dataIndex: 'projectName',
   },
   {
-    title: "处置类型",
-    dataIndex: "disposeTypeName",
+    title: '处置类型',
+    dataIndex: 'disposeTypeName',
   },
   {
-    title: "处置方式",
-    dataIndex: "disposeModeName",
+    title: '处置方式',
+    dataIndex: 'disposeModeName',
   },
   {
-    title: "处置时间",
-    dataIndex: "disposeDate",
+    title: '处置时间',
+    dataIndex: 'disposeDate',
   },
   {
-    title: "处置成本(元)",
-    dataIndex: "disposeCost",
+    title: '处置成本(元)',
+    dataIndex: 'disposeCost',
   },
   {
-    title: "处置收入(元)",
-    dataIndex: "disposeReceive",
+    title: '处置收入(元)',
+    dataIndex: 'disposeReceive',
   },
   {
-    title: "处置原因",
-    dataIndex: "disposeReason",
+    title: '处置原因',
+    dataIndex: 'disposeReason',
   },
   {
-    title: "提交人",
-    dataIndex: "createByName",
+    title: '提交人',
+    dataIndex: 'createByName',
   },
   {
-    title: "提交时间",
-    dataIndex: "createTime",
+    title: '提交时间',
+    dataIndex: 'createTime',
   },
   {
-    title: "状态",
-    dataIndex: "approvalStatusName",
+    title: '状态',
+    dataIndex: 'approvalStatusName',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
     width: 100,
   },
 ];
 const approvalStatusOpt = [
   {
-    label: "全部状态",
-    key: "",
+    label: '全部状态',
+    key: '',
   },
   {
-    label: "草稿",
-    key: "0",
+    label: '草稿',
+    key: '0',
   },
   {
-    label: "待审批",
-    key: "2",
+    label: '待审批',
+    key: '2',
   },
   {
-    label: "已驳回",
-    key: "3",
+    label: '已驳回',
+    key: '3',
   },
   {
-    label: "已审批",
-    key: "1",
+    label: '已审批',
+    key: '1',
   },
   {
-    label: "已取消",
-    key: "4",
+    label: '已取消',
+    key: '4',
   },
 ];
-const projectIdOpt = [{ label: "全部资产项目", value: "" }];
-const assetTypeOpt = [{ label: "全部资产类型", value: "" }];
-const disposeTypeOpt = [{ label: "全部处置类型", value: "" }];
-const disposeModeOpt = [{ label: "全部处置方式", value: "" }];
+const projectIdOpt = [{ label: '全部资产项目', value: '' }];
+const assetTypeOpt = [{ label: '全部资产类型', value: '' }];
+const disposeTypeOpt = [{ label: '全部处置类型', value: '' }];
+const disposeModeOpt = [{ label: '全部处置方式', value: '' }];
 const queryCondition = {
-  disposeName: "", // 处置单名称
+  disposeName: '', // 处置单名称
   pageNum: 1, // 当前页
   pageSize: 10, // 每页显示记录数
-  projectId: "", // 资产项目Id
-  approvalStatus: "", // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-  assetType: "", // 资产类型Id
-  disposeType: "", // 处置类型
-  disposeMode: "", // 处置方式
+  projectId: '', // 资产项目Id
+  approvalStatus: '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+  assetType: '', // 资产类型Id
+  disposeType: '', // 处置类型
+  disposeMode: '', // 处置方式
 };
 export default {
   components: { SearchContainer, OperationPopover, TreeSelect, noDataTips },
   props: {},
   data() {
     return {
-      scroll: { y: "calc(100vh - 450px)" },
+      scroll: { y: 'calc(100vh - 450px)' },
       ASSET_MANAGEMENT,
       exportBtnLoading: false, // 导出按钮loading
-      organId: "", // 组织机构id
-      organName: "", // 组织机构名称
+      organId: '', // 组织机构id
+      organName: '', // 组织机构名称
       toggle: true, // 开关
       queryCondition: utils.deepClone(queryCondition),
       operationTypes,
@@ -303,12 +303,12 @@ export default {
     };
   },
   created() {
-    this.platformDict("asset_type");
-    this.platformDict("AMS_DISPOSE_TYPE");
+    this.platformDict('asset_type');
+    this.platformDict('AMS_DISPOSE_TYPE');
   },
   watch: {
     $route() {
-      if (this.$route.path === "/disposalRegister" && this.$route.query.refresh) {
+      if (this.$route.path === '/disposalRegister' && this.$route.query.refresh) {
         this.queryCondition.pageNum = 1;
         this.queryCondition.pageSize = 10;
         this.query();
@@ -317,11 +317,11 @@ export default {
   },
   methods: {
     judgmentMethodFn(val) {
-      if (val === "") {
+      if (val === '') {
         return [];
-      } else if (val.length > 0 && val[0] !== "") {
+      } else if (val.length > 0 && val[0] !== '') {
         return val;
-      } else if (val.length === 1 && val[0] === "") {
+      } else if (val.length === 1 && val[0] === '') {
         return [];
       } else {
         return val;
@@ -338,19 +338,19 @@ export default {
         assetTypeList: this.judgmentMethodFn(this.queryCondition.assetType),
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeType),
         disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeMode),
-        submitDateStart: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format("YYYY-MM-DD") : "",
-        submitDateEnd: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format("YYYY-MM-DD") : "",
-        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format("YYYY-MM-DD") : "",
-        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format("YYYY-MM-DD") : "",
+        submitDateStart: this.defaultValue.length > 0 ? moment(this.defaultValue[0]).format('YYYY-MM-DD') : '',
+        submitDateEnd: this.defaultValue.length > 0 ? moment(this.defaultValue[1]).format('YYYY-MM-DD') : '',
+        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '',
+        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '',
       };
-      if (type === "export") {
+      if (type === 'export') {
         return data;
       }
       this.table.loading = true;
       this.$api.basics
         .getDisposeRegisterList(data)
         .then((res) => {
-          if (res.data.code === "0") {
+          if (res.data.code === '0') {
             let result = res.data.data.data || [];
             this.table.dataSource = result.map((item) => {
               return {
@@ -371,34 +371,34 @@ export default {
     // 生成操作按钮
     createOperationBtn(type) {
       // 审批状态  0草稿   2待审批、已驳回3、已审批1  已取消4
-      console.log("生成按钮", type);
+      console.log('生成按钮', type);
       let arr = [];
       // 草稿 已驳回
-      if (["0", "3"].includes(String(type))) {
+      if (['0', '3'].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.zcgl_dengji_edit)) {
-          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+          arr.push({ iconType: 'edit', text: '编辑', editType: 'edit' });
         }
         if (this.$power.has(ASSET_MANAGEMENT.zcgl_dengji_delete)) {
-          arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+          arr.push({ iconType: 'delete', text: '删除', editType: 'delete' });
         }
       }
       // 待审批
-      if (["2"].includes(type)) {
-        arr.push({ iconType: "edit", text: "审批", editType: "approval" });
+      if (['2'].includes(type)) {
+        arr.push({ iconType: 'edit', text: '审批', editType: 'approval' });
       }
       // 已审批
-      if (["1"].includes(type)) {
+      if (['1'].includes(type)) {
         if (this.$power.has(ASSET_MANAGEMENT.zcgl_dengji_reverseapply)) {
-          arr.push({ iconType: "edit", text: "反审核", editType: "readApproval" });
+          arr.push({ iconType: 'edit', text: '反审核', editType: 'readApproval' });
         }
       }
-      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      arr.push({ iconType: 'file-text', text: '详情', editType: 'detail' });
       return arr;
     },
     operationFun(type, record) {
-      if (["edit", "detail", "approval"].includes(type)) {
+      if (['edit', 'detail', 'approval'].includes(type)) {
         this.goPage(type, record);
-      } else if (["delete", "readApproval"].includes(type)) {
+      } else if (['delete', 'readApproval'].includes(type)) {
         this.readApprovalFn(type, record);
       }
     },
@@ -441,19 +441,19 @@ export default {
     },
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      let hasAll = data.indexOf("") !== -1;
+      let hasAll = data.indexOf('') !== -1;
       let len = data.length;
       // 如果点击全选或者取消全选
-      if (data[len - 1] === "" || len === 0) {
-        return (data = [""]);
+      if (data[len - 1] === '' || len === 0) {
+        return (data = ['']);
       }
       // 如果不包含全选，但其他选项都选中
       if (!hasAll && len === dataOptions.length - 1) {
-        return (data = [""]);
+        return (data = ['']);
       }
       // 包含全选，并且其他选项只选一部分
       if (hasAll && len !== dataOptions.length) {
-        data.splice(data.indexOf(""), 1);
+        data.splice(data.indexOf(''), 1);
       }
       return data;
     },
@@ -462,16 +462,16 @@ export default {
       this.organName = label;
       this.organId = value;
       this.queryCondition.pageNum = 1;
-      this.queryCondition.projectId = "";
+      this.queryCondition.projectId = '';
       this.getObjectKeyValueByOrganIdFn();
-      this.organDict("AMS_DISPOSE_MODE");
+      this.organDict('AMS_DISPOSE_MODE');
       this.query();
     },
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.organId,
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -491,15 +491,15 @@ export default {
     // 平台字典获取变动类型
     platformDict(code) {
       this.$api.assets.platformDict({ code }).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => ({ label: item.name, ...item }));
           // 资产类型
-          if (code === "asset_type") {
+          if (code === 'asset_type') {
             this.assetTypeOpt = [...utils.deepClone(assetTypeOpt), ...arr];
           }
           // 处置类型
-          if (code === "AMS_DISPOSE_TYPE") {
+          if (code === 'AMS_DISPOSE_TYPE') {
             this.disposeTypeOpt = [...utils.deepClone(disposeTypeOpt), ...arr];
           }
         } else {
@@ -510,11 +510,11 @@ export default {
     // 机构字典
     organDict(code) {
       this.$api.assets.organDict({ organId: this.organId, code }).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => ({ label: item.name, ...item, key: item.value }));
           // 处置方式
-          if (code === "AMS_DISPOSE_MODE") {
+          if (code === 'AMS_DISPOSE_MODE') {
             this.disposeModeOpt = [...utils.deepClone(disposeModeOpt), ...arr];
           }
         } else {
@@ -526,20 +526,20 @@ export default {
     readApprovalFn(type, record) {
       let _this = this;
       this.$confirm({
-        title: "提示",
-        content: `${type === "readApproval" ? "确认要反审核该资产处置单吗？" : "确认要删除该资产处置登记单吗？"}`,
+        title: '提示',
+        content: `${type === 'readApproval' ? '确认要反审核该资产处置单吗？' : '确认要删除该资产处置登记单吗？'}`,
         onOk() {
           let obj = {
             disposeRegisterOrderId: record.disposeRegisterOrderId,
-            approvalStatus: type === "readApproval" ? "0" : "4",
-            status: type === "delete" ? "0" : "",
+            approvalStatus: type === 'readApproval' ? '0' : '4',
+            status: type === 'delete' ? '0' : '',
             organId: record.organId,
           };
-          let loadingName = _this.SG_Loding("提交中...");
+          let loadingName = _this.SG_Loding('提交中...');
           _this.$api.basics.updateDisposeRegisterStatus(obj).then((res) => {
             if (Number(res.data.code) === 0) {
               _this.DE_Loding(loadingName).then(() => {
-                _this.$SG_Message.success("提交成功");
+                _this.$SG_Message.success('提交成功');
                 _this.query();
               });
             } else {
@@ -554,9 +554,9 @@ export default {
         type,
         organId: this.organId,
         organName: this.organName,
-        disposeRegisterOrderId: type === "create" ? "" : record.disposeRegisterOrderId,
+        disposeRegisterOrderId: type === 'create' ? '' : record.disposeRegisterOrderId,
       };
-      if (["detail", "approval"].includes(type)) {
+      if (['detail', 'approval'].includes(type)) {
         query.relatedOrganId = record.organId;
       }
       this.$router.push({ path: operationTypes[type], query });
@@ -572,8 +572,8 @@ export default {
     // 导出
     handleExport() {
       this.exportBtnLoading = true;
-      let data = this.query("export");
-      exportDataAsExcel(data, this.$api.tableManage.exportDisposeExcel, "处置登记列表.xlsx", this).then(() => {
+      let data = this.query('export');
+      exportDataAsExcel(data, this.$api.tableManage.exportDisposeExcel, '处置登记列表.xlsx', this).then(() => {
         this.exportBtnLoading = false;
       });
     },

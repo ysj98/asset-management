@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import Information from "@/components/Information";
+import Information from '@/components/Information';
 export default {
   // 接管信息
-  name: "TakeOverInformation",
+  name: 'TakeOverInformation',
   components: {
     Information,
   },
@@ -25,22 +25,22 @@ export default {
         formatBasicInfoList: [
           [
             {
-              title: "资产项目",
-              key: "projectName",
+              title: '资产项目',
+              key: 'projectName',
             },
             {
-              title: "来源方式",
-              key: "sourceTypeName",
+              title: '来源方式',
+              key: 'sourceTypeName',
             },
             {
-              title: "来源方式说明",
-              key: "sourceChannelType",
+              title: '来源方式说明',
+              key: 'sourceChannelType',
             },
           ],
           [
             {
-              title: "管理机构",
-              key: "organName",
+              title: '管理机构',
+              key: 'organName',
             },
             // {
             //   title: "是否接管",
@@ -48,46 +48,46 @@ export default {
             //   key: "todo",
             // },
             {
-              title: "接管日期",
-              key: "takeOverDate",
+              title: '接管日期',
+              key: 'takeOverDate',
             },
             {
-              title: "上报基础情况表时间",
-              key: "reportBasicInfoDate",
-            },
-          ],
-          [
-            {
-              title: "设备设施核实时间",
-              key: "houseVerificationDate",
-            },
-            {
-              title: "上报设备设施划转请示时间",
-              key: "reportHouseTransferReqDate",
-            },
-            {
-              title: "上报核实报告时间",
-              key: "reportingVerificationReportDate",
+              title: '上报基础情况表时间',
+              key: 'reportBasicInfoDate',
             },
           ],
           [
             {
-              title: "划转批复下发时间",
-              key: "transferApprovalDate",
+              title: '设备设施核实时间',
+              key: 'houseVerificationDate',
             },
             {
-              title: "协议签署时间",
-              key: "agreementSignDate",
+              title: '上报设备设施划转请示时间',
+              key: 'reportHouseTransferReqDate',
+            },
+            {
+              title: '上报核实报告时间',
+              key: 'reportingVerificationReportDate',
             },
           ],
           [
             {
-              title: "权属办理中存在问题",
-              key: "ownershipHandleProblems",
+              title: '划转批复下发时间',
+              key: 'transferApprovalDate',
             },
             {
-              title: "历史遗留问题",
-              key: "houseTransferHisProblem",
+              title: '协议签署时间',
+              key: 'agreementSignDate',
+            },
+          ],
+          [
+            {
+              title: '权属办理中存在问题',
+              key: 'ownershipHandleProblems',
+            },
+            {
+              title: '历史遗留问题',
+              key: 'houseTransferHisProblem',
             },
           ],
         ],
@@ -101,15 +101,13 @@ export default {
         assetId: this.assetId,
       };
       console.log({ req });
-      this.$api.assets
-        .queryAssetViewTakeOverDetail(req)
-        .then(({ data: { code, message, data } }) => {
-          if (code === "0") {
-            this.infoOptions.data = data;
-          } else {
-            this.$message.error(message);
-          }
-        });
+      this.$api.assets.queryAssetViewTakeOverDetail(req).then(({ data: { code, message, data } }) => {
+        if (code === '0') {
+          this.infoOptions.data = data;
+        } else {
+          this.$message.error(message);
+        }
+      });
     },
   },
   mounted() {

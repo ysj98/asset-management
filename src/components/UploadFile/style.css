@@ -1,0 +1,774 @@
+.item-mixin .item {
+  width: 160px;
+  height: 160px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background: #fff;
+}
+.item-mixin .item:hover {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.14);
+}
+.item-mixin .item:hover .ItemDelete {
+  visibility: visible;
+  opacity: 1;
+}
+.item-mixin .item:hover .ItemAction {
+  display: block;
+}
+.item-mixin .item.nodata {
+  background: none;
+  box-shadow: none;
+  border: 1px dashed #dce1e6;
+}
+.item-mixin .item .ItemBox {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-image: url(images/icon-image.png);
+}
+.item-mixin .item .ItemBox.txt {
+  background-image: url(images/icon-txt.png);
+}
+.item-mixin .item .ItemBox.pdf {
+  background-image: url(images/icon-pdf.png);
+}
+.item-mixin .item .ItemBox.doc,
+.item-mixin .item .ItemBox.docx {
+  background-image: url(images/icon-doc.png);
+}
+.item-mixin .item .ItemBox.xlsx,
+.item-mixin .item .ItemBox.xls {
+  background-image: url(images/icon-xlsl.png);
+}
+.item-mixin .item .ItemBox.ppt,
+.item-mixin .item .ItemBox.pptx {
+  background-image: url(images/icon-ppt.png);
+}
+.item-mixin .item .ItemBox.zip {
+  background-image: url(images/icon-zip.png);
+}
+.item-mixin .item .ItemBox.rar {
+  background-image: url(images/icon-rar.png);
+}
+.item-mixin .item .ItemBox.gz {
+  background-image: url(images/icon-gz.png);
+}
+.item-mixin .item .ItemBox.7z {
+  background-image: url(images/icon-7z.png);
+}
+.item-mixin .item .ItemBox.acd {
+  background-image: url(images/icon-acd.png);
+}
+.item-mixin .item .ItemBox img {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 2s ease;
+}
+.item-mixin .item .ItemBox img:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.item-mixin .item .ItemBox:hover img {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.item-mixin .item .ItemBox > .ant-spin {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  top: 0;
+  background: rgba(255, 255, 255, 0.8);
+}
+.item-mixin .item .ItemBox > .ant-spin .anticon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.item-mixin .item .ItemTitle {
+  line-height: 40px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.item-mixin .item .ItemTitle .text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
+  color: #49505e;
+  white-space: nowrap;
+}
+.item-mixin .item .ItemTitle .download {
+  height: 16px;
+  line-height: 16px;
+  padding: 0 12px;
+  border-left: 1px solid #dce1e6;
+  color: #959dab;
+  cursor: pointer;
+}
+.item-mixin .item .ItemTitle .download:hover {
+  color: #333;
+}
+.item-mixin .item .ItemIndex {
+  display: none;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 0 0 8px 0;
+  font-size: 13px;
+}
+.item-mixin .item .ItemDelete {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  background: #fff;
+  border-radius: 4px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #959dab;
+  font-size: 10px;
+  cursor: pointer;
+}
+.item-mixin .item .ItemDelete:hover {
+  color: #333;
+}
+.item-mixin .item .ItemDelete .anticon {
+  vertical-align: middle;
+}
+.item-mixin .item .ItemAction {
+  display: none;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 64px;
+  line-height: 24px;
+  background: #fff;
+  opacity: 0.8;
+  border-radius: 4px;
+  text-align: center;
+  color: #0084ff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.item-mixin .item .ItemActionText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff;
+  min-width: 80px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.uploadFile {
+  max-width: 848px;
+}
+.uploadFile > .fileBox {
+  display: flex;
+  justify-content: space-between;
+  line-height: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+}
+.uploadFile > .fileBox > .btn {
+  width: 160px;
+}
+.uploadFile > .fileBox > .btn .segi-butn {
+  width: 100%;
+}
+.uploadFile > .fileBox > .btn input {
+  display: none;
+}
+.uploadFile > .fileBox > .tips {
+  flex: 1 1 auto;
+  font-size: 12px;
+  color: #959dab;
+  padding-left: 20px;
+}
+.uploadFile > .fileBox > .total {
+  font-size: 12px;
+  color: #959dab;
+}
+.uploadFile > .fileBox > .total span {
+  font-weight: bold;
+  font-size: 14px;
+  margin: 0 5px;
+  color: #49505e;
+}
+.uploadFile > .notData {
+  width: 160px;
+  height: 160px;
+  border: 1px dashed #dce1e6;
+  background: #fafafa;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 160px;
+  color: #c0c9d1;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+.uploadFile > .preview {
+  overflow: hidden;
+  padding-left: 4px;
+  margin: 0 -4px;
+}
+.uploadFile > .preview > .previewWrap {
+  transition: transform 0.6s ease;
+  margin-bottom: 20px;
+}
+.uploadFile > .preview > .previewWrap > .item {
+  float: left;
+  margin-right: 12px;
+}
+.uploadFile > .preview > .previewWrap:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+.uploadFile > .preview > .previewPages {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.uploadFile > .preview > .previewPages > .previewPrev,
+.uploadFile > .preview > .previewPages > .previewNext {
+  font-size: 13px;
+  width: 32px;
+  height: 32px;
+  border-radius: 100%;
+  border: 2px solid #dce1e6;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.uploadFile > .preview > .previewPages > .previewPrev.disabled,
+.uploadFile > .preview > .previewPages > .previewNext.disabled {
+  cursor: no-drop;
+}
+.uploadFile > .preview > .previewPages > .previewPrev.disabled .sg-iconExt,
+.uploadFile > .preview > .previewPages > .previewNext.disabled .sg-iconExt {
+  border-color: #dce1e6;
+}
+.uploadFile > .preview > .previewPages > ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+.uploadFile > .preview > .previewPages > ul li {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background: #dce1e6;
+  margin-right: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.uploadFile > .preview > .previewPages > ul li.active {
+  background: #0084ff;
+}
+.uploadFile .item {
+  width: 160px;
+  height: 160px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background: #fff;
+}
+.uploadFile .item:hover {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.14);
+}
+.uploadFile .item:hover .ItemDelete {
+  visibility: visible;
+  opacity: 1;
+}
+.uploadFile .item:hover .ItemAction {
+  display: block;
+}
+.uploadFile .item.nodata {
+  background: none;
+  box-shadow: none;
+  border: 1px dashed #dce1e6;
+}
+.uploadFile .item .ItemBox {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-image: url(images/icon-image.png);
+}
+.uploadFile .item .ItemBox.txt {
+  background-image: url(images/icon-txt.png);
+}
+.uploadFile .item .ItemBox.pdf {
+  background-image: url(images/icon-pdf.png);
+}
+.uploadFile .item .ItemBox.doc,
+.uploadFile .item .ItemBox.docx {
+  background-image: url(images/icon-doc.png);
+}
+.uploadFile .item .ItemBox.xlsx,
+.uploadFile .item .ItemBox.xls {
+  background-image: url(images/icon-xlsl.png);
+}
+.uploadFile .item .ItemBox.ppt,
+.uploadFile .item .ItemBox.pptx {
+  background-image: url(images/icon-ppt.png);
+}
+.uploadFile .item .ItemBox.zip {
+  background-image: url(images/icon-zip.png);
+}
+.uploadFile .item .ItemBox.rar {
+  background-image: url(images/icon-rar.png);
+}
+.uploadFile .item .ItemBox.gz {
+  background-image: url(images/icon-gz.png);
+}
+.uploadFile .item .ItemBox.7z {
+  background-image: url(images/icon-7z.png);
+}
+.uploadFile .item .ItemBox.acd {
+  background-image: url(images/icon-acd.png);
+}
+.uploadFile .item .ItemBox img {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 2s ease;
+}
+.uploadFile .item .ItemBox img:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.uploadFile .item .ItemBox:hover img {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+.uploadFile .item .ItemBox > .ant-spin {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  top: 0;
+  background: rgba(255, 255, 255, 0.8);
+}
+.uploadFile .item .ItemBox > .ant-spin .anticon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.uploadFile .item .ItemTitle {
+  line-height: 40px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.uploadFile .item .ItemTitle .text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
+  color: #49505e;
+  white-space: nowrap;
+}
+.uploadFile .item .ItemTitle .download {
+  height: 16px;
+  line-height: 16px;
+  padding: 0 12px;
+  border-left: 1px solid #dce1e6;
+  color: #959dab;
+  cursor: pointer;
+}
+.uploadFile .item .ItemTitle .download:hover {
+  color: #333;
+}
+.uploadFile .item .ItemIndex {
+  display: none;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 0 0 8px 0;
+  font-size: 13px;
+}
+.uploadFile .item .ItemDelete {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  background: #fff;
+  border-radius: 4px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #959dab;
+  font-size: 10px;
+  cursor: pointer;
+}
+.uploadFile .item .ItemDelete:hover {
+  color: #333;
+}
+.uploadFile .item .ItemDelete .anticon {
+  vertical-align: middle;
+}
+.uploadFile .item .ItemAction {
+  display: none;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 64px;
+  line-height: 24px;
+  background: #fff;
+  opacity: 0.8;
+  border-radius: 4px;
+  text-align: center;
+  color: #0084ff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.uploadFile .item .ItemActionText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff;
+  min-width: 80px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 4px;
+}
+.uploadFile.show > .preview {
+  padding: 0;
+}
+.uploadFile.show > .preview .item .ItemDelete,
+.uploadFile.show > .preview .item .ItemAction {
+  display: none;
+}
+.uploadFile.show > .preview .item .ItemIndex {
+  display: block;
+}
+div.uploadFile-showImage .ant-carousel .slick-dots {
+  position: static;
+  height: auto;
+  text-align: center;
+  padding: 10px 0;
+}
+div.uploadFile-showImage .ant-carousel .slick-dots li {
+  display: inline-block;
+  width: 60px;
+  height: 40px;
+  overflow: hidden;
+}
+div.uploadFile-showImage .ant-carousel .slick-dots li img {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  filter: grayscale(100%);
+}
+div.uploadFile-showImage .ant-carousel .slick-dots li.slick-active img {
+  filter: grayscale(0%);
+}
+div.uploadFile-showImage .ant-carousel .slick-slide {
+  height: 600px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+div.uploadFile-showImage .ant-carousel .slick-slide > div {
+  width: 100%;
+}
+div.uploadFile-showImage .ant-carousel .slick-slide img {
+  display: block;
+  width: 100%;
+}
+div.uploadFile-showImage .ant-carousel .slick-prev,
+div.uploadFile-showImage .ant-carousel .slick-next {
+  font-size: 40px;
+  color: #fff;
+  width: 70px;
+  height: 40px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  margin-top: -50px;
+}
+div.uploadFile-showImage .ant-carousel .slick-prev::before,
+div.uploadFile-showImage .ant-carousel .slick-next::before {
+  display: none;
+}
+div.uploadFile-showImage .ant-carousel .slick-prev:hover,
+div.uploadFile-showImage .ant-carousel .slick-next:hover {
+  opacity: 1;
+}
+div.uploadFile-showImage .ant-carousel .slick-prev.slick-prev,
+div.uploadFile-showImage .ant-carousel .slick-next.slick-prev {
+  left: 0;
+}
+div.uploadFile-showImage .ant-carousel .slick-prev.slick-next,
+div.uploadFile-showImage .ant-carousel .slick-next.slick-next {
+  right: 0;
+}
+div.uploadFile-showUpload .item {
+  width: 160px;
+  height: 160px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  background: #fff;
+}
+div.uploadFile-showUpload .item:hover {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.14);
+}
+div.uploadFile-showUpload .item:hover .ItemDelete {
+  visibility: visible;
+  opacity: 1;
+}
+div.uploadFile-showUpload .item:hover .ItemAction {
+  display: block;
+}
+div.uploadFile-showUpload .item.nodata {
+  background: none;
+  box-shadow: none;
+  border: 1px dashed #dce1e6;
+}
+div.uploadFile-showUpload .item .ItemBox {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-image: url(images/icon-image.png);
+}
+div.uploadFile-showUpload .item .ItemBox.txt {
+  background-image: url(images/icon-txt.png);
+}
+div.uploadFile-showUpload .item .ItemBox.pdf {
+  background-image: url(images/icon-pdf.png);
+}
+div.uploadFile-showUpload .item .ItemBox.doc,
+div.uploadFile-showUpload .item .ItemBox.docx {
+  background-image: url(images/icon-doc.png);
+}
+div.uploadFile-showUpload .item .ItemBox.xlsx,
+div.uploadFile-showUpload .item .ItemBox.xls {
+  background-image: url(images/icon-xlsl.png);
+}
+div.uploadFile-showUpload .item .ItemBox.ppt,
+div.uploadFile-showUpload .item .ItemBox.pptx {
+  background-image: url(images/icon-ppt.png);
+}
+div.uploadFile-showUpload .item .ItemBox.zip {
+  background-image: url(images/icon-zip.png);
+}
+div.uploadFile-showUpload .item .ItemBox.rar {
+  background-image: url(images/icon-rar.png);
+}
+div.uploadFile-showUpload .item .ItemBox.gz {
+  background-image: url(images/icon-gz.png);
+}
+div.uploadFile-showUpload .item .ItemBox.7z {
+  background-image: url(images/icon-7z.png);
+}
+div.uploadFile-showUpload .item .ItemBox.acd {
+  background-image: url(images/icon-acd.png);
+}
+div.uploadFile-showUpload .item .ItemBox img {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: transform 2s ease;
+}
+div.uploadFile-showUpload .item .ItemBox img:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+div.uploadFile-showUpload .item .ItemBox:hover img {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+div.uploadFile-showUpload .item .ItemBox > .ant-spin {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 40px;
+  top: 0;
+  background: rgba(255, 255, 255, 0.8);
+}
+div.uploadFile-showUpload .item .ItemBox > .ant-spin .anticon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+div.uploadFile-showUpload .item .ItemTitle {
+  line-height: 40px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+div.uploadFile-showUpload .item .ItemTitle .text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 12px;
+  color: #49505e;
+  white-space: nowrap;
+}
+div.uploadFile-showUpload .item .ItemTitle .download {
+  height: 16px;
+  line-height: 16px;
+  padding: 0 12px;
+  border-left: 1px solid #dce1e6;
+  color: #959dab;
+  cursor: pointer;
+}
+div.uploadFile-showUpload .item .ItemTitle .download:hover {
+  color: #333;
+}
+div.uploadFile-showUpload .item .ItemIndex {
+  display: none;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 0 0 8px 0;
+  font-size: 13px;
+}
+div.uploadFile-showUpload .item .ItemDelete {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  line-height: 24px;
+  background: #fff;
+  border-radius: 4px;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #959dab;
+  font-size: 10px;
+  cursor: pointer;
+}
+div.uploadFile-showUpload .item .ItemDelete:hover {
+  color: #333;
+}
+div.uploadFile-showUpload .item .ItemDelete .anticon {
+  vertical-align: middle;
+}
+div.uploadFile-showUpload .item .ItemAction {
+  display: none;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 64px;
+  line-height: 24px;
+  background: #fff;
+  opacity: 0.8;
+  border-radius: 4px;
+  text-align: center;
+  color: #0084ff;
+  font-size: 13px;
+  cursor: pointer;
+}
+div.uploadFile-showUpload .item .ItemActionText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff;
+  min-width: 80px;
+  line-height: 40px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 4px;
+}
+div.uploadFile-showUpload .itemBox {
+  min-height: 105px;
+}
+div.uploadFile-showUpload .itemBox .errorTips {
+  background: rgba(255, 108, 93, 0.1);
+  color: #fd7474;
+  line-height: 30px;
+  margin: -14px -30px;
+  padding: 0 30px;
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+div.uploadFile-showUpload .itemBox::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+div.uploadFile-showUpload .itemBox .item {
+  float: left;
+  margin-bottom: 12px;
+  margin-right: 12px;
+}
+div.uploadFile-showUpload .itemBox .item:nth-child(5n + 1) {
+  margin-right: 0;
+}
+div.uploadFile-showUpload.error .itemBox .item .title {
+  color: #fd7474;
+}

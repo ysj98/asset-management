@@ -7,8 +7,8 @@
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\InventoryDetails.vue
  -->
 <script>
-  import handleInventoryReport from '../inventoryReport/handleInventoryReport'
-  export default {
-    extends: handleInventoryReport
-  }
+import handleInventoryReport from '../inventoryReport/handleInventoryReport';
+export default {
+  extends: handleInventoryReport,
+};
 </script>

@@ -5,11 +5,7 @@
       <SG-Title title="基础信息" />
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="出租单名称"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="出租单名称" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
               placeholder="请输入出租单名称"
               @change="nameChange"
@@ -27,20 +23,12 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="所属组织机构"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="所属组织机构" :label-col="labelCol" :wrapper-col="wrapperCol">
             {{ assetInfo.organName }}
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="资产项目"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="资产项目" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               showSearch
               style="width: 100%"
@@ -61,11 +49,7 @@
       </a-row>
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="资产类型"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="资产类型" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-select
               style="width: 100%"
               placeholder="请选择资产类型"
@@ -82,11 +66,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="合同编号"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="合同编号" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
               placeholder="请输入合同编号"
               v-model="contractNum"
@@ -109,70 +89,41 @@
             :validate-status="validateTenant ? 'error' : ''"
           >
             <span>
-              <a-tag
-                closable
-                v-for="m in tenantList"
-                :key="m.extCustId"
-                style="background: #fff"
-                @close="handleTenant(m)"
-              >
+              <a-tag closable v-for="m in tenantList" :key="m.extCustId" style="background: #fff" @close="handleTenant(m)">
                 {{ m.custName }}
               </a-tag>
-              <a-tag color="#108ee9" @click="handleTenant('')">
-                <a-icon type="user-add" style="margin-right: 3px" />选择
-              </a-tag>
+              <a-tag color="#108ee9" @click="handleTenant('')"> <a-icon type="user-add" style="margin-right: 3px" />选择 </a-tag>
             </span>
           </a-form-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="签约日期"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="签约日期" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :style="allWidth"
               placeholder="请选择日期"
-              v-decorator="[
-                'signDate',
-                { rules: [{ required: true, message: '请选择签约日期' }] },
-              ]"
+              v-decorator="['signDate', { rules: [{ required: true, message: '请选择签约日期' }] }]"
               @change="signDateFn"
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="起租日期"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="起租日期" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :style="allWidth"
               placeholder="请选择日期"
-              v-decorator="[
-                'startDate',
-                { rules: [{ required: true, message: '请选择起租日期' }] },
-              ]"
+              v-decorator="['startDate', { rules: [{ required: true, message: '请选择起租日期' }] }]"
               @change="startDateFn"
             />
           </a-form-item>
         </a-col>
         <a-col :span="8">
-          <a-form-item
-            label="止租日期"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="止租日期" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-date-picker
               :style="allWidth"
               placeholder="请选择日期"
-              v-decorator="[
-                'endDate',
-                { rules: [{ required: true, message: '请选择止租日期' }] },
-              ]"
+              v-decorator="['endDate', { rules: [{ required: true, message: '请选择止租日期' }] }]"
               @change="endDateFn"
             />
           </a-form-item>
@@ -180,11 +131,7 @@
       </a-row>
       <a-row>
         <a-col :span="8">
-          <a-form-item
-            label="租金单价"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="租金单价" :label-col="labelCol" :wrapper-col="wrapperCol">
             <a-input
               placeholder="请输入租金单价"
               v-model="rentPrice"
@@ -198,11 +145,7 @@
           </a-form-item>
         </a-col>
         <a-col v-if="!isSelectedEquipment" :span="8">
-          <a-form-item
-            label="出租面积(㎡)"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-          >
+          <a-form-item label="出租面积(㎡)" :label-col="labelCol" :wrapper-col="wrapperCol">
             <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
           </a-form-item>
         </a-col>
@@ -232,9 +175,10 @@
         <a-col :span="24">
           <a-form-item :colon="false" v-bind="formItemTextarea">
             <label slot="label">附&emsp;&emsp;件：</label>
-            <UploadFile type="all" v-model="uploadList" :maxSize="10240" >
+            <UploadFile type="all" v-model="uploadList" :maxSize="10240">
               <div slot="tips">
-                上传的文件最多为 5 个，单文件大小最大为 10M，支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt, pdf。
+                上传的文件最多为 5 个，单文件大小最大为 10M，支持文件格式包括doc, docx, xls, xlsx, ppt, pptx, zip, rar, jpg, jpeg, bmp, png, txt,
+                pdf。
               </div>
             </UploadFile>
           </a-form-item>
@@ -246,28 +190,16 @@
           <div class="text">
             <div class="leftInfo">
               资产数量：
-              <span class="pubText">{{
-                selectedList.length === 0 ? 0 : selectedList.length
-              }}</span
+              <span class="pubText">{{ selectedList.length === 0 ? 0 : selectedList.length }}</span
               >&nbsp;&nbsp;个
-              <p style="display: inline" v-if="!isSelectedEquipment">，&emsp; 出租面积：
-                <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span></p>
+              <p style="display: inline" v-if="!isSelectedEquipment">
+                ，&emsp; 出租面积： <span class="pubText">{{ leaseArea ? leaseArea : 0 }}㎡</span>
+              </p>
             </div>
-            <SG-Button
-              icon="plus"
-              type="primary"
-              ghost
-              @click="handleAddModal(true)"
-              >添加资产</SG-Button
-            >
+            <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)">添加资产</SG-Button>
           </div>
           <!-- 资产表格部分 -->
-          <a-table
-            :columns="columnsCom"
-            :data-source="selectedList"
-            :pagination="false"
-            :bordered="true"
-          >
+          <a-table :columns="columnsCom" :data-source="selectedList" :pagination="false" :bordered="true">
             <template slot="operation" slot-scope="text, record">
               <a style="color: #ff0000" @click="removeRent(record)">删除</a>
             </template>
@@ -286,13 +218,7 @@
               />
             </template>
             <template slot="remark" slot-scope="text, record">
-              <a-input
-                placeholder="请输入备注"
-                :max="200"
-                v-model="record.remark"
-                style="width: 150px"
-                :maxLength="200"
-              />
+              <a-input placeholder="请输入备注" :max="200" v-model="record.remark" style="width: 150px" :maxLength="200" />
             </template>
           </a-table>
         </div>
@@ -302,23 +228,12 @@
     <FormFooter style="border: none" location="fixed">
       <div>
         <SG-Button type="primary" @click="save('save')">提交审批</SG-Button>
-        <SG-Button
-          style="margin-left: 12px"
-          type="primary"
-          weaken
-          @click="save()"
-          >保存草稿</SG-Button
-        >
+        <SG-Button style="margin-left: 12px" type="primary" weaken @click="save()">保存草稿</SG-Button>
         <SG-Button @click="cancel">取消</SG-Button>
       </div>
     </FormFooter>
     <!-- 承租人组件 -->
-    <TenantModal
-      v-model="close"
-      v-if="close"
-      ref="TenantModal"
-      @getTenantList="getTenantList"
-    ></TenantModal>
+    <TenantModal v-model="close" v-if="close" ref="TenantModal" @getTenantList="getTenantList"></TenantModal>
     <!-- 资产列表组件 -->
     <AssetListMoal
       ref="AssetListMoal"
@@ -336,81 +251,77 @@
 <script>
 const columns = [
   {
-    title: "序号",
-    align: "center",
+    title: '序号',
+    align: 'center',
     customRender: (text, record, index) => `${index + 1}`,
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
-    align: "center",
+    title: '资产编码',
+    dataIndex: 'assetCode',
+    align: 'center',
   },
   {
-    title: "资产名称",
-    dataIndex: "assetName",
-    align: "center",
+    title: '资产名称',
+    dataIndex: 'assetName',
+    align: 'center',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
-    align: "center",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
+    align: 'center',
   },
   {
-    title: "资产分类",
-    dataIndex: "assetCategoryName",
-    align: "center",
+    title: '资产分类',
+    dataIndex: 'assetCategoryName',
+    align: 'center',
   },
   {
-    title: "规格型号",
-    dataIndex: "model",
-    align: "center",
+    title: '规格型号',
+    dataIndex: 'model',
+    align: 'center',
   },
   {
-    title: "资产面积(㎡)",
-    dataIndex: "assetArea",
-    align: "center",
+    title: '资产面积(㎡)',
+    dataIndex: 'assetArea',
+    align: 'center',
   },
   {
-    slots: { title: "leaseArea" },
-    dataIndex: "leaseArea",
-    scopedSlots: { customRender: "leaseArea" },
-    align: "center",
+    slots: { title: 'leaseArea' },
+    dataIndex: 'leaseArea',
+    scopedSlots: { customRender: 'leaseArea' },
+    align: 'center',
   },
   {
-    title: "备注",
-    dataIndex: "remark",
-    scopedSlots: { customRender: "remark" },
-    align: "center",
+    title: '备注',
+    dataIndex: 'remark',
+    scopedSlots: { customRender: 'remark' },
+    align: 'center',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    align: "center",
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
+    align: 'center',
   },
 ];
-import {
-  queryProjectListByOrganId,
-  filterOption,
-  queryAssetTypeList,
-} from "src/views/common/commonQueryApi";
-import TenantModal from "../../component/tenantModal"; // 承租人组件
-import AssetListMoal from "../../component/assetListModal"; // 资产列表组件
-import { calc, debounce } from "@/utils/utils";
-import FormFooter from "@/components/FormFooter";
-import moment from "moment";
+import { queryProjectListByOrganId, filterOption, queryAssetTypeList } from 'src/views/common/commonQueryApi';
+import TenantModal from '../../component/tenantModal'; // 承租人组件
+import AssetListMoal from '../../component/assetListModal'; // 资产列表组件
+import { calc, debounce } from '@/utils/utils';
+import FormFooter from '@/components/FormFooter';
+import moment from 'moment';
 export default {
   components: { TenantModal, AssetListMoal, FormFooter },
   data() {
     return {
       close,
       columns,
-      assetInfo: "",
-      organId: "",
-      leaseOrderId: "",
-      rentFormName: "", // 出租单名称
-      projectId: "",
-      assetType: "",
+      assetInfo: '',
+      organId: '',
+      leaseOrderId: '',
+      rentFormName: '', // 出租单名称
+      projectId: '',
+      assetType: '',
       spinning: false, // 页面加载状态
       form: this.$form.createForm(this), // 注册form
       labelCol: { span: 8 },
@@ -421,37 +332,37 @@ export default {
           sm: { span: 3 },
         },
       },
-      allWidth: "width: 214px",
-      widthBox: "width: 70%",
+      allWidth: 'width: 214px',
+      widthBox: 'width: 70%',
       projectOptions: [], // 资产项目选项
       typeOptions: [], // 资产类型选项
       validateTenant: false, // 自定义校验auditUsers标志
       tenantList: [], // 承租人，多个，分隔
-      signingDate: "",
-      startLeaseDate: "",
-      endLeaseDate: "",
-      leaseArea: "", // 出租面积
+      signingDate: '',
+      startLeaseDate: '',
+      endLeaseDate: '',
+      leaseArea: '', // 出租面积
       selectedList: [], // 资产列表选中项
-      note: "", // 备注
-      contractNum: "", // 合同编号
-      rentPrice: "", // 租金单价
+      note: '', // 备注
+      contractNum: '', // 合同编号
+      rentPrice: '', // 租金单价
       uploadList: [], // 上传列表
       pass: true,
     };
   },
-  computed:{
-    columnsCom(){
-      if (this.isSelectedEquipment){
-        const arr = ['assetArea', 'leaseArea',]
-        return this.columns.filter(ele=>{
-          return !arr.includes(ele.dataIndex)
-        })
-      }else {
-        return this.columns
+  computed: {
+    columnsCom() {
+      if (this.isSelectedEquipment) {
+        const arr = ['assetArea', 'leaseArea'];
+        return this.columns.filter((ele) => {
+          return !arr.includes(ele.dataIndex);
+        });
+      } else {
+        return this.columns;
       }
     },
-    isSelectedEquipment(){
-      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT
+    isSelectedEquipment() {
+      return String(this.assetType) === this.$store.state.ASSET_TYPE_CODE.EQUIPMENT;
     },
   },
   watch: {
@@ -466,93 +377,87 @@ export default {
     moment,
     // 查询出租单
     getLeaseOrder() {
-      this.$api.assetRent
-        .getLeaseOrder({ leaseOrderId: +this.leaseOrderId })
-        .then((res) => {
-          // 过滤承租人信息
-          let arr = [];
-          let leaseIdList = res.data.data.lesseeId.split(",");
-          let leaseName = res.data.data.lesseeName.split(",");
-          for (let i = 0; i < leaseIdList.length; i++) {
-            let newObj = {};
-            newObj.extCustId = leaseIdList[i];
-            arr.push(newObj);
-          }
-          arr.forEach((item, index1) => {
-            leaseName.forEach((j, index2) => {
-              if (index1 === index2) {
-                item.custName = j;
-              }
-            });
+      this.$api.assetRent.getLeaseOrder({ leaseOrderId: +this.leaseOrderId }).then((res) => {
+        // 过滤承租人信息
+        let arr = [];
+        let leaseIdList = res.data.data.lesseeId.split(',');
+        let leaseName = res.data.data.lesseeName.split(',');
+        for (let i = 0; i < leaseIdList.length; i++) {
+          let newObj = {};
+          newObj.extCustId = leaseIdList[i];
+          arr.push(newObj);
+        }
+        arr.forEach((item, index1) => {
+          leaseName.forEach((j, index2) => {
+            if (index1 === index2) {
+              item.custName = j;
+            }
           });
-          this.assetInfo = res.data.data;
-          let r = res.data.data;
-          this.rentFormName = r.leaseName;
-          this.organId = r.organId;
-          this.projectId = r.projectId;
-          this.assetType = r.assetType;
-          this.tenantList = arr;
-          this.signingDate = r.signingDate;
-          this.startLeaseDate = r.startLeaseDate;
-          this.endLeaseDate = r.endLeaseDate;
-          this.contractNum = r.contractCode;
-          this.rentPrice = r.rentPrice;
-          this.leaseArea = r.leaseArea;
-          this.form.setFieldsValue({
-            signDate: r.signingDate ? moment(r.signingDate) : "",
-            startDate: r.startLeaseDate ? moment(r.startLeaseDate) : "",
-            endDate: r.endLeaseDate ? moment(r.endLeaseDate) : "",
-            remark: r.remark,
-            contractNum: r.contractCode,
-            rentPrice: r.rentPrice,
-          });
-          this.note = r.remark;
-          this.queryProjectByOrganId(this.organId);
         });
+        this.assetInfo = res.data.data;
+        let r = res.data.data;
+        this.rentFormName = r.leaseName;
+        this.organId = r.organId;
+        this.projectId = r.projectId;
+        this.assetType = r.assetType;
+        this.tenantList = arr;
+        this.signingDate = r.signingDate;
+        this.startLeaseDate = r.startLeaseDate;
+        this.endLeaseDate = r.endLeaseDate;
+        this.contractNum = r.contractCode;
+        this.rentPrice = r.rentPrice;
+        this.leaseArea = r.leaseArea;
+        this.form.setFieldsValue({
+          signDate: r.signingDate ? moment(r.signingDate) : '',
+          startDate: r.startLeaseDate ? moment(r.startLeaseDate) : '',
+          endDate: r.endLeaseDate ? moment(r.endLeaseDate) : '',
+          remark: r.remark,
+          contractNum: r.contractCode,
+          rentPrice: r.rentPrice,
+        });
+        this.note = r.remark;
+        this.queryProjectByOrganId(this.organId);
+      });
     },
     // 查询附件
     getAttachmentList(id) {
       if (!id) {
         return false;
       }
-      this.$api.basics
-        .attachment({ objectId: id, objectType: 19 })
-        .then((res) => {
-          if (+res.data.code === 0) {
-            let attachment = [];
-            res.data.data.forEach((item) => {
-              let obj = {
-                url: item.attachmentPath,
-                name: item.oldAttachmentName,
-              };
-              attachment.push(obj);
-              this.uploadList = attachment;
-            });
-          } else {
-            this.$error({
-              title: "提示",
-              content: res.data.message,
-            });
-          }
-        });
+      this.$api.basics.attachment({ objectId: id, objectType: 19 }).then((res) => {
+        if (+res.data.code === 0) {
+          let attachment = [];
+          res.data.data.forEach((item) => {
+            let obj = {
+              url: item.attachmentPath,
+              name: item.oldAttachmentName,
+            };
+            attachment.push(obj);
+            this.uploadList = attachment;
+          });
+        } else {
+          this.$error({
+            title: '提示',
+            content: res.data.message,
+          });
+        }
+      });
     },
     // 出租登记-查询出租明细列表
     getLeaseDetailList() {
-      this.$api.assetRent
-        .getLeaseDetailList({ leaseOrderId: +this.leaseOrderId })
-        .then((res) => {
-          this.selectedList = res.data.data;
-          this.selectedList.forEach((item) => {
-            item.model = "/";
-            item.key = item.assetId;
-          });
-          // 回显列表
-          let arr = [];
-          this.selectedList.forEach((j) => {
-            arr.push(j.assetId);
-          });
-          this.$refs.AssetListMoal.selectedRowKeys = arr;
+      this.$api.assetRent.getLeaseDetailList({ leaseOrderId: +this.leaseOrderId }).then((res) => {
+        this.selectedList = res.data.data;
+        this.selectedList.forEach((item) => {
+          item.model = '/';
+          item.key = item.assetId;
         });
+        // 回显列表
+        let arr = [];
+        this.selectedList.forEach((j) => {
+          arr.push(j.assetId);
+        });
+        this.$refs.AssetListMoal.selectedRowKeys = arr;
+      });
     },
     // 名称改变
     nameChange(e) {
@@ -563,18 +468,12 @@ export default {
     },
     // 根据organId查询资产项目
     queryProjectByOrganId(organId) {
-      queryProjectListByOrganId(organId).then((list) =>
-        list
-          ? (this.projectOptions = list)
-          : this.$message.error("查询资产项目失败")
-      );
+      queryProjectListByOrganId(organId).then((list) => (list ? (this.projectOptions = list) : this.$message.error('查询资产项目失败')));
     },
     // 查询资产类型--平台字典
     queryAssetType() {
       queryAssetTypeList().then((list) => {
-        list
-          ? (this.typeOptions = list)
-          : this.$message.error("查询资产类型失败");
+        list ? (this.typeOptions = list) : this.$message.error('查询资产类型失败');
       });
     },
     // 下拉搜索筛选
@@ -606,18 +505,14 @@ export default {
       let hash = {};
       this.tenantList.push(val);
       this.tenantList = this.tenantList.reduce(function (item, next) {
-        hash[next.extCustId]
-          ? ""
-          : (hash[next.extCustId] = true && item.push(next));
+        hash[next.extCustId] ? '' : (hash[next.extCustId] = true && item.push(next));
         return item;
       }, []);
     },
     // 删除、选择承租人
     handleTenant(m) {
       if (m) {
-        this.tenantList = this.tenantList.filter(
-          (v) => v.extCustId !== m.extCustId
-        );
+        this.tenantList = this.tenantList.filter((v) => v.extCustId !== m.extCustId);
       } else {
         this.close = true;
         this.$nextTick(() => {
@@ -638,8 +533,8 @@ export default {
     // 添加资产按钮
     handleAddModal() {
       if (!this.projectId && !this.assetType) {
-        this.form.validateFieldsAndScroll(["projectId", "assetType"], () => {
-          this.$message.warn("请先选择数据");
+        this.form.validateFieldsAndScroll(['projectId', 'assetType'], () => {
+          this.$message.warn('请先选择数据');
           return;
         });
       } else {
@@ -661,10 +556,7 @@ export default {
     // 每次再次计算统计的值
     calcFn() {
       if (this.selectedList.length > 0) {
-        this.leaseArea = this.selectedList.reduce(
-          (sun, current) => calc.add(sun, current.leaseArea || 0),
-          0
-        );
+        this.leaseArea = this.selectedList.reduce((sun, current) => calc.add(sun, current.leaseArea || 0), 0);
       } else {
         this.leaseArea = 0;
       }
@@ -673,8 +565,8 @@ export default {
     removeRent(val) {
       let _this = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要删除该记录吗？",
+        title: '提示',
+        content: '确认要删除该记录吗？',
         onOk() {
           let arr = [];
           let area = 0;
@@ -721,7 +613,7 @@ export default {
         organId: this.organId,
         projectId: this.projectId,
         assetType: this.assetType,
-        approvalStatus: type === "draft" ? 0 : 2,
+        approvalStatus: type === 'draft' ? 0 : 2,
         lesseeId: str,
         signingDate: this.signingDate,
         startLeaseDate: this.startLeaseDate,
@@ -736,8 +628,8 @@ export default {
       };
       this.$api.assetRent.saveUpdateLeaseOrder(saveObj).then((res) => {
         if (+res.data.code === 0) {
-          this.$message.success(`${type === "" ? "提交审批" : "保存草稿"}成功`);
-          this.$router.push({path: "/rentRegister", query: {refresh: true}});
+          this.$message.success(`${type === '' ? '提交审批' : '保存草稿'}成功`);
+          this.$router.push({ path: '/rentRegister', query: { refresh: true } });
         } else {
           this.$message.error(res.data.message);
         }
@@ -751,7 +643,7 @@ export default {
         this.form.validateFields((err, values) => {
           if (!err && this.tenantList.length) {
             if (this.selectedList.length === 0) {
-              this.$message.error("请添加资产");
+              this.$message.error('请添加资产');
             } else {
               this.selectedList.forEach((item) => {
                 if (+item.leaseArea <= 0) {
@@ -760,10 +652,10 @@ export default {
                 }
               });
               if (!this.isSelectedEquipment && this.pass === false) {
-                this.$message.error("出租面积必须大于1㎡");
+                this.$message.error('出租面积必须大于1㎡');
                 return;
               }
-              this.saveUpdateLeaseOrder("");
+              this.saveUpdateLeaseOrder('');
             }
           }
         });
@@ -778,17 +670,17 @@ export default {
               }
             });
             if (!this.isSelectedEquipment && this.pass === false) {
-              this.$message.error("出租面积必须大于1㎡");
+              this.$message.error('出租面积必须大于1㎡');
               return;
             }
-            this.saveUpdateLeaseOrder("draft");
+            this.saveUpdateLeaseOrder('draft');
           }
         });
       }
     },
     // 页脚取消
     cancel() {
-      this.$router.push("/rentRegister");
+      this.$router.push('/rentRegister');
     },
   },
   // 赋值出租单ID
@@ -836,6 +728,6 @@ export default {
   }
 }
 /deep/.sg-uploadFile {
-    max-width: 100% !important;
-  }
+  max-width: 100% !important;
+}
 </style>

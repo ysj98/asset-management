@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
-import configBase from "@/config/config.base";
+import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
+import configBase from '@/config/config.base';
 export default {
-  name: "ShowFile",
+  name: 'ShowFile',
   mixins: [uploadAndDownLoadFIle],
   props: {
     value: {

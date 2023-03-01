@@ -1,13 +1,6 @@
-/**
- * 26个字母姓氏组件
- * @filename: letterList.vue
- * @desc: vue components file
- * @author: utaware
- * @createTime: 2019/07/18 16:44:31 星期四
- */
+/** * 26个字母姓氏组件 * @filename: letterList.vue * @desc: vue components file * @author: utaware * @createTime: 2019/07/18 16:44:31 星期四 */
 
 <template>
-
   <a-select
     class="letter-contain"
     :class="value ? 'isExist' : 'isEmpty'"
@@ -19,21 +12,17 @@
     :open="open"
     @change="change"
     @dropdownVisibleChange="dropdownVisibleChange"
-    style="width: 140px">
-    
+    style="width: 140px"
+  >
     <div slot="dropdownRender" slot-scope="menu">
-
       <v-nodes :vnodes="menu" :clickHandler="clickHandler" :list="letterCodeList"></v-nodes>
-
     </div>
-
   </a-select>
-
 </template>
 
 <script>
 // components
-import { Select } from 'ant-design-vue'
+import { Select } from 'ant-design-vue';
 
 export default {
   name: 'letterList',
@@ -44,80 +33,84 @@ export default {
     VNodes: {
       functional: true,
       render: (h, ctx) => {
-        const { list, clickHandler } = ctx.props
-        return h('ul', {
-          props: ctx.props.list,
-          class: {
-            list: true
-          },
-          style: { margin: '0' }
-        }, list.map((v, i) => {
-          return h('li', {
-            props: v,
-            attrs: {
-              index: v
-            },
-            domProps: {
-              innerText: v
-            },
-            on: {
-              click: () => {
-                clickHandler(v)
-              }
-            },
-            key: v + i,
-            text: v,
+        const { list, clickHandler } = ctx.props;
+        return h(
+          'ul',
+          {
+            props: ctx.props.list,
             class: {
-              item: true
-            }
+              list: true,
+            },
+            style: { margin: '0' },
+          },
+          list.map((v, i) => {
+            return h('li', {
+              props: v,
+              attrs: {
+                index: v,
+              },
+              domProps: {
+                innerText: v,
+              },
+              on: {
+                click: () => {
+                  clickHandler(v);
+                },
+              },
+              key: v + i,
+              text: v,
+              class: {
+                item: true,
+              },
+            });
           })
-        }))
-      }
-    }
+        );
+      },
+    },
   },
   mixins: [],
   watch: {},
   props: {
     value: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
       open: false,
       dropdownStyle: {
         padding: '10px',
         minWidth: '245px',
-        minHeight: '100%'
-      }
-    }
+        minHeight: '100%',
+      },
+    };
   },
   computed: {
     // 生成A-Z的26个字母 A: 65 Z:90
-    letterCodeList () {
-      return Array.from({length: 26}).map((v, i) => {
-        v = String.fromCharCode((i + 65).toString())
-        return v
-      })
-    }
+    letterCodeList() {
+      return Array.from({ length: 26 }).map((v, i) => {
+        v = String.fromCharCode((i + 65).toString());
+        return v;
+      });
+    },
   },
   methods: {
-    clickHandler (v) {
-      this.open = false
-      this.$emit('input', v)
+    clickHandler(v) {
+      this.open = false;
+      this.$emit('input', v);
     },
-    change () {
-      this.$emit('input', '')
+    change() {
+      this.$emit('input', '');
     },
-    dropdownVisibleChange (open) {
-      this.open = open
-    }
+    dropdownVisibleChange(open) {
+      this.open = open;
+    },
   },
   filters: {},
-  created () {},
-  mounted () {}
-}
+  created() {},
+  mounted() {},
+};
 </script>
 
 <style lang="scss">
@@ -132,8 +125,8 @@ export default {
       line-height: 32px;
       cursor: pointer;
       &:hover {
-        color: #0084FF;
-        background: #F3F9FF;
+        color: #0084ff;
+        background: #f3f9ff;
       }
     }
   }

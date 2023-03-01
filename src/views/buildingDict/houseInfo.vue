@@ -5,30 +5,16 @@
  -->
 <template>
   <div class="houseInfo-page pb70">
-    <SearchContainer v-model="toggle" :contentStyle="{paddingTop: toggle?'16px': 0, overflow: 'visible'}">
+    <SearchContainer v-model="toggle" :contentStyle="{ paddingTop: toggle ? '16px' : 0, overflow: 'visible' }">
       <div slot="headerBtns">
-        <SG-Button
-          class="mr10"
-          v-power="ASSET_MANAGEMENT.ASSET_ADD_HOUSE"
-          icon="plus"
-          @click="goPage('create')"
-          type="primary"
-        >新增</SG-Button>
-        <SG-Button
-          class="mr10"
-          v-power="ASSET_MANAGEMENT.ASSET_HOUSEZL_IN"
-          @click="showHouseDataImport"
-        >
+        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_ADD_HOUSE" icon="plus" @click="goPage('create')" type="primary">新增</SG-Button>
+        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSEZL_IN" @click="showHouseDataImport">
           <segiIcon type="#icon-ziyuan4" class="mr10" />房间资料导入
         </SG-Button>
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSE_OUT" @click="openExportModal">
           <segiIcon type="#icon-ziyuan10" class="mr10" />房间导出
         </SG-Button>
-        <SG-Button
-          icon="sync"
-          v-power="ASSET_MANAGEMENT.ASSET_HOUSE_IN"
-          @click="openImportModal"
-        >批量更新</SG-Button>
+        <SG-Button icon="sync" v-power="ASSET_MANAGEMENT.ASSET_HOUSE_IN" @click="openImportModal">批量更新</SG-Button>
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
@@ -140,19 +126,19 @@
     <div class="table-layout-fixed">
       <a-table
         class="custom-table operation"
-        :scroll="{x:'100%',y:600}"
+        :scroll="{ x: '100%', y: 600 }"
         :loading="table.loading"
         :pagination="false"
         :columns="table.columns"
         :dataSource="table.dataSource"
       >
         <template slot="houseName" slot-scope="text, record">
-          <span class="nav_name" @click="goPage('detail', record)">{{text}}</span>
+          <span class="nav_name" @click="goPage('detail', record)">{{ text }}</span>
         </template>
         <template slot="operation" slot-scope="text, record">
           <OperationPopover
             v-if="record.houseId !== '合计'"
-            :operationData="String(record.status) === '1'?operationDataOn:operationDataOff"
+            :operationData="String(record.status) === '1' ? operationDataOn : operationDataOff"
             @operationFun="operationFun($event, record)"
           ></OperationPopover>
         </template>
@@ -174,144 +160,148 @@
       @success="houseDataImportSuccess"
     />
     <!-- 房间导出 -->
-    <houseExport :organIdCopy="queryCondition.organId" :defaultOrganName="selectedOrganName" :isCurrent="queryCondition.isCurrent" ref="houseExport" />
-    <!-- 批量更新 -->
-    <eportAndDownFile
-      @upload="uploadHouseFile"
-      ref="eportAndDownFile"
-      title="房间批量更新"
-      :showDown="false"
+    <houseExport
+      :organIdCopy="queryCondition.organId"
+      :defaultOrganName="selectedOrganName"
+      :isCurrent="queryCondition.isCurrent"
+      ref="houseExport"
     />
+    <!-- 批量更新 -->
+    <eportAndDownFile @upload="uploadHouseFile" ref="eportAndDownFile" title="房间批量更新" :showDown="false" />
     <!-- 导入错误信息 -->
     <downErrorFile ref="downErrorFile">
-      <div>{{upErrorInfo}}</div>
+      <div>{{ upErrorInfo }}</div>
     </downErrorFile>
   </div>
 </template>
 <script>
-import SearchContainer from "@/views/common/SearchContainer";
-import segiIcon from "@/components/segiIcon.vue";
-import { utils, debounce, getFormat } from "@/utils/utils";
-import OperationPopover from "@/components/OperationPopover";
-import houseExport from "./child/houseExport.vue";
-import eportAndDownFile from "@/views/common/eportAndDownFile.vue";
-import houseDataImport from "./child/houseDataImport.vue";
-import downErrorFile from "@/views/common/downErrorFile";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import noDataTips from "@/components/noDataTips";
+import SearchContainer from '@/views/common/SearchContainer';
+import segiIcon from '@/components/segiIcon.vue';
+import { utils, debounce, getFormat } from '@/utils/utils';
+import OperationPopover from '@/components/OperationPopover';
+import houseExport from './child/houseExport.vue';
+import eportAndDownFile from '@/views/common/eportAndDownFile.vue';
+import houseDataImport from './child/houseDataImport.vue';
+import downErrorFile from '@/views/common/downErrorFile';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import noDataTips from '@/components/noDataTips';
 import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
-let getUuid = ((uuid = 1) => () => ++uuid)();
+let getUuid = (
+  (uuid = 1) =>
+  () =>
+    ++uuid
+)();
 const allWidth = {
-  width: "170px",
-  "margin-right": "10px",
-  float: "left",
-  "margin-top": "14px"
+  width: '170px',
+  'margin-right': '10px',
+  float: 'left',
+  'margin-top': '14px',
 };
 // 页面跳转
 const operationTypes = {
-  create: "/buildingDict/createHouse",
-  edit: "/buildingDict/editHouse",
-  detail: "/buildingDict/detailHouse",
-  copy: "/buildingDict/createHouse"
+  create: '/buildingDict/createHouse',
+  edit: '/buildingDict/editHouse',
+  detail: '/buildingDict/detailHouse',
+  copy: '/buildingDict/createHouse',
 };
 let queryCondition = {
   pageNo: 1,
   pageLength: 10,
-  organId: "",
-  buildId: "",
-  unitId: "",
-  houseId: "",
-  houseCategory: "", //建筑形态
-  houseType: "", //房间类型
-  resType: "", // 房间用途
-  status: "", // 房间状态
+  organId: '',
+  buildId: '',
+  unitId: '',
+  houseId: '',
+  houseCategory: '', //建筑形态
+  houseType: '', //房间类型
+  resType: '', // 房间用途
+  status: '', // 房间状态
   isCurrent: 0,
-  isRegister: '' // 是否登记资产
+  isRegister: '', // 是否登记资产
 };
 const statusMap = {
-  "1": "有效",
-  "0": "无效"
+  1: '有效',
+  0: '无效',
 };
-const buildOpt = [{ label: "全部楼栋", value: "" }];
-const unitOpt = [{ label: "全部单元", value: "" }];
-const houseOpt = [{ label: "全部房号", value: "" }];
-const houseCategoryOpt = [{ label: "所有建筑形态", value: "" }];
-const houseTypeOpt = [{ label: "全部房间类型", value: "" }];
-const resTypeOpt = [{ label: "全部房间用途", value: "" }];
+const buildOpt = [{ label: '全部楼栋', value: '' }];
+const unitOpt = [{ label: '全部单元', value: '' }];
+const houseOpt = [{ label: '全部房号', value: '' }];
+const houseCategoryOpt = [{ label: '所有建筑形态', value: '' }];
+const houseTypeOpt = [{ label: '全部房间类型', value: '' }];
+const resTypeOpt = [{ label: '全部房间用途', value: '' }];
 const statusOpt = [
-  { label: "全部状态", value: "" },
-  { label: "有效", value: "1" },
-  { label: "无效", value: "0" }
+  { label: '全部状态', value: '' },
+  { label: '有效', value: '1' },
+  { label: '无效', value: '0' },
 ];
 const registerList = [
-  { label: "是否登记资产", value: "" },
-  { label: "是", value: "1" },
-  { label: "否", value: "0" }
+  { label: '是否登记资产', value: '' },
+  { label: '是', value: '1' },
+  { label: '否', value: '0' },
 ];
 // 表格数据
 let columns = [
   {
-    title: "房间ID",
-    dataIndex: "houseId",
-    width: 100
+    title: '房间ID',
+    dataIndex: 'houseId',
+    width: 100,
   },
   {
-    title: "所属组织机构",
-    dataIndex: "organName",
-    width: '15%'
+    title: '所属组织机构',
+    dataIndex: 'organName',
+    width: '15%',
   },
   {
-    title: "房间名称",
-    dataIndex: "houseName",
+    title: '房间名称',
+    dataIndex: 'houseName',
     width: '18%',
-    scopedSlots: { customRender: "houseName" }
+    scopedSlots: { customRender: 'houseName' },
   },
   {
-    title: "建筑形态",
-    dataIndex: "houseCategoryName",
-    width: 90
+    title: '建筑形态',
+    dataIndex: 'houseCategoryName',
+    width: 90,
   },
   {
-    title: "房间类型",
-    dataIndex: "houseTypeName",
-    width: 90
+    title: '房间类型',
+    dataIndex: 'houseTypeName',
+    width: 90,
   },
   {
-    title: "建筑面积(㎡)",
-    dataIndex: "area",
-    width: 100
+    title: '建筑面积(㎡)',
+    dataIndex: 'area',
+    width: 100,
   },
   {
-    title: "使用面积(㎡)",
-    dataIndex: "useArea",
-    width: 100
+    title: '使用面积(㎡)',
+    dataIndex: 'useArea',
+    width: 100,
   },
   {
-    title: "套内面积(㎡)",
-    dataIndex: "innerArea",
-    width: 100
+    title: '套内面积(㎡)',
+    dataIndex: 'innerArea',
+    width: 100,
   },
   {
-    title: "分摊面积(㎡)",
-    dataIndex: "shareArea",
-    width: 100
+    title: '分摊面积(㎡)',
+    dataIndex: 'shareArea',
+    width: 100,
   },
   {
-    title: "房间状态",
-    dataIndex: "statusName",
-    width: 100
+    title: '房间状态',
+    dataIndex: 'statusName',
+    width: 100,
   },
   {
-    title: "是否登记资产",
-    dataIndex: "isRegisterName",
-    width: 120
+    title: '是否登记资产',
+    dataIndex: 'isRegisterName',
+    width: 120,
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
-    width: 80
-  }
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
+    width: 80,
+  },
 ];
 // 操作按钮
 // const operationDataOff = [
@@ -340,8 +330,8 @@ export default {
   props: {
     organIdInfo: {
       type: Object,
-      default:() => {
-        return ({})
+      default: () => {
+        return {};
       },
     },
     isCurrent: {
@@ -355,12 +345,12 @@ export default {
       selectedOrganName: '', // 当前所选 组织名称 导出弹窗回显使用
       typeFilter,
       ASSET_MANAGEMENT,
-      upErrorInfo: "", // 导入文件错误提示
+      upErrorInfo: '', // 导入文件错误提示
       allWidth,
       toggle: true,
       operationDataOff: [],
       operationDataOn: [],
-      searchBuildName: "", // 搜索楼栋字符
+      searchBuildName: '', // 搜索楼栋字符
       queryCondition: { ...queryCondition },
       buildOpt: utils.deepClone(buildOpt),
       unitOpt: utils.deepClone(unitOpt),
@@ -374,30 +364,26 @@ export default {
         columns,
         dataSource: [],
         loading: false,
-        totalCount: 0
+        totalCount: 0,
       },
-      tableList: 0
+      tableList: 0,
     };
   },
   watch: {
     organIdInfo: {
-      handler({organId, organName}) {
+      handler({ organId, organName }) {
         if (organId) {
-          this.organIdChange(organId, organName)
+          this.organIdChange(organId, organName);
         }
       },
       deep: true,
-      immediate: true
+      immediate: true,
     },
     isCurrent() {
-      this.queryCondition.isCurrent = this.isCurrent
+      this.queryCondition.isCurrent = this.isCurrent;
     },
-    $route () {
-      if (
-        this.$route.path === "/buildingDict" &&
-        this.$route.query.refresh &&
-        this.$route.query.showKey === "house"
-      ) {
+    $route() {
+      if (this.$route.path === '/buildingDict' && this.$route.query.refresh && this.$route.query.showKey === 'house') {
         this.queryCondition.pageNo = 1;
         this.queryCondition.pageLength = 10;
         this.query();
@@ -422,91 +408,87 @@ export default {
       this.queryCondition.isRegister = query.isRegister;
       this.organName = query.organName;
       this.searchBuildName = query.searchBuildName;
-      console.log("取=>", this.searchBuildName);
+      console.log('取=>', this.searchBuildName);
       this.formChildPage = true; // 用于公司记录一次
     }
     // 楼栋
     if (this.queryCondition.organId) {
-      console.log("请求=>", this.searchBuildName);
+      console.log('请求=>', this.searchBuildName);
       this.queryBuildList(this.queryCondition.organId, this.searchBuildName);
     }
     // 单元
     if (this.queryCondition.buildId) {
-      this.getOptions("getUnitByBuildId", this.queryCondition.buildId);
+      this.getOptions('getUnitByBuildId', this.queryCondition.buildId);
     }
     // 房号
     if (this.queryCondition.unitId) {
-      this.getOptions("getHouseByUnitId", this.queryCondition.unitId);
+      this.getOptions('getHouseByUnitId', this.queryCondition.unitId);
     }
     // 房间类型
     // if (this.queryCondition.houseCategory) {
-      // let typeId = this.queryCondition.houseCategory.split(",")[1];
-      // this.queryChildNodesById(typeId);
+    // let typeId = this.queryCondition.houseCategory.split(",")[1];
+    // this.queryChildNodesById(typeId);
     // }
     this.query();
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     // 房间收拾搜索
-    onChangeHouseOpt (val) {
+    onChangeHouseOpt(val) {
       if (val) {
-        this.houseName = val
-        this.debounceHouse()
+        this.houseName = val;
+        this.debounceHouse();
       }
     },
     // 防抖函数后台请求楼栋数据
-    debounceHouse: debounce(function() {
+    debounceHouse: debounce(function () {
       // 如果选择了楼栋和单元的就按单元查  反正按楼栋查
       // queryCondition.buildId
       // queryCondition.unitId
-      let str = ''
-      let strType = ''
+      let str = '';
+      let strType = '';
       if (this.queryCondition.buildId && this.queryCondition.unitId) {
-        str = this.queryCondition.unitId
-        strType = 'getHouseByUnitId'
+        str = this.queryCondition.unitId;
+        strType = 'getHouseByUnitId';
       } else {
-        str = this.queryCondition.buildId
-        strType = 'getHouseByBuildId'
+        str = this.queryCondition.buildId;
+        strType = 'getHouseByBuildId';
       }
-      this.getOptionsByAms(
-        strType,
-        str
-      );
+      this.getOptionsByAms(strType, str);
     }, 300),
-    getOptionsByAms (type, value = "") {
+    getOptionsByAms(type, value = '') {
       if (!type) {
         return;
       }
       if (!value) {
-        return
+        return;
       }
-      let PARAMS = "";
+      let PARAMS = '';
       let resetArr = [];
       // 以单元请求房号
-      if (type === "getHouseByUnitId") {
-        PARAMS = "#UNIT_ID:" + value;
+      if (type === 'getHouseByUnitId') {
+        PARAMS = '#UNIT_ID:' + value;
         resetArr = utils.deepClone(houseOpt);
         this.houseOpt = resetArr;
       }
       // 以楼栋请求房号
-      if (type === "getHouseByBuildId") {
-        PARAMS = "#BUILD_ID:" + value;
+      if (type === 'getHouseByBuildId') {
+        PARAMS = '#BUILD_ID:' + value;
         resetArr = utils.deepClone(houseOpt);
         this.houseOpt = resetArr;
       }
       let data = {
         SQL_CODE: type,
-        PARAMS: PARAMS
+        PARAMS: PARAMS,
       };
-      this.$api.basics.getOptionsByAms(data, this.houseName).then(res => {
-        if (res.data.code === "0") {
+      this.$api.basics.getOptionsByAms(data, this.houseName).then((res) => {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           resetArr.push(
-            ...result.map(item => {
+            ...result.map((item) => {
               return {
                 label: item.C_TEXT,
-                value: item.C_VALUE
+                value: item.C_VALUE,
               };
             })
           );
@@ -517,33 +499,33 @@ export default {
     query() {
       this.queryConditionStore = { ...this.queryCondition };
       let data = {
-        ...this.queryCondition
+        ...this.queryCondition,
       };
       // 处理数据提取typeCode
-      let keys = ["houseCategory", "houseType", "resType"];
-      keys.forEach(item => {
-        data[item] = data[item] ? data[item].split(",")[0] : data[item];
+      let keys = ['houseCategory', 'houseType', 'resType'];
+      keys.forEach((item) => {
+        data[item] = data[item] ? data[item].split(',')[0] : data[item];
       });
       this.table.loading = true;
       this.$api.building.queryHouseByPage(data).then(
-        res => {
+        (res) => {
           this.table.loading = false;
-          if (res.data.code === "0") {
-            this.table.dataSource = res.data.data.map(item => {
-              item.innerArea = getFormat(item.innerArea, '') || "-";
-              item.area = getFormat(item.area, '') || "-";
-              item.useArea = getFormat(item.useArea, '') || "-"
-              item.houseName = item.houseName || "-";
-              item.shareArea = getFormat(item.shareArea, '') || "-"
-              item.statusName = statusMap[item.status] || "-";
+          if (res.data.code === '0') {
+            this.table.dataSource = res.data.data.map((item) => {
+              item.innerArea = getFormat(item.innerArea, '') || '-';
+              item.area = getFormat(item.area, '') || '-';
+              item.useArea = getFormat(item.useArea, '') || '-';
+              item.houseName = item.houseName || '-';
+              item.shareArea = getFormat(item.shareArea, '') || '-';
+              item.statusName = statusMap[item.status] || '-';
               return {
                 key: getUuid(),
-                ...item
+                ...item,
               };
             });
-            this.tableList = this.table.dataSource.length
+            this.tableList = this.table.dataSource.length;
             this.table.totalCount = res.data.paginator.totalCount || 0;
-            this.queryHouseTotal(data)
+            this.queryHouseTotal(data);
           }
         },
         () => {
@@ -552,16 +534,16 @@ export default {
       );
     },
     // 合计
-    queryHouseTotal (data) {
+    queryHouseTotal(data) {
       this.$api.building.queryHouseTotal(data).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data;
-          data.area =  getFormat(data.areaTotal, '') || "-"
-          data.innerArea =  getFormat(data.innerAreaTotal, '') || "-"
-          data.shareArea =  getFormat(data.shareAreaTotal, '') || "-"
-          data.useArea =  getFormat(data.useAreaTotal, '') || "-"
-          data.houseId = '合计'
-          this.$set(this.table.dataSource, this.tableList, data)
+          data.area = getFormat(data.areaTotal, '') || '-';
+          data.innerArea = getFormat(data.innerAreaTotal, '') || '-';
+          data.shareArea = getFormat(data.shareAreaTotal, '') || '-';
+          data.useArea = getFormat(data.useAreaTotal, '') || '-';
+          data.houseId = '合计';
+          this.$set(this.table.dataSource, this.tableList, data);
         }
       });
     },
@@ -571,29 +553,29 @@ export default {
       this.operationDataOn = [];
       // 编辑权限
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_EDIT_HOUSE)) {
-        let o = { iconType: "edit", text: "编辑", editType: "edit" };
+        let o = { iconType: 'edit', text: '编辑', editType: 'edit' };
         this.operationDataOff.push(o);
         this.operationDataOn.push(o);
       }
       // 禁止启用
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_HOUSE_STATE)) {
         this.operationDataOff.push({
-          iconType: "play-circle",
-          text: "启用",
-          editType: "on"
+          iconType: 'play-circle',
+          text: '启用',
+          editType: 'on',
         });
         this.operationDataOn.push({
-          iconType: "close-circle",
-          text: "禁用",
-          editType: "off"
+          iconType: 'close-circle',
+          text: '禁用',
+          editType: 'off',
         });
       }
-      let obj = { iconType: "file-text", text: "详情", editType: "detail" };
+      let obj = { iconType: 'file-text', text: '详情', editType: 'detail' };
       this.operationDataOff.push(obj);
       this.operationDataOn.push(obj);
       // 新增权限
       if (this.$power.has(ASSET_MANAGEMENT.ASSET_ADD_HOUSE)) {
-        let o = { iconType: "copy", text: "复制", editType: "copy" };
+        let o = { iconType: 'copy', text: '复制', editType: 'copy' };
         this.operationDataOff.push(o);
         this.operationDataOn.push(o);
       }
@@ -605,32 +587,32 @@ export default {
     },
     // 重置查询条件
     restQuery() {
-      this.queryCondition.buildId = "";
-      this.queryCondition.unitId = "";
-      this.queryCondition.houseId = "";
-      this.queryCondition.houseCategory = "";
-      this.queryCondition.houseType = "";
-      this.queryCondition.resType = "";
-      this.queryCondition.status = "";
-      this.queryCondition.isRegister = "";
-      this.queryCondition.isCurrent = false
+      this.queryCondition.buildId = '';
+      this.queryCondition.unitId = '';
+      this.queryCondition.houseId = '';
+      this.queryCondition.houseCategory = '';
+      this.queryCondition.houseType = '';
+      this.queryCondition.resType = '';
+      this.queryCondition.status = '';
+      this.queryCondition.isRegister = '';
+      this.queryCondition.isCurrent = false;
     },
     // organId改变
-    organIdChange(organId,organName) {
+    organIdChange(organId, organName) {
       // 如果第一次进来为子页面
       if (this.formChildPage) {
         this.formChildPage = false;
         return;
       }
       this.organName = organName;
-      this.selectedOrganName = organName || ''
-      this.queryCondition.houseCategory = ''
-      this.queryCondition.resType = ''
+      this.selectedOrganName = organName || '';
+      this.queryCondition.houseCategory = '';
+      this.queryCondition.resType = '';
       if (organId) {
-        this.queryCondition.organId = organId
-        this.queryNodesByRootCode("20");
-        this.queryNodesByRootCode("30");
-        this.queryNodesByRootCode("60");
+        this.queryCondition.organId = organId;
+        this.queryNodesByRootCode('20');
+        this.queryNodesByRootCode('30');
+        this.queryNodesByRootCode('60');
         this.watchOrganChange(organId);
         this.searchQuery();
       }
@@ -642,33 +624,33 @@ export default {
     },
     // 监听楼栋变化
     watchBuildChange(value) {
-      console.log("楼栋变化=>", value);
+      console.log('楼栋变化=>', value);
       this.unitOpt = utils.deepClone(unitOpt);
       this.houseOpt = utils.deepClone(houseOpt);
-      this.queryCondition.houseId = "";
-      this.queryCondition.unitId = "";
+      this.queryCondition.houseId = '';
+      this.queryCondition.unitId = '';
       if (!value) {
         return;
       }
-      this.getOptions("getUnitByBuildId", value);
+      this.getOptions('getUnitByBuildId', value);
     },
     // 监听单元变化
     watchUnitChange(value) {
       this.houseOpt = utils.deepClone(houseOpt);
-      this.queryCondition.houseId = "";
+      this.queryCondition.houseId = '';
       if (!value) {
         return;
       }
-      this.getOptions("getHouseByUnitId", value);
+      this.getOptions('getHouseByUnitId', value);
     },
     // 监听公司改变
     watchOrganChange(organId) {
       this.buildOpt = utils.deepClone(buildOpt);
       this.unitOpt = utils.deepClone(unitOpt);
       this.houseOpt = utils.deepClone(houseOpt);
-      this.queryCondition.houseId = "";
-      this.queryCondition.unitId = "";
-      this.queryCondition.buildId = "";
+      this.queryCondition.houseId = '';
+      this.queryCondition.unitId = '';
+      this.queryCondition.buildId = '';
       if (!organId) {
         return;
       }
@@ -676,65 +658,63 @@ export default {
     },
     // 请求楼栋列表默认20条
     queryBuildList(organId, buildName) {
-      this.$api.basics
-        .queryBuildList({ organId, buildName: buildName || "" })
-        .then(res => {
-          if (res.data.code === "0") {
-            let result = res.data.data || [];
-            this.buildOpt = utils.deepClone(buildOpt);
-            result.forEach(item => {
-              this.buildOpt.push({
-                label: item.buildName,
-                value: item.buildId
-              });
+      this.$api.basics.queryBuildList({ organId, buildName: buildName || '' }).then((res) => {
+        if (res.data.code === '0') {
+          let result = res.data.data || [];
+          this.buildOpt = utils.deepClone(buildOpt);
+          result.forEach((item) => {
+            this.buildOpt.push({
+              label: item.buildName,
+              value: item.buildId,
             });
-          } else {
-            this.$message.error(res.data.message);
-          }
-        });
+          });
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
     },
     // 获取公司楼栋单元房号
-    getOptions(type, value = "") {
+    getOptions(type, value = '') {
       if (!type) {
         return;
       }
-      let PARAMS = "";
+      let PARAMS = '';
       let resetArr = [];
       // 请求单元
-      if (type === "getUnitByBuildId") {
-        PARAMS = "#BUILD_ID:" + value;
+      if (type === 'getUnitByBuildId') {
+        PARAMS = '#BUILD_ID:' + value;
         resetArr = utils.deepClone(unitOpt);
         this.unitOpt = resetArr;
       }
       // 以单元请求房号
-      if (type === "getHouseByUnitId") {
-        PARAMS = "#UNIT_ID:" + value;
+      if (type === 'getHouseByUnitId') {
+        PARAMS = '#UNIT_ID:' + value;
         resetArr = utils.deepClone(houseOpt);
         this.houseOpt = resetArr;
       }
       // 以楼栋请求房号
-      if (type === "getHouseByBuildId") {
-        PARAMS = "#BUILD_ID:" + value;
+      if (type === 'getHouseByBuildId') {
+        PARAMS = '#BUILD_ID:' + value;
         resetArr = utils.deepClone(houseOpt);
         this.houseOpt = resetArr;
       }
       let data = {
         SQL_CODE: type,
-        PARAMS: PARAMS
+        PARAMS: PARAMS,
       };
-      this.$api.basics.getOptions(data).then(res => {
-        if (res.data.code === "0") {
+      this.$api.basics.getOptions(data).then((res) => {
+        if (res.data.code === '0') {
           // 房号可以直接挂在楼栋下当没有单元是，以楼栋id取请求房号
-          if (!res.data.data.length && type === "getUnitByBuildId") {
-            this.getOptions("getHouseByBuildId", value);
+          if (!res.data.data.length && type === 'getUnitByBuildId') {
+            this.getOptions('getHouseByBuildId', value);
             return;
           }
           let result = res.data.data || [];
           resetArr.push(
-            ...result.map(item => {
+            ...result.map((item) => {
               return {
                 label: item.C_TEXT,
-                value: item.C_VALUE
+                value: item.C_VALUE,
               };
             })
           );
@@ -753,31 +733,28 @@ export default {
        */
       let data = {
         categoryCode: code,
-        organId: this.queryCondition.organId
+        organId: this.queryCondition.organId,
       };
-      this.$api.basics.queryNodesByRootCode(data).then(res => {
-        if (res.data.code === "0") {
+      this.$api.basics.queryNodesByRootCode(data).then((res) => {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
-          let resultArr = result.map(item => {
+          let resultArr = result.map((item) => {
             return {
               label: item.typeName,
-              value: item.typeCode + "," + item.typeId,
-              ...item
+              value: item.typeCode + ',' + item.typeId,
+              ...item,
             };
           });
           // 建筑类型
-          if (code === "20") {
-            this.houseCategoryOpt = [
-              ...utils.deepClone(houseCategoryOpt),
-              ...resultArr
-            ];
+          if (code === '20') {
+            this.houseCategoryOpt = [...utils.deepClone(houseCategoryOpt), ...resultArr];
           }
           // 房间用途
-          if (code === "30") {
+          if (code === '30') {
             this.houseTypeOpt = [...utils.deepClone(houseTypeOpt), ...resultArr];
           }
           // 房间用途
-          if (code === "60") {
+          if (code === '60') {
             this.resTypeOpt = [...utils.deepClone(resTypeOpt), ...resultArr];
           }
         }
@@ -798,16 +775,16 @@ export default {
     // 上传文件
     uploadHouseFile(file) {
       // this.$refs.eportAndDownFile.hideModal()
-      console.log("批量更新", file);
+      console.log('批量更新', file);
       let fileData = new FormData();
-      fileData.append("acctHouseCodeFile", file);
-      fileData.append("organId", this.queryCondition.organId);
-      let loadingName = this.SG_Loding("导入中...");
+      fileData.append('acctHouseCodeFile', file);
+      fileData.append('organId', this.queryCondition.organId);
+      let loadingName = this.SG_Loding('导入中...');
       this.$api.building.acctHouseCodeImport(fileData).then(
-        res => {
-          if (res.data.code === "0") {
+        (res) => {
+          if (res.data.code === '0') {
             this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.success("导入成功！");
+              this.$SG_Message.success('导入成功！');
               this.query();
             });
           } else {
@@ -819,7 +796,7 @@ export default {
         },
         () => {
           this.DE_Loding(loadingName).then(() => {
-            this.$SG_Message.error("导入失败！");
+            this.$SG_Message.error('导入失败！');
           });
         }
       );
@@ -830,31 +807,29 @@ export default {
     },
     // 操作事件函数
     operationFun(type, record) {
-      console.log("操作事件", type, record);
-      if (["edit", "copy", "detail"].includes(type)) {
+      console.log('操作事件', type, record);
+      if (['edit', 'copy', 'detail'].includes(type)) {
         this.goPage(type, record);
       }
-      if (["on", "off"].includes(type)) {
+      if (['on', 'off'].includes(type)) {
         this.$SG_Modal.confirm({
-          content: `确定${type === "on" ? "启用" : "禁用"}该房间吗?`,
-          okText: "确定",
-          cancelText: "关闭",
+          content: `确定${type === 'on' ? '启用' : '禁用'}该房间吗?`,
+          okText: '确定',
+          cancelText: '关闭',
           onOk: () => {
             let data = {
               houseId: record.houseId,
-              status: type === "on" ? "1" : "0"
+              status: type === 'on' ? '1' : '0',
             };
-            this.$api.building.updateHouseStatus(data).then(res => {
-              if (res.data.code === "0") {
-                this.$SG_Message.success(
-                  `${type === "on" ? "启用" : "禁用"}成功！`
-                );
+            this.$api.building.updateHouseStatus(data).then((res) => {
+              if (res.data.code === '0') {
+                this.$SG_Message.success(`${type === 'on' ? '启用' : '禁用'}成功！`);
                 this.query();
               } else {
                 this.$message.error(res.data.message);
               }
             });
-          }
+          },
         });
       }
     },
@@ -863,20 +838,20 @@ export default {
       // 存储缓存搜索缓存数据
       let o = {
         ...this.queryConditionStore,
-        organName: this.organName || "",
-        showKey: "house"
+        organName: this.organName || '',
+        showKey: 'house',
       };
-      console.log("存=>", this.searchBuildName);
+      console.log('存=>', this.searchBuildName);
       if (this.searchBuildName) {
         o.searchBuildName = this.searchBuildName;
       }
       this.SET_ROUTE_QUERY(this.$route.path, o);
       let query = { type };
-      query.organId = this.queryCondition.organId
-      query.selectedOrganName = this.selectedOrganName
-      if (["edit", "copy", "detail"].includes(type)) {
-        query.houseId = record.houseId
-        query.searchBuildName = this.searchBuildName || "";
+      query.organId = this.queryCondition.organId;
+      query.selectedOrganName = this.selectedOrganName;
+      if (['edit', 'copy', 'detail'].includes(type)) {
+        query.houseId = record.houseId;
+        query.searchBuildName = this.searchBuildName || '';
       }
       this.$router.push({ path: operationTypes[type], query: query || {} });
     },
@@ -886,20 +861,13 @@ export default {
       this.debounceMothed();
     },
     // 防抖函数后台请求楼栋数据
-    debounceMothed: debounce(function() {
-      this.queryBuildList(
-        this.queryCondition.organId,
-        this.searchBuildName || ""
-      );
+    debounceMothed: debounce(function () {
+      this.queryBuildList(this.queryCondition.organId, this.searchBuildName || '');
     }, 300),
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
-    }
-  }
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    },
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -918,4 +886,3 @@ export default {
   }
 }
 </style>
-

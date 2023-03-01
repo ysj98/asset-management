@@ -41,16 +41,16 @@
 <script>
 // 显示在当前tab的 approveServiceType
 const approveServiceType = [1001, 1009, 1010, 1011, 1012, 1013, 1014, 1017, 1018];
-import { serviceTypeAll, columns } from "./share.js";
+import { serviceTypeAll, columns } from './share.js';
 export default {
   /*
    * 系统设置 tab
    * */
-  name: "SystemSetting",
+  name: 'SystemSetting',
   props: {
     organId: {
       type: String,
-      default: "",
+      default: '',
     },
     loadingFlag: {
       type: Boolean,
@@ -100,20 +100,20 @@ export default {
       for (let refName in resObj) {
         let errorMsg = resObj[refName].sendData();
         if (errorMsg) {
-          console.log("refName", refName);
+          console.log('refName', refName);
           this.$message.error(`${errorMsg}`);
           return null;
         }
       }
       return this.tData.map((ele) => {
         const { isValid, serviceType } = ele;
-        let keyTitle = "customServiceParamSet";
+        let keyTitle = 'customServiceParamSet';
         // 现在就这几个 key
         return {
           isValid,
           serviceType,
-          subKey: isValid ? ele[keyTitle].subKey : "",
-          paramKey: isValid ? ele[keyTitle].paramKey : "",
+          subKey: isValid ? ele[keyTitle].subKey : '',
+          paramKey: isValid ? ele[keyTitle].paramKey : '',
         };
       });
     },

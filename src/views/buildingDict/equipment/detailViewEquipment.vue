@@ -13,76 +13,74 @@
           <div class="form-content">
             <a-row>
               <a-col :span="8">
-                <a-form-item :required="true"  label="所属机构"  v-bind="formItemLayout">
-                  {{formInfo.topOrganName}}
+                <a-form-item :required="true" label="所属机构" v-bind="formItemLayout">
+                  {{ formInfo.topOrganName }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="设备设施分类" :required="true" v-bind="formItemLayout">
-                  {{formInfo.equipmentName}}
+                  {{ formInfo.equipmentName }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="设备设施名称" v-bind="formItemLayout">
-                  {{formInfo.equipmentInstName}}
+                  {{ formInfo.equipmentInstName }}
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
                 <a-form-item label="设备设施编码" v-bind="formItemLayout">
-                  {{formInfo.equipmentInstCode}}
+                  {{ formInfo.equipmentInstCode }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="运营项目" v-bind="formItemLayout">
-                  {{formInfo.organName}}
+                  {{ formInfo.organName }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="规格型号" v-bind="formItemLayout">
-                  {{formInfo.equipmentInstModel}}
+                  {{ formInfo.equipmentInstModel }}
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="16">
-                <a-form-item label="所在位置" v-bind="formItemLayoutGeo">
-                  {{formInfo.equipmentAreaName}}-{{formInfo.position}}
-                </a-form-item>
+                <a-form-item label="所在位置" v-bind="formItemLayoutGeo"> {{ formInfo.equipmentAreaName }}-{{ formInfo.position }} </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="品牌" v-bind="formItemLayout">
-                  {{formInfo.equipmentInstBrand}}
+                  {{ formInfo.equipmentInstBrand }}
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
                 <a-form-item label="供应商" v-bind="formItemLayout">
-                  {{formInfo.equipmentSupplierName}}
+                  {{ formInfo.equipmentSupplierName }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="生产厂家" v-bind="formItemLayout">
-                  {{formInfo.equipmentFactory}}
+                  {{ formInfo.equipmentFactory }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="出厂日期" v-bind="formItemLayout">
-                  {{formInfo.factoryDate}}
+                  {{ formInfo.factoryDate }}
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="8">
                 <a-form-item label="报废日期" v-bind="formItemLayout">
-                  {{formInfo.expDate}}
+                  {{ formInfo.expDate }}
                 </a-form-item>
               </a-col>
               <a-col :span="8">
                 <a-form-item label="安装日期" v-bind="formItemLayout">
-                  {{formInfo.installDate}}
+                  {{ formInfo.installDate }}
                 </a-form-item>
               </a-col>
             </a-row>
@@ -90,7 +88,7 @@
               <a-col :span="24">
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
-                  {{formInfo.equipmentInstDesc}}
+                  {{ formInfo.equipmentInstDesc }}
                 </a-form-item>
               </a-col>
             </a-row>
@@ -100,23 +98,14 @@
             <a-row>
               <a-col :span="24">
                 <a-form-item label="图片" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                    :show="true"
-                    v-model="formInfo.imgPath"
-                    :max="5"
-                  />
+                  <SG-UploadFile :show="true" v-model="formInfo.imgPath" :max="5" />
                 </a-form-item>
               </a-col>
             </a-row>
             <a-row>
               <a-col :span="24">
                 <a-form-item label="附件" v-bind="formItemLayout2">
-                  <SG-UploadFile
-                    type="all"
-                    :show="true"
-                    :customUpload="customUpload"
-                    v-model="formInfo.documentPath"
-                  />
+                  <SG-UploadFile type="all" :show="true" :customUpload="customUpload" v-model="formInfo.documentPath" />
                 </a-form-item>
               </a-col>
             </a-row>
@@ -127,7 +116,7 @@
               <template v-for="item of formInfo.attrList">
                 <a-col :span="8" :key="item.attrId">
                   <a-form-item :label="item.attrName" v-bind="formItemLayout">
-                    {{item.attrValue}}
+                    {{ item.attrValue }}
                   </a-form-item>
                 </a-col>
               </template>
@@ -136,31 +125,31 @@
         </div>
       </a-form>
     </div>
-
   </div>
 </template>
 <script>
-import dictMixin from "../dictMixin.js"
-import {typeFilter} from '@/views/buildingDict/buildingDictConfig';
-import {queryTopOrganByOrganID} from "@/views/buildingDict/publicFn";
-import {parkTypeOpt, timeStampToFormatDate} from "./dict";
-import moment from "moment";
+import dictMixin from '../dictMixin.js';
+import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
+import { queryTopOrganByOrganID } from '@/views/buildingDict/publicFn';
+import { parkTypeOpt, timeStampToFormatDate } from './dict';
+import moment from 'moment';
 
-const allWidth = { width: "100%" }
-const allWidth1 = { width: "100px", marginRight: "10px", flex: "0 0 120px" }
-const allWidth2 = { width: "250px", flex: 1 }
+const allWidth = { width: '100%' };
+const allWidth1 = { width: '100px', marginRight: '10px', flex: '0 0 120px' };
+const allWidth2 = { width: '250px', flex: 1 };
 // 页面跳转
 const operationTypes = {
-  index: "/buildingDict",
-}
+  index: '/buildingDict',
+};
 export default {
   mixins: [dictMixin],
   data() {
     return {
       parkTypeOpt, // 全部车场
-      formInfo: { // 表单
+      formInfo: {
+        // 表单
         imgPath: [],
-        documentPath: []
+        documentPath: [],
       },
       allStyle: 'width: 100%;',
       typeFilter,
@@ -175,12 +164,12 @@ export default {
       filePath: [], // 附件
       routeQuery: {
         // 路由传入数据
-        type: "create", // 页面类型
-        equipmentInstId: "",
-        organName: "",
-        topOrganId: "",
+        type: 'create', // 页面类型
+        equipmentInstId: '',
+        organName: '',
+        topOrganId: '',
       },
-      bussType: "blankDir",
+      bussType: 'blankDir',
       formItemLayout: {
         labelCol: {
           xs: { span: 24 },
@@ -221,18 +210,18 @@ export default {
           sm: { span: 21 },
         },
       },
-    }
+    };
   },
   beforeCreate() {
-    this.form = this.$form.createForm(this)
-    window.fff = this.form
+    this.form = this.$form.createForm(this);
+    window.fff = this.form;
   },
   mounted() {
-    let { organName, topOrganId, type, equipmentInstId } = this.$route.query
+    let { organName, topOrganId, type, equipmentInstId } = this.$route.query;
     Object.assign(this, {
       routeQuery: { organName, topOrganId, type, equipmentInstId },
-    })
-    this.init()
+    });
+    this.init();
   },
   methods: {
     // 请求详情
@@ -240,12 +229,12 @@ export default {
       const params = {
         equipmentInstId: this.routeQuery.equipmentInstId,
         topOrganId: this.routeQuery.topOrganId,
-        systemCode: 'assets'
-      }
-      let loadingName = this.SG_Loding("加载中...");
+        systemCode: 'assets',
+      };
+      let loadingName = this.SG_Loding('加载中...');
       try {
-        const {data: res} = await this.$api.building.equipmentApiDetail(params)
-        if (String(res.code) === "0") {
+        const { data: res } = await this.$api.building.equipmentApiDetail(params);
+        if (String(res.code) === '0') {
           this.formInfo = this.afterEquipmentApiDetail(res.data);
         }
       } finally {
@@ -253,37 +242,40 @@ export default {
       }
     },
     afterEquipmentApiDetail(data) {
-      const fileList = data.fileList || []
+      const fileList = data.fileList || [];
       if (data.expDate) {
-        data.expDate = timeStampToFormatDate(data.expDate)
+        data.expDate = timeStampToFormatDate(data.expDate);
       } else {
-        data.expDate = ''
+        data.expDate = '';
       }
       if (data.installDate) {
-        data.installDate = timeStampToFormatDate(data.installDate )
+        data.installDate = timeStampToFormatDate(data.installDate);
       } else {
-        data.installDate = ''
+        data.installDate = '';
       }
       if (data.factoryDate) {
-        data.factoryDate = timeStampToFormatDate(data.factoryDate)
+        data.factoryDate = timeStampToFormatDate(data.factoryDate);
       } else {
-        data.factoryDate = ''
+        data.factoryDate = '';
       }
-      const imgPath = (data.imgPath || "").split(",").filter(item => item).map(item => ({url: item,name: item.split("/").pop()}));
+      const imgPath = (data.imgPath || '')
+        .split(',')
+        .filter((item) => item)
+        .map((item) => ({ url: item, name: item.split('/').pop() }));
       // 转换附件
-      const documentPath = fileList.map(item=>({url: item.filePath,name: item.fileName}))
+      const documentPath = fileList.map((item) => ({ url: item.filePath, name: item.fileName }));
       return {
         ...data,
         imgPath,
-        documentPath
-      }
+        documentPath,
+      };
     },
     // 初始化
-    init(){
-      this.equipmentApiDetail()
+    init() {
+      this.equipmentApiDetail();
     },
   },
-}
+};
 </script>
 <style lang="less" scoped>
 .landInfo-create-page {

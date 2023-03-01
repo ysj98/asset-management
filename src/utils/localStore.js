@@ -4,43 +4,43 @@
  */
 export const ls = {
   //本地存数据，days 有效时间（天）
-  setItem: function(key, value, days) {
-    let Days = days || 1000 //有效时间默认7天
-    let exp = new Date()
-    let expires = exp.getTime() + Days * 24 * 60 * 60 * 1000
+  setItem: function (key, value, days) {
+    let Days = days || 1000; //有效时间默认7天
+    let exp = new Date();
+    let expires = exp.getTime() + Days * 24 * 60 * 60 * 1000;
 
     localStorage.setItem(
       key,
       JSON.stringify({
         value,
-        expires
+        expires,
       })
-    )
+    );
   },
-  getItem: function(key) {
-    let o = JSON.parse(localStorage.getItem(key))
+  getItem: function (key) {
+    let o = JSON.parse(localStorage.getItem(key));
 
     if (o !== null && Date.now() < o.expires) {
-      return o.value
+      return o.value;
     } else {
-      return null
+      return null;
     }
   },
-  removeItem: function(key) {
-    localStorage.removeItem(key)
-  }
-}
+  removeItem: function (key) {
+    localStorage.removeItem(key);
+  },
+};
 
 export const localStore = {
   getToken: () => {
-    return ls.getItem("TOKEN")
+    return ls.getItem('TOKEN');
   },
-  setToken: v => {
-    return ls.setItem("TOKEN", v)
+  setToken: (v) => {
+    return ls.setItem('TOKEN', v);
   },
   delToken: () => {
-    return ls.removeItem("TOKEN")
-  }
-}
+    return ls.removeItem('TOKEN');
+  },
+};
 
-export default localStore ;
+export default localStore;

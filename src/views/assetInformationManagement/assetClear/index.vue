@@ -130,91 +130,91 @@
 </template>
 
 <script>
-import TreeSelect from "../../common/treeSelect";
-import SegiRangePicker from "@/components/SegiRangePicker";
-import { getCurrentDate, getThreeMonthsAgoDate } from "utils/formatTime";
-import noDataTips from "@/components/noDataTips";
-import moment from "moment";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OverviewNumber from "@/views/common/OverviewNumber";
+import TreeSelect from '../../common/treeSelect';
+import SegiRangePicker from '@/components/SegiRangePicker';
+import { getCurrentDate, getThreeMonthsAgoDate } from 'utils/formatTime';
+import noDataTips from '@/components/noDataTips';
+import moment from 'moment';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OverviewNumber from '@/views/common/OverviewNumber';
 const columns = [
   {
-    title: "出库单名称",
-    dataIndex: "cleaningOrderCode",
+    title: '出库单名称',
+    dataIndex: 'cleaningOrderCode',
     width: 160,
   },
   {
-    title: "管理机构",
-    dataIndex: "organName",
+    title: '管理机构',
+    dataIndex: 'organName',
     width: 160,
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 160,
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
     width: 160,
   },
   {
-    title: "资产数量",
-    dataIndex: "assetCount",
+    title: '资产数量',
+    dataIndex: 'assetCount',
     width: 120,
   },
   {
-    title: "出库原因",
-    dataIndex: "cleanupTypeName",
+    title: '出库原因',
+    dataIndex: 'cleanupTypeName',
     width: 160,
   },
   {
-    title: "创建日期",
-    dataIndex: "createTime",
+    title: '创建日期',
+    dataIndex: 'createTime',
     width: 160,
   },
   {
-    title: "创建人",
-    dataIndex: "createByName",
+    title: '创建人',
+    dataIndex: 'createByName',
     width: 120,
   },
   {
-    title: "当前状态",
-    dataIndex: "approvalStatusName",
+    title: '当前状态',
+    dataIndex: 'approvalStatusName',
     width: 120,
   },
   {
-    title: "操作",
+    title: '操作',
     width: 160,
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 
 const approvalStatusData = [
   {
-    label: "全部状态",
-    value: "",
+    label: '全部状态',
+    value: '',
   },
   {
-    label: "草稿",
-    value: "0",
+    label: '草稿',
+    value: '0',
   },
   {
-    label: "待审批",
-    value: "2",
+    label: '待审批',
+    value: '2',
   },
   {
-    label: "已驳回",
-    value: "3",
+    label: '已驳回',
+    value: '3',
   },
   {
-    label: "已审批",
-    value: "1",
+    label: '已审批',
+    value: '1',
   },
   {
-    label: "已取消",
-    value: "4",
+    label: '已取消',
+    value: '4',
   },
 ];
 export default {
@@ -227,26 +227,26 @@ export default {
   data() {
     return {
       ASSET_MANAGEMENT,
-      allStyle: "width: 170px; margin-right: 10px;",
+      allStyle: 'width: 170px; margin-right: 10px;',
       toggle: false,
-      organName: "",
-      organId: "",
+      organName: '',
+      organId: '',
       columns,
       dataSource: [],
       approvalStatusData: [...approvalStatusData],
       cleanupTypeData: [
         {
-          label: "全部出库原因",
-          value: "",
+          label: '全部出库原因',
+          value: '',
         },
       ], // 资产出库原因
       assetProjectOptions: [],
       assetTypeOptions: [],
       queryCondition: {
-        approvalStatus: [""],
-        cleanupType: [""], // 出库原因
-        assetProject: "",
-        assetType: [""],
+        approvalStatus: [''],
+        cleanupType: [''], // 出库原因
+        assetProject: '',
+        assetType: [''],
         beginDate: getThreeMonthsAgoDate(),
         endDate: getCurrentDate(),
         onlyCurrentOrgan: false,
@@ -260,31 +260,31 @@ export default {
       overviewNumSpinning: false,
       registerDate: [],
       numList: [
-        { title: "全部", key: "total", value: 0, fontColor: "#324057" },
-        { title: "草稿", key: "draftTotal", value: 0, bgColor: "#5b8ff9" },
-        { title: "待审批", key: "pendingTotal", value: 0, bgColor: "#d48265" },
-        { title: "已驳回", key: "approvedTotal", value: 0, bgColor: "#4BD288" },
+        { title: '全部', key: 'total', value: 0, fontColor: '#324057' },
+        { title: '草稿', key: 'draftTotal', value: 0, bgColor: '#5b8ff9' },
+        { title: '待审批', key: 'pendingTotal', value: 0, bgColor: '#d48265' },
+        { title: '已驳回', key: 'approvedTotal', value: 0, bgColor: '#4BD288' },
         {
-          title: "已审批",
-          key: "haveApprovedTotal",
+          title: '已审批',
+          key: 'haveApprovedTotal',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#1890FF',
         },
-        { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#DD81E6" },
+        { title: '已取消', key: 'cancelTotal', value: 0, bgColor: '#DD81E6' },
       ],
-      scroll: {y: "calc(100vh - 350px)"}
+      scroll: { y: 'calc(100vh - 350px)' },
     };
   },
   watch: {
     $route() {
-      if (this.$route.path === "/assetClear" && this.$route.query.refresh) {
+      if (this.$route.path === '/assetClear' && this.$route.query.refresh) {
         this.queryClick();
       }
     },
   },
   created() {},
   mounted() {
-    this.platformDict("asset_type");
+    this.platformDict('asset_type');
   },
   methods: {
     moment,
@@ -297,18 +297,18 @@ export default {
       let form = {
         organId: this.organId,
         projectId: this.queryCondition.assetProject,
-        multiAssetType: this.queryCondition.assetType.join(","),
-        multiApprovalStatus: this.queryCondition.approvalStatus.join(","),
-        cleanupTypes: this.queryCondition.cleanupType.join(","),
-        currentOrganId: this.queryCondition.onlyCurrentOrgan ? "1" : "0",
-        startCreateDate: moment(this.registerDate[0]).format("YYYY-MM-DD"),
-        endCreateDate: moment(this.registerDate[1]).format("YYYY-MM-DD"),
+        multiAssetType: this.queryCondition.assetType.join(','),
+        multiApprovalStatus: this.queryCondition.approvalStatus.join(','),
+        cleanupTypes: this.queryCondition.cleanupType.join(','),
+        currentOrganId: this.queryCondition.onlyCurrentOrgan ? '1' : '0',
+        startCreateDate: moment(this.registerDate[0]).format('YYYY-MM-DD'),
+        endCreateDate: moment(this.registerDate[1]).format('YYYY-MM-DD'),
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength,
       };
       this.assetCleanupGetCount(form);
       this.$api.assets.getCleanupPage(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data.data;
           if (data.length === 0) {
             this.showNoDataTips = true;
@@ -318,8 +318,8 @@ export default {
           data.forEach((item, index) => {
             item.key = index;
             for (let key in item) {
-              if (item[key] === "") {
-                item[key] = "--";
+              if (item[key] === '') {
+                item[key] = '--';
               }
             }
           });
@@ -346,7 +346,7 @@ export default {
                 value: data[item.key],
               };
             });
-            console.log("this.numList", this.numList);
+            console.log('this.numList', this.numList);
           } else {
             this.$message.error(res.data.message);
           }
@@ -364,7 +364,7 @@ export default {
       this.organId = value;
       this.getAssetProjectOptions();
       this.queryClick();
-      this.organDict("asset_cleanup_type");
+      this.organDict('asset_cleanup_type');
     },
     // 状态发生变化
     changeStatus(value) {
@@ -387,17 +387,17 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
 
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -424,9 +424,9 @@ export default {
     // 新增出库单
     newClearForm() {
       this.$router.push({
-        path: "/assetClear/new",
+        path: '/assetClear/new',
         query: {
-          pageType: "new",
+          pageType: 'new',
           organId: this.organId,
           organName: this.organName,
         },
@@ -436,15 +436,15 @@ export default {
     deleteClearForm(record) {
       let self = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要删除该资产出库单吗？",
+        title: '提示',
+        content: '确认要删除该资产出库单吗？',
         onOk() {
           let form = {
             cleaningOrderId: record.cleaningOrderId,
           };
           self.$api.assets.deleteCleanup(form).then((res) => {
-            if (res.data.code === "0") {
-              self.$message.success("删除成功");
+            if (res.data.code === '0') {
+              self.$message.success('删除成功');
               self.queryList();
             } else {
               self.$message.error(res.data.message);
@@ -456,16 +456,16 @@ export default {
     antiAudit(record) {
       let self = this;
       this.$confirm({
-        title: "提示",
-        content: "确认要对此出库单反审核吗？",
+        title: '提示',
+        content: '确认要对此出库单反审核吗？',
         onOk() {
           let form = {
             cleaningOrderId: record.cleaningOrderId,
           };
           console.log(form);
           self.$api.assets.reverseApproveCleanup(form).then((res) => {
-            if (res.data.code === "0") {
-              self.$message.success("操作成功");
+            if (res.data.code === '0') {
+              self.$message.success('操作成功');
               self.queryList();
             } else {
               self.$message.error(res.data.message);
@@ -475,9 +475,9 @@ export default {
       });
     },
     handleOperation(pageType, record) {
-      console.log("record.organId", record.organId);
+      console.log('record.organId', record.organId);
       this.$router.push({
-        path: "/assetClear/" + pageType,
+        path: '/assetClear/' + pageType,
         query: {
           pageType: pageType,
           cleaningOrderId: record.cleaningOrderId,
@@ -492,8 +492,8 @@ export default {
         organId: this.organId,
       };
       this.$api.assets.getObjectKeyValueByOrganId(form).then((res) => {
-        if (res.data.code === "0") {
-          let arr = [{ label: "全部资产项目", value: "" }];
+        if (res.data.code === '0') {
+          let arr = [{ label: '全部资产项目', value: '' }];
           res.data.data.forEach((item) => {
             let obj = {
               label: item.projectName,
@@ -512,7 +512,7 @@ export default {
         code,
       };
       this.$api.basics.platformDict(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => {
             return {
@@ -521,11 +521,11 @@ export default {
             };
           });
           // 出库原因
-          if (code === "asset_type") {
+          if (code === 'asset_type') {
             this.assetTypeOptions = [
               {
-                label: "全部资产类型",
-                value: "",
+                label: '全部资产类型',
+                value: '',
               },
               ...arr,
             ];
@@ -542,7 +542,7 @@ export default {
         organId: this.organId,
       };
       this.$api.basics.organDict(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => {
             return {
@@ -551,11 +551,11 @@ export default {
             };
           });
           // 出库原因
-          if (code === "asset_cleanup_type") {
+          if (code === 'asset_cleanup_type') {
             this.cleanupTypeData = [
               {
-                label: "全部出库原因",
-                value: "",
+                label: '全部出库原因',
+                value: '',
               },
               ...arr,
             ];

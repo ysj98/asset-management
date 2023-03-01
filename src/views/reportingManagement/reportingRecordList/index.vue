@@ -8,7 +8,7 @@
     <div class="custom-tabs">
       <a-tabs @change="tabChange" v-model="showKey" type="card" :tabBarGutter="10">
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_REPORT_OPERATE)" tab="资产运营信息" key="operate">
-          <operateInfo/>
+          <operateInfo />
         </a-tab-pane>
         <a-tab-pane v-if="$power.has(ASSET_MANAGEMENT.ASSET_REPORT_INCOME)" tab="资产收入信息" key="income">
           <incomeInfo />
@@ -24,11 +24,11 @@
   </div>
 </template>
 <script>
-import operateInfo from './operateInfo'
-import incomeInfo from './incomeInfo'
-import costInfo from './costInfo'
-import depreciationInfo from './depreciationInfo'
-import {ASSET_MANAGEMENT} from '@/config/config.power'
+import operateInfo from './operateInfo';
+import incomeInfo from './incomeInfo';
+import costInfo from './costInfo';
+import depreciationInfo from './depreciationInfo';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
 export default {
   components: {
     operateInfo,
@@ -36,13 +36,13 @@ export default {
     costInfo,
     depreciationInfo,
   },
-  data () {
+  data() {
     return {
       showKey: 'operate',
       ASSET_MANAGEMENT,
-    }
+    };
   },
-  created () {
+  created() {
     // let query = this.GET_ROUTE_QUERY(this.$route.path)
     // if (Object.keys(query).length > 0) {
     //   if (query.showKey === 'house') {
@@ -50,25 +50,25 @@ export default {
     //   }
     // }
   },
-  beforeRouteLeave (to, from, next) {
+  beforeRouteLeave(to, from, next) {
     if (to.path.indexOf(from.path) === -1) {
       let o = {
         key: from.path,
-        data: {}
-      }
+        data: {},
+      };
       // this.$store.commit('pro/SET_ROUTE_QUERY', o)
     }
-    next()
+    next();
   },
   methods: {
-    tabChange (v) {
-      this.showKey = v
+    tabChange(v) {
+      this.showKey = v;
     },
-  }
-}
+  },
+};
 </script>
 <style lang="less" scoped>
-  .buildingDict-page{
-    position: relative;
-  }
+.buildingDict-page {
+  position: relative;
+}
 </style>

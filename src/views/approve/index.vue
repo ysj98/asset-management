@@ -17,7 +17,7 @@ export default {
   /*
    * BPM内嵌审批 中转页面 （处理页面传参）
    * */
-  name: "approve",
+  name: 'approve',
   methods: {
     /*
      * 获取页面入参
@@ -25,7 +25,7 @@ export default {
     getApprByServiceOrderId() {
       const instId = this.$route.query.instId;
       if (!instId) {
-        console.error("bpm测没有对应参数，系统内部错误");
+        console.error('bpm测没有对应参数，系统内部错误');
         return null;
       }
       return new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ export default {
         };
         this.$api.approve.getApprByServiceOrderId(req).then(
           ({ data: { code, message, data } }) => {
-            if (code === "0") {
+            if (code === '0') {
               resolve(data);
             } else {
               reject(message);
@@ -52,10 +52,10 @@ export default {
     async goAssetWorthRegister() {
       const res = await this.getApprByServiceOrderId();
       this.$router.push({
-        name: "价值登记审批",
+        name: '价值登记审批',
         params: {
           registerId: res.busId,
-          type: "approval",
+          type: 'approval',
           fromBpmApprove: true,
           relatedOrganId: res.organId,
           organName: res.organName,
@@ -68,9 +68,9 @@ export default {
     async goDisposalRegister() {
       const res = await this.getApprByServiceOrderId();
       this.$router.push({
-        name: "详情处置登记",
+        name: '详情处置登记',
         query: {
-          type: "approval",
+          type: 'approval',
           relatedOrganId: res.organId,
           organId: res.organId,
           organName: res.organName,
@@ -80,13 +80,13 @@ export default {
     },
     async goTransfer() {
       const res = await this.getApprByServiceOrderId();
-      console.log("res", res);
+      console.log('res', res);
       this.$router.push({
-        name: "资产转让审批",
+        name: '资产转让审批',
         query: {
           applyId: res.busId,
           organId: res.organId,
-          fromType: "approve",
+          fromType: 'approve',
         },
       });
     },
@@ -109,7 +109,7 @@ export default {
           break;
       }
     } else {
-      console.error("配置在线url错误");
+      console.error('配置在线url错误');
     }
   },
 };

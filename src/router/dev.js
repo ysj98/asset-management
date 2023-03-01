@@ -1,7 +1,7 @@
 /*
  * @Date: 2019-11-01 09:42:51
- * @Description: 
- */ 
+ * @Description:
+ */
 /**
  * 描述：开发环境路由，生产环境清空该路由。
  * 注意：请不要在此添加业务路由！！！！！！！！
@@ -13,12 +13,12 @@ let devRouter = [
   {
     path: '/dev/login',
     name: 'devLogin',
-    component: () => import('../views/dev/login.vue')
+    component: () => import('../views/dev/login.vue'),
   },
   {
     path: '/dev/empty',
     name: 'devEmpty',
-    component: () => import('../views/dev/empty.vue')
+    component: () => import('../views/dev/empty.vue'),
   },
   // {
   //   path: '/home',
@@ -28,7 +28,7 @@ let devRouter = [
   {
     path: '/dev/power',
     name: 'devPower',
-    component: () => import('../views/dev/power.vue')
+    component: () => import('../views/dev/power.vue'),
   },
   // {
   //   path: '/dev/upload',
@@ -45,10 +45,10 @@ let devRouter = [
   //   name: 'utils',
   //   component: () => import('../views/dev/utils.vue')
   // },
-]
+];
 
 if (process.env.NODE_ENV === 'production') {
-  devRouter = []
+  devRouter = [];
 }
 
-export default devRouter
+export default devRouter;

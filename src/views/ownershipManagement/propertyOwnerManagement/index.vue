@@ -52,64 +52,64 @@
 </template>
 
 <script>
-import topOrganByUser from "@/views/common/topOrganByUser";
-import handlePropertyOwner from "./handlePropertyOwner";
-import noDataTips from "@/components/noDataTips";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import { exportDataAsExcel } from "src/views/common/commonQueryApi";
-import BatchImport from "src/views/common/eportAndDownFile";
+import topOrganByUser from '@/views/common/topOrganByUser';
+import handlePropertyOwner from './handlePropertyOwner';
+import noDataTips from '@/components/noDataTips';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
+import BatchImport from 'src/views/common/eportAndDownFile';
 
 const columns = [
   {
-    title: "所属机构",
-    dataIndex: "organName",
+    title: '所属机构',
+    dataIndex: 'organName',
     width: 160,
   },
   {
-    title: "权属人名称",
-    dataIndex: "obligeeName",
+    title: '权属人名称',
+    dataIndex: 'obligeeName',
     width: 200,
   },
   {
-    title: "权属人类型",
-    dataIndex: "obligeeTypeName",
+    title: '权属人类型',
+    dataIndex: 'obligeeTypeName',
     width: 160,
   },
   {
-    title: "证件类型",
-    dataIndex: "certificateTypeName",
+    title: '证件类型',
+    dataIndex: 'certificateTypeName',
     width: 160,
   },
   {
-    title: "证件号码",
-    dataIndex: "certificateNo",
+    title: '证件号码',
+    dataIndex: 'certificateNo',
     width: 160,
   },
   {
-    title: "通讯地址",
-    dataIndex: "mailingAddress",
+    title: '通讯地址',
+    dataIndex: 'mailingAddress',
     width: 160,
   },
   {
-    title: "邮编",
-    dataIndex: "postalCode",
+    title: '邮编',
+    dataIndex: 'postalCode',
     width: 160,
   },
   {
-    title: "法定代表",
-    dataIndex: "legalAgent",
+    title: '法定代表',
+    dataIndex: 'legalAgent',
     width: 160,
   },
   {
-    title: "代理人（机构）",
-    dataIndex: "agent",
+    title: '代理人（机构）',
+    dataIndex: 'agent',
     width: 160,
   },
   {
-    title: "操作",
-    dataIndex: "operation",
+    title: '操作',
+    dataIndex: 'operation',
     width: 200,
-    scopedSlots: { customRender: "operation" },
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 
@@ -122,12 +122,12 @@ export default {
   },
   data() {
     return {
-      scroll: { y: "calc(100vh - 250px)" },
+      scroll: { y: 'calc(100vh - 250px)' },
       ASSET_MANAGEMENT,
-      allStyle: "width: 150px; marginLeft: 10px;",
-      organId: "",
-      organName: "",
-      ownerName: "", // 权属人名称
+      allStyle: 'width: 150px; marginLeft: 10px;',
+      organId: '',
+      organName: '',
+      ownerName: '', // 权属人名称
       columns,
       dataSource: [],
       paginator: {
@@ -135,48 +135,48 @@ export default {
         pageLength: 10,
         totalCount: 0,
       },
-      modalType: "new", // 弹窗类型
-      ownerId: "", // 权属人id
+      modalType: 'new', // 弹窗类型
+      ownerId: '', // 权属人id
       showNoDataTips: false,
       exportBtnLoading: false, // 导出按钮loading
     };
   },
   methods: {
-    organIdChange (value) {
-      this.organName = value.name
-      this.queryClick()
+    organIdChange(value) {
+      this.organName = value.name;
+      this.queryClick();
     },
     // 页码发生变化
-    handlePageChange (page) {
-      this.paginator.pageNo = page.pageNo
-      this.paginator.pageLength = page.pageLength
-      this.queryList()
+    handlePageChange(page) {
+      this.paginator.pageNo = page.pageNo;
+      this.paginator.pageLength = page.pageLength;
+      this.queryList();
     },
     // 操作回调
-    operationFun (editType, record) {
+    operationFun(editType, record) {
       let self = this;
       switch (editType) {
-        case "edit":
-          this.modalType = "edit";
+        case 'edit':
+          this.modalType = 'edit';
           this.ownerId = record.obligeeId;
           this.$refs.handlePropertyOwner.modal.show = true;
           break;
-        case "detail":
-          this.modalType = "detail";
+        case 'detail':
+          this.modalType = 'detail';
           this.ownerId = record.obligeeId;
           this.$refs.handlePropertyOwner.modal.show = true;
           break;
-        case "delete":
+        case 'delete':
           this.$confirm({
-            title: "提示",
-            content: "确认要删除该权属人吗？",
+            title: '提示',
+            content: '确认要删除该权属人吗？',
             onOk() {
               let form = {
                 objectId: record.obligeeId,
               };
               self.$api.assets.ownerDelete(form).then((res) => {
-                if (res.data.code === "0") {
-                  self.$message.success("删除成功");
+                if (res.data.code === '0') {
+                  self.$message.success('删除成功');
                   self.queryClick();
                 } else {
                   self.$message.error(res.data.message);
@@ -190,7 +190,7 @@ export default {
       }
     },
     newPropertyOwner() {
-      this.modalType = "new";
+      this.modalType = 'new';
       this.$refs.handlePropertyOwner.modal.show = true;
     },
     // 点击查询
@@ -206,11 +206,11 @@ export default {
         pageNum: this.paginator.pageNo,
         pageSize: this.paginator.pageLength,
       };
-      if (type === "export") {
+      if (type === 'export') {
         return form;
       }
       this.$api.assets.list(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let data = res.data.data.data;
           if (data.length === 0) {
             this.showNoDataTips = true;
@@ -220,8 +220,8 @@ export default {
           data.forEach((item, index) => {
             item.key = index;
             for (let key in item) {
-              if (item[key] === "") {
-                item[key] = "--";
+              if (item[key] === '') {
+                item[key] = '--';
               }
             }
           });
@@ -236,8 +236,8 @@ export default {
     // 导出
     handleExport() {
       this.exportBtnLoading = true;
-      let data = this.queryList("export");
-      exportDataAsExcel(data, this.$api.tableManage.exportObligeeExcel, "权属人管理列表.xlsx", this).then(() => {
+      let data = this.queryList('export');
+      exportDataAsExcel(data, this.$api.tableManage.exportObligeeExcel, '权属人管理列表.xlsx', this).then(() => {
         this.exportBtnLoading = false;
       });
     },
@@ -245,30 +245,30 @@ export default {
     // 打开批量导入Modal
     openImportModal() {
       if (!this.organId) {
-        return this.$message.info("请选择组织机构");
+        return this.$message.info('请选择组织机构');
       }
       this.$refs.batchImport.visible = true;
     },
 
     // 下载导入模板文件
     downTemplate() {
-      exportDataAsExcel("import_template_qsr.xlsx", this.$api.tableManage.downloadTemplate, "权属人导入模板.xlsx", this);
+      exportDataAsExcel('import_template_qsr.xlsx', this.$api.tableManage.downloadTemplate, '权属人导入模板.xlsx', this);
     },
 
     // 批量导入
     uploadFile(file) {
       const { organId } = this;
-      let name = this.$SG_Message.loading({ duration: 0, content: "批量导入中" });
+      let name = this.$SG_Message.loading({ duration: 0, content: '批量导入中' });
       let fileData = new FormData();
-      fileData.append("file", file);
+      fileData.append('file', file);
       let query = `?organId=${organId}`;
       this.$api.tableManage
         .importOwnerData(query, fileData)
         .then((r) => {
           this.$SG_Message.destroy(name);
           let res = r.data;
-          if (res && String(res.code) === "0") {
-            this.$SG_Message.success(res.message || "导入成功");
+          if (res && String(res.code) === '0') {
+            this.$SG_Message.success(res.message || '导入成功');
             this.$refs.batchImport.visible = false;
             return this.queryClick();
           }
@@ -276,7 +276,7 @@ export default {
         })
         .catch((err) => {
           this.$SG_Message.destroy(name);
-          this.$SG_Message.error(err || "批量导入失败");
+          this.$SG_Message.error(err || '批量导入失败');
         });
     },
   },

@@ -3,7 +3,7 @@
     <a-card title="编辑器示例">
       <SG-Editer v-model="value" />
     </a-card>
-    <br>
+    <br />
     <a-card title="编辑内容展示">
       <div v-html="value"></div>
     </a-card>
@@ -12,10 +12,10 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
-      value: ''
-    }
-  }
-}
+      value: '',
+    };
+  },
+};
 </script>

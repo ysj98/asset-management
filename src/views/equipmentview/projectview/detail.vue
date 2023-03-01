@@ -11,11 +11,7 @@
       <overview-number :numList="numList" />
       <!-- 与 numlist 顺序一致   -->
       <!-- todo:有时间优化此段代码 -->
-      <div
-        style="display: flex"
-        v-for="rowItem in assetList"
-        :key="rowItem._key"
-      >
+      <div style="display: flex" v-for="rowItem in assetList" :key="rowItem._key">
         <!-- 资产数量 -->
         <div class="asset-col" :title="rowItem.assetName">
           {{ rowItem.assetName }}
@@ -47,11 +43,11 @@
 </template>
 
 <script>
-import OverviewNumber from "@/views/common/OverviewNumber";
-import Information from "@/components/Information";
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import OverviewNumber from '@/views/common/OverviewNumber';
+import Information from '@/components/Information';
+import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 export default {
-  name: "projectviewDetail",
+  name: 'projectviewDetail',
   components: {
     Information,
     OverviewNumber,
@@ -62,120 +58,120 @@ export default {
       assetList: [],
       numList: [
         {
-          title: "资产数量",
-          key: "assetCount",
-          percentageKey: "assetCount",
+          title: '资产数量',
+          key: 'assetCount',
+          percentageKey: 'assetCount',
           value: 0,
-          fontColor: "#324057",
+          fontColor: '#324057',
         },
         {
-          title: "运营",
-          key: "operationCount",
-          percentageKey: "operationPercentage",
+          title: '运营',
+          key: 'operationCount',
+          percentageKey: 'operationPercentage',
           value: 0,
-          bgColor: "#4BD288",
+          bgColor: '#4BD288',
         },
         {
-          title: "闲置",
-          key: "idleCount",
-          percentageKey: "idlePercentage",
+          title: '闲置',
+          key: 'idleCount',
+          percentageKey: 'idlePercentage',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#1890FF',
         },
         {
-          title: "自用",
-          key: "selfCount",
-          percentageKey: "selfPercentage",
+          title: '自用',
+          key: 'selfCount',
+          percentageKey: 'selfPercentage',
           value: 0,
-          bgColor: "#DD81E6",
+          bgColor: '#DD81E6',
         },
         {
-          title: "其他",
-          key: "otherCount",
-          percentageKey: "otherPercentage",
+          title: '其他',
+          key: 'otherCount',
+          percentageKey: 'otherPercentage',
           value: 0,
-          bgColor: "#BBC8D6",
+          bgColor: '#BBC8D6',
         },
       ],
       tableOptions: {
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
         columns: [
           {
-            title: "有证",
-            dataIndex: "ownershipYesCount",
+            title: '有证',
+            dataIndex: 'ownershipYesCount',
           },
           {
-            title: "无证",
-            dataIndex: "ownershipNoCount",
+            title: '无证',
+            dataIndex: 'ownershipNoCount',
           },
           {
-            title: "待办",
-            dataIndex: "ownershipPendingCount",
+            title: '待办',
+            dataIndex: 'ownershipPendingCount',
           },
           {
-            title: "权属办理进度 (%)",
-            dataIndex: "ownershipProgress",
+            title: '权属办理进度 (%)',
+            dataIndex: 'ownershipProgress',
           },
         ],
         dataSource: [],
       },
       queryParams: {
-        projectId: "",
+        projectId: '',
       },
       basicInfoOptions: {
         data: {},
         formatBasicInfoList: [
           [
             {
-              title: "管理机构",
-              key: "organName",
+              title: '管理机构',
+              key: 'organName',
             },
             {
-              title: "资产项目名称",
-              key: "projectName",
+              title: '资产项目名称',
+              key: 'projectName',
             },
             {
-              title: "资产项目编码",
-              key: "projectCode",
-            },
-          ],
-          [
-            {
-              title: "来源方式",
-              key: "sourceTypeName",
-            },
-            {
-              title: "来源方式说明",
-              key: "souceChannelType",
-            },
-            {
-              title: "是否接管",
-              key: "takeOver",
+              title: '资产项目编码',
+              key: 'projectCode',
             },
           ],
           [
             {
-              title: "接管时间",
-              key: "takeOverDate",
+              title: '来源方式',
+              key: 'sourceTypeName',
             },
             {
-              title: "接管时资产状态",
-              key: "takeoverAssetStatusName",
+              title: '来源方式说明',
+              key: 'souceChannelType',
             },
             {
-              title: "备注",
-              key: "remark",
+              title: '是否接管',
+              key: 'takeOver',
             },
           ],
           [
             {
-              title: "附件",
-              key: "attachment",
+              title: '接管时间',
+              key: 'takeOverDate',
+            },
+            {
+              title: '接管时资产状态',
+              key: 'takeoverAssetStatusName',
+            },
+            {
+              title: '备注',
+              key: 'remark',
+            },
+          ],
+          [
+            {
+              title: '附件',
+              key: 'attachment',
               render(_h, data, resValue) {
-                return _h("UploadFile", {
+                return _h('UploadFile', {
                   props: {
-                    type: "all",
+                    type: 'all',
                     files: resValue,
                     show: true,
                   },
@@ -194,40 +190,40 @@ export default {
         formatBasicInfoList: [
           [
             {
-              title: "上报基础情况表时间",
-              key: "reportBasicInfoDate",
+              title: '上报基础情况表时间',
+              key: 'reportBasicInfoDate',
             },
             {
-              title: "设备设施核实时间",
-              key: "houseVerificationDate",
+              title: '设备设施核实时间',
+              key: 'houseVerificationDate',
             },
             {
-              title: "上报房屋划转请示时间",
-              key: "reportHouseTransferReqDate",
-            },
-          ],
-          [
-            {
-              title: "上报核实报告时间",
-              key: "reportingVerificationReportDate",
-            },
-            {
-              title: "划转批复下发时间",
-              key: "transferApprovalDate",
-            },
-            {
-              title: "协议签署时间",
-              key: "agreementSignDate",
+              title: '上报房屋划转请示时间',
+              key: 'reportHouseTransferReqDate',
             },
           ],
           [
             {
-              title: "权属办理中存在问题",
-              key: "ownershipHandleProblems",
+              title: '上报核实报告时间',
+              key: 'reportingVerificationReportDate',
             },
             {
-              title: "历史遗留问题",
-              key: "houseTransferHisProblem",
+              title: '划转批复下发时间',
+              key: 'transferApprovalDate',
+            },
+            {
+              title: '协议签署时间',
+              key: 'agreementSignDate',
+            },
+          ],
+          [
+            {
+              title: '权属办理中存在问题',
+              key: 'ownershipHandleProblems',
+            },
+            {
+              title: '历史遗留问题',
+              key: 'houseTransferHisProblem',
             },
           ],
         ],
@@ -253,7 +249,7 @@ export default {
               data: { code: code2, message: message2, data: data2 },
             },
           ]) => {
-            if (code1 === "0" && code2 === "0") {
+            if (code1 === '0' && code2 === '0') {
               // 优先使用 设备设施详情的接口数据
               const resData = Object.assign({}, data2, data1);
 
@@ -263,11 +259,10 @@ export default {
                   attachmentId: 2796,
                   objectType: 8,
                   objectId: 100205,
-                  newAttachmentName: "wKgBB2J1zS6AP0fJAB9RobfhZ4o899.jpg",
-                  attachmentPath:
-                    "group1/M1B/00/74/wKgBB2J1zS6AP0fJAB9RobfhZ4o899.jpg",
-                  attachmentSuffix: ".jpg",
-                  oldAttachmentName: "7fcb43d25f2cbeceb5456d9ff01eb90e.jpg",
+                  newAttachmentName: 'wKgBB2J1zS6AP0fJAB9RobfhZ4o899.jpg',
+                  attachmentPath: 'group1/M1B/00/74/wKgBB2J1zS6AP0fJAB9RobfhZ4o899.jpg',
+                  attachmentSuffix: '.jpg',
+                  oldAttachmentName: '7fcb43d25f2cbeceb5456d9ff01eb90e.jpg',
                   originName: null,
                   fileSources: 1,
                   subType: null,
@@ -287,12 +282,7 @@ export default {
               this.otherInfoOptions.data = resData;
 
               // 处理权属概况数据
-              const {
-                ownershipYesCount,
-                ownershipNoCount,
-                ownershipPendingCount,
-                ownershipProgress,
-              } = resData;
+              const { ownershipYesCount, ownershipNoCount, ownershipPendingCount, ownershipProgress } = resData;
               this.tableOptions.dataSource = [
                 {
                   ownershipYesCount,
@@ -313,10 +303,10 @@ export default {
                 ele.value = Number(tempRes[ele.key] || 0);
               });
             } else {
-              if (code1 !== "0") {
+              if (code1 !== '0') {
                 this.$message.error(message1);
               }
-              if (code2 !== "0") {
+              if (code2 !== '0') {
                 this.$message.error(message2);
               }
             }

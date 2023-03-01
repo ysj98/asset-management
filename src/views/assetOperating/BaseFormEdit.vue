@@ -1,43 +1,21 @@
 <template>
   <div class="base-form-edit">
     <div style="width: 100%">
-      <a-form-model
-        ref="ruleForm"
-        :model="formData"
-        :rules="rules"
-        layout="inline"
-      >
+      <a-form-model ref="ruleForm" :model="formData" :rules="rules" layout="inline">
         <a-row>
           <a-col :span="8">
-            <a-form-model-item
-              :style="formItemStyle"
-              label="转运营单名称"
-              prop="title"
-              v-bind="formItemLayout"
-            >
-              <a-input
-                v-model="formData.title"
-                placeholer="请输入变动单名称"
-              ></a-input>
+            <a-form-model-item :style="formItemStyle" label="转运营单名称" prop="title" v-bind="formItemLayout">
+              <a-input v-model="formData.title" placeholer="请输入变动单名称"></a-input>
             </a-form-model-item>
           </a-col>
 
           <a-col :span="8">
-            <a-form-model-item
-              :style="formItemStyle"
-              label="所属机构"
-              v-bind="formItemLayout"
-            >
+            <a-form-model-item :style="formItemStyle" label="所属机构" v-bind="formItemLayout">
               <span>{{ this.organInfo.organName }}</span>
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item
-              :style="formItemStyle"
-              label="资产项目"
-              prop="projectId"
-              v-bind="formItemLayout"
-            >
+            <a-form-model-item :style="formItemStyle" label="资产项目" prop="projectId" v-bind="formItemLayout">
               <a-select
                 optionFilterProp="children"
                 showSearch
@@ -50,38 +28,17 @@
           </a-col>
         </a-row>
         <a-row style="margin-top: 20px">
-          <a-form-model-item
-            :style="formItemStyle"
-            label="资产类型"
-            prop="assetType"
-            v-bind="formItemLayoutTwo"
-          >
-            <a-select
-              style="width: 200px"
-              v-model="formData.assetType"
-              :options="assetTypeOptions"
-            ></a-select>
+          <a-form-model-item :style="formItemStyle" label="资产类型" prop="assetType" v-bind="formItemLayoutTwo">
+            <a-select style="width: 200px" v-model="formData.assetType" :options="assetTypeOptions"></a-select>
           </a-form-model-item>
         </a-row>
         <a-row style="margin-top: 20px">
-          <a-form-model-item
-            :style="formItemStyle"
-            label="备注"
-            v-bind="formItemLayoutTwo"
-          >
-            <a-textarea
-              style="width: 600px"
-              v-model="formData.remark"
-              placeholder="请输入备注信息"
-            ></a-textarea>
+          <a-form-model-item :style="formItemStyle" label="备注" v-bind="formItemLayoutTwo">
+            <a-textarea style="width: 600px" v-model="formData.remark" placeholder="请输入备注信息"></a-textarea>
           </a-form-model-item>
         </a-row>
         <a-row style="display: flex; margin-top: 20px">
-          <a-form-model-item
-            :style="formItemStyle"
-            label="附件"
-            v-bind="formItemLayoutTwo"
-          >
+          <a-form-model-item :style="formItemStyle" label="附件" v-bind="formItemLayoutTwo">
             <UploadFile
               :baseImgURL="configBase.hostImg1"
               type="all"
@@ -103,22 +60,22 @@
 </template>
 
 <script>
-import configBase from "@/config/config.base";
-import SGUploadFilePlus from "@/components/SGUploadFilePlus";
-import {getObjectKeyValueByOrganId} from "@/utils/share";
-import uploadAndDownLoadFIle from "@/mixins/uploadAndDownLoadFIle";
+import configBase from '@/config/config.base';
+import SGUploadFilePlus from '@/components/SGUploadFilePlus';
+import { getObjectKeyValueByOrganId } from '@/utils/share';
+import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 
 export default {
-  name: "baseFormEdit",
-  components:{
-    SGUploadFilePlus
+  name: 'baseFormEdit',
+  components: {
+    SGUploadFilePlus,
   },
   props: {
-    flowKey:{
+    flowKey: {
       type: String,
-      required: true
+      required: true,
     },
-    isBpm:{
+    isBpm: {
       type: Boolean,
       default: false,
     },
@@ -140,7 +97,7 @@ export default {
     return {
       configBase,
       formItemStyle: {
-        width: "100%",
+        width: '100%',
       },
       formItemLayoutTwo: {
         labelCol: {
@@ -166,39 +123,37 @@ export default {
         title: [
           {
             required: true,
-            message: "请输入变更单名称",
-            trigger: "blur",
+            message: '请输入变更单名称',
+            trigger: 'blur',
           },
         ],
         projectId: [
           {
             required: true,
-            message: "请选择资产项目",
-            trigger: "change",
+            message: '请选择资产项目',
+            trigger: 'change',
           },
         ],
-        assetType: [
-          { required: true, message: "请选择资产类型", trigger: "change" },
-        ],
+        assetType: [{ required: true, message: '请选择资产类型', trigger: 'change' }],
       },
       formStyle: {
-        width: "200px",
+        width: '200px',
       },
       projectListOptions: [],
       attachmentList: [],
-      bpmFileList:[],
+      bpmFileList: [],
       formData: {
-        projectId: "",
-        title: "",
-        assetType: "",
-        remark: "",
+        projectId: '',
+        title: '',
+        assetType: '',
+        remark: '',
       },
     };
   },
   watch: {
-    "formData.assetType": {
+    'formData.assetType': {
       handler(newValue) {
-        this.$emit("update:assetType", newValue);
+        this.$emit('update:assetType', newValue);
       },
     },
   },
@@ -206,9 +161,7 @@ export default {
     assetTypeOptions() {
       // 过滤掉 车场和设备设施 3 or 5
       const { EQUIPMENT, YARD } = this.$store.state.ASSET_TYPE_CODE;
-      return this.$store.state.ASSET_TYPE_OPTIONS.filter(
-        (ele) => ![EQUIPMENT, YARD].includes(String(ele.value))
-      ).map((ele) => ({
+      return this.$store.state.ASSET_TYPE_OPTIONS.filter((ele) => ![EQUIPMENT, YARD].includes(String(ele.value))).map((ele) => ({
         title: ele.name,
         value: ele.value,
         label: ele.name,
@@ -216,29 +169,32 @@ export default {
     },
   },
   methods: {
-    bpmUploadFile({fileArr}){
-      fileArr.forEach(ele=>{
-        const req = new FormData()
-        req.append('file',ele)
+    bpmUploadFile({ fileArr }) {
+      fileArr.forEach((ele) => {
+        const req = new FormData();
+        req.append('file', ele);
         const params = {
-          flowKey: this.flowKey
-        }
-        this.$api.bpm.bpmFileUpload(req,{params}).then(({data})=>{
-          this.bpmFileList.push({...data,_key:ele._key})
-        },reason => {
-          console.error(reason)
-        })
-      })
+          flowKey: this.flowKey,
+        };
+        this.$api.bpm.bpmFileUpload(req, { params }).then(
+          ({ data }) => {
+            this.bpmFileList.push({ ...data, _key: ele._key });
+          },
+          (reason) => {
+            console.error(reason);
+          }
+        );
+      });
     },
-    uploadFileFn(value){
-      value.forEach(ele=>ele._key = Math.random())
-      if (this.isBpm){
-        this.bpmUploadFile({fileArr:value})
+    uploadFileFn(value) {
+      value.forEach((ele) => (ele._key = Math.random()));
+      if (this.isBpm) {
+        this.bpmUploadFile({ fileArr: value });
       }
       return this.customUpload(value, this.$api.ownership.uploadAnnex);
     },
     handleChangeProject(value) {
-      this.$emit("update:projectId", value);
+      this.$emit('update:projectId', value);
     },
     async getProjectListOptions({ organId }) {
       this.projectListOptions = await getObjectKeyValueByOrganId(
@@ -257,7 +213,7 @@ export default {
         projectId,
         title,
         assetType,
-        remark: remark || "",
+        remark: remark || '',
       };
     },
     initAttachmentList(attachment) {
@@ -278,9 +234,9 @@ export default {
         remark,
       });
       // 手动处罚 change 事件
-      this.handleChangeProject(projectId)
-      console.log("data", data);
-      console.log("attachment", data.attachment);
+      this.handleChangeProject(projectId);
+      console.log('data', data);
+      console.log('attachment', data.attachment);
       this.initAttachmentList(attachment || []);
     },
     handleValidate() {
@@ -293,23 +249,23 @@ export default {
     sendData() {
       const validateRes = this.handleValidate();
       if (!validateRes) {
-        throw new Error("校验未通过");
+        throw new Error('校验未通过');
       }
-      const attachmentList =this.attachmentList.map((ele) => {
-        const bpmFileRes = this.bpmFileList.find(item=>(ele._key === item._key ))
-        let bpmFileId = ''
-        if (ele.bpmFileId){
-          bpmFileId = ele.bpmFileId
-        }else {
-          bpmFileId = bpmFileRes ? bpmFileRes.fileId : ''
+      const attachmentList = this.attachmentList.map((ele) => {
+        const bpmFileRes = this.bpmFileList.find((item) => ele._key === item._key);
+        let bpmFileId = '';
+        if (ele.bpmFileId) {
+          bpmFileId = ele.bpmFileId;
+        } else {
+          bpmFileId = bpmFileRes ? bpmFileRes.fileId : '';
         }
         return {
           attachmentPath: ele.url,
           oldAttachmentName: ele.name,
           originName: ele.name,
-          bpmFileId
+          bpmFileId,
         };
-      })
+      });
       return {
         ...this.formData,
         attachmentList,

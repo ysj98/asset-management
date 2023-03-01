@@ -7,9 +7,9 @@
  * 
 -->
 <script>
-import DetailPage from "./DetailPage.vue";
+import DetailPage from './DetailPage.vue';
 export default {
-  name: "DetailPrintPage",
+  name: 'DetailPrintPage',
   extends: DetailPage,
   mounted() {
     // 处理打印表头
@@ -21,7 +21,7 @@ export default {
     this.tableObj.columns.splice(5);
 
     // 动态设置 页面高度
-    const detailNode = document.querySelector(".detail_page");
+    const detailNode = document.querySelector('.detail_page');
     const allHeight = document.body.scrollHeight;
     detailNode.height = `${allHeight}px`;
     // 取消 table scroll 属性

@@ -1,8 +1,8 @@
 // 调用数据中心接口
-import {axiosPost} from "utils/axios";
-import {dataCenter} from '@/config/config.url'
+import { axiosPost } from 'utils/axios';
+import { dataCenter } from '@/config/config.url';
 
-export function dataCacheTrans({subUrl, form}) {
+export function dataCacheTrans({ subUrl, form }) {
   let par = {
     subUrl,
     paramJson: JSON.stringify({
@@ -11,8 +11,8 @@ export function dataCacheTrans({subUrl, form}) {
       requestId: +new Date(),
       noncestr: +new Date(),
       apiVersion: '0.1',
-      data: form
-    })
-  }
-  return axiosPost(dataCenter.dataCenter, par)
+      data: form,
+    }),
+  };
+  return axiosPost(dataCenter.dataCenter, par);
 }

@@ -1,0 +1,32 @@
+.sg-datePicker-wrapper {
+  min-width: 360px !important;
+}
+.table-space-pagination {
+  height: 70px;
+}
+/*
+此样式使表格滚动条高度变粗
+*/
+.custom-scroll .ant-table ::-webkit-scrollbar {
+  height: 8px;
+}
+/*
+带合计的表格（当前页面合计和所有合计两行 字体加粗样式）
+*/
+.custom-total .ant-table .ant-table-thead th,
+.custom-total .ant-table td {
+  white-space: nowrap;
+}
+.custom-total .ant-table .ant-table-tbody tr:nth-last-child(-n + 2) {
+  font-weight: bold !important;
+}
+/*
+带合计的表格（当前页面合计和所有合计一行 字体加粗样式）
+*/
+.custom-total-one .ant-table .ant-table-thead th,
+.custom-total-one .ant-table td {
+  white-space: nowrap;
+}
+.custom-total-one .ant-table .ant-table-tbody tr:nth-last-child(-n + 1) {
+  font-weight: bold !important;
+}

@@ -7,8 +7,8 @@
  * @FilePath: \asset-management\src\views\inventoryManagement\countingTask\InventoryDetails.vue
  -->
 <script>
-  import detail from '../inventoryPerform/detail'
-  export default {
-    extends: detail
-  }
+import detail from '../inventoryPerform/detail';
+export default {
+  extends: detail,
+};
 </script>

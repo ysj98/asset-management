@@ -20,7 +20,7 @@
 .item-mixin .item.nodata {
   background: none;
   box-shadow: none;
-  border: 1px dashed #DCE1E6;
+  border: 1px dashed #dce1e6;
 }
 .item-mixin .item .ItemBox {
   width: 100%;
@@ -104,15 +104,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 12px;
-  color: #49505E;
+  color: #49505e;
   white-space: nowrap;
 }
 .item-mixin .item .ItemTitle .download {
   height: 16px;
   line-height: 16px;
   padding: 0 12px;
-  border-left: 1px solid #DCE1E6;
-  color: #959DAB;
+  border-left: 1px solid #dce1e6;
+  color: #959dab;
   cursor: pointer;
 }
 .item-mixin .item .ItemTitle .download:hover {
@@ -145,7 +145,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
-  color: #959DAB;
+  color: #959dab;
   font-size: 10px;
   cursor: pointer;
 }
@@ -166,7 +166,7 @@
   opacity: 0.8;
   border-radius: 4px;
   text-align: center;
-  color: #0084FF;
+  color: #0084ff;
   font-size: 13px;
   cursor: pointer;
 }
@@ -205,28 +205,28 @@
 .sg-uploadFile > .fileBox > .tips {
   flex: 1 1 auto;
   font-size: 12px;
-  color: #959DAB;
+  color: #959dab;
   padding-left: 20px;
 }
 .sg-uploadFile > .fileBox > .total {
   font-size: 12px;
-  color: #959DAB;
+  color: #959dab;
 }
 .sg-uploadFile > .fileBox > .total span {
   font-weight: bold;
   font-size: 14px;
   margin: 0 5px;
-  color: #49505E;
+  color: #49505e;
 }
 .sg-uploadFile > .notData {
   width: 160px;
   height: 160px;
-  border: 1px dashed #DCE1E6;
-  background: #FAFAFA;
+  border: 1px dashed #dce1e6;
+  background: #fafafa;
   border-radius: 4px;
   text-align: center;
   line-height: 160px;
-  color: #C0C9D1;
+  color: #c0c9d1;
   font-size: 14px;
   margin-bottom: 20px;
 }
@@ -259,7 +259,7 @@
   width: 32px;
   height: 32px;
   border-radius: 100%;
-  border: 2px solid #DCE1E6;
+  border: 2px solid #dce1e6;
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -271,7 +271,7 @@
 }
 .sg-uploadFile > .preview > .previewPages > .previewPrev.disabled .sg-iconExt,
 .sg-uploadFile > .preview > .previewPages > .previewNext.disabled .sg-iconExt {
-  border-color: #DCE1E6;
+  border-color: #dce1e6;
 }
 .sg-uploadFile > .preview > .previewPages > ul {
   display: flex;
@@ -284,13 +284,13 @@
   width: 10px;
   height: 10px;
   border-radius: 100%;
-  background: #DCE1E6;
+  background: #dce1e6;
   margin-right: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 .sg-uploadFile > .preview > .previewPages > ul li.active {
-  background: #0084FF;
+  background: #0084ff;
 }
 .sg-uploadFile .item {
   width: 160px;
@@ -314,7 +314,7 @@
 .sg-uploadFile .item.nodata {
   background: none;
   box-shadow: none;
-  border: 1px dashed #DCE1E6;
+  border: 1px dashed #dce1e6;
 }
 .sg-uploadFile .item .ItemBox {
   width: 100%;
@@ -398,15 +398,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 12px;
-  color: #49505E;
+  color: #49505e;
   white-space: nowrap;
 }
 .sg-uploadFile .item .ItemTitle .download {
   height: 16px;
   line-height: 16px;
   padding: 0 12px;
-  border-left: 1px solid #DCE1E6;
-  color: #959DAB;
+  border-left: 1px solid #dce1e6;
+  color: #959dab;
   cursor: pointer;
 }
 .sg-uploadFile .item .ItemTitle .download:hover {
@@ -439,7 +439,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
-  color: #959DAB;
+  color: #959dab;
   font-size: 10px;
   cursor: pointer;
 }
@@ -460,7 +460,7 @@
   opacity: 0.8;
   border-radius: 4px;
   text-align: center;
-  color: #0084FF;
+  color: #0084ff;
   font-size: 13px;
   cursor: pointer;
 }
@@ -571,7 +571,7 @@ div.sg-uploadFile-showUpload .item:hover .ItemAction {
 div.sg-uploadFile-showUpload .item.nodata {
   background: none;
   box-shadow: none;
-  border: 1px dashed #DCE1E6;
+  border: 1px dashed #dce1e6;
 }
 div.sg-uploadFile-showUpload .item .ItemBox {
   width: 100%;
@@ -655,15 +655,15 @@ div.sg-uploadFile-showUpload .item .ItemTitle .text {
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 12px;
-  color: #49505E;
+  color: #49505e;
   white-space: nowrap;
 }
 div.sg-uploadFile-showUpload .item .ItemTitle .download {
   height: 16px;
   line-height: 16px;
   padding: 0 12px;
-  border-left: 1px solid #DCE1E6;
-  color: #959DAB;
+  border-left: 1px solid #dce1e6;
+  color: #959dab;
   cursor: pointer;
 }
 div.sg-uploadFile-showUpload .item .ItemTitle .download:hover {
@@ -696,7 +696,7 @@ div.sg-uploadFile-showUpload .item .ItemDelete {
   position: absolute;
   top: 4px;
   right: 4px;
-  color: #959DAB;
+  color: #959dab;
   font-size: 10px;
   cursor: pointer;
 }
@@ -717,7 +717,7 @@ div.sg-uploadFile-showUpload .item .ItemAction {
   opacity: 0.8;
   border-radius: 4px;
   text-align: center;
-  color: #0084FF;
+  color: #0084ff;
   font-size: 13px;
   cursor: pointer;
 }
@@ -739,7 +739,7 @@ div.sg-uploadFile-showUpload .itemBox {
 }
 div.sg-uploadFile-showUpload .itemBox .errorTips {
   background: rgba(255, 108, 93, 0.1);
-  color: #FD7474;
+  color: #fd7474;
   line-height: 30px;
   margin: -14px -30px;
   padding: 0 30px;
@@ -748,7 +748,7 @@ div.sg-uploadFile-showUpload .itemBox .errorTips {
   margin-bottom: 10px;
 }
 div.sg-uploadFile-showUpload .itemBox::after {
-  content: "";
+  content: '';
   display: block;
   clear: both;
 }
@@ -761,5 +761,5 @@ div.sg-uploadFile-showUpload .itemBox .item:nth-child(5n + 1) {
   margin-right: 0;
 }
 div.sg-uploadFile-showUpload.error .itemBox .item .title {
-  color: #FD7474;
+  color: #fd7474;
 }

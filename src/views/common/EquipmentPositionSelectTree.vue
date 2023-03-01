@@ -1,61 +1,61 @@
 <template>
-  <div class="select-container" :style="{width: width}">
+  <div class="select-container" :style="{ width: width }">
     <a-tree-select
-        tree-node-filter-prop="title"
-        class="tree-select"
-        :class="{'have-default-name': showDefaultOrganName}"
-        :multiple="multiple"
-        v-model="valueCom"
-        :showSearch="true"
-        :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-        :tree-data="treeData"
-        :placeholder="placeholder"
-        :load-data="onLoadData"
-        option-filter-prop="label"
-        @change="handleChange"
+      tree-node-filter-prop="title"
+      class="tree-select"
+      :class="{ 'have-default-name': showDefaultOrganName }"
+      :multiple="multiple"
+      v-model="valueCom"
+      :showSearch="true"
+      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+      :tree-data="treeData"
+      :placeholder="placeholder"
+      :load-data="onLoadData"
+      option-filter-prop="label"
+      @change="handleChange"
     />
-    <div class="default-name" v-show="showDefaultOrganName">{{defaultName}}</div>
+    <div class="default-name" v-show="showDefaultOrganName">{{ defaultName }}</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "EquipmentSelectTree",
+  name: 'EquipmentSelectTree',
   props: {
     placeholder: {
       type: String,
-      default: "请选择资源位置"
+      default: '请选择资源位置',
     },
     // 真实项目Id
     communityId: {
       type: [String, Number],
-      required: true
+      required: true,
     },
     value: {
       type: [String, Array, Number],
-      default: undefined
+      default: undefined,
     },
-    width:{
+    width: {
       type: String,
-      default: '200px'
+      default: '200px',
     },
     multiple: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    defaultName : {
+    defaultName: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   model: {
-    event: "change",
-    prop: "value"
+    event: 'change',
+    prop: 'value',
   },
   data() {
     return {
       treeData: [],
-      showDefaultOrganName: true // 显示默认值
+      showDefaultOrganName: true, // 显示默认值
     };
   },
   computed: {
@@ -64,77 +64,92 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit("change", value);
-      }
-    }
+        this.$emit('change', value);
+      },
+    },
   },
   watch: {
     communityId: {
-      handler: function(newValue) {
+      handler: function (newValue) {
         if (newValue) {
           this.init();
         }
       },
-      immediate: true
+      immediate: true,
     },
     defaultName: function () {
-      this.showDefaultOrganName = true
-    }
+      this.showDefaultOrganName = true;
+    },
   },
   methods: {
-    handleChange () {
-      this.showDefaultOrganName = false
+    handleChange() {
+      this.showDefaultOrganName = false;
     },
     async onLoadData(treeNode) {
-      console.log("treeNode", treeNode);
+      console.log('treeNode', treeNode);
       if (treeNode.dataRef.children && treeNode.dataRef.children.length > 0) {
         return;
       }
-      const {communityId,positionType,positionId } = treeNode.dataRef;
+      const { communityId, positionType, positionId } = treeNode.dataRef;
       try {
-        const params = { communityId, positionType, upPositionId: positionId }
-        const data = await this.positionSelectAsynByOwnership(params)
-        treeNode.dataRef.children = data
+        const params = { communityId, positionType, upPositionId: positionId };
+        const data = await this.positionSelectAsynByOwnership(params);
+        treeNode.dataRef.children = data;
       } catch (error) {
         treeNode.dataRef.children = [];
       }
     },
     // 根据CommunityID查询位置列表
     async positionSelectByCommunityID(communityId) {
-      this.treeData = []
+      this.treeData = [];
       try {
         if (!communityId) {
-          return
+          return;
         }
         const params = {
           communityId,
-          positionType: ""
+          positionType: '',
+        };
+        const { data: res } = await this.$api.building.positionSelectByCommunityID(params);
+        if (String(res.code) === '0') {
+          res.data.children = (res.data.children || []).map((item) => ({
+            ...item,
+            key: Math.random(),
+            value: item.positionId,
+            label: item.positionName,
+            title: item.positionName,
+            selectable: false,
+            children: [],
+            isLeaf: false,
+          }));
+          this.treeData = ([res.data] || []).map((item) => ({
+            ...item,
+            value: item.positionId,
+            label: item.positionName,
+            selectable: false,
+            key: Math.random(),
+          }));
         }
-        const {data: res} = await this.$api.building.positionSelectByCommunityID(params)
-        if(String(res.code) === '0') {
-          res.data.children = (res.data.children || []).map(item=>({...item,key:Math.random(), value: item.positionId,label: item.positionName,title: item.positionName,selectable: false , children: [],isLeaf: false}))
-          this.treeData = ([res.data] || []).map(item=>({...item, value: item.positionId,label: item.positionName, selectable: false,key: Math.random()}))
-        }
-      }catch {}
+      } catch {}
     },
     // 根据communitId和positionType查询具体资源
-    async positionSelectAsynByOwnership (data) {
+    async positionSelectAsynByOwnership(data) {
       try {
         const params = {
-          ...data
+          ...data,
+        };
+        const { data: res } = await this.$api.building.positionSelectAsynByOwnership(params);
+        if (String(res.code) === '0') {
+          return (res.data || []).map((item) => ({ ...item, value: item.positionId, label: item.positionName, key: Math.random() }));
         }
-        const {data: res} = await this.$api.building.positionSelectAsynByOwnership(params)
-        if(String(res.code) === '0') {
-          return (res.data || []).map(item=>({...item, value:item.positionId,label: item.positionName,key: Math.random()}))
-        }
-      }catch {
-        return []
+      } catch {
+        return [];
       }
     },
     init() {
       this.positionSelectByCommunityID(this.communityId);
-    }
-  }
+    },
+  },
 };
 </script>
 

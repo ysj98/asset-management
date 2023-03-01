@@ -8,21 +8,17 @@
   <div class="assetsRegistration">
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <a-button
-          icon="plus"
-          type="primary"
-          v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_NEW"
-          @click="newChangeSheetFn"
-        >新建交付单</a-button>
+        <a-button icon="plus" type="primary" v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_NEW" @click="newChangeSheetFn">新建交付单</a-button>
         <SG-Button v-power="ASSET_MANAGEMENT.ASSET_DELIVERY_EXPORT" class="ml10" type="primary" @click="downloadFn">导出</SG-Button>
-        <div style="position:absolute;top: 20px;right: 76px;display:flex;">
-          <treeSelect
-            @changeTree="changeTree"
-            placeholder="请选择组织机构"
-            :allowClear="false"
+        <div style="position: absolute; top: 20px; right: 76px; display: flex">
+          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle"></treeSelect>
+          <a-input-search
+            v-model="queryCondition.deliveryNameOrId"
+            placeholder="交付单号/名称"
+            :maxLength="30"
             :style="allStyle"
-          ></treeSelect>
-          <a-input-search v-model="queryCondition.deliveryNameOrId" placeholder="交付单号/名称" :maxLength="30" :style="allStyle" @search="allQuery" />
+            @search="allQuery"
+          />
         </div>
       </div>
       <div slot="btns">
@@ -49,40 +45,27 @@
           @select="changeAssetType"
           v-model="queryCondition.assetType"
         >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in assetTypeData"
-            :key="index"
-            :value="item.value"
-          >{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
-        <a-select
-          :style="allStyle"
-          placeholder="全部交付类型"
-          v-model="queryCondition.deliveryType"
-        >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in changeTypeData"
-            :key="index"
-            :value="item.value"
-          >{{item.name}}</a-select-option>
+        <a-select :style="allStyle" placeholder="全部交付类型" v-model="queryCondition.deliveryType">
+          <a-select-option :title="item.name" v-for="(item, index) in changeTypeData" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
         <a-select
           :maxTagCount="1"
-          style="width: 160px; margin-right: 10px;"
+          style="width: 160px; margin-right: 10px"
           mode="multiple"
           placeholder="全部状态"
           :tokenSeparators="[',']"
           @select="approvalStatusFn"
           v-model="queryCondition.approvalStatus"
         >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in approvalStatusData"
-            :key="index"
-            :value="item.value"
-          >{{item.name}}</a-select-option>
+          <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
         <div class="box">
           <segi-range-picker
@@ -101,18 +84,9 @@
       <overview-number :numList="numList" />
     </a-spin>
     <div class="table-layout-fixed">
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :dataSource="tableData"
-        size="middle"
-        :pagination="false"
-      >
+      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false">
         <template slot="operation" slot-scope="text, record">
-          <OperationPopover
-            :operationData="record.operationData"
-            @operationFun="operationFun(record, $event)"
-          ></OperationPopover>
+          <OperationPopover :operationData="record.operationData" @operationFun="operationFun(record, $event)"></OperationPopover>
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -131,43 +105,46 @@
 </template>
 
 <script>
-import {generateTableAreaByAssetTypeString} from '@/utils/utils'
-import SegiRangePicker from "@/components/SegiRangePicker";
-import TreeSelect from "../../common/treeSelect";
-import moment from "moment";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import noDataTips from "@/components/noDataTips";
-import OverviewNumber from "@/views/common/OverviewNumber";
-import OperationPopover from "@/components/OperationPopover";
-import terminationDelivery from './child/terminationDelivery'
+import { generateTableAreaByAssetTypeString } from '@/utils/utils';
+import SegiRangePicker from '@/components/SegiRangePicker';
+import TreeSelect from '../../common/treeSelect';
+import moment from 'moment';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import noDataTips from '@/components/noDataTips';
+import OverviewNumber from '@/views/common/OverviewNumber';
+import OperationPopover from '@/components/OperationPopover';
+import terminationDelivery from './child/terminationDelivery';
 const approvalStatusData = [
-  { name: "全部状态", value: '' },
-  { name: "草稿", value: "0" },
-  { name: "待审批", value: "2" },
-  { name: "已驳回", value: "3" },
-  { name: "已审批", value: "1" },
-  { name: "已取消", value: "4" }
+  { name: '全部状态', value: '' },
+  { name: '草稿', value: '0' },
+  { name: '待审批', value: '2' },
+  { name: '已驳回', value: '3' },
+  { name: '已审批', value: '1' },
+  { name: '已取消', value: '4' },
 ];
 const columns = [
-  { title: "交付单编号", dataIndex: "deliveryId", width: 110 },
-  { title: "交付单名称", dataIndex: "deliveryName" },
-  { title: "所属机构", dataIndex: "organName" },
-  { title: "资产项目", dataIndex: "projectName" },
-  { title: "资产类型", dataIndex: "assetTypeName" },
-  { title: "交付类型", dataIndex: "deliveryTypeName" },
-  { title: "交付单位", dataIndex: "deliveryCompany" },
-  { title: "交付资产数量", dataIndex: "assetChangeCount", width: 100 },
-  { title: "交付面积(㎡)", key: "deliveryArea", width: 100,
-    customRender(record){
-      return generateTableAreaByAssetTypeString({keyStr:'deliveryArea',record,assetTypeName:record.assetTypeName})
-    }
+  { title: '交付单编号', dataIndex: 'deliveryId', width: 110 },
+  { title: '交付单名称', dataIndex: 'deliveryName' },
+  { title: '所属机构', dataIndex: 'organName' },
+  { title: '资产项目', dataIndex: 'projectName' },
+  { title: '资产类型', dataIndex: 'assetTypeName' },
+  { title: '交付类型', dataIndex: 'deliveryTypeName' },
+  { title: '交付单位', dataIndex: 'deliveryCompany' },
+  { title: '交付资产数量', dataIndex: 'assetChangeCount', width: 100 },
+  {
+    title: '交付面积(㎡)',
+    key: 'deliveryArea',
+    width: 100,
+    customRender(record) {
+      return generateTableAreaByAssetTypeString({ keyStr: 'deliveryArea', record, assetTypeName: record.assetTypeName });
+    },
   },
-  { title: "交付日期", dataIndex: "deliveryDate" },
-  { title: "结束日期", dataIndex: "endDate" },
-  { title: "创建人", dataIndex: "createByName" },
-  { title: "创建日期", dataIndex: "createTime" },
-  { title: "状态", dataIndex: "approvalStatusName" },
-  { title: "操作", dataIndex: "operation", width: 90, scopedSlots: { customRender: "operation" }}
+  { title: '交付日期', dataIndex: 'deliveryDate' },
+  { title: '结束日期', dataIndex: 'endDate' },
+  { title: '创建人', dataIndex: 'createByName' },
+  { title: '创建日期', dataIndex: 'createTime' },
+  { title: '状态', dataIndex: 'approvalStatusName' },
+  { title: '操作', dataIndex: 'operation', width: 90, scopedSlots: { customRender: 'operation' } },
 ];
 export default {
   components: {
@@ -176,7 +153,7 @@ export default {
     SegiRangePicker,
     noDataTips,
     OperationPopover,
-    terminationDelivery
+    terminationDelivery,
   },
   props: {},
   data() {
@@ -187,161 +164,164 @@ export default {
       isChild: false,
       loading: false,
       noPageTools: false,
-      location: "absolute",
+      location: 'absolute',
       approvalStatusData: [...approvalStatusData],
-      allStyle: "width: 170px; margin-right: 10px;",
+      allStyle: 'width: 170px; margin-right: 10px;',
       columns,
       organName: '',
       organId: '',
       tableData: [],
       queryCondition: {
-        deliveryNameOrId: '',       // 交付单号/名称
-        approvalStatus: '',         // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        pageNum: 1,                 // 当前页
-        pageSize: 10,               // 每页显示记录数
-        projectId: undefined,              // 资产项目Id
-        organId: '',                // 组织机构id
-        deliveryType: '',           // 交付类型
-        assetType: '',              // 资产类型，多个用，分隔
-        startCreateDate: '',   // 开始创建日期
-        endCreateDate: '',            // 结束创建日期
+        deliveryNameOrId: '', // 交付单号/名称
+        approvalStatus: '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+        pageNum: 1, // 当前页
+        pageSize: 10, // 每页显示记录数
+        projectId: undefined, // 资产项目Id
+        organId: '', // 组织机构id
+        deliveryType: '', // 交付类型
+        assetType: '', // 资产类型，多个用，分隔
+        startCreateDate: '', // 开始创建日期
+        endCreateDate: '', // 结束创建日期
       },
       count: '',
       changeTypeData: [
-        { name: '全部交付类型', value: ''},
-        { name: '交付物业', value: '1'},
-        { name: '交付运营', value: '2'},
+        { name: '全部交付类型', value: '' },
+        { name: '交付物业', value: '1' },
+        { name: '交付运营', value: '2' },
       ],
       assetTypeData: [],
       projectData: [],
       overviewNumSpinning: false,
       numList: [
-        { title: "全部", key: "total", value: 0, fontColor: "#324057" },
-        { title: "草稿", key: "draft", value: 0, bgColor: "#5b8ff9" },
-        { title: "待审批", key: "await", value: 0, bgColor: "#d48265" },
-        { title: "已驳回", key: "reject", value: 0, bgColor: "#4BD288" },
-        { title: "已审批", key: "complete", value: 0, bgColor: "#1890FF" },
-        { title: "已取消", key: "cancel", value: 0, bgColor: "#DD81E6" }
+        { title: '全部', key: 'total', value: 0, fontColor: '#324057' },
+        { title: '草稿', key: 'draft', value: 0, bgColor: '#5b8ff9' },
+        { title: '待审批', key: 'await', value: 0, bgColor: '#d48265' },
+        { title: '已驳回', key: 'reject', value: 0, bgColor: '#4BD288' },
+        { title: '已审批', key: 'complete', value: 0, bgColor: '#1890FF' },
+        { title: '已取消', key: 'cancel', value: 0, bgColor: '#DD81E6' },
       ],
     };
   },
   computed: {},
   watch: {
     $route() {
-      if (
-        this.$route.path === "/assetDelivery" &&
-        this.$route.query.refresh
-      ) {
+      if (this.$route.path === '/assetDelivery' && this.$route.query.refresh) {
         this.queryCondition.pageNum = 1;
         this.queryCondition.pageSize = 10;
         this.query();
       }
-    }
+    },
   },
   mounted() {
     // 获取资产类型
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
   },
   methods: {
     moment,
-      // 导出
-    downloadFn () {
+    // 导出
+    downloadFn() {
       let obj = {
-        pageNum: '',                                              // 当前页
-        pageSize: '',                                             // 每页显示记录数
-        organId: this.queryCondition.organId,                     // 组织机构id
-        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId,            // 项目id
-        deliveryType: this.queryCondition.deliveryType,           // 交付类型
-        deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
-        assetTypeList: this.alljudge(this.queryCondition.assetType),       // 资产类型id(多个用，分割)
-        deliveryDateStart: this.queryCondition.startCreateDate,    // 开始创建日期
-        deliveryDateEnd: this.queryCondition.endCreateDate,       // 结束创建日期
+        pageNum: '', // 当前页
+        pageSize: '', // 每页显示记录数
+        organId: this.queryCondition.organId, // 组织机构id
+        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId, // 项目id
+        deliveryType: this.queryCondition.deliveryType, // 交付类型
+        deliveryNameOrId: this.queryCondition.deliveryNameOrId, // 单号/名称
+        assetTypeList: this.alljudge(this.queryCondition.assetType), // 资产类型id(多个用，分割)
+        deliveryDateStart: this.queryCondition.startCreateDate, // 开始创建日期
+        deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus), // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-      }
-      this.$api.delivery.exportDeliveryList(obj).then(res => {
-        let blob = new Blob([res.data])
-        let a = document.createElement('a')
-        a.href = URL.createObjectURL(blob)
-        a.download = '资产交付管理.xls'
-        a.style.display = 'none'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      })
+      };
+      this.$api.delivery.exportDeliveryList(obj).then((res) => {
+        let blob = new Blob([res.data]);
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '资产交付管理.xls';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      });
     },
     // 统一搜索
-    allQuery () {
-      this.queryCondition.pageNum = 1
-      this.query()
+    allQuery() {
+      this.queryCondition.pageNum = 1;
+      this.query();
     },
-    alljudge (val) {
-    if (val.length !== 0) {
-      if (val[0] === '') {
-        return []
+    alljudge(val) {
+      if (val.length !== 0) {
+        if (val[0] === '') {
+          return [];
+        } else {
+          return val;
+        }
       } else {
-        return val
+        return [];
       }
-    } else {
-      return []
-    }
-  },
+    },
     // 查询
     query() {
       this.loading = true;
       let obj = {
-        pageNum: this.queryCondition.pageNum,                     // 当前页
-        pageSize: this.queryCondition.pageSize,                   // 每页显示记录数
-        organId: this.queryCondition.organId,                     // 组织机构id
-        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId,            // 项目id
-        deliveryType: this.queryCondition.deliveryType,           // 交付类型
-        deliveryNameOrId: this.queryCondition.deliveryNameOrId,   // 单号/名称
-        assetTypeList: this.alljudge(this.queryCondition.assetType),       // 资产类型id(多个用，分割)
-        deliveryDateStart: this.queryCondition.startCreateDate,    // 开始创建日期
-        deliveryDateEnd: this.queryCondition.endCreateDate,       // 结束创建日期
+        pageNum: this.queryCondition.pageNum, // 当前页
+        pageSize: this.queryCondition.pageSize, // 每页显示记录数
+        organId: this.queryCondition.organId, // 组织机构id
+        projectIdList: this.queryCondition.projectId === undefined ? [] : this.queryCondition.projectId, // 项目id
+        deliveryType: this.queryCondition.deliveryType, // 交付类型
+        deliveryNameOrId: this.queryCondition.deliveryNameOrId, // 单号/名称
+        assetTypeList: this.alljudge(this.queryCondition.assetType), // 资产类型id(多个用，分割)
+        deliveryDateStart: this.queryCondition.startCreateDate, // 开始创建日期
+        deliveryDateEnd: this.queryCondition.endCreateDate, // 结束创建日期
         approvalStatusList: this.alljudge(this.queryCondition.approvalStatus), // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-      }
-      this.$api.delivery.getDeliveryPage(obj).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data.data || [];
-          this.tableData = data.map((item, index) => {
-            // 处理按钮权限
-            item.operationData = this.handleBtn(item)
-            return {
-              ...item,
-              key: index
-            };
-          });
-          this.count = res.data.data.count || 0;
-          this.getChangePageSum(obj);
-        } else {
-          this.$message.error(res.data.message);
-        }
-      }).finally(() => {
-        this.loading = false;
-      });
+      };
+      this.$api.delivery
+        .getDeliveryPage(obj)
+        .then((res) => {
+          if (Number(res.data.code) === 0) {
+            let data = res.data.data.data || [];
+            this.tableData = data.map((item, index) => {
+              // 处理按钮权限
+              item.operationData = this.handleBtn(item);
+              return {
+                ...item,
+                key: index,
+              };
+            });
+            this.count = res.data.data.count || 0;
+            this.getChangePageSum(obj);
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     // 查询统计列表
     getChangePageSum(obj) {
-      this.overviewNumSpinning = true
+      this.overviewNumSpinning = true;
       let data = { ...obj };
       delete data.pageNum;
       delete data.pageSize;
-      this.$api.delivery.getDeliveryPageSum(data).then(res => {
-        if (Number(res.data.code) === 0) {
-          let data = res.data.data || {};
-          this.numList = this.numList.map(item => {
-            return {
-              ...item,
-              value: data[item.key]
-            };
-          });
-        } else {
-          this.$message.error(res.data.message);
+      this.$api.delivery
+        .getDeliveryPageSum(data)
+        .then((res) => {
+          if (Number(res.data.code) === 0) {
+            let data = res.data.data || {};
+            this.numList = this.numList.map((item) => {
+              return {
+                ...item,
+                value: data[item.key],
+              };
+            });
+          } else {
+            this.$message.error(res.data.message);
+            this.overviewNumSpinning = false;
+          }
+        })
+        .finally(() => {
           this.overviewNumSpinning = false;
-        }
-      }).finally(() => {
-        this.overviewNumSpinning = false;
-      });
+        });
     },
     // 高级搜索控制
     searchContainerFn(val) {
@@ -354,12 +334,10 @@ export default {
     },
     // 新建交付单
     newChangeSheetFn() {
-      let recordData = JSON.stringify([
-        { organId: this.queryCondition.organId, organName: this.organName }
-      ]);
+      let recordData = JSON.stringify([{ organId: this.queryCondition.organId, organName: this.organName }]);
       this.$router.push({
         path: '/assetDelivery/newEditor',
-        query: { record: recordData, setType: 'new' }
+        query: { record: recordData, setType: 'new' },
       });
     },
     // 处理按钮
@@ -367,82 +345,74 @@ export default {
       let arr = [];
       // 0草稿   2待审批、已驳回3、已审批1  已取消4
       // 编辑权限
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_EDIT) && ["0", "3"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_EDIT) && ['0', '3'].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: 'edit', text: '编辑', editType: 'edit' });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_AUDIT) && ["2"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "check-square", text: "审批", editType: "audit" });
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_AUDIT) && ['2'].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: 'check-square', text: '审批', editType: 'audit' });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_DELETE) &&["0", "3"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "delete", text: "删除", editType: "delete" });
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_DELETE) && ['0', '3'].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: 'delete', text: '删除', editType: 'delete' });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_REVERSE_AUDIT) && ["1"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "logout", text: "反审批", editType: "reverseAudit" });
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_REVERSE_AUDIT) && ['1'].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: 'logout', text: '反审批', editType: 'reverseAudit' });
       }
-      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_end) && ["1"].includes(String(record.approvalStatus))) {
-        arr.push({ iconType: "book", text: "结束交付", editType: "end" });
+      if (this.$power.has(ASSET_MANAGEMENT.ASSET_DELIVERY_end) && ['1'].includes(String(record.approvalStatus))) {
+        arr.push({ iconType: 'book', text: '结束交付', editType: 'end' });
       }
       arr.push({
-        iconType: "file-text",
-        text: "详情",
-        editType: "particulars"
+        iconType: 'file-text',
+        text: '详情',
+        editType: 'particulars',
       });
       return arr;
     },
     // 操作
     operationFun(val, str) {
       // 详情
-      if (["particulars"].includes(str)) {
+      if (['particulars'].includes(str)) {
         let particularsData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetDelivery/details",
-          query: { record: particularsData, setType: 'details' }
+          path: '/assetDelivery/details',
+          query: { record: particularsData, setType: 'details' },
         });
       }
       // 删除
-      if (["delete"].includes(str)) {
-        this.commonFn("delete", val.deliveryId);
+      if (['delete'].includes(str)) {
+        this.commonFn('delete', val.deliveryId);
       }
       // 反审核
-      if (["reverseAudit"].includes(str)) {
-        this.commonFn("reverseAudit", val.deliveryId);
+      if (['reverseAudit'].includes(str)) {
+        this.commonFn('reverseAudit', val.deliveryId);
       }
       // 审批
-      if (["audit"].includes(str)) {
-        this.commonFn("audit", val.deliveryId);
+      if (['audit'].includes(str)) {
+        this.commonFn('audit', val.deliveryId);
       }
       // 结束交付
-      if (["end"].includes(str)) {
-        this.$refs.deliveryRef.status = true
-        this.$refs.deliveryRef.replacement(val.deliveryId)        // 重置数据
+      if (['end'].includes(str)) {
+        this.$refs.deliveryRef.status = true;
+        this.$refs.deliveryRef.replacement(val.deliveryId); // 重置数据
       }
       // 编辑
-      if (["edit"].includes(str)) {
+      if (['edit'].includes(str)) {
         let recordData = JSON.stringify([val]);
         this.$router.push({
-          path: "/assetDelivery/editDelivery",
-          query: { record: recordData, setType: "edit" }
+          path: '/assetDelivery/editDelivery',
+          query: { record: recordData, setType: 'edit' },
         });
       }
     },
     // 资产类型发生变化
     changeAssetType(value) {
-      this.$nextTick(function() {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.assetType,
-          this.assetTypeData
-        );
+      this.$nextTick(function () {
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData);
       });
     },
     // 状态发生变化
     approvalStatusFn(value) {
-      this.$nextTick(function() {
-        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.approvalStatus,
-          this.approvalStatusData
-        );
+      this.$nextTick(function () {
+        this.queryCondition.approvalStatus = this.handleMultipleSelectValue(value, this.queryCondition.approvalStatus, this.approvalStatusData);
       });
     },
     // 处理多选下拉框有全选时的数组
@@ -466,37 +436,40 @@ export default {
     commonFn(str, id) {
       let _this = this;
       let obj = {
-        content: '',                        // 提示内容
-        info: '',                           // 成功提示内容
-        approvalStatus: '',                 // 状态
-      }
-      if (str === "delete") {                // 删除
-        obj.content = '确认要删除该交付单吗？'
-        obj.info = '删除成功'
-        obj.approvalStatus = 4
-      } else if (str === 'reverseAudit') {   // 反审核
-        obj.content = '确认要反审核该交付单吗？'
-        obj.info = '反审核成功'
-        obj.approvalStatus = 0
-      } else if (str === 'audit') {          // 审核
-        obj.content = '确认要审核该交付单吗？'
-        obj.info = '审核成功'
-        obj.approvalStatus = 1
+        content: '', // 提示内容
+        info: '', // 成功提示内容
+        approvalStatus: '', // 状态
+      };
+      if (str === 'delete') {
+        // 删除
+        obj.content = '确认要删除该交付单吗？';
+        obj.info = '删除成功';
+        obj.approvalStatus = 4;
+      } else if (str === 'reverseAudit') {
+        // 反审核
+        obj.content = '确认要反审核该交付单吗？';
+        obj.info = '反审核成功';
+        obj.approvalStatus = 0;
+      } else if (str === 'audit') {
+        // 审核
+        obj.content = '确认要审核该交付单吗？';
+        obj.info = '审核成功';
+        obj.approvalStatus = 1;
       }
       if (obj.approvalStatus === '') {
-        return
+        return;
       }
       this.$confirm({
-        title: "提示",
+        title: '提示',
         content: obj.content,
         onOk() {
           let o = {
             deliveryId: id,
             approvalStatus: obj.approvalStatus,
             cause: '',
-            endDate: ''
+            endDate: '',
           };
-          _this.$api.delivery.updateStatus(o).then(res => {
+          _this.$api.delivery.updateStatus(o).then((res) => {
             if (Number(res.data.code) === 0) {
               _this.$message.info(obj.info);
               _this.query();
@@ -504,14 +477,14 @@ export default {
               _this.$message.error(res.data.message);
             }
           });
-        }
-      })
+        },
+      });
     },
     // 选择组织机构
     changeTree(value, label) {
       this.organName = label;
       this.queryCondition.organId = value;
-      this.queryCondition.projectId = undefined
+      this.queryCondition.projectId = undefined;
       this.allQuery();
       this.getObjectKeyValueByOrganIdFn();
     },
@@ -519,31 +492,31 @@ export default {
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId,
-        projectName: ''
+        projectName: '',
       };
-      this.$api.assets.getObjectKeyValueByOrganId(obj).then(res => {
+      this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
           let arr = [];
-          data.forEach(item => {
-            arr.push({title: item.projectName, value: item.projectId, key: item.projectId,})
-          })
-          this.projectData = arr
+          data.forEach((item) => {
+            arr.push({ title: item.projectName, value: item.projectId, key: item.projectId });
+          });
+          this.projectData = arr;
         } else {
-          this.$message.error(res.data.message)
+          this.$message.error(res.data.message);
         }
       });
     },
     // 平台字典获取变更类型
     platformDictFn(str) {
       let obj = {
-        code: str
+        code: str,
       };
-      this.$api.assets.platformDict(obj).then(res => {
+      this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: '' }, ...data];
+          if (str === 'asset_type') {
+            this.assetTypeData = [{ name: '全部资产类型', value: '' }, ...data];
           }
         } else {
           this.$message.error(res.data.message);
@@ -558,11 +531,9 @@ export default {
     },
     // 选择框搜索
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      )
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
-  }
+  },
 };
 </script>
 <style lang="less" scoped>

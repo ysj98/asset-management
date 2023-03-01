@@ -11,7 +11,14 @@
           >导出</SG-Button
         >
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect @changeTree="changeTree" :multiple="true" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
+          <treeSelect
+            @changeTree="changeTree"
+            :multiple="true"
+            placeholder="请选择组织机构"
+            :allowClear="false"
+            :style="allStyle"
+            :showSearch="true"
+          ></treeSelect>
           <a-select
             showSearch
             :maxTagCount="1"
@@ -132,126 +139,126 @@
 </template>
 
 <script>
-import TableHeaderSettings from "@/components/TableHeaderSettings";
-import ProvinceCityDistrict from "@/views/common/ProvinceCityDistrict";
-import { generateTableAreaByAssetTypeCode } from "@/utils/utils";
-import TreeSelect from "../../common/treeSelect";
-import noDataTips from "@/components/noDataTips";
-import moment from "moment";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import OverviewNumber from "@/views/common/OverviewNumber";
-import EquipmentSelectTree from "@/views/common/EquipmentSelectTree";
-import { getTableHeaders } from "utils/share";
+import TableHeaderSettings from '@/components/TableHeaderSettings';
+import ProvinceCityDistrict from '@/views/common/ProvinceCityDistrict';
+import { generateTableAreaByAssetTypeCode } from '@/utils/utils';
+import TreeSelect from '../../common/treeSelect';
+import noDataTips from '@/components/noDataTips';
+import moment from 'moment';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import OverviewNumber from '@/views/common/OverviewNumber';
+import EquipmentSelectTree from '@/views/common/EquipmentSelectTree';
+import { getTableHeaders } from 'utils/share';
 // import {calc} from '@/utils/utils'
 // import {exportDataAsExcel} from 'src/views/common/commonQueryApi'
 
 const approvalStatusData = [
   {
-    label: "全部状态",
-    value: "",
+    label: '全部状态',
+    value: '',
   },
   {
-    label: "草稿",
-    value: "0",
+    label: '草稿',
+    value: '0',
   },
   {
-    label: "待审批",
-    value: "2",
+    label: '待审批',
+    value: '2',
   },
   {
-    label: "已驳回",
-    value: "3",
+    label: '已驳回',
+    value: '3',
   },
   {
-    label: "已审批",
-    value: "1",
+    label: '已审批',
+    value: '1',
   },
   {
-    label: "已取消",
-    value: "4",
+    label: '已取消',
+    value: '4',
   },
 ];
 const detailColumns = [
   {
-    title: "出库明细ID",
-    dataIndex: "cleaningOrderDetailId",
+    title: '出库明细ID',
+    dataIndex: 'cleaningOrderDetailId',
     width: 90,
   },
   {
-    title: "资产名称",
-    dataIndex: "assetName",
+    title: '资产名称',
+    dataIndex: 'assetName',
     width: 70,
   },
   {
-    title: "资产编码",
-    dataIndex: "assetCode",
+    title: '资产编码',
+    dataIndex: 'assetCode',
     width: 70,
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
     width: 70,
   },
   {
-    title: "资产分类",
-    dataIndex: "objectTypeName",
+    title: '资产分类',
+    dataIndex: 'objectTypeName',
     width: 70,
   },
   {
-    title: "管理机构",
-    dataIndex: "organName",
+    title: '管理机构',
+    dataIndex: 'organName',
     width: 70,
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
     width: 80,
   },
   {
-    title: "出库单编号",
-    dataIndex: "cleaningOrderCode",
+    title: '出库单编号',
+    dataIndex: 'cleaningOrderCode',
     width: 80,
   },
   {
-    title: "出库原因",
-    dataIndex: "cleanupTypeName",
+    title: '出库原因',
+    dataIndex: 'cleanupTypeName',
     width: 80,
   },
   {
-    title: "资产位置",
-    dataIndex: "location",
+    title: '资产位置',
+    dataIndex: 'location',
     width: 120,
   },
   {
-    title: "资产面积",
-    key: "area",
+    title: '资产面积',
+    key: 'area',
     customRender(record) {
-      return generateTableAreaByAssetTypeCode({ record, keyStr: "area", assetTypeCode: String(record.assetType) });
+      return generateTableAreaByAssetTypeCode({ record, keyStr: 'area', assetTypeCode: String(record.assetType) });
     },
     width: 70,
   },
   {
-    title: "出库人",
-    dataIndex: "creatUserName",
+    title: '出库人',
+    dataIndex: 'creatUserName',
     width: 65,
   },
   {
-    title: "出库日期",
-    dataIndex: "createDate",
+    title: '出库日期',
+    dataIndex: 'createDate',
     width: 70,
   },
   {
-    title: "状态",
-    dataIndex: "approvalStatusName",
+    title: '状态',
+    dataIndex: 'approvalStatusName',
     width: 60,
   },
 ];
 const requiredColumn = [
   {
-    title: "操作",
+    title: '操作',
     width: 80,
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 export default {
@@ -265,7 +272,7 @@ export default {
   },
   data() {
     return {
-      scroll: { y: "calc(100vh - 350px)" },
+      scroll: { y: 'calc(100vh - 350px)' },
       listSettingFlag: false,
       funType: 4,
       provinces: {
@@ -273,18 +280,18 @@ export default {
         city: undefined,
         district: undefined,
       },
-      organName: "",
-      organId: "",
+      organName: '',
+      organId: '',
       queryData: {
-        assetTypeList: [""], // 全部资产类型
-        objectTypeList: [""], // 资产分类
-        cleanupTypeList: [""], // 出库原因
-        approvalStatusList: [""], // 出库单状态
-        projectIdList: [""], // 资产项目
-        maxDate: "",
-        minDate: "",
-        assetName: "", // 资产名称/编码
-        cleaningOrderCode: "", // 出库单/编码
+        assetTypeList: [''], // 全部资产类型
+        objectTypeList: [''], // 资产分类
+        cleanupTypeList: [''], // 出库原因
+        approvalStatusList: [''], // 出库单状态
+        projectIdList: [''], // 资产项目
+        maxDate: '',
+        minDate: '',
+        assetName: '', // 资产名称/编码
+        cleaningOrderCode: '', // 出库单/编码
         pageSize: 10,
         pageNum: 1,
       },
@@ -292,44 +299,44 @@ export default {
       pageTotalCount: 0,
       assetClassifyData: [
         {
-          label: "全部资产分类",
-          value: "",
+          label: '全部资产分类',
+          value: '',
         },
       ], // 全部资产分类
       cleanupTypeData: [
         {
-          label: "全部出库原因",
-          value: "",
+          label: '全部出库原因',
+          value: '',
         },
       ], // 资产出库原因
       assetProjectOptions: [
         {
-          label: "全部资产项目",
-          value: "",
+          label: '全部资产项目',
+          value: '',
         },
       ], // 资产项目
       assetTypeOptions: [
         {
-          label: "全部资产类型",
-          value: "",
+          label: '全部资产类型',
+          value: '',
         },
       ], // 资产类型
       approvalStatusData: [...approvalStatusData], // 状态
       numList: [
-        { title: "全部", key: "total", value: 0, fontColor: "#324057" },
-        { title: "草稿", key: "draftTotal", value: 0, bgColor: "#5b8ff9" },
-        { title: "待审批", key: "pendingTotal", value: 0, bgColor: "#d48265" },
-        { title: "已驳回", key: "approvedTotal", value: 0, bgColor: "#4BD288" },
+        { title: '全部', key: 'total', value: 0, fontColor: '#324057' },
+        { title: '草稿', key: 'draftTotal', value: 0, bgColor: '#5b8ff9' },
+        { title: '待审批', key: 'pendingTotal', value: 0, bgColor: '#d48265' },
+        { title: '已驳回', key: 'approvedTotal', value: 0, bgColor: '#4BD288' },
         {
-          title: "已审批",
-          key: "haveApprovedTotal",
+          title: '已审批',
+          key: 'haveApprovedTotal',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#1890FF',
         },
-        { title: "已取消", key: "cancelTotal", value: 0, bgColor: "#DD81E6" },
+        { title: '已取消', key: 'cancelTotal', value: 0, bgColor: '#DD81E6' },
       ], // 统计数据
       ASSET_MANAGEMENT,
-      allStyle: "width: 180px; margin-right: 10px;",
+      allStyle: 'width: 180px; margin-right: 10px;',
       columns: [],
       dataSource: [],
       exportBtnLoading: false, // 导出按钮loading
@@ -347,7 +354,7 @@ export default {
   },
   watch: {
     $route() {
-      if (this.$route.path === "/assetClear" && this.$route.query.refresh) {
+      if (this.$route.path === '/assetClear' && this.$route.query.refresh) {
         this.queryClick();
       }
     },
@@ -355,7 +362,7 @@ export default {
   created() {},
   mounted() {
     this.initTableColumns();
-    this.platformDict("asset_type");
+    this.platformDict('asset_type');
     this.onDateChange(this.defaultValue);
   },
   methods: {
@@ -411,13 +418,13 @@ export default {
     changeAssetType(value) {
       this.$nextTick(function () {
         this.queryData.assetTypeList = this.handleMultipleSelectValue(
-          value[value.length - 1] || "",
+          value[value.length - 1] || '',
           this.queryData.assetTypeList,
           this.assetTypeOptions
         );
         if (!this.queryData.assetTypeList[0] || this.queryData.assetTypeList.length > 1) {
-          this.assetClassifyData = [{ label: "全部资产分类", value: "" }];
-          this.queryData.objectTypeList = [""];
+          this.assetClassifyData = [{ label: '全部资产分类', value: '' }];
+          this.queryData.objectTypeList = [''];
         } else {
           this.getListFn();
         }
@@ -432,17 +439,17 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
 
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -450,15 +457,15 @@ export default {
     },
     // 起止日期发生变化
     onDateChange(val) {
-      this.queryData.minDate = moment(val[0]).format("YYYY-MM-DD");
-      this.queryData.maxDate = moment(val[1]).format("YYYY-MM-DD");
+      this.queryData.minDate = moment(val[0]).format('YYYY-MM-DD');
+      this.queryData.maxDate = moment(val[1]).format('YYYY-MM-DD');
     },
     // 组织机构变化
     changeTree(value, label) {
       this.organName = label;
       this.organId = value;
       this.getAssetProjectOptions();
-      this.organDict("asset_cleanup_type");
+      this.organDict('asset_cleanup_type');
       this.getListFn();
       this.queryClick();
     },
@@ -475,14 +482,14 @@ export default {
         this.exportBtnLoading = false;
         console.log(typeof res.data);
         if (Number(res.data.code) === -1) {
-          this.$message.error("导出失败");
+          this.$message.error('导出失败');
           return;
         }
         const blob = new Blob([res.data]);
-        const fileName = "资产出库一览表.xls";
-        const link = document.createElement("a");
+        const fileName = '资产出库一览表.xls';
+        const link = document.createElement('a');
         link.download = fileName;
-        link.style.display = "none";
+        link.style.display = 'none';
         link.href = URL.createObjectURL(blob);
         document.body.appendChild(link);
         link.click();
@@ -498,7 +505,7 @@ export default {
     handleSearchReq(isTotal) {
       const { queryData } = this;
       let obj = {};
-      ["assetTypeList", "objectTypeList", "cleanupTypeList", "approvalStatusList", "projectIdList"].forEach(
+      ['assetTypeList', 'objectTypeList', 'cleanupTypeList', 'approvalStatusList', 'projectIdList'].forEach(
         (key) =>
           // 过滤空值
           (obj[key] = queryData[key].filter((m) => m))
@@ -509,9 +516,9 @@ export default {
         organIds: this.organId,
       };
       const params2 = {
-        city: this.provinces.city ? this.provinces.city : "", // 市
-        province: this.provinces.province ? this.provinces.province : "", // 省
-        region: this.provinces.district ? this.provinces.district : "", // 区
+        city: this.provinces.city ? this.provinces.city : '', // 市
+        province: this.provinces.province ? this.provinces.province : '', // 省
+        region: this.provinces.district ? this.provinces.district : '', // 区
       };
       if (isTotal) {
         return params;
@@ -558,7 +565,7 @@ export default {
         organId: this.organId.split(',')[0],
       };
       this.$api.assets.getObjectKeyValueByOrganId(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           // { label: "全部资产项目", value: "" }
           let arr = [];
           res.data.data.forEach((item) => {
@@ -570,8 +577,8 @@ export default {
           });
           this.assetProjectOptions = arr;
           this.assetProjectOptions.unshift({
-            label: "全部资产项目",
-            value: "",
+            label: '全部资产项目',
+            value: '',
           });
         } else {
           this.$message.error(res.data.message);
@@ -584,7 +591,7 @@ export default {
         code,
       };
       this.$api.basics.platformDict(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => {
             return {
@@ -593,11 +600,11 @@ export default {
             };
           });
           // 出库原因
-          if (code === "asset_type") {
+          if (code === 'asset_type') {
             this.assetTypeOptions = [
               {
-                label: "全部资产类型",
-                value: "",
+                label: '全部资产类型',
+                value: '',
               },
               ...arr,
             ];
@@ -615,7 +622,7 @@ export default {
         organId: this.organId.split(',')[0],
       };
       this.$api.basics.organDict(form).then((res) => {
-        if (res.data.code === "0") {
+        if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => {
             return {
@@ -624,11 +631,11 @@ export default {
             };
           });
           // 出库原因
-          if (code === "asset_cleanup_type") {
+          if (code === 'asset_cleanup_type') {
             this.cleanupTypeData = [
               {
-                label: "全部出库原因",
-                value: "",
+                label: '全部出库原因',
+                value: '',
               },
               ...arr,
             ];
@@ -643,10 +650,10 @@ export default {
       if (!this.organId) {
         return;
       }
-      this.queryData.objectTypeList = [""];
+      this.queryData.objectTypeList = [''];
       let obj = {
         organId: this.organId.split(',')[0],
-        assetType: this.queryData.assetTypeList.length > 0 ? this.queryData.assetTypeList.join(",") : "",
+        assetType: this.queryData.assetTypeList.length > 0 ? this.queryData.assetTypeList.join(',') : '',
       };
       this.$api.assets
         .getList(obj)
@@ -660,14 +667,14 @@ export default {
                 value: item.professionCode,
               });
             });
-            this.assetClassifyData = [{ label: "全部资产分类", value: "" }, ...arr];
+            this.assetClassifyData = [{ label: '全部资产分类', value: '' }, ...arr];
           } else {
             this.$message.error(res.data.message);
           }
         })
         .catch(() => {
           // this.$message.error('获取资产分类失败');
-          console.error("获取资产分类失败");
+          console.error('获取资产分类失败');
         });
     },
     // 查询统计列表
@@ -694,7 +701,7 @@ export default {
             this.numList = this.numList.map((item) => {
               return {
                 ...item,
-                value: data[item.key] || "0",
+                value: data[item.key] || '0',
               };
             });
           } else {
@@ -709,7 +716,7 @@ export default {
     handleOperation(record) {
       console.log(record);
       this.$router.push({
-        path: "/assetTable/detail",
+        path: '/assetTable/detail',
         query: {
           assetId: record.assetId,
           assetType: record.assetType,
@@ -726,33 +733,33 @@ export default {
         for (let i = 0; i < 15; i++) {
           const obj = {
             assetId: i, //类型：Number  必有字段  备注：资产id
-            cleaningOrderCode: "1abcd" + i, //类型：String  必有字段  备注：出库单编号
-            assetName: "剪刀" + i, //类型：String  必有字段  备注：资产名称
-            assetCode: "code2" + i, //类型：String  必有字段  备注：资产编码
+            cleaningOrderCode: '1abcd' + i, //类型：String  必有字段  备注：出库单编号
+            assetName: '剪刀' + i, //类型：String  必有字段  备注：资产名称
+            assetCode: 'code2' + i, //类型：String  必有字段  备注：资产编码
             assetType: 3, //类型：Number  必有字段  备注：资产类型
-            assetTypeName: "设备" + i, //类型：String  必有字段  备注：资产类型名称
-            objectType: "1", //类型：String  必有字段  备注：资产分类
-            objectTypeName: "mock" + i, //类型：String  必有字段  备注：资产分类名称
+            assetTypeName: '设备' + i, //类型：String  必有字段  备注：资产类型名称
+            objectType: '1', //类型：String  必有字段  备注：资产分类
+            objectTypeName: 'mock' + i, //类型：String  必有字段  备注：资产分类名称
             organId: 1300, //类型：Number  必有字段  备注：管理机构
-            organName: "四格运营", //类型：String  必有字段  备注：管理机构名称
+            organName: '四格运营', //类型：String  必有字段  备注：管理机构名称
             projectId: 1, //类型：Number  必有字段  备注：项目id
-            projectName: "不收费", //类型：String  必有字段  备注：项目名称
+            projectName: '不收费', //类型：String  必有字段  备注：项目名称
             cleanupType: 5, //类型：Number  必有字段  备注：出库原因
-            cleanupTypeName: "资产拆迁", //类型：String  必有字段  备注： 出库原因名称
-            area: "mixed", //类型：Mixed  必有字段  备注：资产面积
-            location: "mixed", //类型：Mixed  必有字段  备注：资产位置
-            createDate: "mixed", //类型：Mixed  必有字段  备注：出库时间
-            creatUserName: "周柏甫", //类型：String  必有字段  备注：出库人名称
+            cleanupTypeName: '资产拆迁', //类型：String  必有字段  备注： 出库原因名称
+            area: 'mixed', //类型：Mixed  必有字段  备注：资产面积
+            location: 'mixed', //类型：Mixed  必有字段  备注：资产位置
+            createDate: 'mixed', //类型：Mixed  必有字段  备注：出库时间
+            creatUserName: '周柏甫', //类型：String  必有字段  备注：出库人名称
             approvalStatus: 4, //类型：Number  必有字段  备注：批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-            approvalStatusName: "已取消", //类型：String  必有字段  备注：批状态名称
-            cleaningOrderId: "mock" + i, //类型：String  必有字段  备注：清理单id
+            approvalStatusName: '已取消', //类型：String  必有字段  备注：批状态名称
+            cleaningOrderId: 'mock' + i, //类型：String  必有字段  备注：清理单id
           };
           list.push(obj);
         }
         const res = {
           data: {
             code: 0,
-            message: "操作成功",
+            message: '操作成功',
             data: {
               //类型：Object  必有字段  备注：无
               count: 15, //类型：Number  必有字段  备注：无
@@ -771,15 +778,15 @@ export default {
           data: {
             data: {
               //类型：Object  必有字段  备注：无
-              total: "11", //类型：String  必有字段  备注：全部数量
-              draftTotal: "20", //类型：String  必有字段  备注：草稿数量
-              pendingTotal: "30", //类型：String  必有字段  备注：待审批数量
-              approvedTotal: "40", //类型：String  必有字段  备注：已驳回数量
-              haveApprovedTotal: "51", //类型：String  必有字段  备注：已审批数量
-              cancelTotal: "60", //类型：String  必有字段  备注：已取消数量
+              total: '11', //类型：String  必有字段  备注：全部数量
+              draftTotal: '20', //类型：String  必有字段  备注：草稿数量
+              pendingTotal: '30', //类型：String  必有字段  备注：待审批数量
+              approvedTotal: '40', //类型：String  必有字段  备注：已驳回数量
+              haveApprovedTotal: '51', //类型：String  必有字段  备注：已审批数量
+              cancelTotal: '60', //类型：String  必有字段  备注：已取消数量
             },
-            code: "0", //类型：String  必有字段  备注：无
-            message: "操作成功", //类型：String  必有字段  备注：无
+            code: '0', //类型：String  必有字段  备注：无
+            message: '操作成功', //类型：String  必有字段  备注：无
           },
         };
         resolve(res);

@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  name: "UsageTable",
+  name: 'UsageTable',
   props: {
     dataSource: {
       type: Array,
@@ -48,21 +48,21 @@ export default {
         scroll: { y: 500, x: 600 },
         columns: [
           {
-            title: "序号",
+            title: '序号',
             customRender: (text, record, index) => {
               return (this.pageInfo.pageNum - 1) * 10 + 1 + index;
             },
           },
           {
-            title: "房间",
-            dataIndex: "resName",
+            title: '房间',
+            dataIndex: 'resName',
           },
           {
-            title: "使用状况",
-            dataIndex: "busiStatus",
+            title: '使用状况',
+            dataIndex: 'busiStatus',
           },
         ],
-        rowKey: "_key",
+        rowKey: '_key',
         pagination: false,
       },
     };

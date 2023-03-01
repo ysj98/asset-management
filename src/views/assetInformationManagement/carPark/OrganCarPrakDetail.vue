@@ -1,7 +1,7 @@
 <template>
   <div class="organViewDetail-page">
     <!-- 标题 -->
-    <div class="mb30" style="margin-left:-12px">
+    <div class="mb30" style="margin-left: -12px">
       <SG-Title noMargin title="权属概况" />
     </div>
     <!-- 权属表格 -->
@@ -12,10 +12,10 @@
       :pagination="false"
       :columns="tableFirst.columns"
       :dataSource="tableFirst.dataSource"
-      :locale="{emptyText: '暂无数据'}"
+      :locale="{ emptyText: '暂无数据' }"
     ></a-table>
     <!-- 标题 -->
-    <div class="mb30 mt30" style="margin-left:-12px">
+    <div class="mb30 mt30" style="margin-left: -12px">
       <SG-Title noMargin title="资产概况" />
     </div>
     <!--数据概览信息-->
@@ -23,13 +23,7 @@
       <overview-number :numList="numList" />
     </a-spin>
     <div class="table-layout-fixed pb70">
-      <a-table
-        :loading="table.loading"
-        :columns="table.columns"
-        :dataSource="table.dataSource"
-        size="middle"
-        :pagination="false"
-      />
+      <a-table :loading="table.loading" :columns="table.columns" :dataSource="table.dataSource" size="middle" :pagination="false" />
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
       <SG-FooterPagination
         :pageLength="queryCondition.pageSize"
@@ -43,124 +37,124 @@
   </div>
 </template>
 <script>
-import OverviewNumber from "@/views/common/OverviewNumber";
-import noDataTips from "@/components/noDataTips";
+import OverviewNumber from '@/views/common/OverviewNumber';
+import noDataTips from '@/components/noDataTips';
 import { getFormat } from '../../../utils/utils';
 let columnsFrist = [
   {
-    title: "所有权",
-    dataIndex: "goodsTypeNames",
+    title: '所有权',
+    dataIndex: 'goodsTypeNames',
     children: [
       {
-        title: "总数",
-        dataIndex: "ownerShipCount",
+        title: '总数',
+        dataIndex: 'ownerShipCount',
       },
       {
-        title: "有证",
-        dataIndex: "ownerShipYesCount",
+        title: '有证',
+        dataIndex: 'ownerShipYesCount',
       },
       {
-        title: "无证",
-        dataIndex: "ownerShipNoCount",
+        title: '无证',
+        dataIndex: 'ownerShipNoCount',
       },
       {
-        title: "待办证",
-        dataIndex: "ownerShipWaitCount",
+        title: '待办证',
+        dataIndex: 'ownerShipWaitCount',
       },
     ],
   },
   {
-    title: "使用权",
-    dataIndex: "wsPrice",
+    title: '使用权',
+    dataIndex: 'wsPrice',
     children: [
       {
-        title: "总数",
-        dataIndex: "useShipCount",
+        title: '总数',
+        dataIndex: 'useShipCount',
       },
       {
-        title: "有证",
-        dataIndex: "useShipYesCount",
+        title: '有证',
+        dataIndex: 'useShipYesCount',
       },
       {
-        title: "无证",
-        dataIndex: "useShipNoCount",
+        title: '无证',
+        dataIndex: 'useShipNoCount',
       },
       {
-        title: "待办证",
-        dataIndex: "useShipWaitCount",
+        title: '待办证',
+        dataIndex: 'useShipWaitCount',
       },
     ],
   },
   {
-    title: "权属办理进度",
-    dataIndex: "progress",
+    title: '权属办理进度',
+    dataIndex: 'progress',
     width: 200,
   },
 ];
 let columns = [
   {
-    title: "管理机构",
-    dataIndex: "organName",
+    title: '管理机构',
+    dataIndex: 'organName',
   },
   {
-    title: "资产项目名称",
-    dataIndex: "projectName",
+    title: '资产项目名称',
+    dataIndex: 'projectName',
   },
   {
-    title: "资产项目编码",
-    dataIndex: "projectCode",
+    title: '资产项目编码',
+    dataIndex: 'projectCode',
   },
   {
-    title: "来源方式",
-    dataIndex: "sourceTypeName",
+    title: '来源方式',
+    dataIndex: 'sourceTypeName',
   },
   {
-    title: "来源方式说明",
-    dataIndex: "souceChannelType",
+    title: '来源方式说明',
+    dataIndex: 'souceChannelType',
   },
   {
-    title: "接管时间",
-    dataIndex: "takeOverDate",
+    title: '接管时间',
+    dataIndex: 'takeOverDate',
   },
   {
-    title: "建筑面积(㎡)",
-    dataIndex: "area",
+    title: '建筑面积(㎡)',
+    dataIndex: 'area',
   },
   {
-    title: "车场数量",
-    dataIndex: "placeNum",
+    title: '车场数量',
+    dataIndex: 'placeNum',
   },
   {
-    title: "资产数量",
-    dataIndex: "assetNum",
+    title: '资产数量',
+    dataIndex: 'assetNum',
   },
   {
-    title: "运营(㎡)",
-    dataIndex: "transferOperationArea",
+    title: '运营(㎡)',
+    dataIndex: 'transferOperationArea',
   },
   {
-    title: "自用(㎡)",
-    dataIndex: "selfUserArea",
+    title: '自用(㎡)',
+    dataIndex: 'selfUserArea',
   },
   {
-    title: "闲置(㎡)",
-    dataIndex: "idleArea",
+    title: '闲置(㎡)',
+    dataIndex: 'idleArea',
   },
   {
-    title: "占用(㎡)",
-    dataIndex: "occupationArea",
+    title: '占用(㎡)',
+    dataIndex: 'occupationArea',
   },
   {
-    title: "其他(㎡)",
-    dataIndex: "otherArea",
+    title: '其他(㎡)',
+    dataIndex: 'otherArea',
   },
   {
-    title: "资产原值(元)",
-    dataIndex: "originalValue",
+    title: '资产原值(元)',
+    dataIndex: 'originalValue',
   },
   {
-    title: "最新估值(元)",
-    dataIndex: "marketValue",
+    title: '最新估值(元)',
+    dataIndex: 'marketValue',
   },
 ];
 export default {
@@ -170,7 +164,18 @@ export default {
   },
   data() {
     return {
-      formatArr: ['transferOperationArea', 'selfUserArea', 'idleArea', 'occupationArea', 'otherArea', 'originalValue', 'marketValue', 'area', 'assetNum', 'placeNum'],
+      formatArr: [
+        'transferOperationArea',
+        'selfUserArea',
+        'idleArea',
+        'occupationArea',
+        'otherArea',
+        'originalValue',
+        'marketValue',
+        'area',
+        'assetNum',
+        'placeNum',
+      ],
       tableFirst: {
         loading: false,
         columns: columnsFrist,
@@ -179,42 +184,42 @@ export default {
       overviewNumSpinning: false,
       numList: [
         {
-          title: "建筑面积(㎡)",
-          key: "measuredArea",
+          title: '建筑面积(㎡)',
+          key: 'measuredArea',
           value: 0,
-          fontColor: "#324057",
+          fontColor: '#324057',
         },
         {
-          title: "运营(㎡)",
-          key: "transferOperationArea",
+          title: '运营(㎡)',
+          key: 'transferOperationArea',
           value: 0,
-          bgColor: "#4BD288",
+          bgColor: '#4BD288',
         },
-        { title: "闲置(㎡)", key: "idleArea", value: 0, bgColor: "#1890FF" },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
         {
-          title: "自用(㎡)",
-          key: "selfUserArea",
+          title: '自用(㎡)',
+          key: 'selfUserArea',
           value: 0,
-          bgColor: "#DD81E6",
-        },
-        {
-          title: "占用(㎡)",
-          key: "occupationArea",
-          value: 0,
-          bgColor: "#FD7474",
-        },
-        { title: "其他(㎡)", key: "otherArea", value: 0, bgColor: "#BBC8D6" },
-        {
-          title: "资产原值(万元)",
-          key: "originalValue",
-          value: 0,
-          bgColor: "#DD81E6",
+          bgColor: '#DD81E6',
         },
         {
-          title: "最新估值(万元)",
-          key: "marketValue",
+          title: '占用(㎡)',
+          key: 'occupationArea',
           value: 0,
-          bgColor: "#1890FF",
+          bgColor: '#FD7474',
+        },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+        {
+          title: '资产原值(万元)',
+          key: 'originalValue',
+          value: 0,
+          bgColor: '#DD81E6',
+        },
+        {
+          title: '最新估值(万元)',
+          key: 'marketValue',
+          value: 0,
+          bgColor: '#1890FF',
         },
       ],
       table: {
@@ -229,10 +234,10 @@ export default {
       },
       footerOpt: {
         noPageTools: false,
-        location: "absolute",
+        location: 'absolute',
       },
       routeQueryStore: {
-        organId: "",
+        organId: '',
         statusList: [],
       },
     };
@@ -251,7 +256,8 @@ export default {
     getCarParkListForOrgan() {
       let data = { ...this.routeQueryStore, ...this.queryCondition };
       this.table.loading = true;
-      this.$api.carPark.getCarParkListForOrgan(data)
+      this.$api.carPark
+        .getCarParkListForOrgan(data)
         .then((res) => {
           if (Number(res.data.code) === 0) {
             let data = res.data.data.data || [];
@@ -262,16 +268,16 @@ export default {
               };
             });
             this.table.totalCount = res.data.data.count || 0;
-            this.table.dataSource.forEach(item => {
-              let arr = Object.keys(item)
-              arr.forEach(sub => {
-                if(this.formatArr.includes(sub)){
-                  item[sub] = getFormat(item[sub])
+            this.table.dataSource.forEach((item) => {
+              let arr = Object.keys(item);
+              arr.forEach((sub) => {
+                if (this.formatArr.includes(sub)) {
+                  item[sub] = getFormat(item[sub]);
                 }
-              })
-            })
+              });
+            });
           } else {
-            this.$message.error(res.data.message || res.data.msg || "请求错误");
+            this.$message.error(res.data.message || res.data.msg || '请求错误');
           }
         })
         .finally(() => {
@@ -283,7 +289,7 @@ export default {
       let data = { ...this.routeQueryStore };
       this.overviewNumSpinning = true;
       this.$api.carPark
-      .getCarParkStatisticsForOrgan(data)
+        .getCarParkStatisticsForOrgan(data)
         .then((res) => {
           if (Number(res.data.code) === 0) {
             let data = res.data.data || {};
@@ -294,7 +300,7 @@ export default {
               };
             });
           } else {
-            this.$message.error(res.data.message || res.data.msg || "请求错误");
+            this.$message.error(res.data.message || res.data.msg || '请求错误');
           }
         })
         .finally(() => {
@@ -311,11 +317,11 @@ export default {
           if (Number(res.data.code) === 0) {
             let result = res.data.data || {};
             if (Object.keys(result).length) {
-              result.progress = result.progress + "%";
+              result.progress = result.progress + '%';
               this.tableFirst.dataSource = [{ ...result, key: 1 }];
             }
           } else {
-            this.$message.error(res.data.message || res.data.msg || "请求错误");
+            this.$message.error(res.data.message || res.data.msg || '请求错误');
           }
         })
         .finally(() => {

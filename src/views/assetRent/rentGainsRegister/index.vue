@@ -1,35 +1,14 @@
 <!--资产出租-出租收益登记-->
 <template>
   <div class="rentGainsRegister">
-    <SG-SearchContainer
-      size="fold"
-      background="white"
-      v-model="toggle"
-      @input="searchContainerFn"
-    >
+    <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
-        <SG-Button
-          class="fl"
-          style="margin-right: 20px"
-          type="primary"
-          @click="registerFn"
-          v-power="ASSET_MANAGEMENT.RENT_INCOME_NEW"
+        <SG-Button class="fl" style="margin-right: 20px" type="primary" @click="registerFn" v-power="ASSET_MANAGEMENT.RENT_INCOME_NEW"
           >收益登记</SG-Button
         >
-        <SG-Button
-          icon="export"
-          :loading="exportBtnLoading"
-          @click="exportFn"
-          v-power="ASSET_MANAGEMENT.ASSET_EARNINGS_REGISTER"
-          >导出</SG-Button
-        >
+        <SG-Button icon="export" :loading="exportBtnLoading" @click="exportFn" v-power="ASSET_MANAGEMENT.ASSET_EARNINGS_REGISTER">导出</SG-Button>
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect
-            @changeTree="changeTree"
-            placeholder="请选择组织机构"
-            :allowClear="false"
-            :style="allStyle"
-          ></treeSelect>
+          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle"></treeSelect>
           <a-select
             :maxTagCount="1"
             mode="multiple"
@@ -45,13 +24,9 @@
               }
             "
           >
-            <a-select-option
-              :title="item.name"
-              v-for="(item, index) in projectData"
-              :key="index"
-              :value="item.value"
-              >{{ item.name }}</a-select-option
-            >
+            <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{
+              item.name
+            }}</a-select-option>
           </a-select>
           <SG-DatePicker
             :allowClear="false"
@@ -85,25 +60,14 @@
           v-model="queryCondition.assetType"
           style="width: 170px"
         >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in assetTypeData"
-            :key="index"
-            :value="item.value"
-            >{{ item.name }}</a-select-option
-          >
+          <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
-        <a-select
-          placeholder="全部状态"
-          v-model="queryCondition.contractStatus"
-        >
-          <a-select-option
-            :title="item.name"
-            v-for="(item, index) in contractStatusData"
-            :key="index"
-            :value="item.value"
-            >{{ item.name }}</a-select-option
-          >
+        <a-select placeholder="全部状态" v-model="queryCondition.contractStatus">
+          <a-select-option :title="item.name" v-for="(item, index) in contractStatusData" :key="index" :value="item.value">{{
+            item.name
+          }}</a-select-option>
         </a-select>
         <a-select
           :maxTagCount="1"
@@ -132,18 +96,9 @@
     <div class="table-layout-fixed">
       <!-- ref="table_box" -->
       <!-- :scroll="scrollHeight" -->
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :dataSource="tableData"
-        size="middle"
-        :pagination="false"
-      >
+      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false">
         <template slot="operation" slot-scope="text, record">
-          <OperationPopover
-            :operationData="record.operationDataBtn"
-            @operationFun="operationFun($event, record)"
-          ></OperationPopover>
+          <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)"></OperationPopover>
         </template>
       </a-table>
       <div class="sum" v-if="loading === false">
@@ -161,19 +116,8 @@
       @change="handleChange"
     />
     <!-- 新建 -->
-    <gainsAdd
-      v-model="close"
-      v-if="close"
-      ref="gainsAdd"
-      :organId="organID"
-      :organName="organName"
-      @childrenSubmit="allQuery"
-    ></gainsAdd>
-    <gainsEdit
-      ref="gainsEdit"
-      :organId="organID"
-      @childrenSubmit="allQuery"
-    ></gainsEdit>
+    <gainsAdd v-model="close" v-if="close" ref="gainsAdd" :organId="organID" :organName="organName" @childrenSubmit="allQuery"></gainsAdd>
+    <gainsEdit ref="gainsEdit" :organId="organID" @childrenSubmit="allQuery"></gainsEdit>
     <gainsDetail ref="gainsDetail"></gainsDetail>
   </div>
 </template>
@@ -181,90 +125,90 @@
 <script>
 const columns = [
   {
-    title: "收益编号",
-    dataIndex: "incomeId",
+    title: '收益编号',
+    dataIndex: 'incomeId',
   },
   {
-    title: "收益名称",
-    dataIndex: "incomeName",
+    title: '收益名称',
+    dataIndex: 'incomeName',
   },
   {
-    title: "所属机构",
-    dataIndex: "organName",
+    title: '所属机构',
+    dataIndex: 'organName',
   },
   {
-    title: "资产项目",
-    dataIndex: "projectName",
+    title: '资产项目',
+    dataIndex: 'projectName',
   },
   {
-    title: "资产类型",
-    dataIndex: "assetTypeName",
+    title: '资产类型',
+    dataIndex: 'assetTypeName',
   },
   {
-    title: "客户名称",
-    dataIndex: "customerName",
+    title: '客户名称',
+    dataIndex: 'customerName',
   },
   {
-    title: "费用科目",
-    dataIndex: "feeSubjectName",
+    title: '费用科目',
+    dataIndex: 'feeSubjectName',
   },
   {
-    title: "收益金额(元)",
-    dataIndex: "amount",
+    title: '收益金额(元)',
+    dataIndex: 'amount',
   },
   {
-    title: "账期",
-    dataIndex: "accountingPeriod",
+    title: '账期',
+    dataIndex: 'accountingPeriod',
   },
   {
-    title: "所属出租单",
-    dataIndex: "orderName",
+    title: '所属出租单',
+    dataIndex: 'orderName',
   },
   {
-    title: "备注",
-    dataIndex: "remark",
+    title: '备注',
+    dataIndex: 'remark',
   },
   {
-    title: "创建人",
-    dataIndex: "createByName",
+    title: '创建人',
+    dataIndex: 'createByName',
   },
   {
-    title: "创建日期",
-    dataIndex: "createTime",
+    title: '创建日期',
+    dataIndex: 'createTime',
   },
   {
-    title: "状态",
-    dataIndex: "status",
+    title: '状态',
+    dataIndex: 'status',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 const contractStatusData = [
   {
-    name: "全部状态",
-    value: "",
+    name: '全部状态',
+    value: '',
   },
   {
-    name: "有效",
+    name: '有效',
     value: 1,
   },
   {
-    name: "无效",
+    name: '无效',
     value: 0,
   },
 ];
-import { ASSET_MANAGEMENT } from "@/config/config.power";
-import segiIcon from "@/components/segiIcon.vue";
-import TreeSelect from "../../common/treeSelect";
-import moment from "moment";
-import OperationPopover from "@/components/OperationPopover";
-import noDataTips from "@/components/noDataTips";
-import gainsAdd from "./child/gainsAdd";
-import gainsEdit from "./child/gainsEdit";
-import gainsDetail from "./child/gainsDetail";
+import { ASSET_MANAGEMENT } from '@/config/config.power';
+import segiIcon from '@/components/segiIcon.vue';
+import TreeSelect from '../../common/treeSelect';
+import moment from 'moment';
+import OperationPopover from '@/components/OperationPopover';
+import noDataTips from '@/components/noDataTips';
+import gainsAdd from './child/gainsAdd';
+import gainsEdit from './child/gainsEdit';
+import gainsDetail from './child/gainsDetail';
 export default {
   components: {
     segiIcon,
@@ -284,36 +228,33 @@ export default {
       loading: false,
       exportBtnLoading: false, // 导出按钮loading
       organID: 0,
-      organName: "",
+      organName: '',
       queryCondition: {
         pageNum: 1, // 当前页
         pageSize: 10, // 每页显示记录数
-        organId: "", // 组织机构id
+        organId: '', // 组织机构id
         projectId: undefined, // 资产项目Id
-        assetType: [""], // 全部资产类型id(多个用，分割)
-        approvalStatus: "", // 审批状态
-        assetNameCode: "", // 收益单名称/编号
-        rentNameCode: "", // 出租单名称/合同编号
-        contractStatus: "", // 状态
+        assetType: [''], // 全部资产类型id(多个用，分割)
+        approvalStatus: '', // 审批状态
+        assetNameCode: '', // 收益单名称/编号
+        rentNameCode: '', // 出租单名称/合同编号
+        contractStatus: '', // 状态
         billOption: undefined,
       },
-      allStyle: "width: 150px; margin-right: 10px;",
+      allStyle: 'width: 150px; margin-right: 10px;',
       projectData: [],
       billConfigOptions: [], // 费用科目
-      signDate: [
-        moment(new Date() - 24 * 1000 * 60 * 60 * 90),
-        moment(new Date()),
-      ],
+      signDate: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       assetTypeData: [
         {
-          name: "全部资产类型",
-          value: "",
+          name: '全部资产类型',
+          value: '',
         },
       ],
       contractStatusData: [...contractStatusData],
       tableData: [],
       noPageTools: false,
-      count: "", // 总数
+      count: '', // 总数
       totalCount: undefined, // 全部合计
     };
   },
@@ -323,11 +264,9 @@ export default {
         pageNum: this.queryCondition.pageNum, // 当前页
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
         organId: Number(this.queryCondition.organId), // 组织机构id
-        projectIdList: this.queryCondition.projectId
-          ? this.queryCondition.projectId
-          : [], // 资产项目Id
-        accountingPeriodStart: moment(this.signDate[0]).format("YYYY-MM-DD"),
-        accountingPeriodEnd: moment(this.signDate[1]).format("YYYY-MM-DD"),
+        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [], // 资产项目Id
+        accountingPeriodStart: moment(this.signDate[0]).format('YYYY-MM-DD'),
+        accountingPeriodEnd: moment(this.signDate[1]).format('YYYY-MM-DD'),
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
@@ -337,11 +276,9 @@ export default {
       };
       let obj2 = {
         organId: Number(this.queryCondition.organId), // 组织机构id
-        projectIdList: this.queryCondition.projectId
-          ? this.queryCondition.projectId
-          : [], // 资产项目Id
-        accountingPeriodStart: moment(this.signDate[0]).format("YYYY-MM-DD"),
-        accountingPeriodEnd: moment(this.signDate[1]).format("YYYY-MM-DD"),
+        projectIdList: this.queryCondition.projectId ? this.queryCondition.projectId : [], // 资产项目Id
+        accountingPeriodStart: moment(this.signDate[0]).format('YYYY-MM-DD'),
+        accountingPeriodEnd: moment(this.signDate[1]).format('YYYY-MM-DD'),
         incomeNameOrId: this.queryCondition.assetNameCode,
         assetTypeList: this.alljudge(this.queryCondition.assetType),
         status: this.queryCondition.contractStatus,
@@ -349,7 +286,7 @@ export default {
         orderNameOrId: this.queryCondition.rentNameCode,
         orderType: 1,
       };
-      if (type === "export") {
+      if (type === 'export') {
         return obj2;
       }
       this.loading = true;
@@ -359,7 +296,7 @@ export default {
           data.forEach((item, index) => {
             item.key = index;
             item.operationDataBtn = this.createOperationBtn(item.status);
-            item.status === 1 ? (item.status = "有效") : (item.status = "无效");
+            item.status === 1 ? (item.status = '有效') : (item.status = '无效');
           });
           this.tableData = data;
           this.count = res.data.data.count;
@@ -396,16 +333,16 @@ export default {
     // 导出
     exportFn() {
       this.exportBtnLoading = true;
-      let data = this.query("export");
+      let data = this.query('export');
       this.$api.assetRent
         .exportIncome(data)
         .then((res) => {
           if (res.status === 200) {
             let blob = new Blob([res.data]);
-            let a = document.createElement("a");
+            let a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = "出租收益登记表.xls";
-            a.style.display = "none";
+            a.download = '出租收益登记表.xls';
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -413,7 +350,7 @@ export default {
           this.exportBtnLoading = false;
         })
         .catch((err) => {
-          context.$message.error(err || "操作失败");
+          context.$message.error(err || '操作失败');
         });
     },
     changeTree(value, label) {
@@ -427,17 +364,13 @@ export default {
       this.getFeeTypeList();
     },
     filterOption(input, option) {
-      return (
-        option.componentOptions.children[0].text
-          .toLowerCase()
-          .indexOf(input.toLowerCase()) >= 0
-      );
+      return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
         organId: this.queryCondition.organId,
-        projectName: "",
+        projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
         if (Number(res.data.code) === 0) {
@@ -463,8 +396,8 @@ export default {
       this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
+          if (str === 'asset_type') {
+            this.assetTypeData = [{ name: '全部资产类型', value: '' }, ...data];
           }
         } else {
           this.$message.error(res.data.message);
@@ -492,16 +425,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -510,21 +443,13 @@ export default {
     // 资产类型变化
     assetTypeDataFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.assetType = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.assetType,
-          this.assetTypeData
-        );
+        this.queryCondition.assetType = this.handleMultipleSelectValue(value, this.queryCondition.assetType, this.assetTypeData);
       });
     },
     // 费用科目变化
     billOptionFn(value) {
       this.$nextTick(function () {
-        this.queryCondition.billOption = this.handleMultipleSelectValue(
-          value,
-          this.queryCondition.billOption,
-          this.billConfigOptions
-        );
+        this.queryCondition.billOption = this.handleMultipleSelectValue(value, this.queryCondition.billOption, this.billConfigOptions);
       });
     },
     // 分页查询
@@ -535,7 +460,7 @@ export default {
     },
     alljudge(val) {
       if (val.length !== 0) {
-        if (val[0] === "") {
+        if (val[0] === '') {
           return [];
         } else {
           return val;
@@ -549,12 +474,12 @@ export default {
       // 审批状态  0无效 1有效
       let arr = [];
       // 有效
-      if (["1"].includes(String(type))) {
+      if (['1'].includes(String(type))) {
         if (this.$power.has(ASSET_MANAGEMENT.RENT_INCOME_EDIT)) {
-          arr.push({ iconType: "edit", text: "编辑", editType: "edit" });
+          arr.push({ iconType: 'edit', text: '编辑', editType: 'edit' });
         }
         if (this.$power.has(ASSET_MANAGEMENT.RENT_INCOME_DELETE)) {
-          arr.push({ iconType: "delete", text: "作废", editType: "delete" });
+          arr.push({ iconType: 'delete', text: '作废', editType: 'delete' });
         }
       }
       // 已审批
@@ -567,23 +492,23 @@ export default {
           });
         }
       } */
-      arr.push({ iconType: "file-text", text: "详情", editType: "detail" });
+      arr.push({ iconType: 'file-text', text: '详情', editType: 'detail' });
       return arr;
     },
     // 操作事件函数
     operationFun(type, record) {
       // 编辑
-      if (["edit"].includes(type)) {
+      if (['edit'].includes(type)) {
         this.$refs.gainsEdit.show = true;
         this.$refs.gainsEdit.incomeId = record.incomeId;
-      } else if (["detail"].includes(type)) {
+      } else if (['detail'].includes(type)) {
         this.$refs.gainsDetail.show = true;
         this.$refs.gainsDetail.incomeId = record.incomeId;
       } else {
         let that = this;
         this.$confirm({
-          title: "提示",
-          content: "确认要作废该出租收益吗？",
+          title: '提示',
+          content: '确认要作废该出租收益吗？',
           onOk() {
             that.$api.assetRent
               .updateIncomeStatus({
@@ -603,7 +528,7 @@ export default {
     },
   },
   mounted() {
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
   },
 };
 </script>

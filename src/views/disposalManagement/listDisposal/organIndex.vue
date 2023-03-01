@@ -13,7 +13,13 @@
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.czyl_zzjgst_dc">导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :multiple="true" :allowClear="false" style="width: 170px; margin-right: 10px"></treeSelect>
+        <treeSelect
+          @changeTree="changeTree"
+          placeholder="请选择组织机构"
+          :multiple="true"
+          :allowClear="false"
+          style="width: 170px; margin-right: 10px"
+        ></treeSelect>
         <a-select
           :maxTagCount="1"
           :style="allStyle"
@@ -113,80 +119,80 @@
 </template>
 
 <script>
-import SearchContainer from "@/views/common/SearchContainer";
-import TreeSelect from "../../common/treeSelect";
-import OverviewNumber from "src/views/common/OverviewNumber";
-import moment from "moment";
+import SearchContainer from '@/views/common/SearchContainer';
+import TreeSelect from '../../common/treeSelect';
+import OverviewNumber from 'src/views/common/OverviewNumber';
+import moment from 'moment';
 // import segiIcon from "@/components/segiIcon.vue";
-import noDataTips from "@/components/noDataTips";
-import { ASSET_MANAGEMENT } from "@/config/config.power";
+import noDataTips from '@/components/noDataTips';
+import { ASSET_MANAGEMENT } from '@/config/config.power';
 // import { utils, debounce } from "@/utils/utils.js";
 // import { getCurrentDate, getMonthsAgoDate } from "@/utils/formatTime";
-import { exportDataAsExcel } from "src/views/common/commonQueryApi";
-const allWidth = { width: "170px", "margin-right": "10px", flex: 1, display: "inline-block" };
-const dateWidth = { width: "360px", "margin-right": "10px", flex: 1, display: "inline-block", "vertical-align": "middle" };
+import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
+const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, display: 'inline-block' };
+const dateWidth = { width: '360px', 'margin-right': '10px', flex: 1, display: 'inline-block', 'vertical-align': 'middle' };
 const columns = [
   {
-    title: "所属机构",
-    dataIndex: "organName",
+    title: '所属机构',
+    dataIndex: 'organName',
   },
   {
-    title: "处置数量",
-    dataIndex: "dispNum",
+    title: '处置数量',
+    dataIndex: 'dispNum',
   },
   {
-    title: "处置面积(㎡)",
-    dataIndex: "dispArea",
+    title: '处置面积(㎡)',
+    dataIndex: 'dispArea',
   },
   {
-    title: "处置收入(元)",
-    dataIndex: "disposeReceive",
+    title: '处置收入(元)',
+    dataIndex: 'disposeReceive',
   },
   {
-    title: "处置成本(元)",
-    dataIndex: "disposeCost",
+    title: '处置成本(元)',
+    dataIndex: 'disposeCost',
   },
   {
-    title: "操作",
-    dataIndex: "operation",
-    scopedSlots: { customRender: "operation" },
+    title: '操作',
+    dataIndex: 'operation',
+    scopedSlots: { customRender: 'operation' },
   },
 ];
 const queryCondition = {
-  organId: "", // 组织机构id
-  approvalStatusList: [""], // 处置状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-  disposeTypeList: [""], // 处置类型
-  assetTypeList: [""], // 资产类型
-  disposeDateStart: "", // 处置日期开始日期
-  disposeDateEnd: "", // 处置日期结束日期
-  disposeModeList: [""], // 处置方式
+  organId: '', // 组织机构id
+  approvalStatusList: [''], // 处置状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+  disposeTypeList: [''], // 处置类型
+  assetTypeList: [''], // 资产类型
+  disposeDateStart: '', // 处置日期开始日期
+  disposeDateEnd: '', // 处置日期结束日期
+  disposeModeList: [''], // 处置方式
   pageNum: 1, // 当前页
   pageSize: 10, // 每页显示记录数
 };
 const approvalStatusData = [
   {
-    name: "全部处置状态",
-    value: "",
+    name: '全部处置状态',
+    value: '',
   },
   {
-    name: "草稿",
-    value: "0",
+    name: '草稿',
+    value: '0',
   },
   {
-    name: "待审批",
-    value: "2",
+    name: '待审批',
+    value: '2',
   },
   {
-    name: "已驳回",
-    value: "3",
+    name: '已驳回',
+    value: '3',
   },
   {
-    name: "已审批",
-    value: "1",
+    name: '已审批',
+    value: '1',
   },
   {
-    name: "已取消",
-    value: "4",
+    name: '已取消',
+    value: '4',
   },
 ];
 export default {
@@ -194,44 +200,44 @@ export default {
   props: {},
   watch: {
     toggle(flag) {
-      this.$set(this.scrollHeight, "y", flag ? "calc(100vh - 500px)" : "calc(100vh - 350px)");
+      this.$set(this.scrollHeight, 'y', flag ? 'calc(100vh - 500px)' : 'calc(100vh - 350px)');
     },
   },
   data() {
     return {
       dateWidth,
-      scrollHeight: { y: "calc(100vh - 500px)" },
+      scrollHeight: { y: 'calc(100vh - 500px)' },
       loading: false,
       noPageTools: false,
       allStyle: allWidth,
       toggle: true,
       ASSET_MANAGEMENT,
       tableInfo: {
-        location: "absolute",
+        location: 'absolute',
         columns,
         tableData: [],
       },
-      organName: "",
-      organId: "",
+      organName: '',
+      organId: '',
       approvalStatusData: [...approvalStatusData],
       queryCondition: { ...queryCondition },
-      count: "",
+      count: '',
       disposeTypeData: [],
       assetTypeData: [],
       assetClassifyData: [
         {
-          name: "全部分类",
-          value: "",
+          name: '全部分类',
+          value: '',
         },
       ],
       disposeModeData: [],
       alterationDate: [],
       exportBtnLoading: false, // 导出按钮loading
       numList: [
-        { title: "资产数量(个)", key: "assetCount", value: 0, fontColor: "#324057" },
-        { title: "处置面积(㎡)", key: "area", value: 0, bgColor: "#4BD288" },
-        { title: "处置收入(元)", key: "transferOperationArea", value: 0, bgColor: "#1890FF" },
-        { title: "处置成本(元)", key: "idleArea", value: 0, bgColor: "#DD81E6" },
+        { title: '资产数量(个)', key: 'assetCount', value: 0, fontColor: '#324057' },
+        { title: '处置面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288' },
+        { title: '处置收入(元)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF' },
+        { title: '处置成本(元)', key: 'idleArea', value: 0, bgColor: '#DD81E6' },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
       queryInfo: {},
     };
@@ -241,8 +247,8 @@ export default {
     // 导出
     handleExport() {
       this.exportBtnLoading = true;
-      let data = this.query("export");
-      exportDataAsExcel(data, this.$api.disposalManagement.getDisposeOrganExport, "资产处置一览表组织机构视图.xlsx", this).then(() => {
+      let data = this.query('export');
+      exportDataAsExcel(data, this.$api.disposalManagement.getDisposeOrganExport, '资产处置一览表组织机构视图.xlsx', this).then(() => {
         this.exportBtnLoading = false;
       });
     },
@@ -272,10 +278,10 @@ export default {
       this.$api.assets.platformDict(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          if (str === "AMS_DISPOSE_TYPE") {
-            this.disposeTypeData = [{ name: "全部处置类型", value: "" }, ...data];
-          } else if (str === "asset_type") {
-            this.assetTypeData = [{ name: "全部资产类型", value: "" }, ...data];
+          if (str === 'AMS_DISPOSE_TYPE') {
+            this.disposeTypeData = [{ name: '全部处置类型', value: '' }, ...data];
+          } else if (str === 'asset_type') {
+            this.assetTypeData = [{ name: '全部资产类型', value: '' }, ...data];
           }
         } else {
           this.$message.error(res.data.message);
@@ -284,10 +290,10 @@ export default {
     },
     // 机构字典表
     organDict() {
-      this.$api.assets.organDict({ code: "AMS_DISPOSE_MODE" }).then((res) => {
+      this.$api.assets.organDict({ code: 'AMS_DISPOSE_MODE' }).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data;
-          this.disposeModeData = [{ name: "全部处置方式", value: "" }, ...data];
+          this.disposeModeData = [{ name: '全部处置方式', value: '' }, ...data];
         } else {
           this.$message.error(res.data.message);
         }
@@ -330,16 +336,16 @@ export default {
     // 处理多选下拉框有全选时的数组
     handleMultipleSelectValue(value, data, dataOptions) {
       // 如果选的是全部
-      if (value === "") {
-        data = [""];
+      if (value === '') {
+        data = [''];
       } else {
-        let totalIndex = data.indexOf("");
+        let totalIndex = data.indexOf('');
         if (totalIndex > -1) {
           data.splice(totalIndex, 1);
         } else {
           // 如果选中了其他选项加起来就是全部的话就直接勾选全部一项
           if (data.length === dataOptions.length - 1) {
-            data = [""];
+            data = [''];
           }
         }
       }
@@ -359,11 +365,11 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     judgmentMethodFn(val) {
-      if (val === "") {
+      if (val === '') {
         return [];
-      } else if (val.length > 0 && val[0] !== "") {
+      } else if (val.length > 0 && val[0] !== '') {
         return val;
-      } else if (val.length === 1 && val[0] === "") {
+      } else if (val.length === 1 && val[0] === '') {
         return [];
       } else {
         return val;
@@ -371,7 +377,7 @@ export default {
     },
     // 点击查询
     queryFn() {
-      this.query("");
+      this.query('');
       this.getDisposeOrganStatistics();
     },
     // 查询
@@ -381,8 +387,8 @@ export default {
         pageSize: this.queryCondition.pageSize, // 每页显示记录数
         organIds: this.queryCondition.organId, // 组织机构id
         approvalStatusList: this.judgmentMethodFn(this.queryCondition.approvalStatusList), // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
-        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format("YYYY-MM-DD") : "", // 处置日期,开始
-        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format("YYYY-MM-DD") : "", // 处置日期,结束
+        disposeDateStart: this.alterationDate.length > 0 ? moment(this.alterationDate[0]).format('YYYY-MM-DD') : '', // 处置日期,开始
+        disposeDateEnd: this.alterationDate.length > 0 ? moment(this.alterationDate[1]).format('YYYY-MM-DD') : '', // 处置日期,结束
         assetTypeList: this.judgmentMethodFn(this.queryCondition.assetTypeList), //类型：String  可有字段  资产类型Id
         disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeModeList), // 处置方式
         disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeTypeList), // 处置类型(多选)
@@ -390,10 +396,10 @@ export default {
       this.queryInfo = Object.assign({}, obj);
       delete this.queryInfo.pageNum;
       delete this.queryInfo.pageSize;
-      if (type === "export") {
+      if (type === 'export') {
         return obj;
       }
-      if (type === "statis") {
+      if (type === 'statis') {
         delete obj.pageNum;
         delete obj.pageSize;
         return obj;
@@ -434,7 +440,7 @@ export default {
       //   disposeModeList: this.judgmentMethodFn(this.queryCondition.disposeModeList),              // 处置方式
       //   disposeTypeList: this.judgmentMethodFn(this.queryCondition.disposeTypeList)
       // }
-      let params = this.query("statis");
+      let params = this.query('statis');
       this.$api.disposalManagement.getDisposeOrganStatistics(params).then(
         (res) => {
           if (Number(res.data.code) === 0) {
@@ -458,7 +464,7 @@ export default {
       params.organId = data.organId;
       params = JSON.stringify(params);
       this.$router.push({
-        path: "/disposalManagement/listDisposal/detail",
+        path: '/disposalManagement/listDisposal/detail',
         query: { queryInfo: params },
       });
     },
@@ -466,9 +472,9 @@ export default {
   created() {},
   mounted() {
     // 获取处置类型
-    this.platformDictFn("AMS_DISPOSE_TYPE");
+    this.platformDictFn('AMS_DISPOSE_TYPE');
     // 资产类型
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
     // 处置方式 机构字典表
     this.organDict();
   },
