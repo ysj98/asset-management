@@ -520,6 +520,9 @@ export default {
       }
     },
   },
+  mounted() {
+    this.platformDictFn("asset_type");
+  },
 };
 </script>
 <style lang="less" scoped>
