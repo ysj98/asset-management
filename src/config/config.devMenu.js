@@ -267,7 +267,7 @@ export default [
       },
       {
         title: '资产转让立项',
-        path: '/transferProjectApproval',
+        path: '/approvalTransferProject',
       },
     ],
   },

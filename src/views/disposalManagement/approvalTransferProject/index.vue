@@ -89,12 +89,12 @@ import SearchContainer from '@/views/common/SearchContainer';
 import TreeSelect from '@/views/common/treeSelect';
 import { utils } from 'utils/utils';
 import moment from 'moment';
-import { getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/transfer/share';
+import { getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/approvalTransferProject/share';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 const projectIdOpt = [{ label: '全部资产项目', value: '' }];
 export default {
   // 资产转让立项
-  name: 'transferProjectApproval',
+  name: 'approvalTransferProject',
   components: {
     SearchContainer,
     TreeSelect,
@@ -199,7 +199,7 @@ export default {
     },
     goAddEdit(applyId) {
       this.$router.push({
-        path: '/transferProjectApproval/edit',
+        path: '/approvalTransferProject/edit',
         query: {
           applyId,
           organId: this.organId,
@@ -213,7 +213,7 @@ export default {
      * */
     goDetail({ applyId, organId }, fromType) {
       this.$router.push({
-        path: '/transferProjectApproval/detail',
+        path: '/approvalTransferProject/detail',
         query: {
           applyId,
           organId,
@@ -223,7 +223,7 @@ export default {
     },
     btnAddFn() {
       this.$router.push({
-        path: '/transferProjectApproval/add',
+        path: '/approvalTransferProject/add',
         query: {
           organId: this.organId,
           organName: this.organName,

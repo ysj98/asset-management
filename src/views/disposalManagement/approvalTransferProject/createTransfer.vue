@@ -308,13 +308,13 @@
 <script>
 import './addAndEdit.less';
 import Information from '@/components/Information';
-import SelectAssetModal from '@/views/disposalManagement/transfer/SelectAssetModal';
-import { getDetail, getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/transfer/share';
+import SelectAssetModal from '@/views/disposalManagement/approvalTransferProject/SelectAssetModal';
+import { getDetail, getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/approvalTransferProject/share';
 import configBase from '@/config/config.base';
 import { SET_AMS_PLEDGE_SITUATION } from 'store/types/platformDictTypes';
-import UsageTable from '@/views/disposalManagement/transfer/UsageTable';
-import LeaseTable from '@/views/disposalManagement/transfer/LeaseTable';
-import WarrantTable from '@/views/disposalManagement/transfer/WarrantTable';
+import UsageTable from '@/views/disposalManagement/approvalTransferProject/UsageTable';
+import LeaseTable from '@/views/disposalManagement/approvalTransferProject/LeaseTable';
+import WarrantTable from '@/views/disposalManagement/approvalTransferProject/WarrantTable';
 export default {
   name: 'createTransfer',
   components: {
@@ -719,7 +719,7 @@ export default {
   },
   computed: {
     isEdit() {
-      return this.$route.path === '/transfer/edit';
+      return this.$route.path === '/approvalTransferProject/edit';
     },
     amsPledgeSituationOptions() {
       return this.$store.state.platformDict.AMS_PLEDGE_SITUATION.map((ele) => {
@@ -826,7 +826,7 @@ export default {
             ...this.formData,
             detailReqs,
             attachmentReqDtos,
-            teyp: 2,
+            type: 2,
           };
           if (this.isEdit) {
             req.applyId = this.$route.query.applyId;

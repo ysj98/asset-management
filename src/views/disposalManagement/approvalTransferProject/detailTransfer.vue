@@ -232,10 +232,10 @@
 
 <script>
 import FloatAnchor from '@/views/common/FloatAnchor';
-import LeaseTable from '@/views/disposalManagement/transfer/LeaseTable';
-import UsageTable from '@/views/disposalManagement/transfer/UsageTable';
+import LeaseTable from '@/views/disposalManagement/approvalTransferProject/LeaseTable';
+import UsageTable from '@/views/disposalManagement/approvalTransferProject/UsageTable';
 import FormFooter from '@/components/FormFooter';
-import ShowFile from '@/views/disposalManagement/transfer/ShowFile';
+import ShowFile from '@/views/disposalManagement/approvalTransferProject/ShowFile';
 import Information from '@/components/Information';
 import Step from '@/components/step';
 import moment from 'moment';
@@ -246,7 +246,7 @@ const PAGE_LEASE = 'lease';
 const PAGE_EVALUATE = 'evaluate';
 
 export default {
-  name: 'detailTransfer',
+  name: 'detailApprovalTransferProject',
   components: {
     ShowFile,
     Information,
