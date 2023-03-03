@@ -126,8 +126,8 @@ export default {
         name: '',
         projectIds: this.projectId ? this.projectId.toString().split(',') : [],
         apprStatus: [],
-        startTime: '2022-11-22',
-        endTime: '2023-02-22',
+        startTime: '',
+        endTime: '',
         pageNum: this.pageInfo.pageNum,
         pageSize: this.pageInfo.pageSize,
       };
