@@ -227,7 +227,7 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId.split(',')[0] }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
