@@ -61,7 +61,8 @@
     </div>
     <!--概览-->
     <a-spin :spinning="overviewNumSpinning">
-      <overview-number :numList="numList" isEmit @click="handleClickOverview" />
+      <!-- isEmit -->
+      <overview-number :numList="numList" @click="handleClickOverview" />
     </a-spin>
     <!--列表部分-->
     <a-table
@@ -128,7 +129,7 @@ export default {
       buildingOptions: [], // 车场选项
       organProjectBuildingValue: {
         organId: undefined,
-        projectId: undefined, // 用不到，暂存，临时需求隐藏处理
+        projectId: undefined, // 项目列表
         placeId: [''],
         statusList: [],
       }, // 查询条件-组织机构-资产项目-车场对象
@@ -175,13 +176,12 @@ export default {
         'occupationArea',
       ],
       onlyCurrentOrgan: false,
-      projectId: '',
     };
   },
 
   methods: {
     projectChange(val) {
-      this.projectId = val;
+      this.$set(this.organProjectBuildingValue, 'projectId', val);
       this.queryBuildingList('project');
     },
     // 仅选择当前机构下资产项目
@@ -357,6 +357,13 @@ export default {
 
     // 查询车场视图面积概览数据
     queryAreaInfo() {
+      let labelName = '';
+      if (this.label.length > 0 && this.assetLabelSelect.length > 0) {
+        labelName = this.label.map((item) => {
+          return this.assetLabelSelect.find((sub) => sub.value === item).value;
+        });
+        labelName = labelName.length > 0 ? labelName.join('、') : '';
+      }
       const {
         organProjectBuildingValue: { organId, projectId: projectIdList },
         onlyCurrentOrgan,
@@ -365,9 +372,18 @@ export default {
       this.overviewNumSpinning = true;
       let ids = this.organProjectBuildingValue.placeId;
       ids = ids.length === 1 && !ids[0] ? [] : ids;
-
+      let data = {
+        organId,
+        placeIdList: ids,
+        projectIdList,
+        currentOrgan: onlyCurrentOrgan,
+        label: labelName,
+      };
+      if (labelName === '全部资产标签' || !labelName) {
+        delete data.label;
+      }
       this.$api.carPark
-        .carParkViewArea({ organId, placeIdList: ids, projectIdList, currentOrgan: onlyCurrentOrgan })
+        .carParkViewArea(data)
         .then((r) => {
           this.overviewNumSpinning = false;
           let res = r.data;
@@ -442,8 +458,7 @@ export default {
     // 查询组织机构对应的车场数据
     queryBuildingList(val) {
       const {
-        organProjectBuildingValue: { organId },
-        projectId,
+        organProjectBuildingValue: { organId, projectId },
       } = this;
       // 清空组织机构，重置车场选项
       if (!organId) {
