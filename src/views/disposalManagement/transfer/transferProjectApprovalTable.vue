@@ -121,11 +121,12 @@ export default {
 
     handleSearchReq() {
       return {
+        flag: 1, // 用于区分列表和下拉框
         type: 2,
         organId: this.organId,
         name: '',
         projectIds: this.projectId ? this.projectId.toString().split(',') : [],
-        apprStatus: [],
+        apprStatus: ['1'], // 已审批
         startTime: '',
         endTime: '',
         pageNum: this.pageInfo.pageNum,

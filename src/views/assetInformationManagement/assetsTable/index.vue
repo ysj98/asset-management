@@ -562,7 +562,7 @@ export default {
     // 获取资产项目
     getAssetProjectOptions() {
       let form = {
-        organId: this.organId.split(',')[0],
+        organId: this.organId,
       };
       this.$api.assets.getObjectKeyValueByOrganId(form).then((res) => {
         if (res.data.code === '0') {

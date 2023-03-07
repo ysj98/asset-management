@@ -197,7 +197,6 @@ export default {
 
     // 根据organId查询资产项目
     queryProjectByOrganId(organId) {
-      organId = organId.split(',')[0];
       organId && queryProjectListByOrganId(organId).then((list) => (list ? (this.projectOptions = list) : this.$message.error('查询资产项目失败')));
     },
 

@@ -590,7 +590,7 @@ export default {
     // 资产项目
     getObjectKeyValueByOrganIdFn() {
       let obj = {
-        organId: this.queryCondition.organId.split(',')[0],
+        organId: this.queryCondition.organId,
         projectName: '',
       };
       this.$api.assets.getObjectKeyValueByOrganId(obj).then((res) => {
