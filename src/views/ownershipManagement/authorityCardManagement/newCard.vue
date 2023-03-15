@@ -20,20 +20,20 @@
         <span class="section-title blue">基础信息</span>
         <a-row class="playground-row">
           <a-form :form="form" @submit="handleSubmit">
-            <!-- <a-col class="playground-col" :span="12">
-            <a-form-item v-bind="formItemLayout" :colon="false">
-              <label slot="label">所属机构：</label>
-              <treeSelect
-                :allowClear="false"
-                :style="allWidth"
-                :default="false"
-                :defaultOrganName="organName"
-                @changeTree="changeTree"
-                :placeholder="''"
-                v-decorator="['organId', { rules: [{ required: true, message: '请选择组织机构' }],initialValue:organId}]"
-              ></treeSelect>
-            </a-form-item>
-          </a-col> -->
+            <a-col class="playground-col" :span="12">
+              <a-form-item v-bind="formItemLayout" :colon="false">
+                <label slot="label">所属机构：</label>
+                <treeSelect
+                  :allowClear="false"
+                  :style="allWidth"
+                  :defaultDisplay="false"
+                  :defaultOrganName="organName"
+                  @changeTree="changeTree"
+                  :placeholder="''"
+                  v-decorator="['organId', { rules: [{ required: true, message: '请选择组织机构' }], initialValue: organId }]"
+                ></treeSelect>
+              </a-form-item>
+            </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item v-bind="formItemLayout" :colon="false">
                 <label slot="label">权证号：</label>
@@ -298,7 +298,7 @@ import { typeFilter } from '@/views/buildingDict/buildingDictConfig';
 import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 const conditionalJudgment = [undefined, null, ''];
 export default {
-  // components: {TreeSelect},
+  components: { TreeSelect },
   props: {
     queryType: {
       type: [String, Number],

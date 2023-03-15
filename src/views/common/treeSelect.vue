@@ -1,5 +1,13 @@
 <!--
   查询组织机构树 新
+  1. 需要默认带入一个组织机构,并支持切换
+  :defaultDisplay="false"
+  :defaultOrganName="organName"
+
+  2. 需要把一个节点做个跟节点
+  rootData Array: {organName: '', organId: ''}
+
+
 -->
 <template>
   <div class="treeSelect">

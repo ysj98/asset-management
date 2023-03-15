@@ -77,6 +77,7 @@ import SuperModal from './SuperModal.vue';
 import moment from 'moment';
 const conditionalJudgment = [undefined, null, ''];
 const titleDeed = [
+  { text: '所属组织机构', value: 'organName' },
   { text: '权证号', value: 'warrantNbr' },
   { text: '权属形式', value: 'ownerTypeName' },
   { text: '权证类型', value: 'kindOfRightName' },
@@ -102,6 +103,7 @@ const titleDeed = [
   { text: '交接日期', value: 'handoverDate' },
 ];
 const accessCard = [
+  { text: '所属组织机构', value: 'organName' },
   { text: '权证号', value: 'warrantNbr' },
   { text: '权属形式', value: 'ownerTypeName' },
   { text: '权证类型', value: 'kindOfRightName' },
@@ -131,6 +133,7 @@ const accessCard = [
   { text: '交接日期', value: 'handoverDate' },
 ];
 const landDeed = [
+  { text: '所属组织机构', value: 'organName' },
   { text: '权证号', value: 'warrantNbr' },
   { text: '权属形式', value: 'ownerTypeName' },
   { text: '权证类型', value: 'kindOfRightName' },
