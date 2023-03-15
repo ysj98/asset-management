@@ -14,7 +14,7 @@
       :class="[index === proBreadNav.length - 1 && 'chu']"
       v-for="(item, index) in proBreadNav"
       :key="index"
-      >{{ item.name }}
+      >{{ item.title }}
       <a-icon
         type="right"
         :style="{ fontSize: '12px', marginRight: '5px', color: '#C0C7D1', display: index === proBreadNav.length - 1 ? 'none' : '' }"

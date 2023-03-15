@@ -19,7 +19,7 @@ const router = new Router({
   routes: [...dev, ...pro],
 });
 // 拦截路由处理生产环境自动生产面包屑
-const breadNavList = [{ name: '资产管理', path: '' }];
+const breadNavList = [{ title: '资产管理', path: '' }];
 // 通用审批/approve 路由，不显示在 面包屑导航中，所以在当前面包屑导航方案中过滤掉
 // todo:当前面包屑导航方案存在缺陷，导航显示顺序严格依赖路由书写顺序
 const getLink = (toPath) =>

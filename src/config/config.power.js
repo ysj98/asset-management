@@ -708,6 +708,16 @@ export const ASSET_MANAGEMENT = {
   ASSET_TRANSFER_DEL_PROJECT: 'asset_transfer_del_project', // 删除
   ASSET_TRANSFER_EXPORT_PROJECT: 'asset_transfer_export_project', // 导出
 
+  /*
+   * 资产调拨
+   */
+  asset_allot_add: 'asset_allot_add', // 新增
+  asset_allot_edit: 'asset_allot_edit', // 编辑
+  asset_allot_approve: 'asset_allot_approve', // 审批
+  asset_allot_opposeApprove: 'asset_allot_opposeApprove', // 反审核
+  asset_allot_delete: 'asset_allot_delete', // 删除
+  asset_allot_export: 'asset_allot_export', // 导出
+
   /**
    * 车场台账
    */

@@ -269,6 +269,10 @@ export default [
         title: '资产转让立项',
         path: '/approvalTransferProject',
       },
+      {
+        title: '资产调拨',
+        path: '/allot',
+      },
     ],
   },
   {
