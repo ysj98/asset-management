@@ -113,7 +113,7 @@ export default {
           { title: '序号', dataIndex: 'index' },
           { title: '资产编码', dataIndex: 'assetCode' },
           { title: '资产名称', dataIndex: 'assetName' },
-          { title: '管理机构', dataIndex: 'organName' },
+          { title: '权属单位', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产分类', dataIndex: 'objectTypeName' },
@@ -512,7 +512,7 @@ export default {
     //   if( this.assetList[0].assetTypeName != '房屋' && this.assetList[0].assetTypeName != '土地' && this.assetList[0].assetTypeName != '车场' ){
     //      this.tableObj.columns = [
     //       { title: '资产编码', dataIndex: 'assetCode' },{ title: '资产名称', dataIndex: 'assetName' },
-    //       { title: '管理机构', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
+    //       { title: '权属单位', dataIndex: 'organName' },{ title: '资产项目', dataIndex: 'projectName' },
     //       { title: '资产类型', dataIndex: 'assetTypeName' }, { title: '资产分类', dataIndex: 'objectTypeName' },
     //       { title: '资产面积(㎡)', dataIndex: 'area' }, { title: '资产位置', dataIndex: 'address'},
     //       { title: '备注', dataIndex: 'remark', scopedSlots: { customRender: 'remark' } },

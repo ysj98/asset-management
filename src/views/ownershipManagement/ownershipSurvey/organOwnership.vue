@@ -69,7 +69,7 @@ import TooltipText from '../../common/TooltipText';
 const allStyle = { width: '140px', marginRight: '10px' };
 let columns = [
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: '250px',
     scopedSlots: { customRender: 'organName' },

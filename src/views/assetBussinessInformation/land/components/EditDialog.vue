@@ -50,7 +50,7 @@
               </a-row>
               <a-row>
                 <a-col class="playground-col" :span="12">
-                  <a-form-model-item label="管理机构：">{{ object.organName }}</a-form-model-item>
+                  <a-form-model-item label="权属单位：">{{ object.organName }}</a-form-model-item>
                 </a-col>
               </a-row>
               <div class="section-title blue" style="margin-bottom: 20px">业务信息</div>

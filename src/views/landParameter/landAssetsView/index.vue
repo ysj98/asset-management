@@ -212,7 +212,7 @@ const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, 'margin-top'
 const columnsData = [
   { title: '资产名称', dataIndex: 'assetName', key: 'assetName', width: 150, disabled: true, fixed: 'left' },
   { title: '资产编码', dataIndex: 'assetCode', width: 150, disabled: true },
-  { title: '管理机构', dataIndex: 'organName', width: 150, disabled: true },
+  { title: '权属单位', dataIndex: 'organName', width: 150, disabled: true },
   { title: '宗地号', dataIndex: 'theNo', width: 150 },
   { title: '宗地位置', dataIndex: 'location', width: 150 },
   { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },

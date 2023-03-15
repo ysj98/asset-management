@@ -838,7 +838,7 @@ export default {
               assetId: item.assetId, // 资产信息ID
               assetObjectId: item.assetObjectId, // 资产对象ID
               assetType: item.assetType, // 资产类型
-              organId: this.organId, // 管理机构ID
+              organId: this.organId, // 权属单位ID
               disposeCost: item.disposeCost, // 处置成本(元)
               disposeReceive: item.disposeReceive, // 处置收入(元)
               remark: item.remark, // 备注

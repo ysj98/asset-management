@@ -196,7 +196,7 @@ export default {
       //   { title: '资产状态', dataIndex: 'statusName' }
       // ], // 按资产统计维度时动态展示
       // columnsByOrgan: [
-      //   { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 220 },
+      //   { title: '权属单位', dataIndex: 'organName', fixed: 'left', width: 220 },
       //   { title: '资产数量', dataIndex: 'assetCount' }, { title: '资产面积(㎡)', dataIndex: 'assetArea' }
       // ], // 按组织机构统计维度时动态展示
       tableObj: {

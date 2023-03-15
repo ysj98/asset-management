@@ -21,7 +21,7 @@
             <span class="info-item-content">{{ baseInfo.assetCode }}</span>
           </div>
           <div class="base-info-item">
-            <span class="info-item-label">管理机构：</span>
+            <span class="info-item-label">权属单位：</span>
             <span class="info-item-content">{{ baseInfo.organName }}</span>
           </div>
         </div>

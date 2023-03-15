@@ -214,7 +214,7 @@ const scheduleCell = (record, index, val) => {
 };
 export const scheduleOfList = [
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: 150,
     customCell: (record, index) => {

@@ -25,7 +25,7 @@
         </a-row>
         <a-row class="playground-row">
           <a-col class="playground-col" :span="24">地理位置：{{ '--' }}</a-col>
-          <a-col class="playground-col" :span="24">管理机构：{{ '--' }}</a-col>
+          <a-col class="playground-col" :span="24">权属单位：{{ '--' }}</a-col>
         </a-row>
       </div>
       <div class="section-title blue">业务信息</div>

@@ -205,7 +205,7 @@ const detailColumns = [
     width: 70,
   },
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: 70,
   },
@@ -740,8 +740,8 @@ export default {
             assetTypeName: '设备' + i, //类型：String  必有字段  备注：资产类型名称
             objectType: '1', //类型：String  必有字段  备注：资产分类
             objectTypeName: 'mock' + i, //类型：String  必有字段  备注：资产分类名称
-            organId: 1300, //类型：Number  必有字段  备注：管理机构
-            organName: '四格运营', //类型：String  必有字段  备注：管理机构名称
+            organId: 1300, //类型：Number  必有字段  备注：权属单位
+            organName: '四格运营', //类型：String  必有字段  备注：权属单位名称
             projectId: 1, //类型：Number  必有字段  备注：项目id
             projectName: '不收费', //类型：String  必有字段  备注：项目名称
             cleanupType: 5, //类型：Number  必有字段  备注：出库原因

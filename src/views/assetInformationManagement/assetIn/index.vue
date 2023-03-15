@@ -159,7 +159,7 @@ export default {
         columns: [
           { title: '入库单编号', dataIndex: 'storeCode' },
           { title: '入库单名称', dataIndex: 'storeName', width: 200 },
-          { title: '管理机构', dataIndex: 'organName' },
+          { title: '权属单位', dataIndex: 'organName' },
           { title: '资产项目', dataIndex: 'projectName' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产数量', dataIndex: 'assetCount' },

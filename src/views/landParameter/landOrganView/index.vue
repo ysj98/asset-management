@@ -89,7 +89,7 @@ export default {
         pagination: false,
         rowKey: 'organId',
         columns: [
-          { title: '管理机构', dataIndex: 'organName' },
+          { title: '权属单位', dataIndex: 'organName' },
           { title: '土地面积(㎡)', dataIndex: 'landArea' },
           { title: '土地数量', dataIndex: 'landCount' },
           { title: '运营(㎡)', dataIndex: 'transferOperationArea' },

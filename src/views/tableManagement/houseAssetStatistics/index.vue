@@ -58,7 +58,7 @@ const detailColumns = [
       return Utils.isString(projectCode) ? projectCode : '';
     },
   },
-  { title: '管理机构', dataIndex: 'organName', width: 300 },
+  { title: '权属单位', dataIndex: 'organName', width: 300 },
   { title: '本单位有产权楼栋数量', dataIndex: 'ownBuildNumber', width: 180 },
   { title: '本单位有产权房屋数量', dataIndex: 'ownHouseNumber', width: 180 },
   { title: '本单位有使用权楼栋数量', dataIndex: 'ownUsedBuildNumber', width: 180 },

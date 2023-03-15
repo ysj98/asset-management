@@ -120,7 +120,7 @@ export default {
         scroll: { x: '100%' },
         dataSource: [],
         columns: [
-          { title: '管理机构', dataIndex: 'organName', width: 280, fixed: 'left' },
+          { title: '权属单位', dataIndex: 'organName', width: 280, fixed: 'left' },
           { title: '资产项目', dataIndex: 'projectName', width: 150 },
           { title: '资产编码', dataIndex: 'assetCode', width: 150 },
           { title: '资产名称', dataIndex: 'assetName', width: 150 },

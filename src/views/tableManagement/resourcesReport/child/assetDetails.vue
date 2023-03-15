@@ -86,7 +86,7 @@ import { getFormat } from '@/utils/utils';
 import { handleTableHeaderScrollHeight, handleTableScrollHeight, initTableColumns } from 'utils/share';
 import TableHeaderSettings from '@/components/TableHeaderSettings';
 const detailColumns = [
-  { title: '管理机构', dataIndex: 'organName', width: 120, fixed: 'left' },
+  { title: '权属单位', dataIndex: 'organName', width: 120, fixed: 'left' },
   { title: '资产项目', dataIndex: 'projectName', width: 120, fixed: 'left' },
   { title: '资产名称', dataIndex: 'assetName', width: 200, fixed: 'left' },
   { title: '资产编码', dataIndex: 'assetCode', width: 180 },

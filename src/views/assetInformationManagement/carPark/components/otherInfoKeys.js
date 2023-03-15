@@ -8,7 +8,7 @@ const keys = {
       projectName: '资产项目',
       sourceTypeName: '来源方式',
       sourceChannelType: '来源方式说明',
-      organName: '管理机构',
+      organName: '权属单位',
       takeOverDate: '接管日期',
       isTransferOperation: '是否转运营',
       // transferOperationTime: '转运营日期',

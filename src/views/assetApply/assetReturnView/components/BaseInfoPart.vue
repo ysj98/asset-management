@@ -105,7 +105,7 @@
       </a-row>
       <a-row :gutter="24">
         <a-col :span="8">
-          <a-form-item label="管理机构" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
+          <a-form-item label="权属单位" :label-col="formItemLayout.labelCol" :wrapper-col="formItemLayout.wrapperCol">
             <a-input v-decorator="['organName']" disabled />
           </a-form-item>
         </a-col>

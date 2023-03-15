@@ -62,7 +62,7 @@ export default {
             },
           },
           {
-            title: '管理机构',
+            title: '权属单位',
             dataIndex: 'organName',
             customRender: (text, row) => {
               return {

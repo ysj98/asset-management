@@ -94,7 +94,7 @@ const totalKeyArr = [
   'marketValue',
 ];
 const columnsData = [
-  { title: '管理机构', dataIndex: 'organName', width: 150 },
+  { title: '权属单位', dataIndex: 'organName', width: 150 },
   { title: '资产数量', dataIndex: 'assetNum', width: 150 },
   { title: '资产面积(㎡)', dataIndex: 'assetArea', width: 150 },
   { title: '楼栋数量', dataIndex: 'buildNum', width: 150 },

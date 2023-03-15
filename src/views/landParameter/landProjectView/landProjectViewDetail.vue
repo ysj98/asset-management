@@ -7,7 +7,7 @@
       <div class="edit-box-title"><i></i><span>基础信息</span></div>
       <div class="edit-box-content">
         <div class="edit-box-content-item">
-          <span class="label-name">管理机构：</span>
+          <span class="label-name">权属单位：</span>
           <span class="label-value">{{ detail.organName || '' }}</span>
         </div>
         <div class="edit-box-content-item">

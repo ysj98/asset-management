@@ -98,7 +98,7 @@ export default {
         pagination: false,
         rowKey: 'organId',
         columns: [
-          { title: '管理机构', dataIndex: 'organName' },
+          { title: '权属单位', dataIndex: 'organName' },
           { title: '建筑面积(㎡)', dataIndex: 'area' },
           { title: '车场数量', dataIndex: 'placeNum' },
           { title: '资产数量', dataIndex: 'assetNum' },

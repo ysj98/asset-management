@@ -123,7 +123,7 @@ const columns = [
     dataIndex: 'registerOrderName',
   },
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
   },
   {
@@ -521,7 +521,7 @@ export default {
     },
   },
   mounted() {
-    this.platformDictFn("asset_type");
+    this.platformDictFn('asset_type');
   },
 };
 </script>

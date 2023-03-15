@@ -53,7 +53,7 @@ export default {
           //     attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}
           //   }
           // } },
-          // { title: '管理机构', dataIndex: 'organName', width: 180, customRender: (text, row) => {
+          // { title: '权属单位', dataIndex: 'organName', width: 180, customRender: (text, row) => {
           //   return {
           //     children: text,
           //     attrs: (row.projectName === '当前页-合计' || row.projectName === '所有页-合计') ? { colSpan: 0 } : {}

@@ -86,7 +86,7 @@ export let columns = [
     width: '150px',
   },
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: '150px',
   },

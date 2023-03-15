@@ -201,7 +201,7 @@ export default {
           { title: '资产编码', dataIndex: 'assetCode' },
           { title: '资产类型', dataIndex: 'assetTypeName' },
           { title: '资产分类', dataIndex: 'objectTypeName' },
-          { title: '管理机构', dataIndex: 'organName' },
+          { title: '权属单位', dataIndex: 'organName' },
           { title: '资产项目名称', dataIndex: 'projectName' },
           {
             title: '资产面积(㎡)',

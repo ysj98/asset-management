@@ -143,7 +143,7 @@ const columns = [
   { title: '资产类型', dataIndex: 'assetTypeName' },
   { title: '资产分类', dataIndex: 'objectTypeName' },
   { title: '资产项目名称', dataIndex: 'projectName' },
-  { title: '管理机构', dataIndex: 'organName' },
+  { title: '权属单位', dataIndex: 'organName' },
   { title: '资产位置', dataIndex: 'address' },
   { title: '标签编码', dataIndex: 'labelCode' },
   { title: '操作', dataIndex: 'operation', scopedSlots: { customRender: 'operation' } },

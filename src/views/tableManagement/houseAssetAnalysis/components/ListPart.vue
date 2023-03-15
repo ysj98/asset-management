@@ -108,7 +108,7 @@ export default {
         { title: '', scopedSlots: { customRender: 'detail' }, width: 100, align: 'center' },
       ], // Table 列头固定部分
       sortFactor: [
-        { title: '管理机构', dataIndex: 'organName', fixed: 'left', width: 180 },
+        { title: '权属单位', dataIndex: 'organName', fixed: 'left', width: 180 },
         { title: '资产项目', dataIndex: 'projectName', width: 160 },
         { title: '经营单位', dataIndex: 'businessUnit', width: 150 },
         { title: '资产分类', dataIndex: 'objectTypeName', width: 100 },

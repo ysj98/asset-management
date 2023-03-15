@@ -41,7 +41,7 @@ export default {
         },
         {
           value: '2',
-          name: '平铺所有资产管理机构',
+          name: '平铺所有资产权属单位',
         },
       ],
       checkedList: [], // 选中项

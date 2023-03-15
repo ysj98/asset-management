@@ -273,7 +273,7 @@ import { handleTableScrollHeight, handleTableHeaderScrollHeight, initTableColumn
 const detailColumns = [
   { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
-  { title: '管理机构', dataIndex: 'ownerOrganName', width: 150 },
+  { title: '权属单位', dataIndex: 'ownerOrganName', width: 150 },
   { title: '资产项目', dataIndex: 'projectName', width: 300 },
   { title: '资产位置', dataIndex: 'address', width: 300 },
   { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
@@ -402,7 +402,7 @@ export default {
         columns: [
           { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
           { title: '资产编码', dataIndex: 'assetCode', width: 150 },
-          { title: '管理机构', dataIndex: 'ownerOrganName', width: 150 },
+          { title: '权属单位', dataIndex: 'ownerOrganName', width: 150 },
           { title: '资产项目', dataIndex: 'projectName', width: 300 },
           { title: '资产位置', dataIndex: 'address', width: 300 },
           { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },

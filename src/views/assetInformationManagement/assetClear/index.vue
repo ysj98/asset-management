@@ -144,7 +144,7 @@ const columns = [
     width: 160,
   },
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: 160,
   },

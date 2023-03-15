@@ -62,7 +62,7 @@
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">管理机构：</span><span class="detail-main">{{ detailInfo.organName | filterNullValue }}</span>
+                  <span class="detail-label">权属单位：</span><span class="detail-main">{{ detailInfo.organName | filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">

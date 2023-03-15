@@ -143,7 +143,7 @@ export default {
         columns: [
           { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, fixed: 'left', width: 250 },
           { title: '车场编号', dataIndex: 'placeCode', width: 200 },
-          { title: '管理机构', dataIndex: 'communityName', width: 200 },
+          { title: '权属单位', dataIndex: 'communityName', width: 200 },
           { title: '资产项目名称', dataIndex: 'projectName', width: 200 },
           { title: '车场面积(㎡)', dataIndex: 'area', width: 150 },
           { title: '车场类型', dataIndex: 'objectType', width: 150 },

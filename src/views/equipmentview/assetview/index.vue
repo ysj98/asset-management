@@ -181,7 +181,7 @@ const detailColumns = [
     width: 120,
   },
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: 200,
   },
@@ -283,7 +283,7 @@ const allColumns = [
     width: 120,
   },
   {
-    title: '管理机构',
+    title: '权属单位',
     dataIndex: 'organName',
     width: 200,
   },
