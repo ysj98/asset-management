@@ -386,6 +386,9 @@ export default {
             agent: '',
             agentTel: '',
             remark: '',
+            attachment: [],
+            appId: '',
+            secretKey: '',
           });
         }
         this.detail.attachment = [];
@@ -597,6 +600,9 @@ export default {
               agent: this.detail.agent,
               agentTel: this.detail.agentTel,
               remark: this.detail.remark,
+              attachment: this.detail.attachment,
+              appId: this.detail.appId,
+              secretKey: this.detail.secretKey,
             });
           }
         } else {

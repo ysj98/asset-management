@@ -16,13 +16,12 @@ let configs = {
   CookieDomain: '',
   unifyContext: '',
 };
-// 如果可以
 if (process.env.NODE_ENV === 'production') {
-  configs = window.__configs; // 在config.js中设置的
+  configs = JSON.parse(JSON.stringify(window.__configs)); // 在config.js中设置的
   // 由于本项目在不同生产环境，有时正确的文件域名为hostImg 有时为hostImg1，容易出现问题
   // 故在config.js中新增了一个配置项fastdfsHostImg，若配置项已经配置了，首先取该配置项，若没有配置，则取hostImg1
-  if (configs.fastdfsHostImg) {
-    configs.hostImg = configs.fastdfsHostImg || configs.hostImg1;
-  }
+  configs.hostImg = configs.fastdfsHostImg || configs.hostImg1;
+} else {
+  window.__configs = JSON.parse(JSON.stringify(configs));
 }
 export default Object.assign({}, configs);

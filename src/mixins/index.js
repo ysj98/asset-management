@@ -2,14 +2,13 @@
  * @Date: 2019-11-01 09:42:51
  * @Description:
  */
-import host from '@/config/config.base.js';
 import Cookies from 'js-cookie';
 import Utils from '@/utils/utils.js';
 export default {
   data() {
     return {
       waitTime: 2000, // 等待多少ms才去显示消息框
-      imgStr: host.hostImg,
+      imgStr: window.__configs.hostImg,
       loadingNameS: {}, // loding至少保存2秒
     };
   },
