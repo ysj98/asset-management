@@ -66,7 +66,7 @@
     <div class="particulars-nav">
       <div>
         <SG-Title title="审批轨迹" />
-        <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
+        <Step v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
         <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       </div>
       <div v-if="isApprove">
@@ -101,6 +101,7 @@ import {
   changeDirectionUseEq,
   propertyColumn,
 } from './basics';
+import Step from '@/components/step';
 import { utils } from '@/utils/utils.js';
 import moment from 'moment';
 const originalObjectTypeMap = {
@@ -114,7 +115,7 @@ const shareWayMap = {
   2: '按资产个数分摊',
 };
 export default {
-  components: { FormFooter },
+  components: { FormFooter, Step },
   props: {},
   data() {
     return {
@@ -388,7 +389,7 @@ export default {
               return {
                 date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                 title: ele.operOpinion,
-                desc: '',
+                desc: ele.taskName, // 审批节点
                 isDone: false,
                 operation: [],
               };

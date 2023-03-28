@@ -210,7 +210,7 @@ export default {
               return {
                 date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                 title: ele.operOpinion,
-                desc: '',
+                desc: ele.taskName, // 审批节点
                 isDone: false,
                 operation:
                   ele.files && ele.files.length > 0

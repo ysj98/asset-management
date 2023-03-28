@@ -69,7 +69,7 @@
 <script>
 import FormFooter from '@/components/FormFooter';
 import Information from '@/components/Information';
-import Step from './step.vue';
+import Step from '@/components/step';
 
 import { baseColumns, flatTableDataSource, generateColumnsByParamList, getBaseInfo, getOperationDetailListPage } from '@/views/assetOperating/share';
 import moment from 'moment';
@@ -280,7 +280,7 @@ export default {
                   return {
                     date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                     title: ele.operOpinion,
-                    desc: '',
+                    desc: ele.taskName, // 审批节点
                     isDone: false,
                     operation:
                       ele.files && ele.files.length > 0

@@ -26,12 +26,12 @@
         </slot>
         <div class="desc">
           <slot name="desc">
-            <div class="content-desc" v-if="typeof item.desc === 'string'">{{ item.desc }}</div>
+            <div class="content-desc" v-if="typeof item.desc === 'string'">审批节点: {{ item.desc }}</div>
             <div v-else class="content-desc">
-              <template v-for="(descItem, i) in item.desc">
-                <span :key="i" class="word">{{ descItem }}</span>
+              <div v-for="(descItem, i) in item.desc" :key="i">
+                <span class="word">{{ descItem }}</span>
                 <span v-if="i < item.desc.length - 1" :key="i + 'line'" class="line"></span>
-              </template>
+              </div>
             </div>
           </slot>
           <div class="operate" v-if="item.operation.length">

@@ -190,7 +190,7 @@
     <!--审批轨迹-->
     <div v-if="pageType === 'detail' || pageType === 'audit'">
       <SG-Title title="审批轨迹" />
-      <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
+      <Step v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
       <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
     </div>
     <div v-if="isApprove">
@@ -227,6 +227,7 @@ import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 import SGUploadFilePlus from '@/components/SGUploadFilePlus';
 import { dateToString } from 'utils/formatTime';
 import moment from 'moment';
+import Step from '@/components/step';
 const defaultColumns = [
   {
     title: '资产名称',
@@ -275,6 +276,7 @@ export default {
     FormFooter,
     AssetBundlePopover,
     SGUploadFilePlus,
+    Step,
   },
   data() {
     return {
@@ -679,13 +681,12 @@ export default {
           const req = { busType: 1002, busId: this.cleaningOrderId, organId: this.$route.query.relatedOrganId || obj.organId };
           this.$api.approve.queryApprovalRecordByBus(req).then(({ data: { code, message, data } }) => {
             if (code === '0') {
-              console.log('data', data);
               this.apprId = data.amsApprovalResDto.apprId;
               this.stepList = (data.approvalRecordResDtos || []).map((ele) => {
                 return {
                   date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                   title: ele.operOpinion,
-                  desc: '',
+                  desc: ele.taskName, // 审批节点
                   isDone: false,
                   operation: [],
                 };

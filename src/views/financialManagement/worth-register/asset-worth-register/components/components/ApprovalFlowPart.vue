@@ -4,7 +4,7 @@
     <!--审批轨迹-->
     <SG-Title title="审批轨迹" />
     <div style="margin-left: 40px">
-      <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" class="title_div" />
+      <Step v-stepstyleplus v-if="stepList.length" :stepList="stepList" class="title_div" />
       <div v-else style="text-align: center">暂无数据</div>
     </div>
     <!--审批意见-->
@@ -21,9 +21,11 @@
 </template>
 
 <script>
+import Step from '@/components/step';
 export default {
   name: 'ApprovalFlowPart',
   props: ['type', 'advice', 'stepList', 'fromBpmApprove'],
+  components: { Step },
   data() {
     return {};
   },

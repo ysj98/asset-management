@@ -47,7 +47,7 @@
     <div class="particulars-nav" v-if="type === 'approval'">
       <span class="section-title blue">审批轨迹</span>
       <div class="particulars-obj">
-        <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
+        <Step v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
         <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       </div>
     </div>
@@ -74,8 +74,10 @@ import FormFooter from '@/components/FormFooter';
 import { register } from './basics';
 import { utils } from '@/utils/utils.js';
 import moment from 'moment';
+import Step from '@/components/step';
+
 export default {
-  components: { FormFooter },
+  components: { FormFooter, Step },
   props: {},
   data() {
     return {
@@ -112,7 +114,7 @@ export default {
             return {
               date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
               title: ele.operOpinion,
-              desc: '',
+              desc: ele.taskName, // 审批节点
               isDone: false,
               operation: [],
             };

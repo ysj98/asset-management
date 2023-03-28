@@ -68,7 +68,7 @@
       <!--审批轨迹-->
       <div v-if="!isOld">
         <SG-Title title="审批轨迹" />
-        <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
+        <Step v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
         <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
       </div>
       <div class="footer-advice" v-if="isApprove && !isOld">
@@ -95,9 +95,10 @@ import FormFooter from '@/components/FormFooter';
 import { generateTableAreaByAssetTypeString } from 'utils/utils';
 import uploadAndDownLoadFIle from '@/mixins/uploadAndDownLoadFIle';
 import configBase from '@/config/config.base';
+import Step from '@/components/step';
 export default {
   name: 'DetailPage',
-  components: { FormFooter },
+  components: { FormFooter, Step },
   mixins: [uploadAndDownLoadFIle],
   data() {
     return {
@@ -233,7 +234,7 @@ export default {
                   return {
                     date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
                     title: ele.operOpinion,
-                    desc: '',
+                    desc: ele.taskName, // 审批节点
                     isDone: false,
                     operation: [],
                   };

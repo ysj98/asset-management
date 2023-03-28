@@ -44,7 +44,7 @@
       <div class="newCard-nav" v-if="type === 'approval'">
         <span class="section-title blue">审批轨迹</span>
         <div class="tab-nav">
-          <SG-TrackStep v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
+          <step v-stepstyleplus v-if="stepList.length" :stepList="stepList" style="margin-left: 45px" />
           <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
         </div>
       </div>
@@ -75,6 +75,7 @@ import { utils } from '@/utils/utils';
 import { columns, mortgageInformation } from './beat';
 import SuperModal from './SuperModal.vue';
 import moment from 'moment';
+import Step from '@/components/step';
 const conditionalJudgment = [undefined, null, ''];
 const titleDeed = [
   { text: '所属组织机构', value: 'organName' },
@@ -153,7 +154,7 @@ const landDeed = [
   { text: '交接日期', value: 'handoverDate' },
 ];
 export default {
-  components: { SuperModal, FormFooter },
+  components: { SuperModal, FormFooter, Step },
   props: {},
   data() {
     return {
@@ -349,7 +350,7 @@ export default {
             return {
               date: ele.operDateStr ? moment(ele.operDateStr) : moment(),
               title: ele.operOpinion,
-              desc: '',
+              desc: ele.taskName, // 审批节点
               isDone: false,
               operation: [],
             };
