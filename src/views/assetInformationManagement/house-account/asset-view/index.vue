@@ -190,7 +190,7 @@
           },
         }),
       }"
-      >>
+    >
       <template slot="assetName" slot-scope="text">
         <!-- <tooltip-text :text="text"/> -->
         <div :title="text" style="width: 264px; white-space: normal">
@@ -319,18 +319,18 @@ const assetLabelOpt = [
   // { label: "异常", value: 0 },
 ];
 const detailColumns = [
-  { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 300, ellipsis: true },
+  { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 260, ellipsis: true },
   { title: '资产编码', dataIndex: 'assetCode', width: 150 },
   { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
   { title: '宗地号', dataIndex: 'addressNo', width: 150 },
-  { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
+  { title: '建筑面积(㎡)', dataIndex: 'area', width: 140, scopedSlots: { customRender: 'area' } },
   { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
   { title: '产证附件状态', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },
   { title: '地理位置', dataIndex: 'address', width: 300 },
   { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
   { title: '单元', dataIndex: 'unitName', width: 100 },
-  { title: '楼层', dataIndex: 'floor', width: 100 },
-  { title: '层高', dataIndex: 'floorHeight', width: 100 },
+  { title: '楼层', dataIndex: 'floor', width: 60 },
+  { title: '层高', dataIndex: 'floorHeight', width: 60 },
   { title: '分类', dataIndex: 'objectTypeName', width: 100 },
   { title: '权属用途', dataIndex: 'ownershipUseName', width: 100 },
   { title: '用途', dataIndex: 'useType', width: 100 },
@@ -347,7 +347,7 @@ const detailColumns = [
   { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
   { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
   { title: '接管时间', dataIndex: 'startDate', width: 150 },
-  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 150, scopedSlots: { customRender: 'transferOperationArea' } },
+  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 140, scopedSlots: { customRender: 'transferOperationArea' } },
   { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' } },
   { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' } },
   { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' } },
@@ -370,7 +370,7 @@ const detailColumns = [
   { title: '产权证土地用途', dataIndex: 'landUse', width: 150 },
   { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150 },
   { title: '公安门牌号', dataIndex: 'houseNumber', width: 150 },
-  // { title: '质押情况', dataIndex: 'pledge', width: 120},
+  { title: '质押情况', dataIndex: 'pledge', width: 120 },
   { title: '质押', dataIndex: 'pledgeName', width: 100 },
   { title: '抵押', dataIndex: 'mortgagName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
@@ -468,7 +468,7 @@ export default {
         loading: false,
         initColumns: [],
         dataSource: [],
-        scroll: { x: 3500, y: 236 },
+        scroll: { x: 3500, y: 300 },
         columns: [],
       },
       key: 0, // 更新Modal包裹的子组件
@@ -504,12 +504,14 @@ export default {
   },
   watch: {
     'tableObj.columns'(val) {
+      val.forEach((item) => {
+        item.ellipsis = false;
+      });
       this.tableObj.scroll.x = val.length * 120;
       // this.useForConfig();
     },
-
     fold(val) {
-      this.tableObj.scroll.y = val ? 236 : 420;
+      this.tableObj.scroll.y = val ? 300 : 420;
     },
     organProjectBuildingValue: function (val, pre) {
       if (!this.$route.query.organIds) {
@@ -1193,20 +1195,20 @@ export default {
     color: #49505e;
   }
 }
-/deep/.ant-table-fixed {
-  td {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-  }
-  tr:hover {
-    td {
-      white-space: normal !important;
-      overflow: auto !important;
-      text-overflow: clip !important;
-    }
-  }
-}
+// /deep/.ant-table-fixed {
+//   td {
+//     white-space: nowrap !important;
+//     overflow: hidden !important;
+//     text-overflow: ellipsis !important;
+//   }
+//   tr:hover {
+//     td {
+//       white-space: normal !important;
+//       overflow: auto !important;
+//       text-overflow: clip !important;
+//     }
+//   }
+// }
 /deep/ .sg-FooterPagination {
   z-index: 2;
 }
