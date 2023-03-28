@@ -23,10 +23,23 @@
     </div>
     <SG-Title title="资产列表" />
     <a-table v-bind="tableOptions">
+      <template slot="customCommunity">
+        <a-select
+          style="width: 200px"
+          placeholder="请选择运营项目"
+          showSearch
+          optionFilterProp="children"
+          notFoundContent="没有查询到数据"
+          :options="communityIdOpt"
+          :allowClear="false"
+          :disabled="fromType !== 'approve'"
+          @change="batchCommunity"
+        />
+      </template>
       <template #community="text, record">
         <a-select
           style="width: 200px"
-          placeholder="请选择项目"
+          placeholder="请选择运营项目"
           showSearch
           optionFilterProp="children"
           notFoundContent="没有查询到数据"
@@ -163,6 +176,12 @@ export default {
     };
   },
   methods: {
+    // 批量填充资产列表表格的运营项目
+    batchCommunity(value) {
+      this.tableOptions.dataSource.forEach((item) => {
+        this.$set(item, 'communityId', value);
+      });
+    },
     queryCommunityListByOrganId({ organId }) {
       return new Promise((resolve, reject) => {
         let data = {
@@ -412,12 +431,14 @@ export default {
       const res = generateColumnsByParamList({ paramList: item.paramList });
       this.tableOptions.columns = [...baseColumns, ...res];
       if ((this.fromType === 'approve' && this.isApprove) || this.approvalStatus === '1') {
+        // 添加最后一列运营项目
         this.tableOptions.columns.push({
-          title: '运营项目',
+          key: 'community',
           width: 220,
           scopedSlots: {
             customRender: 'community',
           },
+          slots: { title: 'customCommunity' },
         });
       }
     },
