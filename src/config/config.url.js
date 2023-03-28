@@ -1570,6 +1570,17 @@ export const transfer = {
   leaseBatchQuery: '/ams/makeover/leaseBatchQuery',
 };
 
+export const allot = {
+  // 资产调拨列表
+  queryTransferList: '/ams/disposeRegister/queryTransferList',
+  // 资产调拨单新增修改
+  addOrUpdateTransfer: '/ams/disposeRegister/addOrUpdateTransfer',
+  // 查询资产详情
+  queryTransferDetail: '/ams/disposeRegister/queryTransferDetail',
+  // 反审批接口
+  deApproval: '/ams/disposeRegister/deApproval',
+};
+
 export const cartPark = {
   // 车位资产视图列表查询
   parkingPage: '/ams/asset-carPark/parking/page',

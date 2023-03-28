@@ -34,12 +34,27 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item :style="formItemStyle" label="资产转让立项单ID" prop="relId" v-bind="formItemLayout">
-              <span v-if="formData.relId">
-                <span style="color: #0084ff; cursor: pointer">{{ formData.relId }}</span>
-                <a-icon style="margin-left: 10px; cursor: pointer" @click="clearRelId()" type="close-circle" />
-              </span>
-              <a-button v-else type="primary" class="button" @click="showTable"> 关联转让立项单 </a-button>
+            <a-form-model-item :style="formItemStyle" label="接管组织结构" prop="newOrganId" v-bind="formItemLayout">
+              <TreeSelect
+                style="width: 200px"
+                placeholder="请选择组织机构"
+                :allowClear="false"
+                :value="formData.newOrganId"
+                search
+                @changeTree="changeTree"
+              />
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="8">
+            <a-form-model-item :style="formItemStyle" label="接管资产项目" prop="newProjectId" v-bind="formItemLayout">
+              <a-select
+                optionFilterProp="children"
+                showSearch
+                style="width: 200px"
+                v-model="formData.newProjectId"
+                :options="projectListOptions"
+                @change="changeProject"
+              ></a-select>
             </a-form-model-item>
           </a-col>
         </a-row>
@@ -120,128 +135,18 @@
           </div>
         </a-col>
       </a-row>
-      <SG-Title title="可行性和必要性分析" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="feasibility" label="可行性和必要性分析">
-            <a-textarea v-model="formData.feasibility" v-bind="textareaProps" placeholder="可行性和必要性分析" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <SG-Title title="经营测算" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="经营测算">
-            <UploadFile v-model="allFile.operationFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <SG-Title title="合规性条文附件" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="compliance" label="重要条款">
-            <a-textarea v-model="formData.compliance" v-bind="textareaProps" placeholder="重要条款" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <div style="height: 20px"></div>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="合规性条文附件">
-            <UploadFile v-model="allFile.clauseFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
       <SG-Title title="补充资料" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <a-form-model-item label="法律意见书">
-            <UploadFile v-model="allFile.lawFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="合规审查表">
-            <UploadFile v-model="allFile.reviewFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="决策文件">
-            <UploadFile v-model="allFile.decisionFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="审计报告">
-            <UploadFile v-model="allFile.auditFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="财务报表">
-            <UploadFile v-model="allFile.reportFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="其它文档">
-            <UploadFile v-model="allFile.otherFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <SG-Title title="拟转让条件" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="listingPrice" label="挂牌价格">
-            <a-input-number :min="0" :max="99999999" :precision="2" style="width: 200px" v-model="formData.listingPrice" placeholder="挂牌价格" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="marketAnalysis" label="市场分析">
-            <a-textarea v-model="formData.marketAnalysis" v-bind="textareaProps" placeholder="市场分析" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="interestedParty" label="潜在意向方情况">
-            <a-textarea v-model="formData.interestedParty" v-bind="textareaProps" placeholder="潜在意向方情况" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="withdrawalClause" label="退出条款">
-            <a-textarea v-model="formData.withdrawalClause" v-bind="textareaProps" placeholder="退出条款" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item prop="remark" label="其它说明情况">
+          <a-form-model-item prop="remark" label="备注">
             <a-textarea v-model="formData.remark" v-bind="textareaProps" placeholder="其它说明情况" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <a-row>
         <a-col :offset="2" :span="18">
-          <a-form-model-item label="租赁合同模板">
-            <UploadFile v-model="allFile.contractFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="安全生产管理协议书模板">
-            <UploadFile v-model="allFile.safeFile.value" />
+          <a-form-model-item label="附件">
+            <UploadFile v-model="allFile.otherFile.value" />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -312,19 +217,12 @@
         <LeaseTable :dataSource="modalList.lease.dataSource" />
       </div>
     </SG-Modal>
-    <ProjectApprovalTable
-      v-if="ShowProjectApprovalTable"
-      @cancel="showTable"
-      :organId="organId"
-      :projectId="formData.projectId"
-      v-model="formData.relId"
-    ></ProjectApprovalTable>
   </div>
 </template>
 
 <script>
 import './addAndEdit.less';
-import ProjectApprovalTable from './ProjectApprovalTable.vue';
+import TreeSelect from '@/views/common/treeSelect';
 import Information from '@/components/Information';
 import SelectAssetModal from '@/views/disposalManagement/allot/SelectAssetModal';
 import { getDetail, getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/allot/share';
@@ -334,14 +232,14 @@ import UsageTable from '@/views/disposalManagement/allot/UsageTable';
 import LeaseTable from '@/views/disposalManagement/allot/LeaseTable';
 import WarrantTable from '@/views/disposalManagement/allot/WarrantTable';
 export default {
-  name: 'create',
+  name: 'allotCreate',
   components: {
     WarrantTable,
     LeaseTable,
     UsageTable,
     SelectAssetModal,
     Information,
-    ProjectApprovalTable,
+    TreeSelect,
   },
   data() {
     return {
@@ -567,55 +465,10 @@ export default {
       selectedList: [],
       selectAssetModalFlag: false,
       allFile: {
-        // 经营测算
-        operationFile: {
-          value: [],
-          subType: 2001,
-        },
-        // 法律意见
-        lawFile: {
-          value: [],
-          subType: 2002,
-        },
-        // 合规审查表
-        reviewFile: {
-          value: [],
-          subType: 2003,
-        },
-        // 决策文件
-        decisionFile: {
-          value: [],
-          subType: 2004,
-        },
-        // 审计报告
-        auditFile: {
-          value: [],
-          subType: 2005,
-        },
-        // 财务报表
-        reportFile: {
-          value: [],
-          subType: 2006,
-        },
-        // 租赁合同模板
-        contractFile: {
-          value: [],
-          subType: 2007,
-        },
-        // 安全生产管理协议书模板
-        safeFile: {
-          value: [],
-          subType: 2008,
-        },
-        // 合规性条文附件
-        clauseFile: {
-          value: [],
-          subType: 2009,
-        },
-        // 其它文档
+        // 附件
         otherFile: {
           value: [],
-          subType: 2010,
+          subType: 2001,
         },
       },
       ingyingFIle: [],
@@ -668,56 +521,21 @@ export default {
             trigger: 'change',
           },
         ],
-        relId: [
+        newOrganId: [
           {
-            required: false,
-            message: '请关联资产转让立项单',
+            required: true,
+            message: '请选择接管机构',
+            trigger: 'change',
+          },
+        ],
+        newProjectId: [
+          {
+            required: true,
+            message: '接管项目',
             trigger: 'change',
           },
         ],
         assetType: [{ required: true, message: '请选择资产类型', trigger: 'change' }],
-        feasibility: [
-          {
-            required: true,
-            message: '请输入可行性和必要性分析',
-            trigger: 'blur',
-          },
-        ],
-        compliance: [
-          {
-            required: true,
-            message: '请输入重要条款',
-            trigger: 'blur',
-          },
-        ],
-        listingPrice: [
-          {
-            required: true,
-            message: '请输入挂牌价格',
-            trigger: 'blur',
-          },
-        ],
-        marketAnalysis: [
-          {
-            required: true,
-            message: '请输入市场分析',
-            trigger: 'blur',
-          },
-        ],
-        interestedParty: [
-          {
-            required: true,
-            message: '请输入潜在意向方情况',
-            trigger: 'blur',
-          },
-        ],
-        withdrawalClause: [
-          {
-            required: true,
-            message: '请输入退出条款',
-            trigger: 'blur',
-          },
-        ],
         remark: [
           {
             required: true,
@@ -733,16 +551,10 @@ export default {
         name: '',
         projectId: '',
         assetType: '',
-        feasibility: '',
-        compliance: '',
-        listingPrice: '',
-        marketAnalysis: '',
-        interestedParty: '',
-        withdrawalClause: '',
         remark: '',
-        relId: '', // 资产转让关联的资产立项单Id
+        newOrganId: '',
+        newProjectId: '',
       },
-      ShowProjectApprovalTable: false,
     };
   },
   computed: {
@@ -772,37 +584,8 @@ export default {
     },
   },
   methods: {
-    showTable() {
-      if (!this.formData.projectId) {
-        this.$message.error('请选选择资产项目');
-        return;
-      }
-      this.ShowProjectApprovalTable = !this.ShowProjectApprovalTable;
-    },
-    clearRelId() {
-      this.$set(this.formData, 'relId', '');
-    },
-    // 获取是否资产转让关联资产转让立项单
-    async getSystemConfig() {
-      let {
-        data: { code, data },
-      } = await this.$api.paramsConfig.queryParamsConfigDetail({
-        // 参考 serviceTypeAll.js 文件
-        serviceType: 1018,
-        organId: this.organId,
-      });
-      if (code === '0') {
-        const { isValid } = data;
-        if (isValid === 1) {
-          this.$set(this.rules, 'relId', [
-            {
-              required: true,
-              message: '请关联资产转让立项单',
-              trigger: 'change',
-            },
-          ]);
-        }
-      }
+    changeTree(value) {
+      this.$set(this.formData, 'newOrganId', value);
     },
     btnMoreLeaseInfo() {
       this.modalList.lease.dataSource = this.currentAssetDetail.lease;
@@ -838,7 +621,7 @@ export default {
       this.$router.go(-1);
     },
     /*
-     * type 0草稿 1提交
+     * saveType 0草稿 1提交
      * */
     async handleSave(type) {
       this.$refs.ruleForm.validate(async (valid) => {
@@ -863,7 +646,7 @@ export default {
               errorInfo.push(`${ele.assetName} 必填项未填写`);
             }
           });
-          const attachmentReqDtos = Object.keys(this.allFile)
+          const attachmentList = Object.keys(this.allFile)
             .map((ele) => {
               return this.allFile[ele].value.map((e) => {
                 return {
@@ -876,27 +659,24 @@ export default {
             })
             .flat();
           if (errorFlag) {
-            console.log('errorInfo', errorInfo);
             this.$message.error(errorInfo.join(','));
             return null;
           }
           const req = {
             organId: this.organId,
             saveType: type,
-            ...this.formData,
             detailReqs,
-            attachmentReqDtos,
-            type: 1,
+            attachmentList,
+            status: '1', // 1 有效 0删除
+            ...this.formData,
           };
           if (this.isEdit) {
-            req.applyId = this.$route.query.applyId;
+            req.id = this.$route.query.id;
           }
-          console.log('req', req);
           const {
-            data: { code, message, data },
-          } = await this.$api.transfer.addOrUpdate(req);
+            data: { code, message },
+          } = await this.$api.allot.addOrUpdateTransfer(req);
           if (code === '0') {
-            console.log('data', data);
             this.$message.success('操作成功');
             this.goBack();
           } else {
@@ -923,7 +703,6 @@ export default {
       };
       this.$api.transfer.historicLease(req).then(({ data: { code, message, data } }) => {
         if (code === '0') {
-          console.log('data', data);
           this.currentAssetDetail.lease = data || [];
           this.leasingSituationOptions.data = this.currentAssetDetail.lease[0] || {};
           if (this.leasingSituationOptions.data.rentAveragePrice && this.leasingSituationOptions.data.unit) {
@@ -949,11 +728,8 @@ export default {
           this.currentAssetDetail.resourceList = data.resourceList || [];
           this.basicInfoOptions.data = this.currentAssetDetail.details[0] || {};
           this.assessSituationOptions.data = this.currentAssetDetail.valueInfos;
-
           this.basicInfoOptions.data.sourceModeName = data.sourceModeName;
-
           this.basicInfoOptions.data.usage = this.currentAssetDetail.resourceList[0] ? this.currentAssetDetail.resourceList[0].busiStatus : '--';
-
           if (this.basicInfoOptions.data.houseStartDate && this.basicInfoOptions.data.houseEndDate) {
             this.basicInfoOptions.data.houseStartAndEndDate = `${this.basicInfoOptions.data.houseStartDate}至${this.basicInfoOptions.data.houseEndDate}`;
           }
@@ -986,8 +762,8 @@ export default {
       }
       this.selectAssetModalFlag = flag;
     },
-    getEditData({ applyId }) {
-      const req = { applyId };
+    getEditData({ id }) {
+      const req = { id };
       this.$api.transfer.feedback(req).then(({ data: { code, message, data } }) => {
         if (code === '0') {
           console.log('data', data);
@@ -1024,18 +800,12 @@ export default {
         name: baseInfo.name,
         projectId: baseInfo.projectId,
         assetType: String(baseInfo.assetType),
-        feasibility: data.feasibility,
-        compliance: data.compliance,
-        listingPrice: conditions.listingPrice,
-        marketAnalysis: conditions.marketAnalysis,
-        interestedParty: conditions.interestedParty,
-        withdrawalClause: conditions.withdrawalClause,
         remark: conditions.remark,
       };
     },
-    async initEditData({ applyId }) {
-      this.getEditData({ applyId });
-      const data = await getDetail({ applyId });
+    async initEditData({ id }) {
+      this.getEditData({ id });
+      const data = await getDetail({ id });
       this.getAllFileData(data.attachments);
       this.initFormData(data);
       console.log('data', data);
@@ -1053,10 +823,9 @@ export default {
     });
 
     if (this.isEdit) {
-      const applyId = this.$route.query.applyId;
-      this.initEditData({ applyId });
+      const id = this.$route.query.id;
+      this.initEditData({ id });
     }
-    this.getSystemConfig();
   },
 };
 </script>

@@ -1,20 +1,6 @@
 import * as apiAssets from '@/api/assets.js';
-import * as transferApi from '@/api/transfer';
+import * as allot from '@/api/allot';
 import { message as $message } from 'ant-design-vue';
-export const mortgageOptions = [
-  {
-    title: '有',
-    value: 1,
-  },
-  {
-    title: '无质押',
-    value: 0,
-  },
-  {
-    title: '其它',
-    value: 2,
-  },
-];
 /*
  * 获取资产项目
  * */
@@ -46,12 +32,12 @@ export async function getObjectKeyValueByOrganIdFn({ organId }) {
   });
 }
 
-export async function getDetail({ applyId }) {
+export async function getDetail({ id }) {
   return new Promise((resolve, reject) => {
     const req = {
-      applyId: applyId,
+      id: id,
     };
-    transferApi.detail(req).then(
+    allot.queryTransferDetail(req).then(
       ({ data: { code, message, data } }) => {
         if (code === '0') {
           resolve(data);

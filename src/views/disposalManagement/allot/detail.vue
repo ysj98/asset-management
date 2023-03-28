@@ -62,114 +62,26 @@
           />
         </a-col>
       </a-row>
-      <SG-Title title="可行性和必要性分析" id="feasibility" />
+      <SG-Title title="补充资料" id="otherFile" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <a-form-model-item label="可行性和必要性分析">
-            <p class="test">
-              {{ otherInfo.feasibility }}
-            </p>
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <SG-Title title="经营测算" id="operation" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="经营测算">
-            <ShowFile v-model="allFile.operationFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <SG-Title title="合规性条文" id="clause" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="重要条款">
+          <a-form-model-item label="备注">
             <p>
-              {{ otherInfo.compliance }}
+              {{ basicInfoOptions.data.remark }}
             </p>
           </a-form-model-item>
         </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="合规性条文附件">
-            <ShowFile v-model="allFile.clauseFile.value" />
-          </a-form-model-item>
-        </a-col>
       </a-row>
-
-      <SG-Title title="其他必要资料" id="otherFile" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <a-form-model-item label="法律意见书">
-            <ShowFile v-model="allFile.lawFile.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="合规审查表">
-            <ShowFile v-model="allFile.reviewFile.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="决策文件">
-            <ShowFile v-model="allFile.decisionFile.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="审计报告">
-            <ShowFile v-model="allFile.auditFile.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="财务报表">
-            <ShowFile v-model="allFile.reportFile.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="其它文档">
-            <ShowFile v-model="allFile.otherFile.value" />
-          </a-form-model-item>
-        </a-col>
-      </a-row>
-      <SG-Title title="拟转让条件" id="conditions" />
-      <a-row>
-        <a-col :offset="2" :span="18">
-          <div style="border-top: 1px solid #efefef; border-right: 1px solid #efefef; border-left: 1px solid #efefef">
-            <div class="block">
-              <div class="block-title">挂牌价格</div>
-              <div class="block-content">{{ conditions.listingPrice }}</div>
-            </div>
-            <div class="block">
-              <div class="block-title">市场分析</div>
-              <div class="block-content">{{ conditions.marketAnalysis }}</div>
-            </div>
-            <div class="block">
-              <div class="block-title">潜在意向方情况</div>
-              <div class="block-content">{{ conditions.interestedParty }}</div>
-            </div>
-            <div class="block">
-              <div class="block-title">退出条款</div>
-              <div class="block-content">{{ conditions.withdrawalClause }}</div>
-            </div>
-            <div class="block">
-              <div class="block-title">其他说明情况</div>
-              <div class="block-content">{{ conditions.remark }}</div>
-            </div>
-          </div>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="租赁合同模板">
-            <ShowFile v-model="allFile.contractFile.value" />
-          </a-form-model-item>
-        </a-col>
-        <a-col :offset="2" :span="18">
-          <a-form-model-item label="安全生产管理协议书模板">
-            <ShowFile :value="allFile.safeFile.value" />
+          <a-form-model-item label="附件">
+            <ShowFile :value="allFile.otherFile.value" />
           </a-form-model-item>
         </a-col>
       </a-row>
       <SG-Title title="审批轨迹" id="approvalTrack" />
       <a-row>
         <a-col :offset="2" :span="18">
-          <!--审批轨迹-->
           <div>
             <step v-stepstyleplus v-if="stepList.length" :stepList="stepList" @getFile="getFile" style="margin-left: 45px" />
             <div v-else style="text-align: center; margin: 25px 0">暂无数据</div>
@@ -264,11 +176,7 @@ export default {
         { title: '资产明细', id: 'assetDetail' },
         { title: '租赁信息', id: 'leaseInfo' },
         { title: '资产评估信息', id: 'evaluateInfo' },
-        { title: '可行性和必要性分析', id: 'feasibility' },
-        { title: '经营测算', id: 'operation' },
-        { title: '合规性条文', id: 'clause' },
-        { title: '其他必要资料', id: 'otherFile' },
-        { title: '拟转让条件', id: 'conditions' },
+        { title: '补充资料', id: 'otherFile' },
         { title: '审批轨迹', id: 'approvalTrack' },
       ],
       apprId: '',
@@ -276,69 +184,16 @@ export default {
       fromType: '',
       isApprove: false,
       stepList: [],
-      // 拟转让
-      conditions: {
-        interestedParty: '',
-        listingPrice: '',
-        marketAnalysis: '',
-        remark: '',
-        withdrawalClause: '',
-      },
       otherInfo: {
         feasibility: '',
         compliance: '',
       },
-      applyId: '',
+      id: '',
       allFile: {
-        // 经营测算
-        operationFile: {
-          value: [],
-          subType: 2001,
-        },
-        // 法律意见
-        lawFile: {
-          value: [],
-          subType: 2002,
-        },
-        // 合规审查表
-        reviewFile: {
-          value: [],
-          subType: 2003,
-        },
-        // 决策文件
-        decisionFile: {
-          value: [],
-          subType: 2004,
-        },
-        // 审计报告
-        auditFile: {
-          value: [],
-          subType: 2005,
-        },
-        // 财务报表
-        reportFile: {
-          value: [],
-          subType: 2006,
-        },
-        // 租赁合同模板
-        contractFile: {
-          value: [],
-          subType: 2007,
-        },
-        // 安全生产管理协议书模板
-        safeFile: {
-          value: [],
-          subType: 2008,
-        },
-        // 合规性条文附件
-        clauseFile: {
-          value: [],
-          subType: 2009,
-        },
-        // 其它文档
+        // 附件
         otherFile: {
           value: [],
-          subType: 2010,
+          subType: 2001,
         },
       },
       basicInfoOptions: {
@@ -357,24 +212,55 @@ export default {
             {
               title: '组织机构名称',
               key: 'organName',
+              colProps: {
+                span: 8,
+              },
             },
             {
               title: '资产项目',
               key: 'projectName',
+              colProps: {
+                span: 8,
+              },
             },
             {
               title: '资产类型',
               key: 'assetTypeName',
+              colProps: {
+                span: 8,
+              },
+            },
+          ],
+          [
+            {
+              title: '接管组织机构名称',
+              key: 'newOrganName',
+              colProps: {
+                span: 8,
+              },
+            },
+            {
+              title: '接管资产项目',
+              key: 'newProjectName',
+              colProps: {
+                span: 8,
+              },
             },
           ],
           [
             {
               title: '状态',
-              key: 'apprStatusStr',
+              key: 'approvalStatusName',
+              colProps: {
+                span: 8,
+              },
             },
             {
               title: '申请单ID',
-              key: 'applyId',
+              key: 'id',
+              colProps: {
+                span: 8,
+              },
             },
           ],
         ],
@@ -765,16 +651,14 @@ export default {
         feasibility: data.feasibility,
       };
     },
-    getConditions(data) {
-      this.conditions = data;
-    },
     getBasicInfo(data) {
       this.basicInfoOptions.data = Object.assign(data || {}, {});
     },
+    // 获取审批轨迹
     queryApprovalRecordByBus() {
       const req = {
         busType: 1007,
-        busId: this.applyId,
+        busId: this.id,
         // organId: this.organId,
       };
       this.$api.approve.queryApprovalRecordByBus(req).then(({ data: { code, message, data } }) => {
@@ -816,7 +700,7 @@ export default {
     },
     async initData() {
       // 支持两种方式打开详情页面
-      // /asset-management/#/allot/detail?applyId=120&organId=1000279&fromType=detail
+      // /asset-management/#/allot/detail?id=120&organId=1000279&fromType=detail
       // /asset-management/#/allot/detail?instId=1583291911515570176
       const {
         query: { instId },
@@ -830,27 +714,25 @@ export default {
           data: { code, message, data },
         } = await this.$api.approve.getApprByServiceOrderId(req);
         if (code === '0') {
-          this.applyId = data.busId;
+          this.id = data.busId;
         } else {
           this.$message.error(message);
         }
       } else {
         this.$route.meta.noShowProBreadNav = false;
-        this.applyId = this.$route.query.applyId;
+        this.id = this.$route.query.id;
       }
       // 移动端打开详情页不会带上fromType=detail 参数
       this.fromType = this.$route.query.fromType || 'detail';
       // this.organId = this.$route.query.organId;
-      const data = await getDetail({ applyId: this.applyId });
-      this.getTableAssetDetail(data.assetDetails);
-      this.getTableEvaluate(data.valueInfos);
-      this.getAllFileData(data.attachments);
-      this.getBasicInfo(data.baseInfo);
-      this.getOtherInfo(data);
-      this.getConditions(data.conditions);
+      const data = await getDetail({ id: this.id }); // 获取详情
+      this.getBasicInfo(data.baseInfo); // 基本信息
+      this.getTableAssetDetail(data.assetDetails); // 资产明细
+      this.getTableEvaluate(data.valueInfos); // 资产评估信息
+      this.getAllFileData(data.attachments); // 附件
+      this.getTableLease({ assetIds }); // 租赁信息
 
       const assetIds = (data.assetDetails || []).map((ele) => ele.assetId);
-      this.getTableLease({ assetIds });
       if (['detail', 'approve'].includes(this.fromType)) {
         this.queryApprovalRecordByBus();
       }

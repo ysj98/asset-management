@@ -1,10 +1,10 @@
 const os = require('os');
-const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const TerserPlugin = require('terser-webpack-plugin')
+const path = require('path');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const openInEditor = require('launch-editor-middleware');
-const isProd = process.env.NODE_ENV === 'production'
-const isDebug = process.env.VUE_APP_IS_DEBUG === 'true'
+const isProd = process.env.NODE_ENV === 'production';
+const isDebug = process.env.VUE_APP_IS_DEBUG === 'true';
 require('events').EventEmitter.defaultMaxListeners = 0;
 // 获取本机ip
 const getIPAdress = () => {
@@ -18,18 +18,12 @@ const getIPAdress = () => {
       }
     }
   }
-}
+};
 
-const localhost = getIPAdress()
-console.log('IP', localhost)
-// const target = 'http://192.168.1.11:10060'
-//const target = 'http://beta.uhomecp.com/'
-// const target = `http://${localhost}:8089`
-// const t = 'http://192.168.2.36:8081'
-//const target = 'http://192.168.1.7:8088'
-const target = 'http://beta.uhomecp.com/'
-// const target = 'http://192.168.1.11:10060'
-//const t = 'http://192.168.2.36:8081'
+const localhost = getIPAdress();
+console.log('IP', localhost);
+const target = 'http://beta.uhomecp.com/';
+// const target = 'http://192.168.1.11:10060';
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
@@ -37,7 +31,7 @@ const proxyURL = [
   '/basic-data-batch-api',
   '/uhomecp-app/',
   '/common-api',
-  '/car-parking', 
+  '/car-parking',
   '/uis/',
   '/ams/',
   '/charging-api/',
@@ -50,14 +44,14 @@ const proxyURL = [
   '/uhomecp-resource/',
   '/eip-bpm-runtime/',
   '/eip-portal/',
-  '/uhomecp-sso/'
-]
+  '/uhomecp-sso/',
+];
 /**
  * Proxy 类，用于构建需要代理的数据对接
  */
 class Proxy {
   constructor() {
-    this.data = {}
+    this.data = {};
   }
   /**
    * 添加代理数据
@@ -66,26 +60,26 @@ class Proxy {
    * @param {*} target 代理远程地址
    */
   addUrls(urls, localhost, target) {
-    urls.forEach(el => {
+    urls.forEach((el) => {
       this.data[el] = {
         target,
         changeOrigin: true,
         cookieDomainRewrite: {
-          '*': localhost
+          '*': localhost,
         },
         withCredentials: true,
         headers: {
-          Referer: target
-        }
-      }
-    })
+          Referer: target,
+        },
+      };
+    });
   }
 }
 // 实例化 Proxy 类
-const proxy = new Proxy()
+const proxy = new Proxy();
+proxy.addUrls(proxyURL, localhost, target);
 // proxy.addUrls(['/basic-data-api'], localhost, 'http://192.168.3.27:8080')
-// proxy.addUrls(['/ams'], localhost, 'http://192.168.3.36:8081')
-proxy.addUrls(proxyURL, localhost, target)
+// proxy.addUrls(['/ams'], localhost, 'http://192.168.3.12:8081');
 // proxy.addUrls(['/basic-data-batch-api'], localhost, 'http://192.168.3.31:8080')
 
 // 配置
@@ -100,8 +94,8 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
-    setup (app) {
-      app.use('/__open-in-editor', openInEditor('intellij-idea-ultimate-edition'))
+    setup(app) {
+      app.use('/__open-in-editor', openInEditor('intellij-idea-ultimate-edition'));
     },
     proxy: {
       ...proxy.data,
@@ -117,67 +111,63 @@ module.exports = {
       //   }
       // },
     },
-    host: localhost
+    host: localhost,
   },
   css: {
     loaderOptions: {
       less: {
         modifyVars: {
           'font-size-base': '12px',
-          'primary-color': '#0084FF'
+          'primary-color': '#0084FF',
         },
-        javascriptEnabled: true
-      }
-    }
+        javascriptEnabled: true,
+      },
+    },
   },
   pluginOptions: {
     'style-resources-loader': {
       preProcessor: 'less',
-      patterns: [
-        path.resolve(__dirname, './src/assets/less/var.less'),
-      ]
-    }
+      patterns: [path.resolve(__dirname, './src/assets/less/var.less')],
+    },
   },
   configureWebpack: (config) => {
     if (isProd) {
       // 配置不打包的资源，需指定 cdn 加载
       config.externals = {
         // 'ant-design-vue': 'antd',
-        'axios': 'axios',
-        'vue': 'Vue',
-        'vuex': 'Vuex',
+        axios: 'axios',
+        vue: 'Vue',
+        vuex: 'Vuex',
         'vue-router': 'VueRouter',
-        'moment': 'moment'
-      }
+        moment: 'moment',
+      };
       // 压缩文件
       config.plugins.push(
         new UglifyJsPlugin({
           uglifyOptions: {
             compress: {
               drop_debugger: true, // 去除debugger
-              drop_console: false // 去除console
-            }
+              drop_console: false, // 去除console
+            },
           },
           sourceMap: false,
-          parallel: true
+          parallel: true,
         })
-      )
-      config.plugins.push(
-        new TerserPlugin({ terserOptions: { compress: { drop_console: false } } })
-      )
+      );
+      config.plugins.push(new TerserPlugin({ terserOptions: { compress: { drop_console: false } } }));
     }
-    if (isDebug){
-      config.devtool = 'source-map'
+    if (isDebug) {
+      config.devtool = 'source-map';
     }
   },
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.resolve.alias
-      .set("@", path.join(__dirname, "src"))
-      .set("src", path.join(__dirname, "src"))
-      .set("assets", path.join(__dirname, "src/assets"))
-      .set("components", path.join(__dirname, "src/components"))
-      .set("store", path.join(__dirname, "src/store"))
-      .set("api", path.join(__dirname, "src/api"))
-      .set("utils", path.join(__dirname, "src/utils"));
+      .set('@', path.join(__dirname, 'src'))
+      .set('src', path.join(__dirname, 'src'))
+      .set('assets', path.join(__dirname, 'src/assets'))
+      .set('components', path.join(__dirname, 'src/components'))
+      .set('store', path.join(__dirname, 'src/store'))
+      .set('api', path.join(__dirname, 'src/api'))
+      .set('utils', path.join(__dirname, 'src/utils'));
   },
-}
+};

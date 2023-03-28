@@ -39,7 +39,7 @@
           <a-select
             style="width: 200px; margin-right: 10px"
             placeholder="请选择状态"
-            v-model="queryForm.apprStatus"
+            v-model="queryForm.approvalStatusList"
             optionFilterProp="children"
             :options="allApprovalStatusOpt"
             @change="handleSelectStatus"
@@ -49,7 +49,7 @@
             notFoundContent="没有查询到数据"
           />
           <!-- 申请单名称ID -->
-          <a-input style="width: 200px; margin-right: 8px; margin-bottom: 15px" v-model="queryForm.name" placeholder="申请单名称/申请单ID" />
+          <a-input style="width: 200px; margin-right: 8px; margin-bottom: 15px" v-model="queryForm.nameOrId" placeholder="申请单名称/申请单ID" />
           <!-- 提交日期 -->
           <div>
             <SG-DatePicker
@@ -86,7 +86,6 @@
 
 <script>
 import { approvalStatusOpt } from '@/config/share.js';
-import { handleEnumerationConversion } from 'utils/utils';
 import OperationPopover from '@/components/OperationPopover';
 import SearchContainer from '@/views/common/SearchContainer';
 import TreeSelect from '@/views/common/treeSelect';
@@ -118,11 +117,11 @@ export default {
         ...approvalStatusOpt,
       ],
       tableOptions: {
-        rowKey: 'applyId',
+        rowKey: 'id',
         columns: [
           {
             title: '申请单ID',
-            dataIndex: 'applyId',
+            dataIndex: 'id',
           },
           {
             title: '所属机构',
@@ -138,27 +137,23 @@ export default {
           },
           {
             title: '接管组织机构',
-            dataIndex: 'projectName1',
+            dataIndex: 'newOrganName',
           },
           {
             title: '接管资产项目',
-            dataIndex: 'projectName2',
+            dataIndex: 'newProjectName',
           },
           {
             title: '提交人',
-            dataIndex: 'create',
+            dataIndex: 'createUserName',
           },
           {
             title: '提交时间',
-            dataIndex: 'createTime',
+            dataIndex: 'createDate',
           },
           {
             title: '状态',
-            key: 'apprStatus',
-            customRender(record) {
-              const { apprStatus } = record;
-              return handleEnumerationConversion(apprStatus, approvalStatusOpt, ['value', 'title']);
-            },
+            dataIndex: 'approvalStatusName',
           },
           {
             title: '操作',
@@ -190,24 +185,22 @@ export default {
         ...this.pageInfo,
         ...this.queryForm,
       });
-      // console.log('req', req);
-      const mockData = await this.$api.transfer.getList(req);
+      const mockData = await this.$api.allot.queryTransferList(req);
       const {
         data: { code, message, data },
       } = mockData;
       if (code === '0') {
-        // console.log('data', data);
         this.tableTotal = data.count;
         this.tableOptions.dataSource = data ? data.data : [];
       } else {
         this.$message.error(message);
       }
     },
-    goAddEdit(applyId) {
+    goAddEdit(id) {
       this.$router.push({
         path: '/allot/edit',
         query: {
-          applyId,
+          id,
           organId: this.organId,
           organName: this.organName,
         },
@@ -217,11 +210,11 @@ export default {
      * @desc:跳转详情页面
      * @param fromType <detail | approve>
      * */
-    goDetail({ applyId, organId }, fromType) {
+    goDetail({ id, organId }, fromType) {
       this.$router.push({
         path: '/allot/detail',
         query: {
-          applyId,
+          id,
           organId,
           fromType,
         },
@@ -257,7 +250,7 @@ export default {
      * @desc: 处理筛选条件-选择状态 (全部状态特殊处理)
      * */
     handleSelectStatus(values) {
-      this.queryForm.apprStatus = this.judgmentSelectAll({
+      this.queryForm.approvalStatusList = this.judgmentSelectAll({
         allSelected: values,
         allLength: approvalStatusOpt.length,
       });
@@ -276,8 +269,8 @@ export default {
      * 根据数据状态生成操作按钮
      * */
     handleActionBtn(record) {
-      const { apprStatus } = record;
-      const apprStatusNum = Number(apprStatus);
+      const { approvalStatus } = record;
+      const apprStatusNum = Number(approvalStatus);
       // statusAuth 参考 approvalStatusOpt
       const operationList = [
         {
@@ -325,31 +318,30 @@ export default {
      * 操作按钮对应事件
      * */
     operationFun(type, record) {
-      const { applyId, organId } = record;
+      const { id, organId } = record;
       switch (type) {
         case 'edit':
-          this.goAddEdit(applyId);
+          this.goAddEdit(id);
           break;
         case 'approve':
           this.goDetail(
             {
-              applyId,
+              id,
               organId,
             },
             'approve'
           );
           break;
         case 'delete':
-          this.handleDel({ applyId });
+          this.handleDel({ id });
           break;
         case 'antiApprove':
-          console.log('反审核');
-          this.handleAntiAudit({ applyId });
+          this.handleAntiAudit({ id });
           break;
         case 'detail':
           this.goDetail(
             {
-              applyId,
+              id,
               organId,
             },
             'detail'
@@ -357,16 +349,16 @@ export default {
           break;
       }
     },
-    handleAntiAudit({ applyId }) {
+    handleAntiAudit({ id }) {
       const _this = this;
       this.$confirm({
         title: '提示',
         content: '确认要反审核吗？',
         onOk() {
           let req = {
-            applyId: applyId,
+            id: id,
           };
-          _this.$api.transfer.deApproval(req).then((res) => {
+          _this.$api.allot.deApproval(req).then((res) => {
             if (Number(res.data.code) === 0) {
               _this.$message.success('反审核成功');
               _this.getTableDataSource();
@@ -377,16 +369,17 @@ export default {
         },
       });
     },
-    handleDel({ applyId }) {
+    handleDel({ id }) {
       const _this = this;
       this.$confirm({
         title: '提示',
         content: '确认要删除吗？',
         onOk() {
           let req = {
-            applyId: applyId,
+            id: id,
+            status: '0',
           };
-          _this.$api.transfer.deleteFn(req).then((res) => {
+          _this.$api.allot.addOrUpdateTransfer(req).then((res) => {
             if (Number(res.data.code) === 0) {
               _this.$message.success('删除成功');
               _this.getTableDataSource();
@@ -402,23 +395,22 @@ export default {
       this.queryForm = {
         projectIds: [''],
         date,
-        apprStatus: [''],
-        name: '',
+        approvalStatusList: [''],
+        nameOrId: '',
       };
     },
     handleSearchReq(data) {
-      const { projectIds, apprStatus, name, pageNum, pageSize } = data;
-      const startTime = data.date[0].format('YYYY-MM-DD');
-      const endTime = data.date[1].format('YYYY-MM-DD');
+      const { projectIds, approvalStatusList, nameOrId, pageNum, pageSize } = data;
+      const minCreateDate = data.date[0].format('YYYY-MM-DD');
+      const maxCreateDate = data.date[1].format('YYYY-MM-DD');
       return {
-        type: '1',
         organId: this.organId,
         // 为全选 则传空集合
         projectIds: projectIds[0] === '' ? [] : projectIds,
-        apprStatus: apprStatus[0] === '' ? [] : apprStatus,
-        name,
-        startTime,
-        endTime,
+        approvalStatusList: approvalStatusList[0] === '' ? [] : approvalStatusList,
+        nameOrId,
+        minCreateDate,
+        maxCreateDate,
         pageNum,
         pageSize,
       };

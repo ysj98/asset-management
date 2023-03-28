@@ -50,6 +50,7 @@ import * as houseStatusConfig from './houseStatusConfig';
 import * as projectManager from './projectManager';
 import * as assetUsageList from './assetUsageList';
 import * as debt from './debt';
+import * as allot from './allot';
 const API = {
   auth,
   global,
@@ -89,6 +90,7 @@ const API = {
   projectManager,
   assetUsageList,
   debt,
+  allot,
 };
 export default {
   install(Vue) {

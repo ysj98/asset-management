@@ -138,7 +138,7 @@ export default [
         path: '/assetClassSet',
       },
       {
-        title: '其他参数',
+        title: '资产参数配置',
         path: '/paramsConfig',
       },
       {

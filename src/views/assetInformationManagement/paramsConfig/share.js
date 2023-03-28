@@ -104,6 +104,11 @@ export const serviceTypeAll = {
     component: null,
     needValidate: false,
   },
+  1019: {
+    serviceTypeText: '资产调拨审批',
+    component: SelectApproval,
+    needValidate: true,
+  },
 };
 export const columns = [
   {
