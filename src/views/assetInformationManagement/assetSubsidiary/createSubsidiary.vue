@@ -135,7 +135,7 @@
                 </a-form-item>
               </div>
               <div class="edit-box-content-item">
-                <div class="label-name-box required">
+                <div class="label-name-box">
                   <span class="label-name label-space-between">
                     编码
                     <i></i>
@@ -152,7 +152,7 @@
                       {
                         rules: [
                           {
-                            required: true,
+                            required: false,
                             max: 30,
                             whitespace: true,
                             message: '请输入编码名称(不超过30字符)',
@@ -225,7 +225,7 @@
                 </a-form-item>
               </div>
               <div class="edit-box-content-item">
-                <div class="label-name-box required">
+                <div class="label-name-box">
                   <span class="label-name label-space-between">
                     价值
                     <i></i>
@@ -244,7 +244,7 @@
                       {
                         rules: [
                           {
-                            required: true,
+                            required: false,
                             message: '请输入价值',
                           },
                         ],
