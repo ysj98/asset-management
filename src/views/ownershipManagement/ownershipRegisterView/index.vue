@@ -362,7 +362,6 @@ export default {
     },
     // 获取资产分类下拉列表
     getAssetClassifyOptions() {
-      console.log('输出=>', this.queryCondition.assetTypeList);
       let obj = {
         organId: this.queryCondition.organId.split(',')[0],
         assetType: this.queryCondition.assetTypeList.join(','),
