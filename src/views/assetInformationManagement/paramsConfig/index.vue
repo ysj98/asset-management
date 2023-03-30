@@ -50,7 +50,6 @@
 import SystemSetting from './SystemSetting';
 import ApprovalSetting from '@/views/assetInformationManagement/paramsConfig/ApprovalSetting';
 import OrganTree from './components/OrganTree';
-import { ASSET_MANAGEMENT } from '@/config/config.power';
 import { getTypeKey } from 'utils/utils';
 export default {
   name: 'paramsConfig',
@@ -66,7 +65,6 @@ export default {
       tabDataSource: [],
       currentTabKey: 1,
       loadingFlag: true,
-      systemSettingServiceType: [1001],
       organId: '',
       tabArr: [
         {
@@ -80,13 +78,6 @@ export default {
           component: ApprovalSetting,
         },
       ],
-      ASSET_MANAGEMENT,
-      activeType: '', // -2楼栋列表，0楼栋, 1单元, 2楼层
-      pageType: '', // create新增， edit编辑，
-      createType: '', // unit新建单元，build新建楼栋，floor新建楼层
-      activeItem: {},
-      childNodeType: '', // 0可新建楼栋, 1单元， 2楼层
-      upErrorInfo: '',
     };
   },
   mounted() {

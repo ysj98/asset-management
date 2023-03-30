@@ -106,28 +106,16 @@
                   </div>
                 </div>
                 <div>
-                  <span class="detail-title">拟转让标的历史租赁情况</span>
+                  <span class="detail-title">拟调拨标的历史租赁情况</span>
                   <a @click="btnMoreLeaseInfo" style="margin-left: 20px" v-if="currentAssetDetail.lease.length > 1"> 查看更多租赁信息 </a>
                   <div style="margin-bottom: 20px">
                     <Information :row-props="{ gutter: 5 }" :col-props="{ span: 10 }" v-bind="leasingSituationOptions"></Information>
                   </div>
                 </div>
                 <div>
-                  <span class="detail-title">拟转让标的资产评估情况</span>
+                  <span class="detail-title">拟调拨标的资产评估情况</span>
                   <div style="margin-bottom: 20px">
                     <Information :row-props="{ gutter: 5 }" :col-props="{ span: 10 }" v-bind="assessSituationOptions"></Information>
-                  </div>
-                  <div>
-                    <p>选择质押情况（必选）</p>
-                    <a-select
-                      style="width: 200px"
-                      v-model="currentSelectAsset.pledge"
-                      :options="amsPledgeSituationOptions"
-                      placeholder="请选择"
-                    ></a-select>
-                    <div style="height: 20px"></div>
-                    <span>其它披露事项(必填):</span>
-                    <a-textarea v-model="currentSelectAsset.disclosures" v-bind="textareaProps"></a-textarea>
                   </div>
                 </div>
               </div>
@@ -227,7 +215,6 @@ import Information from '@/components/Information';
 import SelectAssetModal from '@/views/disposalManagement/allot/SelectAssetModal';
 import { getDetail, getObjectKeyValueByOrganIdFn } from '@/views/disposalManagement/allot/share';
 import configBase from '@/config/config.base';
-import { SET_AMS_PLEDGE_SITUATION } from 'store/types/platformDictTypes';
 import UsageTable from '@/views/disposalManagement/allot/UsageTable';
 import LeaseTable from '@/views/disposalManagement/allot/LeaseTable';
 import WarrantTable from '@/views/disposalManagement/allot/WarrantTable';
@@ -561,15 +548,6 @@ export default {
     isEdit() {
       return this.$route.path === '/allot/edit';
     },
-    amsPledgeSituationOptions() {
-      return this.$store.state.platformDict.AMS_PLEDGE_SITUATION.map((ele) => {
-        return {
-          title: ele.name,
-          value: ele.value,
-          label: ele.name,
-        };
-      });
-    },
     assetTypeOptions() {
       return this.$store.state.ASSET_TYPE_OPTIONS.length
         ? this.$store.state.ASSET_TYPE_OPTIONS.map((ele) => ({
@@ -630,8 +608,6 @@ export default {
             return {
               assetId: ele.assetId,
               assetType: ele.assetType,
-              pledge: ele.pledge,
-              disclosures: ele.disclosures,
             };
           });
           let errorFlag = false;
@@ -640,12 +616,6 @@ export default {
             errorFlag = true;
             errorInfo.push(`请添加资产`);
           }
-          this.selectedList.forEach((ele) => {
-            if (!ele.disclosures || !ele.pledge) {
-              errorFlag = true;
-              errorInfo.push(`${ele.assetName} 必填项未填写`);
-            }
-          });
           const attachmentList = Object.keys(this.allFile)
             .map((ele) => {
               return this.allFile[ele].value.map((e) => {
@@ -762,22 +732,6 @@ export default {
       }
       this.selectAssetModalFlag = flag;
     },
-    getEditData({ id }) {
-      const req = { id };
-      this.$api.transfer.feedback(req).then(({ data: { code, message, data } }) => {
-        if (code === '0') {
-          console.log('data', data);
-          this.handlePopSave(
-            data.backInfos.map((ele) => ({
-              ...ele,
-              pledge: String(ele.pledge),
-            })) || []
-          );
-        } else {
-          this.$message.error(message);
-        }
-      });
-    },
     getAllFileData(data) {
       const res = data || [];
       res.forEach((ele) => {
@@ -794,21 +748,26 @@ export default {
       });
     },
     initFormData(data) {
-      const conditions = data.conditions || {};
       const baseInfo = data.baseInfo;
       this.formData = {
         name: baseInfo.name,
+        newOrganId: baseInfo.newOrganId,
         projectId: baseInfo.projectId,
+        newProjectId: baseInfo.newProjectId,
         assetType: String(baseInfo.assetType),
-        remark: conditions.remark,
+        remark: baseInfo.remark,
       };
     },
     async initEditData({ id }) {
-      this.getEditData({ id });
       const data = await getDetail({ id });
-      this.getAllFileData(data.attachments);
+      // 资产明细列表
+      this.handlePopSave(
+        data.assetDetails.map((ele) => ({
+          ...ele,
+        })) || []
+      );
       this.initFormData(data);
-      console.log('data', data);
+      this.getAllFileData(data.attachments); // 附件
     },
   },
   mounted() {
@@ -816,10 +775,6 @@ export default {
     this.organName = this.$route.query.organName;
     getObjectKeyValueByOrganIdFn({ organId: this.organId }).then((data) => {
       this.projectListOptions = data;
-    });
-    this.$store.dispatch('platformDict/getPlatformDict', {
-      code: 'AMS_PLEDGE_SITUATION',
-      type: SET_AMS_PLEDGE_SITUATION,
     });
 
     if (this.isEdit) {

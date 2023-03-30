@@ -730,9 +730,9 @@ export default {
       this.getTableAssetDetail(data.assetDetails); // 资产明细
       this.getTableEvaluate(data.valueInfos); // 资产评估信息
       this.getAllFileData(data.attachments); // 附件
-      this.getTableLease({ assetIds }); // 租赁信息
 
       const assetIds = (data.assetDetails || []).map((ele) => ele.assetId);
+      this.getTableLease({ assetIds }); // 租赁信息
       if (['detail', 'approve'].includes(this.fromType)) {
         this.queryApprovalRecordByBus();
       }
