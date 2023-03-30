@@ -246,8 +246,6 @@ export default {
                 span: 8,
               },
             },
-          ],
-          [
             {
               title: '状态',
               key: 'approvalStatusName',
@@ -255,6 +253,8 @@ export default {
                 span: 8,
               },
             },
+          ],
+          [
             {
               title: '申请单ID',
               key: 'id',
@@ -275,7 +275,7 @@ export default {
             },
           },
           {
-            title: '物业名称',
+            title: '资产名称',
             width: 300,
             dataIndex: 'propertyName',
           },
@@ -314,7 +314,7 @@ export default {
             },
           },
           {
-            title: '物业名称',
+            title: '资产名称',
             width: 300,
             dataIndex: 'propertyName',
           },
@@ -365,7 +365,7 @@ export default {
             },
           },
           {
-            title: '物业名称',
+            title: '资产名称',
             align: 'center',
             width: 300,
             dataIndex: 'propertyName',
