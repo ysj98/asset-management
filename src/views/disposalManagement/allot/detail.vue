@@ -657,7 +657,7 @@ export default {
     // 获取审批轨迹
     queryApprovalRecordByBus() {
       const req = {
-        busType: 1007,
+        busType: 1010,
         busId: this.id,
         // organId: this.organId,
       };
