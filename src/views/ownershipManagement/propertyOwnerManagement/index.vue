@@ -17,7 +17,9 @@
         <SG-Button icon="plus" type="primary" @click="newPropertyOwner" v-power="ASSET_MANAGEMENT.PROPERTY_OWNER_NEW">新建权属人</SG-Button>
       </div>
       <div slot="headRight" class="search-content-box">
-        <topOrganByUser @change="organIdChange" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true" />
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :showSearch="true"></treeSelect>
+        <!-- 查询所有一级机构 -->
+        <!-- <topOrganByUser @change="changeTree" :formStyle="allStyle" v-model="organId" :hasAll="false" :selectFirst="true" /> -->
         <a-input-search placeholder="权属人名称" :style="allStyle" v-model="ownerName" @search="queryClick" />
       </div>
     </SG-SearchContainer>
@@ -52,12 +54,13 @@
 </template>
 
 <script>
-import topOrganByUser from '@/views/common/topOrganByUser';
+// import topOrganByUser from '@/views/common/topOrganByUser';
 import handlePropertyOwner from './handlePropertyOwner';
 import noDataTips from '@/components/noDataTips';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 import { exportDataAsExcel } from 'src/views/common/commonQueryApi';
 import BatchImport from 'src/views/common/eportAndDownFile';
+import TreeSelect from '../../common/treeSelect';
 
 const columns = [
   {
@@ -115,10 +118,11 @@ const columns = [
 
 export default {
   components: {
-    topOrganByUser,
+    // topOrganByUser,
     handlePropertyOwner,
     noDataTips,
     BatchImport,
+    TreeSelect,
   },
   data() {
     return {
@@ -142,8 +146,9 @@ export default {
     };
   },
   methods: {
-    organIdChange(value) {
-      this.organName = value.name;
+    changeTree(value, name) {
+      this.organId = value;
+      this.organName = name;
       this.queryClick();
     },
     // 页码发生变化
