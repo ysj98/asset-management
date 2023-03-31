@@ -479,10 +479,10 @@ export default {
             },
           },
           {
-            title: '物业名称',
+            title: '资产名称',
             align: 'center',
             width: 300,
-            dataIndex: 'propertyName',
+            dataIndex: 'assetName',
           },
           {
             title: '权属单位',

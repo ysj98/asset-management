@@ -275,7 +275,7 @@ export default {
             },
           },
           {
-            title: '资产名称',
+            title: '物业名称',
             width: 300,
             dataIndex: 'propertyName',
           },
@@ -314,7 +314,7 @@ export default {
             },
           },
           {
-            title: '资产名称',
+            title: '物业名称',
             width: 300,
             dataIndex: 'propertyName',
           },
@@ -368,7 +368,7 @@ export default {
             title: '资产名称',
             align: 'center',
             width: 300,
-            dataIndex: 'propertyName',
+            dataIndex: 'assetName',
           },
           {
             title: '权属单位',
