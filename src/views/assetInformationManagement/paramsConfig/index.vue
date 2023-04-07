@@ -16,7 +16,7 @@
       </div>
     </div>
     <!-- 右边表格 -->
-    <div class="right-wrapper" style="width: calc(100% - 265px)">
+    <div class="right-wrapper">
       <div class="top">
         <div style="display: flex; align-items: center">
           <a-icon type="info-circle" style="color: #45a2ff; font-size: 16px" theme="filled" />
@@ -177,7 +177,6 @@ export default {
     .tree-content {
       height: calc(~'100% - 69px');
       overflow: auto;
-      padding-left: 20px;
     }
     .tree-btn {
       padding-left: 10px;
@@ -185,6 +184,7 @@ export default {
     }
   }
   .right-wrapper {
+    width: calc(100% - 272px);
     background-color: #fff;
     flex: 1;
     height: 100%;
