@@ -525,6 +525,7 @@ let proRouter = [
   {
     path: '/worthRegister',
     title: '价值登记',
+    name: '价值登记',
     component: () => import('@/views/financialManagement/worth-register/index.vue'),
     meta: {
       keepAlive: true,
@@ -533,26 +534,31 @@ let proRouter = [
   {
     path: '/assetView/assetViewDetail/detailRegister',
     title: '资产价值详情',
+    name: '资产价值详情',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
   },
   {
     path: '/worthRegister/detailRegister',
     title: '价值登记详情',
+    name: '价值登记详情',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
   },
   {
     path: '/worthRegister/editRegister',
     title: '价值登记编辑',
+    name: '价值登记编辑',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
   },
   {
     path: '/worthRegister/addRegister',
     title: '价值登记新增',
+    name: '价值登记新增',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
   },
   {
     path: '/worthRegister/approvalRegister',
     title: '价值登记审批',
+    name: '价值登记审批',
     component: () => import('@/views/financialManagement/worth-register/asset-worth-register/components/DetailPage'),
   },
   {
@@ -895,6 +901,7 @@ let proRouter = [
   {
     path: '/reportTask',
     title: '呈报任务',
+    name: '呈报任务',
     component: () => import('@/views/reportingManagement/reportTask'),
     meta: {
       keepAlive: true,
@@ -1188,6 +1195,7 @@ let proRouter = [
   {
     path: '/applyRegister',
     title: '领用登记',
+    name: '领用登记',
     component: () => import('@/views/assetApply/applyRegister/index'),
     meta: {
       keepAlive: true,
@@ -1204,6 +1212,7 @@ let proRouter = [
   {
     path: '/returnRegister',
     title: '归还登记',
+    name: '归还登记',
     component: () => import('@/views/assetApply/returnRegister/index'),
     meta: {
       keepAlive: true,
@@ -1263,6 +1272,7 @@ let proRouter = [
   {
     path: '/investRegister',
     title: '投资登记',
+    name: '投资登记',
     component: () => import('@/views/assetInvest/investRegister/index'),
     meta: {
       keepAlive: true,
@@ -1304,23 +1314,21 @@ let proRouter = [
   {
     path: '/applyRegister/new',
     title: '领用登记新增',
+    name: '领用登记新增',
     component: () => import('@/views/assetApply/applyRegister/DetailPage'),
   },
   {
     path: '/applyRegister/detail',
     title: '领用登记详情',
+    name: '领用登记详情',
     component: () => import('@/views/assetApply/applyRegister/DetailPage'),
   },
   {
     path: '/applyRegister/edit',
     title: '领用登记编辑',
+    name: '领用登记编辑',
     component: () => import('@/views/assetApply/applyRegister/DetailPage'),
   },
-  // {
-  //   path: '/applyRegister/approval',
-  //   title: '领用登记审批',
-  //   component: () => import('@/views/assetApply/applyRegister/DetailPage')
-  // },
   {
     path: '/assetApplyView/detail',
     title: '资产领用一览表详情',
@@ -1334,51 +1342,55 @@ let proRouter = [
   {
     path: '/returnRegister/detail',
     title: '归还登记详情',
+    name: '归还登记详情',
     component: () => import('@/views/assetApply/returnRegister/DetailPage'),
   },
   {
     path: '/returnRegister/new',
     title: '归还登记新增',
+    name: '归还登记新增',
     component: () => import('@/views/assetApply/returnRegister/DetailPage'),
   },
   {
     path: '/investRegister/new',
     title: '投资登记新增',
+    name: '投资登记新增',
     component: () => import('@/views/assetInvest/investRegister/DetailPage'),
   },
   {
     path: '/investRegister/detail',
     title: '投资登记详情',
+    name: '投资登记详情',
     component: () => import('@/views/assetInvest/investRegister/DetailPage'),
   },
   {
     path: '/investRegister/edit',
     title: '投资登记编辑',
+    name: '投资登记编辑',
     component: () => import('@/views/assetInvest/investRegister/DetailPage'),
   },
   {
     path: '/returnRegister/edit',
     title: '归还登记编辑',
+    name: '归还登记编辑',
     component: () => import('@/views/assetApply/returnRegister/DetailPage'),
   },
   {
     path: '/investRegister/approval',
     title: '投资登记审批',
+    name: '投资登记审批',
     component: () => import('@/views/assetInvest/investRegister/DetailPage'),
   },
   {
     path: '/returnRegister/approval',
     title: '归还登记审批',
+    name: '归还登记审批',
     component: () => import('@/views/assetApply/returnRegister/DetailPage'),
   },
   {
     path: '/applyRegister/approval',
     title: '领用登记审批',
-    component: () => import('@/views/assetApply/applyRegister/DetailPage'),
-  },
-  {
-    path: '/applyRegister/approval',
-    title: '领用登记审批',
+    name: '领用登记审批',
     component: () => import('@/views/assetApply/applyRegister/DetailPage'),
   },
   {
