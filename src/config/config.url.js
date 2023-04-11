@@ -3,7 +3,6 @@
  * 作者：猪不乐意
  * 日期：2019年6月26日
  */
-import host from './config.base.js';
 import { exportExcel } from 'api/equipmentview';
 export const User = {
   // 登录
@@ -46,10 +45,6 @@ export const dataCenter = {
 };
 // 基础数据接口
 export const basics = {
-  common: {
-    // 图片预览地址
-    imgStr: host.hostImg,
-  },
   // 文件上传
   fileUpload: '/basic-data-batch-api/rest-api/v1/fileApi/fileUpload',
   // 文件下载

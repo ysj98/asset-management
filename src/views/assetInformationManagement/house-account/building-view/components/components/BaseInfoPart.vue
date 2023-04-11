@@ -27,14 +27,13 @@
 </template>
 
 <script>
-import { basics } from '@/config/config.url';
 import { win } from 'utils/utils';
 export default {
   name: 'BaseInfoPart',
   props: ['buildId'],
   data() {
     return {
-      imgPrx: basics.common.imgStr,
+      imgPrx: window.__configs.hostImg,
       spinning: false, // 页面加载状态
       defaultImgUrl: require('src/assets/image/default_house.png'),
       baseInfoKeys: [

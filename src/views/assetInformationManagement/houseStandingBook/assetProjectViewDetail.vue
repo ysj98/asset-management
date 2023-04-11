@@ -243,7 +243,6 @@
 
 <script>
 import { dateToString } from 'utils/formatTime';
-import { basics } from '@/config/config.url';
 // import _ from 'lodash'
 const columns = [
   {
@@ -355,7 +354,7 @@ export default {
         { title: '其他(㎡)', area: '', percent: '' },
       ],
       assetList: [],
-      imgPrx: basics.common.imgStr,
+      imgPrx: window.__configs.hostImg,
       defaultImg: require('../../../assets/image/default_house.png'),
       paginator: {
         pageNo: 1,
