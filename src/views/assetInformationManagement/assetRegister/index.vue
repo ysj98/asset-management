@@ -180,7 +180,7 @@ export default {
     return {
       checkNick: false,
       toggle: false,
-      scrollHeight: { y: 'calc(100vh - 480px)' },
+      scrollHeight: { y: 'calc(100vh - 460px)' },
       ASSET_MANAGEMENT,
       isChild: false,
       loading: false,
@@ -278,6 +278,7 @@ export default {
     // 高级搜索控制
     searchContainerFn(val) {
       this.toggle = val;
+      this.$set(this.scrollHeight, 'y', val ? 'calc(100vh - 270px)' : 'calc(100vh - 470px)');
     },
     filterOption(input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
