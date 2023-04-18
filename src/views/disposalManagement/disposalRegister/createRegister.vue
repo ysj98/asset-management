@@ -233,7 +233,7 @@
       <span class="section-title blue">资产处置清单（已选择资产总数: {{ table.dataSource.length }})</span>
       <div class="button-box">
         <div style="float: left; padding: 5px 0" v-if="!checkNick">
-          <a-checkbox :checked="checkNick" @change="handleChange" :disabled="true"> 自动资产入库 </a-checkbox>
+          <a-checkbox :checked="checkNick" @change="handleChange" :disabled="true"> 自动资产出库 </a-checkbox>
         </div>
         <div class="buytton-nav">
           <SG-Button class="choice" type="primary" weaken @click="addTheAsset">添加资产</SG-Button>

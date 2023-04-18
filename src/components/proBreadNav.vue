@@ -40,6 +40,7 @@ export default {
       return !this.$route.meta.noShowProBreadNav;
     },
     proBreadNav() {
+      console.log(this.$store.state.pro.proBreadNav, 'this.$store.state.pro.proBreadNav');
       return this.$store.state.pro.proBreadNav;
     },
   },

@@ -130,11 +130,11 @@ export default {
       this.registerOrderId = this.organIdData[0].registerOrderId;
       this.assetType = String(this.organIdData[0].assetType);
       this.activeStepIndex = Number(this.$route.query.activeStepIndex);
-      this.$store.commit('pro/updateNav', [
-        { name: '资产管理', path: '' },
-        { name: '资产登记', path: '/assetRegister' },
-        { name: `${this.titleData[this.activeStepIndex]}`, path: '' },
-      ]);
+      // this.$store.commit('pro/updateNav', [
+      //   { title: '资产管理', path: '' },
+      //   { title: '资产登记', path: '/assetRegister' },
+      //   { title: `${this.titleData[this.activeStepIndex]}`, path: '' },
+      // ]);
     }
 
     this.$store.dispatch('platformDict/getPlatformDict', {

@@ -212,6 +212,30 @@
               </a-form-item>
             </a-col>
           </a-row>
+          <a-row>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="原始来源方式：" v-bind="formItemLayout">
+                <label slot="label">原始来源方式：</label>
+                <a-select
+                  :style="allWidth"
+                  placeholder="请选择原始来源方式"
+                  v-decorator="[
+                    'oldSourceMode',
+                    {
+                      initialValue: params.oldSourceMode,
+                    },
+                  ]"
+                  :allowClear="false"
+                  :filterOption="filterOption"
+                  notFoundContent="没有查询到原始来源方式"
+                >
+                  <a-select-option :title="item.name" v-for="item in oldAssetSourceOptions" :key="item.value" :value="item.value">
+                    {{ item.name }}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </a-row>
         </div>
 
         <span class="section-title blue">权属信息</span>
@@ -555,6 +579,7 @@ const params = {
   originalValue: '', // 资产原值
   marketValue: '', // 市场价值
   sourceMode: '', // 来源方式 原来的值为sourceType
+  oldSourceMode: '', // 原始来源方式
   kindOfRight: '',
   kindOfRightName: '', // 权属类型
   ownershipStatus: '',
@@ -599,6 +624,7 @@ export default {
       positionNameData: [], // 楼栋列表
       houseList: [], // 房间列表
       assetSourceOptions: [], // 来源方式列表
+      oldAssetSourceOptions: [], // 原始来源方式列表
       ownershipData: [], // 权属类型列表
       buildAddress: '', //坐落位置 需根据选择的房间自动带出来展示；---只读，不可修改
       assetTypeData: [{ name: '房屋', value: '1' }], // 资产类型
@@ -643,6 +669,7 @@ export default {
     // this.platformDictFn() // 获取资产类型
     this.debounceMothed(); // 获取楼栋列表
     this.getAssetSourceOptions(); // 获取资产来源下拉列表
+    this.getOldAssetSourceOptions(); // 获取资产原始来源下拉列表
     this.ownershipFn(); // 获取权属类型
     this.$nextTick(() => {
       this.$textReplace();
@@ -691,6 +718,27 @@ export default {
             arr.push(obj);
           });
           this.assetSourceOptions = arr;
+        } else {
+          this.$message.error(res.data.message);
+        }
+      });
+    },
+    // 获取原始资产来源下拉列表
+    getOldAssetSourceOptions() {
+      let form = {
+        code: 'ams_old_source_type',
+      };
+      this.$api.basics.platformDict(form).then((res) => {
+        if (res.data.code === '0') {
+          let arr = [];
+          res.data.data.forEach((item) => {
+            let obj = {
+              name: item.name,
+              value: item.value,
+            };
+            arr.push(obj);
+          });
+          this.oldAssetSourceOptions = arr;
         } else {
           this.$message.error(res.data.message);
         }

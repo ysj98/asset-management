@@ -82,6 +82,18 @@
               placeholder="资产标签"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              v-model="oldSourceModes"
+              option-filter-prop="title"
+              placeholder="请选择原始来源方式"
+              :options="$addTitle(oldSourceOptions)"
+              @change="changeOldSource"
+            />
+          </a-col>
           <!-- <a-col :span="4">
             <a-select
               mode="multiple"
@@ -263,7 +275,7 @@ import EditTableHeader from '../house-account/asset-view/components/EditTableHea
 import tooltipText from 'src/views/common/TooltipText';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 import NoDataTip from 'src/components/noDataTips';
-import { querySourceType } from '@/views/common/commonQueryApi';
+import { querySourceType, queryOldSourceType } from '@/views/common/commonQueryApi';
 import { getFormat } from 'utils/utils';
 import EditTag from './components/editTag.vue';
 import { queryAssetLabelConfig } from '@/api/publicCode.js';
@@ -300,6 +312,11 @@ const detailColumns = [
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
+  {
+    title: '原始来源方式',
+    dataIndex: 'oldSourceModeName',
+    width: 120,
+  },
 ];
 const requiredColumn = [{ title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }];
 const judgment = [undefined, null, ''];
@@ -354,6 +371,8 @@ export default {
   },
   data() {
     return {
+      oldSourceOptions: [],
+      oldSourceModes: ['all'], // 原始来源方式
       extraHeight: '0px',
       funType: 16,
       // uploadAttachment: '',
@@ -425,6 +444,11 @@ export default {
           { title: '资产状态', dataIndex: 'statusName', width: 100 },
           { title: '资产标签', dataIndex: 'label', width: 150 },
           { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
+          {
+            title: '原始来源方式',
+            dataIndex: 'oldSourceModeName',
+            width: 120,
+          },
           { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 },
         ],
       },
@@ -502,13 +526,28 @@ export default {
     //   }
     // }
   },
-  mounted() {},
+  mounted() {
+    this.getOldSourceOptions();
+  },
   created() {
     //this.initHeader()
     initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
 
   methods: {
+    // 原始来源方式
+    changeOldSource(value) {
+      let lastIndex = value.length - 1;
+      this.oldSourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
+    },
+    // 根据原始查询来源方式
+    async getOldSourceOptions() {
+      this.oldSourceOptions = [];
+      this.oldSourceModes = ['all'];
+      queryOldSourceType(this).then((list) => {
+        return (this.oldSourceOptions = [{ key: 'all', title: '全部原始来源方式' }].concat(list));
+      });
+    },
     handleTableHeaderSuccess() {
       this.changeListSettingsModal(false);
       initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
@@ -601,7 +640,6 @@ export default {
     },
     // 来源方式
     // changeSource(value){
-    //   console.log('value', value)
     //   let lastIndex = value.length - 1
     //   this.sourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter(m => m !== 'all')
     // },
@@ -690,6 +728,7 @@ export default {
         current,
         categoryId,
         sourceModes,
+        oldSourceModes,
         label,
         address,
         originSource,
@@ -713,9 +752,11 @@ export default {
         statusList: status.includes('all') ? [] : status,
         flag: current ? current - 2 : '',
         type: sourceModes,
+        oldSourceModes: oldSourceModes.includes('all') ? [] : oldSourceModes,
         organIds: organId,
         label: label ? label.join('、') : '',
       };
+      console.log(form, '------');
       if (label === '全部资产标签' || !label) delete form.label;
       this.$api.carPark
         .parkingPage(form)
@@ -817,6 +858,7 @@ export default {
         current,
         categoryId,
         sourceModes,
+        oldSourceModes,
         label,
       } = this;
       let form = {
@@ -832,6 +874,7 @@ export default {
         statusList: status.includes('all') ? [] : status,
         flag: current ? current - 2 : '',
         type: sourceModes,
+        oldSourceModes: oldSourceModes.includes('all') ? [] : oldSourceModes,
         organIds: organId,
         label: label ? label.join('、') : '',
         display: columns.map((m) => m.dataIndex).filter((n) => n !== 'action'),

@@ -112,7 +112,7 @@
             </a-select-option>
           </a-select>
           <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="16" style="padding-left: 60px; width: 606px">
+            <a-col :span="15">
               <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
             </a-col>
             <a-col :span="4" style="padding-top: 13px; padding-left: 0">
@@ -120,6 +120,21 @@
             </a-col>
             <a-col :span="4" style="padding-top: 13px; padding-left: 0">
               <a-input placeholder="资产原始来源方" v-model="originSource" :maxLength="100" />
+            </a-col>
+          </a-row>
+          <a-row :gutter="12" style="margin-right: -78px">
+            <a-col :span="4">
+              <a-select
+                :style="allStyle"
+                mode="multiple"
+                :maxTagCount="1"
+                style="width: 100%"
+                v-model="oldSourceModes"
+                option-filter-prop="title"
+                placeholder="请选择原始来源方式"
+                :options="$addTitle(oldSourceOptions)"
+                @change="changeOldSource"
+              />
             </a-col>
           </a-row>
         </div>
@@ -205,7 +220,7 @@ import TreeSelect from '../../common/treeSelect';
 import noDataTips from '@/components/noDataTips';
 import OverviewNumber from 'src/views/common/OverviewNumber';
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict';
-import { querySourceType } from '@/views/common/commonQueryApi';
+import { querySourceType, queryOldSourceType } from '@/views/common/commonQueryApi';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 const judgment = [undefined, null, ''];
 const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
@@ -249,6 +264,7 @@ const columnsData = [
   { title: '是否确权', dataIndex: 'isRight', width: 150 },
   { title: '缴纳土地出让金时间', dataIndex: 'payAssignmentTime', width: 150 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
+  { title: '原始来源方式', dataIndex: 'oldSourceModeName', width: 150 },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right' },
 ];
 const approvalStatusData = [
@@ -302,6 +318,8 @@ export default {
   },
   data() {
     return {
+      oldSourceOptions: [],
+      oldSourceModes: ['all'], // 原始来源方式
       getFormat,
       ASSET_MANAGEMENT,
       exportBtnLoading: false,
@@ -376,6 +394,19 @@ export default {
   },
   computed: {},
   methods: {
+    // 原始来源方式
+    changeOldSource(value) {
+      let lastIndex = value.length - 1;
+      this.oldSourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
+    },
+    // 根据原始查询来源方式
+    async getOldSourceOptions() {
+      this.oldSourceOptions = [];
+      this.oldSourceModes = ['all'];
+      queryOldSourceType(this).then((list) => {
+        return (this.oldSourceOptions = [{ key: 'all', title: '全部原始来源方式' }].concat(list));
+      });
+    },
     // 查询和导出使用
     initQueryReqParams(options) {
       // 选择导出的列名
@@ -398,6 +429,7 @@ export default {
         address: this.address, // 详细地址
         originSource: this.originSource, // 资产原始来源方
         sourceModes: this.alljudge(this.queryCondition.sourceModes),
+        oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
         ...obj,
       };
     },
@@ -742,6 +774,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.getOldSourceOptions();
     this.columns = this.columns.filter((ele) => !ele.defaultHide);
   },
 };
@@ -776,8 +809,9 @@ export default {
     }
   }
   .city {
-    float: right;
-    margin-right: 8px;
+    width: 100%;
+    // float: right;
+    // margin-right: 8px;
     /deep/.ant-col-8 {
       width: 180px;
     }

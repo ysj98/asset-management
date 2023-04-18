@@ -245,7 +245,7 @@ export default {
     },
     // 重新加载
     resetLoad() {
-      this.positionSelectAsyn();
+      this.positionSelectAsyn(this.searchValueInput);
     },
     onExpand(expandedKeys) {
       this.expandedKeys = expandedKeys;

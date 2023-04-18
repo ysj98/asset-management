@@ -32,4 +32,7 @@ export default {
 /* .ant-table-placeholder {
   display: none;
 } */
+/* .search-header {
+  padding: 10px !important;
+} */
 </style>

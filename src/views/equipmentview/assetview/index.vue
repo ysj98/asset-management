@@ -31,62 +31,99 @@
         </SG-Button>
       </div>
       <div slot="headerForm">
-        <div class="headerForm">
-          <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :multiple="true" :treeCheckable="true" />
-          <a-select
-            v-model="queryForm.projectIdList"
-            :options="projectData"
-            :maxTagCount="1"
-            :allowClear="true"
-            mode="multiple"
-            class="search-item"
-            placeholder="全部资产项目"
-          ></a-select>
-          <a-select
-            v-model="queryForm.statusList"
-            :options="statusListOpt"
-            :allowClear="true"
-            :maxTagCount="1"
-            mode="multiple"
-            class="search-item"
-            placeholder="全部资产状态"
-          ></a-select>
-          <a-input v-model="queryForm.assetName" class="search-item" placeholder="资产名称/编码"></a-input>
-          <a-input v-model="queryForm.originSource" class="search-item" :maxLength="100" placeholder="资产原始来源方"></a-input>
-        </div>
+        <a-row :gutter="10">
+          <a-col :offset="12" :span="6">
+            <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :multiple="true" :treeCheckable="true" />
+          </a-col>
+          <a-col :span="6">
+            <a-select
+              v-model="queryForm.projectIdList"
+              :options="projectData"
+              :maxTagCount="1"
+              :allowClear="true"
+              mode="multiple"
+              class="search-item"
+              placeholder="全部资产项目"
+            ></a-select>
+          </a-col>
+        </a-row>
       </div>
       <div slot="contentForm">
-        <div class="contentForm">
-          <EquipmentSelectTree
-            v-model="queryForm.equipmentTypes"
-            :multiple="true"
-            :top-organ-id="queryForm.organIds"
-            :maxTagCount="1"
-            :allowClear="true"
-            class="search-item"
-            placeholder="全部资产分类"
-          />
-          <province-city-district class="search-item-address" v-model="provinceCityDistrictValue" @input="handleAddress" />
-          <a-select
-            v-model="queryForm.useTypes"
-            :options="amsUseDirectionCom"
-            :maxTagCount="1"
-            :allowClear="true"
-            mode="multiple"
-            class="search-item"
-            placeholder="全部使用方向"
-          ></a-select>
-          <a-select
-            v-model="queryForm.labels"
-            :options="labelOptions"
-            :maxTagCount="1"
-            :allowClear="true"
-            mode="multiple"
-            class="search-item"
-            placeholder="全部资产标签"
-          ></a-select>
-          <a-button @click="doSearch" type="primary">查询</a-button>
-        </div>
+        <a-row :gutter="10">
+          <a-col :span="4">
+            <a-select
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              v-model="queryForm.oldSourceModes"
+              option-filter-prop="title"
+              placeholder="请选择原始来源方式"
+              :options="$addTitle(oldSourceOptions)"
+              @change="changeOldSource"
+            />
+          </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="queryForm.statusList"
+              :options="statusListOpt"
+              :allowClear="true"
+              :maxTagCount="1"
+              mode="multiple"
+              class="search-item"
+              placeholder="全部资产状态"
+            ></a-select
+          ></a-col>
+          <a-col :span="4">
+            <a-input v-model="queryForm.assetName" class="search-item" placeholder="资产名称/编码"></a-input>
+          </a-col>
+          <a-col :span="4">
+            <a-input v-model="queryForm.originSource" class="search-item" :maxLength="100" placeholder="资产原始来源方"></a-input>
+          </a-col>
+          <a-col :span="5">
+            <EquipmentSelectTree
+              v-model="queryForm.equipmentTypes"
+              :multiple="true"
+              :top-organ-id="queryForm.organIds"
+              :maxTagCount="1"
+              :allowClear="true"
+              class="search-item"
+              placeholder="全部资产分类"
+            />
+          </a-col>
+        </a-row>
+        <a-row :gutter="10" style="margin-top: 10px">
+          <a-col :span="16">
+            <province-city-district class="search-item-address" v-model="provinceCityDistrictValue" @input="handleAddress" />
+          </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="queryForm.useTypes"
+              :options="amsUseDirectionCom"
+              :maxTagCount="1"
+              :allowClear="true"
+              mode="multiple"
+              class="search-item"
+              placeholder="全部使用方向"
+            ></a-select
+          ></a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="queryForm.labels"
+              :options="labelOptions"
+              :maxTagCount="1"
+              :allowClear="true"
+              mode="multiple"
+              class="search-item"
+              placeholder="全部资产标签"
+            ></a-select>
+          </a-col>
+        </a-row>
+        <a-row :gutter="10" style="margin-top: 10px">
+          <a-col :span="4"> </a-col>
+          <a-col :span="4" :offset="16">
+            <a-button @click="doSearch" type="primary">查询</a-button>
+          </a-col>
+        </a-row>
       </div>
     </search-container>
     <!-- 数据汇总 -->
@@ -163,6 +200,8 @@ import { SET_AMS_USE_DIRECTION } from '@/store/types/platformDictTypes';
 import { handleTableScrollHeight, initTableColumns } from '@/utils/share';
 import { handleDownloadFile } from 'utils/utils';
 import TableHeaderSettings from 'src/components/TableHeaderSettings';
+import { queryOldSourceType } from '@/views/common/commonQueryApi';
+
 const detailColumns = [
   {
     title: '资产名称',
@@ -253,6 +292,11 @@ const detailColumns = [
   {
     title: '资产原始来源方',
     dataIndex: 'originSource',
+    width: 120,
+  },
+  {
+    title: '原始来源方式',
+    dataIndex: 'oldSourceModeName',
     width: 120,
   },
 ];
@@ -358,6 +402,11 @@ const allColumns = [
     width: 120,
   },
   {
+    title: '原始来源方式',
+    dataIndex: 'oldSourceModeName',
+    width: 120,
+  },
+  {
     title: '操作',
     key: 'action',
     width: 120,
@@ -377,6 +426,7 @@ export default {
   },
   data() {
     return {
+      oldSourceOptions: [],
       funType: 15,
       ASSET_MANAGEMENT,
       exportFlag: false,
@@ -426,6 +476,7 @@ export default {
         statusList: [],
         equipmentTypes: [],
         originSource: '',
+        oldSourceModes: ['all'],
       },
       numList: [
         { title: '资产数量', key: 'total', value: 0, fontColor: '#324057' },
@@ -496,6 +547,19 @@ export default {
     },
   },
   methods: {
+    // 原始来源方式
+    changeOldSource(value) {
+      let lastIndex = value.length - 1;
+      this.oldSourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
+    },
+    // 根据原始查询来源方式
+    async getOldSourceOptions() {
+      this.oldSourceOptions = [];
+      this.oldSourceModes = ['all'];
+      queryOldSourceType(this).then((list) => {
+        return (this.oldSourceOptions = [{ key: 'all', title: '全部原始来源方式' }].concat(list));
+      });
+    },
     handleTableHeaderSuccess() {
       this.changeListSettingsModal(false);
       initTableColumns({ columns: this.tableOptions.columns, detailColumns, requiredColumn, funType: this.funType });
@@ -687,11 +751,13 @@ export default {
     },
     handleQueryTableOptions() {
       const { pageNo, pageLength } = this.paginationObj;
-      return {
+      var obj = {
         ...this.queryForm,
         pageNum: pageNo,
         pageSize: pageLength,
       };
+      obj.oldSourceModes = obj.oldSourceModes.includes('all') ? [] : obj.oldSourceModes;
+      return obj;
     },
     queryTableDataAndTotal(notRequiredTotalFlag) {
       const options = this.handleQueryTableOptions();
@@ -716,6 +782,8 @@ export default {
     initTableColumns({ columns: this.tableOptions.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   mounted() {
+    this.getOldSourceOptions();
+
     this.$store.dispatch('platformDict/getPlatformDict', {
       code: 'AMS_USE_DIRECTION',
       type: SET_AMS_USE_DIRECTION,
@@ -725,21 +793,21 @@ export default {
 </script>
 
 <style scoped>
-.headerForm,
 .contentForm {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
 }
 .search-item {
-  width: 200px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  width: 100%;
+  min-width: 150px;
+  /* margin-right: 10px;
+  margin-bottom: 10px; */
 }
 .search-item-address {
   width: 660px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  /* margin-right: 10px;
+  margin-bottom: 10px; */
 }
 </style>
 <style lang="less" scoped>

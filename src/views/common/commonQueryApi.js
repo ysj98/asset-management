@@ -99,7 +99,26 @@ export function queryCategoryList({ assetType, organId }) {
 // 根据organId查询来源字典
 export const querySourceType = (organId, context) => {
   return context.$api.assets
-    .platformDict({ code: 'ams_source_type', organId: 1 })
+    .platformDict({ code: 'ams_source_type' })
+    .then((r) => {
+      let res = r.data;
+      if (res && String(res.code) === '0') {
+        return (res.data || []).map((item) => {
+          return { key: item.value, title: item.name };
+        });
+      }
+      throw res.message;
+    })
+    .catch((err) => {
+      context.$message.error(err || '查询来源字典失败');
+      return [];
+    });
+};
+
+// 根据查询原始来源字典
+export const queryOldSourceType = (context) => {
+  return context.$api.assets
+    .platformDict({ code: 'ams_old_source_type' })
     .then((r) => {
       let res = r.data;
       if (res && String(res.code) === '0') {

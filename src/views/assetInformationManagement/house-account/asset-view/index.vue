@@ -56,6 +56,18 @@
           </a-col>
           <a-col :span="4">
             <a-select
+              mode="multiple"
+              :maxTagCount="1"
+              style="width: 100%"
+              v-model="oldSourceModes"
+              option-filter-prop="title"
+              placeholder="请选择原始来源方式"
+              :options="$addTitle(oldSourceOptions)"
+              @change="changeOldSource"
+            />
+          </a-col>
+          <a-col :span="4">
+            <a-select
               v-model="status"
               @change="statusChange"
               mode="multiple"
@@ -91,9 +103,6 @@
               :options="$addTitle(useTypeOptions)"
               placeholder="请选择用途"
             />
-          </a-col>
-          <a-col :span="4">
-            <a-select v-model="supportMaterial" style="width: 100%" :options="$addTitle(supportMaterialOpt)" placeholder="权属用途" />
           </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
@@ -164,7 +173,12 @@
           <a-col :span="4">
             <a-input placeholder="请输入资产原始来源方" v-model="originSource" :maxLength="100" />
           </a-col>
-          <a-col :span="3" style="text-align: left">
+          <a-col :span="4">
+            <a-select v-model="supportMaterial" style="width: 100%" :options="$addTitle(supportMaterialOpt)" placeholder="权属用途" />
+          </a-col>
+        </a-row>
+        <a-row :gutter="12" style="margin-top: 14px">
+          <a-col :span="3" :offset="21" style="text-align: right">
             <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
             <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
           </a-col>
@@ -285,7 +299,7 @@ import EditTableHeader from './components/EditTableHeader';
 import tooltipText from 'src/views/common/TooltipText';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 import NoDataTip from 'src/components/noDataTips';
-import { querySourceType } from '@/views/common/commonQueryApi';
+import { querySourceType, queryOldSourceType } from '@/views/common/commonQueryApi';
 import { getFormat } from 'utils/utils';
 import EditTag from '../building-view/editTag.vue';
 import EditPledge from './components/components/EditPledge.vue';
@@ -377,6 +391,11 @@ const detailColumns = [
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
   { title: '相关描述', dataIndex: 'remark', width: 350 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
+  {
+    title: '原始来源方式',
+    dataIndex: 'oldSourceModeName',
+    width: 120,
+  },
 ];
 const requiredColumn = [{ title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }];
 // 面积最多保留4位小数
@@ -436,6 +455,7 @@ export default {
       assetLabelSelect: [],
       label: '',
       sourceModes: [], // 查询条件-来源方式
+      oldSourceModes: ['all'], // 查询条件-原始来源方式
       ownershipUseOPt: [],
       ownershipUse: '',
       useType: [], // 用途
@@ -499,6 +519,7 @@ export default {
         unRentedArea: '', // 未租面积
       },
       sourceOptions: [],
+      oldSourceOptions: [],
       modalType: 1, // 1 设置列表表头 2 设置资产标签
     };
   },
@@ -524,7 +545,6 @@ export default {
           this.configOrganId = val.organId;
         }
         this.queryCategoryOptions(this.configOrganId);
-        this.getSourceOptions(this.configOrganId);
         this.organDict('OWNERSHIP_USE', this.configOrganId);
         this.queryNodesByRootCode(this.configOrganId);
         this.getAssetLabel(this.configOrganId);
@@ -545,7 +565,10 @@ export default {
     //   }
     // }
   },
-  mounted() {},
+  mounted() {
+    this.getSourceOptions();
+    this.getOldSourceOptions();
+  },
   created() {
     //this.initHeader()
     initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
@@ -742,9 +765,13 @@ export default {
     },
     // 来源方式
     changeSource(value) {
-      console.log('value', value);
       let lastIndex = value.length - 1;
       this.sourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
+    },
+    // 原始来源方式
+    changeOldSource(value) {
+      let lastIndex = value.length - 1;
+      this.oldSourceModes = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
     },
     // 全选与其他选项资产分类
     categoryChange(value) {
@@ -774,12 +801,20 @@ export default {
         })
         .catch((err) => this.$message.error(err || '查询资产分类出错'));
     },
-    // 根据organId查询来源方式
+    // 根据查询来源方式
     async getSourceOptions(organId) {
       this.sourceOptions = [];
       this.sourceModes = [];
       querySourceType(organId, this).then((list) => {
         return (this.sourceOptions = [{ key: 'all', title: '全部来源方式' }].concat(list));
+      });
+    },
+    // 根据原始查询来源方式
+    async getOldSourceOptions() {
+      this.oldSourceOptions = [];
+      this.oldSourceModes = ['all'];
+      queryOldSourceType(this).then((list) => {
+        return (this.oldSourceOptions = [{ key: 'all', title: '全部原始来源方式' }].concat(list));
       });
     },
     // 列表设置Modal保存
@@ -890,6 +925,7 @@ export default {
         supportMaterial,
         useType,
         sourceModes,
+        oldSourceModes,
         address,
         uploadAttachment,
         label,
@@ -923,6 +959,7 @@ export default {
         flag: current ? current - 1 : '',
         useTypes: useType.includes('all') ? '' : useType.join(','),
         sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
+        oldSourceModes: oldSourceModes.includes('all') ? [] : oldSourceModes,
         organIds: organId,
         label: label ? label.join('、') : '',
         uploadAttachment,
@@ -1055,6 +1092,7 @@ export default {
               useTypes: useType.includes('all') ? '' : useType.join(','),
               objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
               sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
+              oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
               label: label ? label.join('、') : '',
               uploadAttachment: this.uploadAttachment,
             };
