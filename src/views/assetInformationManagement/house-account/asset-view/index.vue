@@ -138,17 +138,6 @@
           </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
-          <a-col :span="4" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
-            <a-select
-              v-model="label"
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              @select="assetLabelFn"
-              :options="$addTitle(assetLabelSelect)"
-              placeholder="资产标签"
-            />
-          </a-col>
           <a-col :span="4">
             <a-select
               v-model="uploadAttachment"
@@ -912,8 +901,7 @@ export default {
     handleSettings(val) {
       this.modalObj.switch = val;
     },
-    // 查询列表数据
-    queryTableData({ pageNo = 1, pageLength = 10, type }) {
+    returnQueryDate() {
       const {
         organProjectBuildingValue: { organId, projectId: projectIdList, buildingId: buildIdList },
         provinceCityDistrictValue: { province, city, district: region },
@@ -934,22 +922,15 @@ export default {
         ownershipStatus,
         originSource,
       } = this;
-      // this.pledge = !this.pledge ? '' : this.pledge
-      if (!organId) {
-        return this.$message.info('请选择组织机构');
-      }
-      this.tableObj.loading = true;
       let form = {
         assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
         organId: 1,
         buildIdList,
         projectIdList,
-        pageSize: pageLength,
         province,
         city,
         region,
         assetName,
-        pageNum: pageNo,
         address,
         originSource,
         objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
@@ -967,9 +948,23 @@ export default {
         pledge,
         ownershipStatus,
       };
-      if (!uploadAttachment) delete form.uploadAttachment;
-      if (label === '' || !label) delete form.label;
-      console.log(form);
+      if (!form.uploadAttachment) delete form.uploadAttachment;
+      if (label === '全部资产标签' || !label) {
+        delete form.label;
+      }
+      if (form.label === '全部资产标签' || !form.label) delete form.label;
+      return JSON.parse(JSON.stringify(form));
+    },
+    // 查询列表数据
+    queryTableData({ pageNo = 1, pageLength = 10, type }) {
+      // this.pledge = !this.pledge ? '' : this.pledge
+      let form = this.returnQueryDate();
+      if (!form.organIds) {
+        return this.$message.info('请选择组织机构');
+      }
+      form.pageSize = pageLength;
+      form.pageNum = pageNo;
+      this.tableObj.loading = true;
       this.$api.assets
         .queryAssetViewPage(form)
         .then((r) => {
@@ -1068,6 +1063,7 @@ export default {
         label,
         pledge,
         houseNumber,
+        ownershipStatus,
       } = this;
       let form =
         type === 'exportHouseBtn'
@@ -1095,6 +1091,7 @@ export default {
               oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
               label: label ? label.join('、') : '',
               uploadAttachment: this.uploadAttachment,
+              ownershipStatus,
             };
       if (!this.uploadAttachment) delete form.uploadAttachment;
       if (label === '全部资产标签' || !label) {

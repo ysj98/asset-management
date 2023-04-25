@@ -179,6 +179,7 @@ export default {
       assetType: '', // 资产类型
       projectId: '',
       assetManagementRight: [], // 经营权数组字典
+      oldAssetSourceOptions: [], // 原始来源方式列表
     };
   },
   computed: {
@@ -205,7 +206,6 @@ export default {
       this.handleInitDefaultSourceType(this.projectId);
     },
     submitAsset(detail) {
-      console.log(detail);
       this.$parent.confirmArea(detail);
     },
     isProjectId() {
@@ -221,10 +221,7 @@ export default {
         }
       });
     },
-    tempFn(value) {
-      console.log('test');
-      console.log(value);
-    },
+    tempFn(value) {},
     generateYardClassification(record) {
       const { type, objectType } = record;
       let data = [];
@@ -287,7 +284,6 @@ export default {
       if (['edit'].includes(this.setType)) {
         let res3 = this.getDetail();
         await res3;
-        console.log(this.projectList, this.sourceOptions);
         this.handleInitDefaultSourceType(this.detailData.projectId);
       }
       // 编辑和详情进来的判断
@@ -318,13 +314,13 @@ export default {
       });
       this.organDict();
       this.ownershipFn();
+      this.getOldAssetSourceOptions(); // 获取资产原始来源下拉列表
     },
     /*
      * 编辑页面 获取默认来源方式值
      * */
     handleInitDefaultSourceType(projectId) {
       let res = this.projectList.find((ele) => ele.projectId === projectId);
-      console.log('res', res);
       this.sourceType = res ? Number(res.sourceType) : '';
     },
     /*
@@ -719,7 +715,6 @@ export default {
         return this.$message.error('请先上传文件!');
       }
       let loadingName = this.SG_Loding('导入中...');
-      console.log(loadingName);
       try {
         let readExcelModelV2ResData = await this.$api.assets.readExcelModelV2(fileData);
         if (readExcelModelV2ResData.data.code === '0') {
@@ -751,7 +746,6 @@ export default {
           });
         }
       } catch (error) {
-        console.error(error);
         this.DE_Loding(loadingName).then(() => {
           this.$SG_Message.error('导入失败！');
         });
@@ -799,7 +793,6 @@ export default {
     },
     // 删除
     deleteFn(record) {
-      console.log(record);
       if (record.assetId) {
         this.deleteBase(record);
       } else {
@@ -921,7 +914,6 @@ export default {
       this.$api.assets.baseImport(this.formData).then(
         (res) => {
           if (res.data.code === '0') {
-            console.log('-=-=-=');
             e.target.value = '';
             this.DE_Loding(loadingName).then(() => {
               this.allQuery();
@@ -978,6 +970,20 @@ export default {
         }
       });
     },
+    // 获取原始资产来源下拉列表
+    getOldAssetSourceOptions() {
+      this.$api.basics
+        .platformDict({
+          code: 'ams_old_source_type',
+        })
+        .then((res) => {
+          if (res.data.code === '0') {
+            this.oldAssetSourceOptions = res.data.data;
+          } else {
+            this.$message.error(res.data.message);
+          }
+        });
+    },
     // 提交
     save() {
       if (this.tableData.length === 0) {
@@ -989,11 +995,13 @@ export default {
         // 传 来源方式 对应的 枚举值
         let sourceModeObj = this.sourceOptions.find((ele) => item.sourceModeName === ele.title);
         item.ownershipStatus = this.organDictData[item.ownershipStatusName];
+        // 传 原始来源方式 对应的 枚举值
+        let oldSourceModeObj = this.oldAssetSourceOptions.find((ele) => item.oldSourceModeName === ele.name);
+        item.oldSourceMode = oldSourceModeObj.value;
         (item.kindOfRight = this.ownershipData[item.kindOfRightName]),
           (item.managementRight = item.managementRightName ? this.assetManagementRight.find((r) => r.name === item.managementRightName).value : '');
         item.sourceMode = sourceModeObj ? Number(sourceModeObj.key) : '';
       }, this);
-      console.log(data, '-=-=-=');
       this.basicData = data;
       return false;
     },

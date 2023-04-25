@@ -10,7 +10,7 @@
         placeholder="请选择组织机构"
         v-model="organId"
       ></a-select>
-      <SG-Button type="primary" @click="save">保存</SG-Button>
+      <SG-Button type="primary" :disabled="disabled" @click="save">保存</SG-Button>
     </div>
     <a-table :columns="columns" :dataSource="dataSource" :pagination="false">
       <div slot="isAble" slot-scope="text, record">
@@ -83,6 +83,7 @@ export default {
       dataSource: [],
       organId: '',
       organOptions: [],
+      disabled: false,
     };
   },
   created() {
@@ -90,12 +91,16 @@ export default {
   },
   methods: {
     save() {
+      this.disabled = true;
       let apiName = this.dataSource[0].id ? 'updateSetting' : 'insertSetting';
       this.$api.houseStatusConfig[apiName](this.dataSource).then((res) => {
+        this.disabled = false;
         if (res.data.code == 0) {
           this.$message.success(res.message || '保存成功');
+          this.query();
         } else {
           this.$message.error(res.message || '系统内部错误');
+          this.query();
         }
       });
     },
