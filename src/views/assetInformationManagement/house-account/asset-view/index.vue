@@ -1182,7 +1182,7 @@ export default {
     organDict(code, organId) {
       this.ownershipUse = '';
       this.ownershipUseOPt = [];
-      this.$api.assets.organDict({ organId: 1, organIds: organId, code }).then((res) => {
+      this.$api.assets.organDict({ organId, code }).then((res) => {
         if (res.data.code === '0') {
           let result = res.data.data || [];
           let arr = result.map((item) => ({ label: item.name, value: item.value }));

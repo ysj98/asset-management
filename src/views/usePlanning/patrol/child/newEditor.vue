@@ -535,10 +535,6 @@ export default {
           let data = res.data.data;
           data.forEach((item) => {
             item.key = getUuid();
-            item.itemId = item.itemId;
-            item.itemName = item.itemName;
-            item.result = item.result;
-            item.remark = item.remark;
           });
           this.tableData = data;
           if (this.tableData.length <= 0) {
@@ -669,7 +665,7 @@ export default {
               return { label: item.name, value: item.value, key: item.value };
             });
           } else {
-            this.$message.error(err || '查询巡查类型失败');
+            this.$message.error(r.message || '查询巡查类型失败');
           }
         })
         .catch((err) => {

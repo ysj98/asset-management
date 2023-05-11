@@ -996,7 +996,7 @@ export default {
         let sourceModeObj = this.sourceOptions.find((ele) => item.sourceModeName === ele.title);
         item.ownershipStatus = this.organDictData[item.ownershipStatusName];
         // 传 原始来源方式 对应的 枚举值
-        let oldSourceModeObj = this.oldAssetSourceOptions.find((ele) => item.oldSourceModeName === ele.name);
+        let oldSourceModeObj = this.oldAssetSourceOptions.find((ele) => item.oldSourceModeName === ele.name) || {};
         item.oldSourceMode = oldSourceModeObj.value;
         (item.kindOfRight = this.ownershipData[item.kindOfRightName]),
           (item.managementRight = item.managementRightName ? this.assetManagementRight.find((r) => r.name === item.managementRightName).value : '');
