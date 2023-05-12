@@ -195,10 +195,22 @@
       }"
     >
       <template slot="assetName" slot-scope="text">
-        <!-- <tooltip-text :text="text"/> -->
-        <div :title="text" style="width: 264px; white-space: normal">
+        <a-tooltip>
+          <template slot="title">
+            {{ text }}
+          </template>
           {{ text }}
-        </div>
+        </a-tooltip>
+      </template>
+      <template slot="assetCode" slot-scope="text">
+        <a-tooltip>
+          <template slot="title">
+            {{ text }}
+          </template>
+          <div>
+            {{ text }}
+          </div>
+        </a-tooltip>
       </template>
       <span slot="action" slot-scope="text, record">
         <router-link
@@ -251,7 +263,7 @@
         {{ getFormat(decimalFormat(text)) }}
       </template>
     </a-table>
-    <div style="height: 70px"></div>
+    <!-- <div style="height: 70px"></div> -->
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px" />
     <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
     <!--编辑列表表头-->
@@ -322,8 +334,8 @@ const assetLabelOpt = [
   // { label: "异常", value: 0 },
 ];
 const detailColumns = [
-  { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 260, ellipsis: true },
-  { title: '资产编码', dataIndex: 'assetCode', width: 150 },
+  { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 160, ellipsis: true },
+  { title: '资产编码', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' }, width: 150, ellipsis: true },
   { title: '接管机构', dataIndex: 'ownerOrganName', width: 150 },
   { title: '宗地号', dataIndex: 'addressNo', width: 150 },
   { title: '建筑面积(㎡)', dataIndex: 'area', width: 140, scopedSlots: { customRender: 'area' } },
@@ -375,7 +387,7 @@ const detailColumns = [
   { title: '公安门牌号', dataIndex: 'houseNumber', width: 150 },
   { title: '质押情况', dataIndex: 'pledge', width: 120 },
   { title: '质押', dataIndex: 'pledgeName', width: 100 },
-  { title: '抵押', dataIndex: 'mortgagName', width: 100 },
+  { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 350 },
   { title: '相关描述', dataIndex: 'remark', width: 350 },
@@ -514,9 +526,6 @@ export default {
   },
   watch: {
     'tableObj.columns'(val) {
-      val.forEach((item) => {
-        item.ellipsis = false;
-      });
       this.tableObj.scroll.x = val.length * 120;
       // this.useForConfig();
     },
@@ -719,7 +728,6 @@ export default {
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: '全部资产标签', value: '' }, ...this.assetLabelOpt] : [];
           }
           this.label = this.assetLabelOpt.length > 0 ? '' : undefined;
-          console.log(this.assetLabelOpt);
         })
         .catch((err) => {
           this.$message.error(err || '当前组织机构下无资产标签');

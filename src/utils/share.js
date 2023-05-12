@@ -72,6 +72,7 @@ export async function initTableColumns({ columns, detailColumns, requiredColumn,
       mapRes = {
         title: ele.colName,
         dataIndex: ele.colCode,
+        width: 120, // 给新加的列默认一个宽度
       };
     }
     columns.push(mapRes);
@@ -81,8 +82,8 @@ export async function initTableColumns({ columns, detailColumns, requiredColumn,
     ele.ellipsis = true;
   });
 
+  // 操作列 放在最后
   if (requiredColumn) {
-    console.log({ requiredColumn });
     requiredColumn.forEach((ele) => {
       columns.splice(columns.length, 0, ele);
     });
