@@ -8,7 +8,7 @@
   <div class="necessaryCaaessories">
     <div class="button-box">
       <div class="buytton-l">
-        <span>费用总额：{{ statistics.expenseAmount || 0 }}元</span> <span class="p120">收入总额：{{ statistics.incomeAmount || 0 }}元</span>
+        <span>费用总额：</span>{{ statistics.expenseAmount || 0 }}元 <span class="p120">收入总额：</span>{{ statistics.incomeAmount || 0 }}元
       </div>
       <div class="buytton-nav" v-if="setType !== 'detail'">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增相关费用</SG-Button>

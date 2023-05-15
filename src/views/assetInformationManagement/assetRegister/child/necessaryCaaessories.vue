@@ -8,7 +8,7 @@
   <div class="necessaryCaaessories">
     <div class="button-box">
       <div class="buytton-l">
-        <span>配套附属总数量：{{ statistics.num || '0' }}</span> <span class="p120">总价值：{{ statistics.valueAmount || '0' }}元</span>
+        <span>配套附属总数量：</span>{{ statistics.num || '0' }} <span class="p120">总价值：</span>{{ statistics.valueAmount || '0' }}元
       </div>
       <div class="buytton-nav" v-if="setType !== 'detail'">
         <SG-Button type="primary" weaken @click="newlyFn('new')">新增配套</SG-Button>
