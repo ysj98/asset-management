@@ -303,10 +303,11 @@ const decimalFormat = (area) => {
 const numList = [
   { title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057' },
   { title: '土地面积(㎡)', key: 'area', value: 0, bgColor: '#4BD288' },
-  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF' },
-  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6' },
-  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474' },
-  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF', flag: '0' },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6', flag: '1' },
+  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#FD7474', flag: '2' },
+  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#BBC8D6', flag: '3' },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288', flag: '4' },
 ];
 export default {
   components: { SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict },
@@ -472,31 +473,8 @@ export default {
     // 点击总览数据块
     // 0运营；1闲置；2自用；3占用；4其他
     handleClickOverview({ i }) {
-      console.log(i);
-      switch (i) {
-        case 0: // 资产数量
-          this.current = '';
-          break;
-        case 1: // 土地面积
-          this.current = 4;
-          break;
-        case 2: // 运营
-          this.current = 0;
-          break;
-        case 3: // 闲置
-          this.current = 1;
-          break;
-        case 4: // 自用
-          this.current = 2;
-          break;
-        case 5: // 其他
-          this.current = 3;
-          break;
-        case null:
-          this.current = '';
-          break;
-      }
-      this.allQuery('asset');
+      this.current = i;
+      this.allQuery('');
     },
     // 列表设置
     listSet() {

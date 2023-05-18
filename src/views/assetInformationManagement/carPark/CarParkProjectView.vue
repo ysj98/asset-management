@@ -192,11 +192,11 @@ const columns = [
 const numList = [
   { title: '车场数量', key: 'placeNum', value: 0, fontColor: '#324057' },
   { title: '车场总面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#4BD288' },
-  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF' },
-  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6' },
-  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6' },
-  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474' },
-  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288' },
+  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#1890FF', flag: '0' },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#DD81E6', flag: '1' },
+  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6', flag: '2' },
+  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', flag: '3' },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288', flag: '4' },
   { title: '资产原值(元)', key: 'originalValue', value: 0, bgColor: '#1890FF' },
   { title: '最新估值(元)', key: 'marketValue', value: 0, bgColor: '#DD81E6' },
 ];
@@ -286,7 +286,6 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      // this.queryClick()
       this.queryList('click');
     },
 
@@ -332,7 +331,7 @@ export default {
         pageSize: pageLength,
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
-        flag: current ? current - 2 : null,
+        flag: current ? current : '',
         statusList: status.includes('all') ? [] : status,
       };
       if (type === 'export') {
@@ -383,7 +382,7 @@ export default {
         organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
-        flag: this.current ? this.current - 1 : null,
+        flag: this.current ? this.current : null,
       };
       this.$api.carPark.getAssetCarParkStatistics(form).then((res) => {
         if (res.data.code === '0') {

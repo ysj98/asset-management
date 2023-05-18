@@ -181,10 +181,11 @@ const columns = [
 const numList = [
   { title: '土地数量', key: 'landCount', value: 0, fontColor: '#324057' },
   { title: '土地面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#FD7474' },
-  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288' },
-  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
-  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6' },
-  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', flag: '0' },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', flag: '1' },
+  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', flag: '2' },
+  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#BBC8D6', flag: '3' },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474', flag: '4' },
 ];
 
 export default {
@@ -249,13 +250,7 @@ export default {
   methods: {
     // 点击总览数据块
     handleClickOverview({ i }) {
-      let currentTemp = 0;
-      if (i === 1) {
-        currentTemp = 5;
-      } else if (i > 1) {
-        currentTemp = i - 1;
-      }
-      this.current = currentTemp;
+      this.current = i;
       this.queryList('click');
     },
 
@@ -301,7 +296,7 @@ export default {
         pageSize: pageLength,
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
-        flag: current ? current - 1 : null,
+        flag: current ? current : null,
         statusList: this.statusList.includes('all') ? [] : this.statusList,
       };
       return this.$api.land.viewGetAssetLandList(form).then((res) => {
@@ -360,7 +355,7 @@ export default {
         organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
-        flag: this.current ? this.current - 1 : null,
+        flag: this.current ? this.current : null,
       };
       this.$api.land.viewGetAssetLandStatistics(form).then((res) => {
         if (res.data.code === '0') {
@@ -404,7 +399,7 @@ export default {
           projectId: assetProject,
           isCurrent: onlyCurrentOrgan,
           statusList: this.statusList.includes('all') ? [] : this.statusList,
-          flag: current ? current - 1 : '',
+          flag: current ? current : '',
         })
         .then((res) => {
           this.exportBtnLoading = false;

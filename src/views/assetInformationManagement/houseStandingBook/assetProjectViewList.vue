@@ -195,11 +195,11 @@ export default {
       ], // 查询条件-资产状态选项
       numList: [
         { title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
-        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
-        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
-        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
-        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
-        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
       ], // 概览数据，title 标题，value 数值，color 背景色
       columns,
       dataSource: [],
@@ -279,7 +279,6 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      // this.queryClick()
       this.queryList('click');
     },
 
@@ -326,7 +325,7 @@ export default {
         pageSize: pageLength,
         projectId: assetProject,
         isCurrent: onlyCurrentOrgan,
-        flag: current ? current - 1 : null,
+        flag: current ? current : null,
         statusList: status.includes('all') ? [] : status,
       };
       if (type === 'export') {
@@ -383,7 +382,7 @@ export default {
         organIds: this.organId.toString(),
         projectId: this.assetProject,
         isCurrent: this.onlyCurrentOrgan,
-        flag: this.current ? this.current - 1 : null,
+        flag: this.current ? this.current : null,
       };
       this.$api.assets.viewGetAssetHouseStatistics(form).then((res) => {
         if (res.data.code === '0') {

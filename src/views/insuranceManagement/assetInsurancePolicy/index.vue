@@ -33,7 +33,7 @@
     </search-container>
     <!--数据概览信息-->
     <a-spin :spinning="overviewNumSpinning">
-      <overview-number :numList="numList" isEmit @click="handleClickOverview" />
+      <overview-number :numList="numList" @click="handleClickOverview" />
     </a-spin>
     <a-table v-bind="tableObj" size="middle">
       <template slot="organName" slot-scope="text">

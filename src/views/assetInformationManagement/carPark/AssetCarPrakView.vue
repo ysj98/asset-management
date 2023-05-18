@@ -348,11 +348,11 @@ const assetLabelOpt = [
 const numList = [
   { title: '资产数量', key: 'assetCount', value: 0, fontColor: '#324057' },
   { title: '资产面积(㎡)', key: 'totalArea', value: 0, bgColor: '#4BD288' },
-  { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF' },
-  { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6' },
-  { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474' },
-  { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#BBC8D6' },
-  { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288' },
+  { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#1890FF', flag: '0' },
+  { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#DD81E6', flag: '1' },
+  { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#FD7474', flag: '2' },
+  { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#BBC8D6', flag: '3' },
+  { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288', flag: '4' },
   { title: '资产原值(元)', key: 'totalOriginalValue', value: 0, bgColor: '#1890FF' },
   { title: '资产估值(元)', key: 'totalMarketValue', value: 0, bgColor: '#DD81E6' },
 ];
@@ -650,9 +650,7 @@ export default {
     },
     // 点击总览数据块
     handleClickOverview({ i }) {
-      console.log(i, 'current');
       this.current = i;
-
       this.queryTableData({ type: '' });
     },
 
@@ -750,7 +748,7 @@ export default {
         pageNum: pageNo,
         objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
         statusList: status.includes('all') ? [] : status,
-        flag: current ? current - 2 : '',
+        flag: current ? current : '',
         type: sourceModes,
         oldSourceModes: oldSourceModes.includes('all') ? [] : oldSourceModes,
         organIds: organId,
@@ -872,7 +870,7 @@ export default {
         pageNum: pageNo,
         objectTypes: categoryId.includes('all') ? '' : categoryId.join(','),
         statusList: status.includes('all') ? [] : status,
-        flag: current ? current - 2 : '',
+        flag: current ? current : '',
         type: sourceModes,
         oldSourceModes: oldSourceModes.includes('all') ? [] : oldSourceModes,
         organIds: organId,

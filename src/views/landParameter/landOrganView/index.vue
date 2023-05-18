@@ -55,21 +55,24 @@ const numList = [
     key: 'transferOperationArea',
     value: 0,
     bgColor: '#4BD288',
+    flag: '0',
   },
-  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', flag: '1' },
   {
     title: '自用(㎡)',
     key: 'selfUserArea',
     value: 0,
     bgColor: '#DD81E6',
+    flag: '2',
   },
   {
     title: '占用(㎡)',
     key: 'occupationArea',
     value: 0,
     bgColor: '#FD7474',
+    flag: '3',
   },
-  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', flag: '4' },
 ];
 export default {
   name: 'index',
@@ -145,7 +148,7 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: '' });
+      this.queryTableData({ type: 'search' });
     },
 
     // 查看组织机构视图详情
@@ -169,7 +172,7 @@ export default {
           organIds: organId.toString(),
           pageSize: pageLength,
           pageNum: pageNo,
-          flag: current ? current - 1 : '',
+          flag: current ? current : '',
           statusList: statusList.includes('all') ? [] : statusList,
         })
         .then(({ data: res }) => {
@@ -248,7 +251,7 @@ export default {
       this.$api.land
         .organViewTotal({
           organIds: organId.toString(),
-          flag: current ? current - 1 : '',
+          flag: current ? current : '',
           statusList: statusList.includes('all') ? [] : statusList,
         })
         .then(({ data: res }) => {
@@ -298,7 +301,7 @@ export default {
       this.$api.land
         .organViewExport({
           organIds: organId.toString(),
-          flag: current ? current - 1 : '',
+          flag: current ? current : '',
           pageSize: 1,
           pageNum: 1,
         })

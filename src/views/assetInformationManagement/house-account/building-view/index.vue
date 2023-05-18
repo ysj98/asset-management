@@ -171,11 +171,11 @@ export default {
       }, // 查询条件-组织机构-资产项目-楼栋对象
       numList: [
         { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
-        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
-        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
-        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
-        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
-        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
+        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
         { title: '楼栋面积(㎡)', key: 'totalBuildArea', value: 0, fontColor: '#324057', code: '1006', isAble: 'Y' },
       ], // 概览数据，title 标题，value 数值，color 背景色
       tableObj: {
@@ -402,7 +402,7 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: '' });
+      this.queryTableData({ type: 'search' });
     },
     // 查看楼栋视图详情
     handleViewDetail(record) {
@@ -445,7 +445,7 @@ export default {
         pageSize: pageLength,
         label: labelName,
         pageNum: pageNo,
-        flag: current ? current - 1 : '',
+        flag: current ? current : '',
       };
       if (labelName === '全部资产标签' || !labelName) {
         delete data.label;
@@ -523,7 +523,7 @@ export default {
         current,
       } = this;
       let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList;
-      let data = { organId, buildIdList, projectIdList, statusList, label: labelName, flag: current ? current - 1 : '' };
+      let data = { organId, buildIdList, projectIdList, statusList, label: labelName, flag: current ? current : '' };
       if (labelName === '全部资产标签' || !labelName) {
         delete data.label;
       }

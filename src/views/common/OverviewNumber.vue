@@ -12,7 +12,7 @@
       :class="['view_item', isEmit && i === current ? 'current_selected' : '']"
       :style="{
         width: itemWidth,
-        cursor: isEmit ? 'pointer' : 'default',
+        cursor: isEmit && item.flag ? 'pointer' : 'default',
         backgroundColor: item.bgColor || '',
       }"
     >
@@ -23,15 +23,6 @@
 </template>
 
 <script>
-// 概览数据，title 标题，value 数值，color 背景色 isAble 是否启用
-const numList = [
-  { title: '所有资产(㎡)', key: 'area', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
-  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' }, // 0
-  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
-  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
-  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
-  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
-];
 import { getFormat } from 'utils/utils';
 export default {
   name: 'OverviewNumber',
@@ -52,6 +43,7 @@ export default {
   data() {
     return {
       current: null, // 当前选中的区域下标,
+      flag: null,
       eventName: this.isEmit ? 'click' : null, // 是否绑定click事件
       itemWidth: `${Math.floor(100000 / this.numList.length) / 1000}%`, // 每个方块的宽度
     };
@@ -63,18 +55,13 @@ export default {
       return getFormat(val);
     },
     // 点击事件
-    handleClick(item, index) {
-      // item: 当前区域的信息，index：当前区域的位置下标
-      this.current = this.current === index ? null : index; // 重复点击时(第二次)取消选中当前项
-      var i = null;
-      if (this.current !== null) {
-        numList.forEach((sub, sub_i) => {
-          if (sub.key === item.key) {
-            i = sub_i;
-          }
-        });
+    handleClick(item = {}, index) {
+      // item: 当前区域的信息
+      if (this.isEmit && item.flag) {
+        this.flag = this.flag === item.flag ? null : item.flag; // 重复点击时(第二次)取消选中当前项
+        this.current = this.flag ? index : null;
+        this.$emit('click', { item, i: this.flag });
       }
-      this.isEmit && this.$emit('click', { item: i ? item : {}, i });
     },
   },
 };

@@ -106,11 +106,11 @@ const assetLabelOpt = [
 const numList = [
   { title: '车场数量', key: 'placeNums', value: 0, fontColor: '#324057' },
   { title: '车场总面积(㎡)', key: 'totalArea', value: 0, bgColor: '#FD7474' },
-  { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288' },
-  { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF' },
-  { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6' },
-  { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474' },
-  { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288' },
+  { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', flag: '0' },
+  { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', flag: '1' },
+  { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', flag: '2' },
+  { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', flag: '3' },
+  { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#4BD288', flag: '4' },
 ];
 export default {
   name: 'index',
@@ -270,7 +270,7 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: '' });
+      this.queryTableData({ type: 'search' });
     },
     // 查看车场视图详情
     handleViewDetail(record) {
@@ -314,7 +314,7 @@ export default {
         pageSize: pageLength,
         label: labelName,
         pageNum: pageNo,
-        flag: current ? current - 2 : '',
+        flag: current ? current : '',
       };
       data.placeIdList = data.placeIdList.length === 1 && !data.placeIdList[0] ? [] : data.placeIdList;
       if (labelName === '全部资产标签' || !labelName) {
@@ -425,7 +425,7 @@ export default {
         current,
       } = this;
       // let statusList = this.organProjectBuildingValue.statusList.includes('all') ? [] : this.organProjectBuildingValue.statusList
-      let data = { organId, placeIdList, projectIdList, label: labelName, flag: current ? current - 2 : '' };
+      let data = { organId, placeIdList, projectIdList, label: labelName, flag: current ? current : '' };
       if (labelName === '全部资产标签' || !labelName) {
         delete data.label;
       }

@@ -495,11 +495,11 @@ export default {
       key: 0, // 更新Modal包裹的子组件
       numList: [
         { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
-        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
-        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
-        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
-        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
-        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
+        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
       ], // 概览数据，title 标题，value 数值，color 背景色
       checkedHeaderArr: [], // 格式如['name', 'age']
       exportHouseBtn: false, // 导出房屋卡片button loading标志
@@ -604,6 +604,9 @@ export default {
                 e.title = item.alias || item.statusName;
               }
             });
+            this.numList = this.numList.filter((i) => {
+              return i.isAble === 'Y';
+            });
             // 列表设置里面的命名也同步更新
             if (item.code == 1001) {
               this.aliasConfig.transferOperationArea = item.alias || item.statusName;
@@ -653,9 +656,6 @@ export default {
                 }
               }
             });
-          });
-          this.numList = this.numList.filter((i) => {
-            return i.isAble === 'Y';
           });
         } else {
           this.$message.error(res.message || '系统内部错误');
@@ -778,7 +778,7 @@ export default {
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
-      this.queryTableData({ type: '' });
+      this.queryTableData({ type: 'search' });
     },
 
     // 根据organId查询资产分类选项
@@ -945,7 +945,7 @@ export default {
         ownershipUse,
         supportMaterial,
         statusList: status.includes('all') ? [] : status,
-        flag: current ? current - 1 : '',
+        flag: current ? current : '',
         useTypes: useType.includes('all') ? '' : useType.join(','),
         sourceModes: sourceModes.includes('all') ? '' : sourceModes.join(','),
         oldSourceModes: oldSourceModes.includes('all') ? [] : oldSourceModes,
@@ -1085,7 +1085,7 @@ export default {
               organIds: organId,
               buildIdList,
               projectIdList,
-              flag: current ? current - 1 : '',
+              flag: current ? current : '',
               province,
               city,
               region,

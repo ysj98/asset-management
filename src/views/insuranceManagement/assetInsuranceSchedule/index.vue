@@ -31,7 +31,7 @@
     </search-container>
     <!--数据概览信息-->
     <a-spin :spinning="overviewNumSpinning">
-      <overview-number :numList="numList" isEmit @click="handleClickOverview" />
+      <overview-number :numList="numList" @click="handleClickOverview" />
     </a-spin>
     <a-table v-bind="tableObj" class="custom-table td-pd70">
       <template slot="action" slot-scope="text, record">
