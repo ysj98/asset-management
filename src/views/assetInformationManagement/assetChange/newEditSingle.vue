@@ -410,7 +410,7 @@
               <a-input size="small" :maxLength="30" v-model="record.newAssetName" />
             </template>
             <template v-if="changeType === '7'" slot="newAssetCode" slot-scope="text, record">
-              <a-input size="small" :maxLength="30" v-model="record.newAssetCode" />
+              <a-input size="small" :maxLength="100" v-model="record.newAssetCode" />
             </template>
             <template v-if="changeType === '7' && ['1'].includes(assetType)" slot="newDecorationSituation" slot-scope="text, record">
               <a-input size="small" :maxLength="200" v-model="record.newDecorationSituation" />
@@ -680,10 +680,8 @@ export default {
         .querySettingByOrganId({ organId: this.organId })
         .then((res) => {
           if (res.data.code == 0) {
-            let hiddenItem = [];
             res.data.data.map((item) => {
               changeDirectionUse.map((e, index) => {
-                console.log(e.title.includes(item.statusName));
                 if (e.title.includes(item.statusName)) {
                   e.title = item.alias || item.statusName;
                   if (item.isAble === 'N') {
@@ -692,7 +690,6 @@ export default {
                 }
               });
             });
-            console.log(res.data.data, changeDirectionUse);
           } else {
             this.$message.error(res.message || '系统内部错误');
           }
@@ -884,20 +881,34 @@ export default {
                   return;
                 }
               } else {
-                if (conditionalJudgment.includes(this.tableData[i].operationArea)) {
-                  this.$message.info('请输入运营面积');
+                if (
+                  // 运营面积
+                  conditionalJudgment.includes(this.tableData[i].operationArea) &&
+                  this.columns.some((item) => item.dataIndex === 'operationArea')
+                ) {
+                  this.$message.info(`请输入${this.columns.filter((item) => item.dataIndex === 'operationArea')[0].title}`);
                   return;
-                } else if (conditionalJudgment.includes(this.tableData[i].selfUserArea)) {
-                  this.$message.info('请输入自用面积');
+                } else if (
+                  // 自用面积
+                  conditionalJudgment.includes(this.tableData[i].selfUserArea) &&
+                  this.columns.some((item) => item.dataIndex === 'selfUserArea')
+                ) {
+                  this.$message.info(`请输入${this.columns.filter((item) => item.dataIndex === 'selfUserArea')[0].title}`);
                   return;
-                } else if (conditionalJudgment.includes(this.tableData[i].idleArea)) {
-                  this.$message.info('请输入闲置面积');
+                } else if (conditionalJudgment.includes(this.tableData[i].idleArea) && this.columns.some((item) => item.dataIndex === 'idleArea')) {
+                  // 闲置面积
+                  this.$message.info(`请输入${this.columns.filter((item) => item.dataIndex === 'idleArea')[0].title}`);
                   return;
-                } else if (conditionalJudgment.includes(this.tableData[i].occupationArea)) {
-                  this.$message.info('请输入占用面积');
+                } else if (
+                  // 占用面积
+                  conditionalJudgment.includes(this.tableData[i].occupationArea) &&
+                  this.columns.some((item) => item.dataIndex === 'occupationArea')
+                ) {
+                  this.$message.info(`请输入${this.columns.filter((item) => item.dataIndex === 'occupationArea')[0].title}`);
                   return;
-                } else if (conditionalJudgment.includes(this.tableData[i].otherArea)) {
-                  this.$message.info('请输入其他面积');
+                } else if (conditionalJudgment.includes(this.tableData[i].otherArea) && this.columns.some((item) => item.dataIndex === 'otherArea')) {
+                  // 其他面积
+                  this.$message.info(`请输入${this.columns.filter((item) => item.dataIndex === 'otherArea')[0].title}`);
                   return;
                 }
               }

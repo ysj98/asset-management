@@ -362,11 +362,11 @@ const detailColumns = [
   { title: '权属备注', dataIndex: 'ownershipRemark', width: 150 },
   { title: '来源方式', dataIndex: 'sourceName', width: 150, defaultHide: true },
   { title: '接管时间', dataIndex: 'startDate', width: 150 },
-  { title: '运营(㎡)', dataIndex: 'transferOperationArea', width: 140, scopedSlots: { customRender: 'transferOperationArea' } },
-  { title: '自用(㎡)', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' } },
-  { title: '闲置(㎡)', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' } },
-  { title: '占用(㎡)', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' } },
-  { title: '其他(㎡)', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' } },
+  { title: '运营', dataIndex: 'transferOperationArea', width: 140, scopedSlots: { customRender: 'transferOperationArea' } },
+  { title: '自用', dataIndex: 'selfUserArea', width: 100, scopedSlots: { customRender: 'selfUserArea' } },
+  { title: '闲置', dataIndex: 'idleArea', width: 100, scopedSlots: { customRender: 'idleArea' } },
+  { title: '占用', dataIndex: 'occupationArea', width: 100, scopedSlots: { customRender: 'occupationArea' } },
+  { title: '其他', dataIndex: 'otherArea', width: 100, scopedSlots: { customRender: 'otherArea' } },
   { title: '财务卡片编码', dataIndex: 'financialCode', width: 150 },
   { title: '资产原值(元)', dataIndex: 'originalValue', width: 100, scopedSlots: { customRender: 'originalValue' } },
   { title: '最新估值(元)', dataIndex: 'marketValue', width: 100, scopedSlots: { customRender: 'marketValue' } },
@@ -568,7 +568,7 @@ export default {
     this.getOldSourceOptions();
   },
   created() {
-    //this.initHeader()
+    // this.initHeader();
     initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   activated() {
@@ -732,7 +732,8 @@ export default {
         .catch((err) => {
           this.$message.error(err || '当前组织机构下无资产标签');
         });
-    }, // 多选
+    },
+    // 多选
     onSelectChange(selectedRowKeys, selectedRows) {
       console.log(selectedRowKeys, selectedRows);
       this.selectedRowKeys = selectedRowKeys;

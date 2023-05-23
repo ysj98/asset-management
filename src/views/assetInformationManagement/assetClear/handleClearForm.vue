@@ -15,12 +15,12 @@
               <a-input
                 placeholder="请输入出库单名称"
                 :style="allStyle"
-                :max="30"
+                :max="128"
                 v-if="editable"
                 v-decorator="[
                   'cleaningOrderCode',
                   {
-                    rules: [{ required: true, max: 30, whitespace: true, message: '请输入出库单编号(不超过30字符)' }],
+                    rules: [{ required: true, max: 128, whitespace: true, message: '请输入出库单编号(不超过128字符)' }],
                     initialValue: detail.cleaningOrderCode,
                   },
                 ]"
