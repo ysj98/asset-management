@@ -386,10 +386,10 @@ export default {
         this.tableObj.dataSource = dataSource.concat({
           assetId: '-1111',
           projectName: '合计：',
-          firstMarketValue: market,
-          originalValue: original,
-          assetValuation: asset,
-          assessmentValue: assetNew,
+          firstMarketValue: market.toFixed(2),
+          originalValue: original.toFixed(2),
+          assetValuation: asset.toFixed(2),
+          assessmentValue: assetNew.toFixed(2),
         });
         console.log(this.tableObj.dataSource);
       }
