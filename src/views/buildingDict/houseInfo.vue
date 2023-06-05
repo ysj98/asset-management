@@ -214,7 +214,7 @@ let queryCondition = {
   houseCategory: '', //建筑形态
   houseType: '', //房间类型
   resType: '', // 房间用途
-  status: '', // 房间状态
+  status: '1', // 房间状态
   isCurrent: 0,
   isRegister: '', // 是否登记资产
 };
@@ -230,8 +230,8 @@ const houseTypeOpt = [{ label: '全部房间类型', value: '' }];
 const resTypeOpt = [{ label: '全部房间用途', value: '' }];
 const statusOpt = [
   { label: '全部状态', value: '' },
-  { label: '有效', value: '1' },
-  { label: '无效', value: '0' },
+  { label: '有效状态', value: '1' },
+  { label: '无效状态', value: '0' },
 ];
 const registerList = [
   { label: '是否登记资产', value: '' },
