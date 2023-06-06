@@ -46,9 +46,11 @@
               item.name
             }}</a-select-option>
           </a-select>
-          <!-- <a-select :style="allStyle" placeholder="资产状态" :defaultValue="selecData.status" @change="approvalStatusFn">
-            <a-select-option :title="item.name" v-for="(item, index) in statusData" :key="index" :value="item.value">{{item.name}}</a-select-option>
-          </a-select> -->
+          <a-select :style="allStyle" :maxTagCount="1" placeholder="资产状态" v-model="selecData.multiStatus" @change="statusChange" mode="multiple">
+            <a-select-option :title="item.title" v-for="(item, index) in statusData" :key="index" :value="item.value">{{
+              item.title
+            }}</a-select-option>
+          </a-select>
           <a-input :style="allStyle" v-model="selecData.assetNameCode" placeholder="资产名称/编码" />
           <SG-Button type="primary" @click="query">查询</SG-Button>
         </div>
@@ -167,16 +169,23 @@ export default {
       objectTypeData: [],
       statusData: [
         {
-          name: '全部资产状态',
-          value: '',
+          title: '全部资产状态',
+          value: 'all',
         },
+        { title: '待入库', value: '0' },
+        { title: '正常', value: '1' },
+        { title: '报废', value: '2' },
+        { title: '已转让', value: '3' },
+        { title: '报损', value: '4' },
+        { title: '入库中', value: '7' },
       ],
-      allStyle: 'width: 140px; margin-right: 10px;',
+      allStyle: 'width: 140px; margin-right: 10px; height: 32px;',
       show: false,
       assetTypeDisabled: false,
       selecData: {
         assetType: '', // 资产类型
         objectType: '', // 资产类别
+        multiStatus: ['1'],
         assetNameCode: '', // 资产名称/编码
         queryType: this.queryType, // 查询类型 1 资产变动，2 资产清理 3权属登记
         projectId: undefined, // 资产项目ID
@@ -212,6 +221,11 @@ export default {
     // 搜索过滤选项
     filterOption(input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    },
+    // 全选与其他选项互斥处理
+    statusChange(value) {
+      let lastIndex = value.length - 1;
+      this.selecData.multiStatus = value[lastIndex] === 'all' ? ['all'] : value.filter((m) => m !== 'all');
     },
     // 选中的
     onSelectChange(selectedRowKeys) {
@@ -373,14 +387,10 @@ export default {
       this.loading = true;
       let obj = {
         organId: this.organId,
-        assetType: this.selecData.assetType, // 资产类型
-        objectType: this.selecData.objectType, // 资产类别
-        assetNameCode: this.selecData.assetNameCode, // 资产名称/编码
         queryType: Number(this.queryType), // 查询类型 1 资产变动，2 资产清理 3权属登记
-        projectId: this.selecData.projectId, // 资产项目ID
-        pageSize: this.selecData.pageSize,
-        pageNum: this.selecData.pageNum,
+        ...this.selecData,
       };
+      obj.multiStatus = obj.multiStatus.includes('all') ? '0,1,2,3,4,7' : obj.multiStatus.join(',');
       if (this.projectIdMultiple) {
         obj.projectIds = obj.projectId && obj.projectId.toString();
         delete obj.projectId;
@@ -389,6 +399,7 @@ export default {
         this.loading = false;
         return;
       }
+
       this.$api.assets.assetListPage(obj).then((res) => {
         if (Number(res.data.code) === 0) {
           let data = res.data.data.data;
