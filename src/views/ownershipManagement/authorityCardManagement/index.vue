@@ -21,8 +21,8 @@
         >
       </div>
       <div slot="headerForm"></div>
-      <div slot="contentForm" class="search-content-box" style="position: absolute">
-        <div class="search-from-box" style="float: right; text-align: left">
+      <div slot="contentForm" class="search-content-box">
+        <div class="search-from-box">
           <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
           <a-select
             optionFilterProp="children"
@@ -995,6 +995,8 @@ export default {
     justify-content: space-between;
     .search-from-box {
       flex: 1;
+      display: flex;
+      flex-wrap: wrap;
     }
     .two-row-box {
       padding-top: 14px;
