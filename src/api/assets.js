@@ -122,6 +122,14 @@ export function assetListPage(data) {
 }
 
 // 资产登记
+// 资产登记-下载批量导入模板
+export function downloadTemplateBatch(data) {
+  return axiosPost(assets.assetRegister.downloadTemplateBatch, data, true, false, { responseType: 'blob' });
+}
+// 资产登记-批量导入
+export function uploadTemplateBatch(data) {
+  return axiosPost(assets.assetRegister.uploadTemplateBatch, data, true, false, { responseType: 'blob' });
+}
 // 资产登记-删除
 export function deleteByRegisterOrderId(data) {
   return axiosPost(assets.assetRegister.deleteByRegisterOrderId, data);

@@ -187,6 +187,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_REGISTER_VERIFY: 'zcgl_asset_register_verify',
   // 资产登记-撤销核实
   ASSET_REGISTER_UNDOCHECK: 'zcgl_asset_register_undoCheck',
+  // 资产登记-批量导入
+  BATCH_INPUT: 'zcgl_asset_batch_input',
 
   /**
    * 资产项目管理APM （asset-project-manage）

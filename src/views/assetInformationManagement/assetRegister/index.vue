@@ -6,61 +6,40 @@
     <SG-SearchContainer size="fold" background="white" v-model="toggle" @input="searchContainerFn">
       <div slot="headBtns">
         <a-button type="primary" @click="newChangeSheetFn">新建登记单</a-button>
+        <a-button type="primary" style="margin-left: 10px;" v-power="ASSET_MANAGEMENT.BATCH_INPUT"
+          @click="handelBatchInput">批量导入</a-button>
         <div style="position: absolute; top: 20px; right: 76px; display: flex">
-          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
-          <a-input-search
-            v-model="queryCondition.registerOrderName"
-            placeholder="登记单名称/编号"
-            :maxLength="30"
-            style="width: 140px; margin-right: 10px"
-            @search="allQuery"
-          />
+          <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle"
+            :showSearch="true"></treeSelect>
+          <a-input-search v-model="queryCondition.registerOrderName" placeholder="登记单名称/编号" :maxLength="30"
+            style="width: 140px; margin-right: 10px" @search="allQuery" />
         </div>
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
       </div>
       <div slot="form" class="formCon">
-        <a-select
-          :maxTagCount="1"
-          mode="multiple"
-          :style="allStyle"
-          :allowClear="true"
-          placeholder="全部资产项目"
-          v-model="queryCondition.projectId"
-          :showSearch="true"
-          :filterOption="filterOption"
-        >
-          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{ item.name }}</a-select-option>
+        <a-select :maxTagCount="1" mode="multiple" :style="allStyle" :allowClear="true" placeholder="全部资产项目"
+          v-model="queryCondition.projectId" :showSearch="true" :filterOption="filterOption">
+          <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">{{
+            item.name }}</a-select-option>
         </a-select>
-        <a-select
-          :maxTagCount="1"
-          :style="allStyle"
-          mode="multiple"
-          placeholder="全部资产类型"
-          :tokenSeparators="[',']"
-          @select="assetTypeDataFn"
-          v-model="queryCondition.assetType"
-        >
+        <a-select :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部资产类型" :tokenSeparators="[',']"
+          @select="assetTypeDataFn" v-model="queryCondition.assetType">
           <a-select-option :title="item.name" v-for="(item, index) in assetTypeData" :key="index" :value="item.value">{{
             item.name
           }}</a-select-option>
         </a-select>
-        <a-select
-          :maxTagCount="1"
-          style="width: 160px; margin-right: 10px"
-          mode="multiple"
-          placeholder="全部状态"
-          :tokenSeparators="[',']"
-          @select="approvalStatusFn"
-          v-model="queryCondition.approvalStatus"
-        >
-          <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">{{
-            item.name
-          }}</a-select-option>
+        <a-select :maxTagCount="1" style="width: 160px; margin-right: 10px" mode="multiple" placeholder="全部状态"
+          :tokenSeparators="[',']" @select="approvalStatusFn" v-model="queryCondition.approvalStatus">
+          <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index"
+            :value="item.value">{{
+              item.name
+            }}</a-select-option>
         </a-select>
         <div class="box">
-          <SG-DatePicker label="创建日期" style="width: 200px" pickerType="RangePicker" v-model="createDateValue" format="YYYY-MM-DD"></SG-DatePicker>
+          <SG-DatePicker label="创建日期" style="width: 200px" pickerType="RangePicker" v-model="createDateValue"
+            format="YYYY-MM-DD"></SG-DatePicker>
         </div>
       </div>
     </SG-SearchContainer>
@@ -68,23 +47,22 @@
     <overview-number :numList="numList" />
     <div class="table-layout-fixed">
       <!-- ref="table_box" -->
-      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false" :scroll="scrollHeight">
+      <a-table :loading="loading" :columns="columns" :dataSource="tableData" size="middle" :pagination="false"
+        :scroll="scrollHeight">
         <template slot="operation" slot-scope="text, record">
           <div class="tab-opt">
-            <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)"></OperationPopover>
+            <OperationPopover :operationData="record.operationDataBtn" @operationFun="operationFun($event, record)">
+            </OperationPopover>
           </div>
         </template>
       </a-table>
     </div>
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-    <SG-FooterPagination
-      :pageLength="queryCondition.pageSize"
-      :totalCount="count"
-      location="absolute"
-      :noPageTools="noPageTools"
-      v-model="queryCondition.pageNum"
-      @change="handleChange"
-    />
+    <SG-FooterPagination :pageLength="queryCondition.pageSize" :totalCount="count" location="absolute"
+      :noPageTools="noPageTools" v-model="queryCondition.pageNum" @change="handleChange" />
+    <!-- 批量导入导出 -->
+    <exportAndDownFile v-if="batchInputShow" ref="exportAndDownFile" prompt="(包含模板说明)" templateName="房屋资产导入模版"
+      @cancelFn="cancelFn" @down="handleDown" @upload="upload" @changeTreeFile="changeTreeFile" />
   </div>
 </template>
 
@@ -95,6 +73,8 @@ import moment from 'moment';
 import OperationPopover from '@/components/OperationPopover';
 import noDataTips from '@/components/noDataTips';
 import OverviewNumber from 'src/views/common/OverviewNumber';
+import exportAndDownFile from '@/components/downFile'
+import { win } from '@/utils/utils'
 const approvalStatusData = [
   {
     name: '全部状态',
@@ -174,10 +154,12 @@ const columns = [
   },
 ];
 export default {
-  components: { TreeSelect, noDataTips, OperationPopover, OverviewNumber },
+  components: { TreeSelect, noDataTips, OperationPopover, OverviewNumber, exportAndDownFile },
   props: {},
   data() {
     return {
+      exportOriganId: '', // 导出组织机构id
+      batchInputShow: false, // 批量导出
       checkNick: false,
       toggle: false,
       scrollHeight: { y: 'calc(100vh - 460px)' },
@@ -221,6 +203,90 @@ export default {
   },
   computed: {},
   methods: {
+    // 批量导出按钮
+    handelBatchInput() {
+      this.batchInputShow = true
+    },
+    // 批量导出弹框关闭
+    cancelFn() {
+      this.batchInputShow = false
+    },
+    // 批量导出弹框下载
+    handleDown() {
+      if (!this.exportOriganId) {
+        this.$message.info('请先选择组织机构!')
+        return
+      }
+      let loadingName = this.SG_Loding('请求中...')
+      this.$api.assets.downloadTemplateBatch({ organId: this.exportOriganId }).then((res) => {
+        if (Number(res.data.code) === 0) {
+          this.DE_Loding(loadingName).then(() => {
+            this.cancelFn()
+            this.$SG_Modal.confirm({
+              width: '380px',
+              icon: () => <a-icon style='font-size: 80px;background: none;padding-top: 40px;' type="exclamation-circle" theme="twoTone" />,
+              content: () => <div><p style='font-weight: bold;font-size: 16px'>数据批量处理中……</p><p style='font-size: 14px'>可前往[设置-初始化-导入导出记录]查看结果!</p></div>,
+              okText: '前往',
+              cancelText: '稍后再看',
+              type: 'confirm',
+              onOk() {
+                win.openPortalMenu('/web/portal-report/#/download', '导入导出记录查询')
+              },
+              onCancel() {
+                console.log('取消')
+              }
+            })
+          })
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$message.error(res.data.message);
+          })
+        }
+      });
+    },
+    // 批量导出弹框上传
+    upload(val) {
+      if (!this.exportOriganId) {
+        this.$message.info('请先选择组织机构!')
+        return
+      }
+      let fileData = new FormData()
+      fileData.append('file', val)
+      fileData.append('organId', this.exportOriganId)
+      let loadingName = this.SG_Loding('请求中...')
+      this.$api.assets.uploadTemplateBatch(fileData).then(res => {
+        if (res.data.code === '0') {
+          this.DE_Loding(loadingName).then(() => {
+            this.cancelFn()
+            this.$SG_Modal.confirm({
+              width: '380px',
+              icon: () => <a-icon style='font-size: 80px;background: none;padding-top: 40px;' type="exclamation-circle" theme="twoTone" />,
+              content: () => <div><p style='font-weight: bold;font-size: 16px'>数据批量处理中……</p><p style='font-size: 14px'>可前往[设置-初始化-导入导出记录]查看结果!</p></div>,
+              okText: '前往',
+              cancelText: '稍后再看',
+              type: 'confirm',
+              onOk() {
+                win.openPortalMenu('/web/portal-report/#/download', '导入导出记录查询')
+              },
+              onCancel() {
+                console.log('取消')
+              }
+            })
+          })
+        } else {
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(res.data.message || '系统内部错误')
+          })
+        }
+      }, () => {
+        this.DE_Loding(loadingName).then(() => {
+          this.$SG_Message.error('导入失败！')
+        })
+      })
+    },
+    changeTreeFile(organId) {
+      this.exportOriganId = organId
+    },
     // 获取是否资产自动入库 设置 checkNick
     async getApproveConfig() {
       let {
@@ -533,10 +599,12 @@ export default {
     // vertical-align: middle;
     margin-right: 10px;
   }
+
   .nav {
     display: inline-block;
     vertical-align: middle;
   }
+
   .tab-opt {
     span {
       padding-right: 10px;
@@ -544,15 +612,18 @@ export default {
       cursor: pointer;
     }
   }
+
   .custom-table {
     padding-bottom: 60px;
   }
+
   .formCon {
     display: flex;
     width: 100%;
     justify-content: flex-end;
     flex-wrap: wrap;
-    > * {
+
+    >* {
       margin-right: 10px;
       margin-bottom: 10px;
       position: relative;

@@ -151,6 +151,10 @@ export const assets = {
   },
   // 资产登记
   assetRegister: {
+    // 资产登记-下载批量导入模板
+    downloadTemplateBatch: '/ams/registerOrder/downloadTemplateBatch',
+    // 资产登记-批量导入
+    uploadTemplateBatch: '/ams/registerOrder/uploadTemplateBatch',
     // 资产登记-删除
     deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
     // 资产登记-列表统计
