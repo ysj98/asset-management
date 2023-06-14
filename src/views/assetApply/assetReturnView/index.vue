@@ -430,25 +430,6 @@ export default {
         this.loading = false;
       });
     },
-    // 删除项目
-    // confirmDelete (registerId) {
-    //   this.loading = true
-    //   this.$api.useManage.deleteReceive({receiveId: registerId}).then(r => {
-    //     this.loading = false
-    //     let res = r.data
-    //     if (res && String(res.code) === '0') {
-    //       this.$message.success('删除成功')
-    //       // 更新列表
-    //       const { pageNo, pageLength } = this.paginationObj
-    //       return this.query()
-    //       //return this.queryTableData({pageNo, pageLength})
-    //     }
-    //     throw res.message || '删除失败'
-    //   }).catch(err => {
-    //     this.loading = false
-    //     this.$message.error(err || '删除失败')
-    //   })
-    // },
     allQuery() {
       this.queryCondition.pageNum = 1;
       this.queryCondition.pageSize = 10;
