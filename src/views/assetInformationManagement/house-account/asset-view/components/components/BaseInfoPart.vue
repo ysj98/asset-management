@@ -87,6 +87,7 @@ export default {
         { title: '抵押', key: 'mortgageName' },
         { title: '涉诉', key: 'lawsuitName' },
         { title: '涉诉情况', key: 'lawsuitRemark' },
+        { title: '是否缴纳土地出让金', key: 'isLandSell' },
         { title: '相关描述', key: 'remark', span: 16 },
         { title: '附件', key: 'attachmentList', span: 16 },
         // {title: '资产二维码', key: 'QRCode', span: 24}

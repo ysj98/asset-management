@@ -31,6 +31,7 @@ export const columnsData = [
   { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
+  { title: '是否缴纳土地出让金', dataIndex: 'isLandSell', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' } },
 ];
 
@@ -188,6 +189,7 @@ export const landData = [
   { title: '无证原因', dataIndex: 'noShipTypeName', width: 100 },
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
+  { title: '是否缴纳土地出让金', dataIndex: 'isLandSell', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' } },
 ];
 

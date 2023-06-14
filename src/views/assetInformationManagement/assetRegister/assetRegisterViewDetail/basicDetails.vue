@@ -126,6 +126,7 @@ export default {
         { text: '装修情况', value: 'decorationSituation', assetType: [HOUSE] },
         { text: '债权金额(元)', value: 'creditorAmount' },
         { text: '债务金额(元)', value: 'debtAmount' },
+        { text: '是否缴纳土地出让金', value: 'isLandSell', assetType: [HOUSE,LAND] },
       ];
       return info.filter(this.handleInfoArr);
     },
