@@ -413,7 +413,7 @@ let proRouter = [
   },
   {
     path: '/houseStatusConfig',
-    title: '房屋状态设置',
+    title: '资产使用方向设置',
     component: () => import('@/views/houseStatusConfig/index.vue'),
   },
   {

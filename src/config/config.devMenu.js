@@ -126,7 +126,7 @@ export default [
     title: '基础信息管理',
     children: [
       {
-        title: '房屋状态设置',
+        title: '资产使用方向设置',
         path: '/houseStatusConfig',
       },
       {
