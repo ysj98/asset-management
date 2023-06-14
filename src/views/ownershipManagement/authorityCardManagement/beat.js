@@ -18,7 +18,7 @@ export const accessCard = [
     required: true,
   },
   {
-    label: '委托管理单位',
+    label: '被委托管理单位',
     attrCode: 'entrustOrganization',
     formType: 'input',
     attrValue: '',
@@ -255,7 +255,7 @@ export const titleDeed = [
     chooseArray: [],
     formType: 'select',
     attrValue: '',
-    required: true,
+    required: false,
   },
   {
     label: '建筑面积(㎡)',
@@ -448,7 +448,7 @@ export const landDeed = [
     attrCode: 'rigisterDate',
     formType: 'date',
     attrValue: '',
-    required: true,
+    required: false,
   },
   {
     label: '交接日期',
