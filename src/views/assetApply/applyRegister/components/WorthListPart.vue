@@ -11,7 +11,7 @@
           </div>
           <div class="right" style="margin-bottom: 8px">
             <SG-Button icon="plus" type="primary" ghost @click="handleAddModal(true)" style="margin-right: 10px">添加资产</SG-Button>
-            <SG-Button icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
+            <SG-Button class="red" icon="delete" type="primary" ghost @click="handleDelete">删除</SG-Button>
           </div>
         </div>
       </div>

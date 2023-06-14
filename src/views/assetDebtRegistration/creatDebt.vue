@@ -234,7 +234,7 @@
               <a-input size="small" v-model="record.amount" @change="checkAmount" />
             </template>
             <template slot="operation" slot-scope="text, record, index">
-              <a @click="deleteRe(index)">删除</a>
+              <a class="red" @click="deleteRe(index)">删除</a>
             </template>
           </a-table>
         </div>

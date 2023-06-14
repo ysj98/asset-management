@@ -108,7 +108,7 @@
             >编辑</a
           >
           <a
-            class="operation-btn"
+            class="operation-btn red"
             v-show="+record.approvalStatus === 0 || +record.approvalStatus === 3"
             @click="deleteClearForm(record)"
             v-power="ASSET_MANAGEMENT.ASSET_CLEAR_DELETE"

@@ -26,7 +26,7 @@
         </template>
         <!-- 操作 -->
         <template #action="text, record">
-          <a @click="handleDelete(record)">删除</a>
+          <a class="red" @click="handleDelete(record)">删除</a>
         </template>
       </a-table>
       <template #footer>

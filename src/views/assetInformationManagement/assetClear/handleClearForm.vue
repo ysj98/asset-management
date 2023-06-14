@@ -172,7 +172,7 @@
           </div>
           <a-table :columns="columnsCom" :dataSource="dataSource" size="middle" :pagination="false">
             <template slot="operation" slot-scope="text, record">
-              <a class="operation-btn" @click="deleteFn(record)">删除</a>
+              <a class="operation-btn red" @click="deleteFn(record)">删除</a>
             </template>
           </a-table>
           <div class="table-space-pagination"></div>

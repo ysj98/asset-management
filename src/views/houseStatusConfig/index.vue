@@ -47,7 +47,7 @@ const columns = [
     key: 'code',
   },
   {
-    title: '状态名称',
+    title: '使用方向名称',
     dataIndex: 'statusName',
     key: 'statusName',
   },

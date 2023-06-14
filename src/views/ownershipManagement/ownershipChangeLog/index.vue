@@ -12,7 +12,7 @@
       </div>
     </SG-SearchContainer>
     <div>
-      <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false" :scroll="{ y: 510 }">
+      <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false" :scroll="{ x: 1200 }">
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" @click="operationFun(record)">详情</a>
         </template>
@@ -74,6 +74,7 @@ const columns = [
     title: '操作',
     dataIndex: 'operation',
     width: 70,
+    fixed: 'right',
     scopedSlots: { customRender: 'operation' },
   },
 ];

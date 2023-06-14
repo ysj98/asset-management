@@ -443,7 +443,7 @@
             </template>
             <!-- 操作 -->
             <template slot="operation" slot-scope="text, record">
-              <span class="postAssignment-icon" weaken @click="deleteFn(record)">删除</span>
+              <span class="postAssignment-icon red" weaken @click="deleteFn(record)">删除</span>
             </template>
           </a-table>
         </div>
@@ -453,7 +453,7 @@
         </div>-->
       </div>
     </div>
-    <!-- 选择资产 -->
+    <!-- 选择资产弹窗 -->
     <AssetBundlePopover :changeType="true" :organId="organId" queryType="1" ref="assetBundlePopover" @status="status"></AssetBundlePopover>
     <FormFooter style="border: none" location="fixed">
       <div>

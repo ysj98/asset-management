@@ -85,7 +85,7 @@
           v-power="ASSET_MANAGEMENT.ASSET_APM_DELETE"
           v-if="Number(record.approvalStatus) === 0 || Number(record.approvalStatus) === 3"
         >
-          <span class="action_text">删除</span>
+          <span class="action_text red">删除</span>
         </a-popconfirm>
         <a-popconfirm
           okText="确定"
@@ -188,11 +188,11 @@ export default {
         { key: 0, title: '未转运营' },
       ], // 查询条件-是否转运营选项
       numList: [
-        { title: '所有资产项目', value: 0, num: 'projectNum', fontColor: '#324057' },
-        { title: '待审核', value: 0, num: 'toBeAuditedNum', percent: 'toBeAuditedPercent', fontColor: '#324057' },
-        { title: '未接管', value: 0, num: 'takeOverNum', percent: 'takeOverPercent', fontColor: '#324057' },
-        { title: '已接管', value: 0, num: 'takeOveredNum', percent: 'takeOveredPercent', fontColor: '#324057' },
-        { title: '转运营', value: 0, num: 'transferOperationNum', percent: 'transferOperationNumPercent', fontColor: '#324057' },
+        { title: '所有资产项目', value: 0, num: 'projectNum', bgColor: '#0092ff', fontColor: '#324057' },
+        { title: '待审核', value: 0, num: 'toBeAuditedNum', percent: 'toBeAuditedPercent', bgColor: '#ff6a6b', fontColor: '#324057' },
+        { title: '未接管', value: 0, num: 'takeOverNum', percent: 'takeOverPercent', bgColor: '#ffba00', fontColor: '#324057' },
+        { title: '已接管', value: 0, num: 'takeOveredNum', percent: 'takeOveredPercent', bgColor: '#e00081', fontColor: '#324057' },
+        { title: '转运营', value: 0, num: 'transferOperationNum', percent: 'transferOperationNumPercent', bgColor: '#5bbf4b', fontColor: '#324057' },
       ], // 概览数据，title 标题，value 数值，bgColor 背景色
       modalObj: { title: '', status: false, okText: '', cancelText: '', bodyStyle: {}, type: '', projectId: '', maskClosable: false, width: 820 },
       tableObj: {
@@ -216,7 +216,7 @@ export default {
           { title: '创建日期', dataIndex: 'createTime' },
           { title: '资产项目状态', dataIndex: 'approvalStatusName' },
           // { title: '权属进度', dataIndex: 'ownershipProgress', key: 'ownershipProgress', scopedSlots: { customRender: 'ownershipProgress'}, width: 150 },
-          { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 180 },
+          { title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 130 },
         ],
       },
       paginationObj: { pageNo: 1, totalCount: 0, pageLength: 10, location: 'absolute' },
@@ -578,6 +578,10 @@ export default {
 <style lang="less" scoped>
 .project_manage {
   /*padding: 8px;*/
+  /deep/.ant-table-header {
+    font-weight: 700;
+    font-size: 13px;
+  }
   .custom-table {
     //padding-bottom: 70px;
     /*if you want to set scroll: { x: true }*/

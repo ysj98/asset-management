@@ -111,7 +111,8 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
-    width: 200,
+    width: 120,
+    fixed: 'right',
     scopedSlots: { customRender: 'operation' },
   },
 ];
@@ -126,7 +127,7 @@ export default {
   },
   data() {
     return {
-      scroll: { y: 'calc(100vh - 250px)' },
+      scroll: { y: 'calc(100vh - 250px)',x: 1200 },
       ASSET_MANAGEMENT,
       allStyle: 'width: 150px; marginLeft: 10px;',
       organId: '',

@@ -53,7 +53,7 @@
       </template>
       <!-- 操作 -->
       <template #action="text, record, index">
-        <a @click="handleDelete(record)">删除</a>
+        <a class="red" @click="handleDelete(record)">删除</a>
       </template>
       <template #footer>
         <div @click="handleAddCategory" class="table-footer">

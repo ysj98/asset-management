@@ -1,5 +1,5 @@
 <!--
-  资产抵押登记
+  资产债务登记
 -->
 <template>
   <div>
@@ -24,7 +24,7 @@
       <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false" :scroll="{ y: 510 }">
         <template slot="operation" slot-scope="text, record">
           <a class="operation-btn" @click="editDebt(record)">编辑</a>
-          <a class="operation-btn" @click="deleteDebt(record)">删除</a>
+          <a class="operation-btn red" @click="deleteDebt(record)">删除</a>
           <a class="operation-btn" @click="detailDebt(record)">详情</a>
         </template>
       </a-table>
