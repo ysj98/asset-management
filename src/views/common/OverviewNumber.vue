@@ -13,11 +13,41 @@
       :style="{
         width: itemWidth,
         cursor: isEmit && item.flag ? 'pointer' : 'default',
-        backgroundColor: item.bgColor || '',
+        borderTop: '6px solid',
+        borderRight: isEmit && i === current ? '2px solid ' + item.bgColor : 'none',
+        borderBottom: isEmit && i === current ? '2px solid ' + item.bgColor : '',
+        borderLeft: isEmit && i === current ? '2px solid ' + item.bgColor : '',
+        borderColor: item.bgColor || '#fff',
       }"
     >
-      <div :style="{ 'font-size': '14px', color: item.fontColor || '#fff', 'margin-bottom': '10px' }">{{ item.title }}</div>
+      <span
+        :style="{
+          display: isEmit && i === current ? 'inline-block' : 'none',
+          position: 'absolute',
+          width: '0',
+          height: '0',
+          bottom: '0',
+          right: '0',
+          borderTop: '25px solid transparent',
+          borderRight: '25px solid ' + item.bgColor,
+          zIndex: '1',
+        }"
+        ><a-icon
+          type="check"
+          :style="{
+            position: 'absolute',
+            bottom: '1px',
+            right: '-23px',
+            color: 'white',
+            fontSize: '20px',
+            zIndex: '2',
+            fontSize: '12px',
+            display: isEmit && i === current ? 'inline-block' : 'none',
+          }"
+        />
+      </span>
       <div :style="{ 'font-size': '20px', color: item.fontColor || '#324057', 'font-weight': 'bold' }">{{ format(item.value) }}</div>
+      <div :style="{ 'font-size': '14px', color: item.fontColor || '#324057', 'margin-bottom': '10px' }">{{ item.title }}</div>
     </div>
   </div>
 </template>
@@ -82,15 +112,15 @@ export default {
   }
   .current_selected {
     position: relative;
-    &:before {
-      content: '';
-      position: absolute;
-      top: -16px;
-      left: -16px;
-      border: 15px solid transparent;
-      border-top: 15px solid #0084ff;
-      transform: rotate(135deg);
-    }
+    // &:before {
+    //   content: '';
+    //   position: absolute;
+    //   top: -16px;
+    //   left: -16px;
+    //   border: 15px solid transparent;
+    //   border-top: 15px solid inherit;
+    //   transform: rotate(135deg);
+    // }
   }
 }
 </style>
