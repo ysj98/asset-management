@@ -13,13 +13,18 @@
   
  -->
 <template>
-  <div class="operation" v-if="operationData.length">
-    <a-popover overlayClassName="operation-popover" title="" placement="bottom" :overlayStyle="{ zIndex: 2019 }">
+  <div class="operation" v-if="list.length">
+    <span v-if="list.length < 3">
+      <template v-for="(item, index) in list">
+        <span style="margin-right: 8px" :class="{ red: item.text === '删除' }" @click="jumpToEdit(item.editType)" :key="index">{{ item.text }}</span>
+      </template>
+    </span>
+    <a-popover v-else overlayClassName="operation-popover" title="" placement="bottom" :overlayStyle="{ zIndex: 2019 }">
       <a-icon type="ellipsis" style="font-size: 26px; cursor: pointer" />
-      <template slot="content" style="z-index: 2019">
+      <template slot="content">
         <ul class="ul-operation">
-          <template v-for="(item, index) in operationData">
-            <li :key="index" @click="jumpToEdit(item.editType)">
+          <template v-for="(item, index) in list">
+            <li :key="index" @click="jumpToEdit(item.editType)" :class="{ red: item.text === '删除' }">
               <segiIcon v-if="item.typeInterpretation" :type="item.iconType" class="segiIcon" />
               <a-icon v-else :type="item.iconType" style="font-size: 14px" />
               <span>{{ item.text }}</span>
@@ -62,7 +67,11 @@ export default {
   data() {
     return {};
   },
-  computed: {},
+  computed: {
+    list() {
+      return this.operationData.filter((item) => !item.hide);
+    },
+  },
   watch: {},
   methods: {
     /**

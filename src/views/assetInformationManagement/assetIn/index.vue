@@ -60,8 +60,11 @@
     <!--列表部分-->
     <a-table v-bind="tableObj" size="middle">
       <template slot="action" slot-scope="text, record">
+        <OperationPopover :operationData="getOperationDataBtn(record)" @operationFun="operationFun($event, record)" />
         <!--['2 待审批', '3 已驳回', '1 已审批', '4 已取消']-->
-        <SG-PopoverMore trigger="hover">
+
+        <!-- 2023-06-07 统一改造操作按钮，如果隔一段时间业务没问题就可以删掉了 -->
+        <!-- <SG-PopoverMore trigger="hover">
           <div slot="content">
             <router-link
               style="color: #6d7585; line-height: 35px; display: block"
@@ -88,15 +91,6 @@
               <a-icon type="delete" style="color: #a7adb8; font-size: 15px" />
               <span style="margin-left: 12px; color: #49505e; font-size: 15px">删除</span>
             </a>
-            <!-- <a
-              v-if="String(record.status) === '1'"
-              style="display: block; line-height: 35px"
-              @click="deback(record)"
-              v-power="ASSET_MANAGEMENT.ASSET_IN_ANTIAUDIT"
-            >
-              <a-icon type="audit" style="color: #a7adb8; font-size: 15px"/>
-              <span style="margin-left: 12px; color: #49505E; font-size: 15px">反审批</span>
-            </a> -->
             <router-link
               v-if="String(record.status) === '2'"
               v-power="ASSET_MANAGEMENT.ASSET_IN_APPROVE"
@@ -107,7 +101,7 @@
               <span style="margin-left: 12px; color: #49505e; font-size: 15px">审批</span>
             </router-link>
           </div>
-        </SG-PopoverMore>
+        </SG-PopoverMore> -->
       </template>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" />
@@ -119,12 +113,13 @@
 import NoDataTip from 'src/components/noDataTips';
 import TreeSelect from 'src/views/common/treeSelect';
 import { ASSET_MANAGEMENT } from 'src/config/config.power';
+import { Power } from '@/utils/power';
 import OverviewNumber from 'src/views/common/OverviewNumber';
 import SearchContainer from 'src/views/common/SearchContainer';
 import { queryProjectListByOrganId, filterOption, queryAssetTypeList, exportDataAsExcel } from 'src/views/common/commonQueryApi';
 export default {
   name: 'index',
-  components: { SearchContainer, TreeSelect, NoDataTip, OverviewNumber },
+  components: { SearchContainer, TreeSelect, NoDataTip, OverviewNumber, OperationPopover: () => import('@/components/OperationPopover') },
   data() {
     return {
       ASSET_MANAGEMENT, // 权限对象
@@ -249,7 +244,55 @@ export default {
       let [minCreateDate, maxCreateDate] = dateStrings || [];
       Object.assign(this, { minCreateDate, maxCreateDate });
     },
+    getOperationDataBtn(record) {
+      const { status } = record;
 
+      const allBtn = [
+        {
+          iconType: 'read',
+          text: '详情',
+          editType: 'read',
+        },
+        {
+          iconType: 'edit',
+          text: '编辑',
+          editType: 'edit',
+          hide: !(String(status) === '3' && Power.has(ASSET_MANAGEMENT.ASSET_IN_EDIT)),
+        },
+        { iconType: 'delete', text: '删除', editType: 'delete', hide: String(status) !== '3' },
+        {
+          iconType: 'audit',
+          text: '审批',
+          editType: 'audit',
+          hide: !(String(status) === '2' && Power.has(ASSET_MANAGEMENT.ASSET_IN_APPROVE)),
+        },
+      ];
+      return allBtn;
+    },
+    operationFun(type, record) {
+      switch (type) {
+        case 'edit':
+          this.$router.push({ path: '/assetIn/edit', query: { id: record.storeId } });
+          break;
+        case 'delete':
+          this.deleteAsset(record);
+          break;
+        case 'read':
+          this.$router.push({
+            path: '/assetIn/detail',
+            query: { id: record.storeId, organId: this.organProjectType.organId, relatedOrganId: record.organId },
+          });
+          break;
+        case 'audit':
+          this.$router.push({
+            path: '/assetIn/approve',
+            query: { id: record.storeId, organId: this.organProjectType.organId, relatedOrganId: record.organId },
+          });
+          break;
+        default:
+          break;
+      }
+    },
     // 获取选择的组织机构
     changeTree(organId, organName) {
       Object.assign(this.organProjectType, {
