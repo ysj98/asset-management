@@ -288,6 +288,22 @@
                 </a-select>
               </a-form-item>
             </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" v-bind="formItemLayout">
+                <label slot="label">实际产权单位：</label>
+                <a-input
+                  placeholder="请输入实际产权单位"
+                  :style="allWidth"
+                  :max="100"
+                  v-decorator="[
+                    'propertyRightUnit',
+                    {
+                      rules: [{ max: 100, whitespace: true, message: '请输入实际产权单位(不超过100字符)' }],
+                    },
+                  ]"
+                />
+              </a-form-item>
+            </a-col>
           </a-row>
           <a-row v-show="warrantNbrShow">
             <a-col class="playground-col" :span="12">
@@ -516,7 +532,39 @@
                 />
               </a-form-item>
             </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" v-bind="formItemLayout">
+                <label
+                  slot="label"
+                  :style="{
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: '1.8em',
+                    width: '90%',
+                    display: 'inline-block',
+                  }"
+                  >是否缴纳土地出让金：</label
+                >
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择是否缴纳土地出让金"
+                  v-decorator="[
+                    'isLandSell',
+                    {
+                      initialValue: params.isLandSell,
+                    },
+                  ]"
+                  :allowClear="false"
+                  :filterOption="filterOption"
+                >
+                  <a-select-option key="是" value="是"> 是 </a-select-option>
+                  <a-select-option key="否" value="否"> 否 </a-select-option>
+                  <a-select-option key="部分缴纳" value="部分缴纳"> 部分缴纳 </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
           </a-row>
+
           <a-row v-show="lawsuitRemarkShow">
             <a-col class="playground-col" :span="24">
               <a-form-item :colon="false" v-bind="formItemTextarea">
