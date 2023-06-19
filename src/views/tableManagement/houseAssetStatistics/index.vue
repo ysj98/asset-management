@@ -10,8 +10,9 @@
       <a-col :span="12">
         <organ-project v-model="organProjectValue" :isShowBuilding="false" mode="multiple" />
       </a-col>
-      <a-col :span="2">
+      <a-col :span="2" class="tr">
         <SG-Button type="primary" @click="queryTableData({ type: 'sum' })">查询</SG-Button>
+        <!-- <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button> -->
       </a-col>
     </a-row>
     <!--列表Table-->
@@ -132,7 +133,13 @@ export default {
         this.exportBtnLoading = false;
       });
     },
-
+    reset() {
+      this.paginationObj.pageNo = 1;
+      this.paginationObj.pageLength = 10;
+      this.paginationObj.totalCount = 0;
+      this.dataSum = {};
+      this.queryTableData({ type: 'sum' });
+    },
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const {

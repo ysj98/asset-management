@@ -12,6 +12,7 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="queryTableData">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select v-model="queryObj.kindOfRight" :style="allStyle" placeholder="请选择权属类型" :options="$addTitle(typeOptions)" />
@@ -122,6 +123,15 @@ const numListMap = [
   { title: '使用权证', key: 'selfUserArea', value: 0, bgColor: '#FD7474', info: '使用权证' },
   { title: '房屋产权', key: 'houseWarrantCount', value: 0, bgColor: 'gray', info: '房屋产权' },
 ]; // 概览数据，title 标题，value 数值，color 背景色
+
+const queryObj = {
+  ownerFlag: '', // 权证归属
+  status: '1', // 查询条件-权属状态
+  warrantNbr: '', // 查询条件-权证号
+  kindOfRight: '', // 查询条件-权属类型
+  obligeeId: '', // 查询条件-权属人
+  seatingPosition: '',
+};
 export default {
   name: 'index',
   components: { NoDataTip, OrganProject, CardDetails, OverviewNumber, TableHeaderSettings, ProvinceCityDistrict },
@@ -304,6 +314,13 @@ export default {
       exportDataAsExcel(form, this.$api.tableManage.exportOwnershipCardList, '权属证件一览表.xls', this).then(() => {
         this.exportBtnLoading = false;
       });
+    },
+    reset() {
+      this.queryObj = { ...queryObj };
+      this.paginationObj.pageNo = 1;
+      this.paginationObj.pageLength = 10;
+      this.paginationObj.totalCount = 0;
+      this.queryTableData();
     },
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, searchType }) {
