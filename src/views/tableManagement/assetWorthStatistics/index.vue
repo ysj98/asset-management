@@ -32,50 +32,37 @@
           </a-col>
         </a-row>
       </div>
-      <div slot="contentForm" style="margin-top: 15px">
-        <a-row :gutter="8" style="width: 100%">
-          <a-col :span="4" :offset="queryObj.queryType !== '0' ? 0 : 3">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              @change="statusChange"
-              :options="$addTitle(statusOptions)"
-              v-model="queryObj.status"
-              placeholder="请选择资产状态"
-            />
-          </a-col>
-          <a-col :span="3">
-            <a-select v-model="queryObj.queryType" style="width: 100%" placeholder="请选择统计方式" :options="$addTitle(queryTypeOptions)" />
-          </a-col>
-          <a-col :span="3">
-            <a-select v-model="queryObj.startTime" style="width: 100%" placeholder="请选择开始时间" :options="$addTitle(startTimeOptions)" />
-          </a-col>
-          <a-col :span="3" v-if="queryObj.queryType !== '0'">
-            <a-select v-model="queryObj.endTime" style="width: 100%" placeholder="请选择结束时间" :options="$addTitle(endTimeOptions)" />
-          </a-col>
-          <a-col :span="3">
-            <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="资产名称或编码" />
-          </a-col>
-          <a-col :span="3">
-            <!--<a-col :span="6" style="text-align: center; height: 32px; padding-top: 7px">-->
-            <!--<a-radio-group v-model="queryObj.dimension" @change="generateSortFunc">-->
-            <!--<a-radio value="1">按资产项目统计</a-radio>-->
-            <!--<a-radio value="2">按资产统计</a-radio>-->
-            <!--</a-radio-group>-->
-            <a-select
-              style="width: 100%"
-              @change="generateSortFunc"
-              :options="$addTitle(dimensionOptions)"
-              v-model="queryObj.dimension"
-              placeholder="请选择统计维度"
-            />
-          </a-col>
-          <a-col :span="2">
-            <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
-          </a-col>
-        </a-row>
-      </div>
+      <template slot="contentForm">
+        <a-select
+          mode="multiple"
+          :maxTagCount="1"
+          style="width: 100%"
+          @change="statusChange"
+          :options="$addTitle(statusOptions)"
+          v-model="queryObj.status"
+          placeholder="请选择资产状态"
+        />
+        <a-select v-model="queryObj.queryType" style="width: 100%" placeholder="请选择统计方式" :options="$addTitle(queryTypeOptions)" />
+        <a-select v-model="queryObj.startTime" style="width: 100%" placeholder="请选择开始时间" :options="$addTitle(startTimeOptions)" />
+        <a-select v-model="queryObj.endTime" style="width: 100%" placeholder="请选择结束时间" :options="$addTitle(endTimeOptions)" />
+        <a-input v-model.trim="queryObj.assetName" style="width: 100%" placeholder="资产名称或编码" />
+        <!--<a-col :span="6" style="text-align: center; height: 32px; padding-top: 7px">-->
+        <!--<a-radio-group v-model="queryObj.dimension" @change="generateSortFunc">-->
+        <!--<a-radio value="1">按资产项目统计</a-radio>-->
+        <!--<a-radio value="2">按资产统计</a-radio>-->
+        <!--</a-radio-group>-->
+        <a-select
+          style="width: 100%"
+          @change="generateSortFunc"
+          :options="$addTitle(dimensionOptions)"
+          v-model="queryObj.dimension"
+          placeholder="请选择统计维度"
+        />
+        <div class="btn-content">
+          <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
+          <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
+        </div>
+      </template>
     </search-container>
     <!--数据概览信息-->
     <a-spin :spinning="overviewNumSpinning">
@@ -131,6 +118,16 @@ import { getFormat } from '@/utils/utils.js';
 import { handleTableScrollHeight } from 'utils/share';
 import { math } from '@/utils/math';
 import moment from 'moment';
+const queryObj = {
+  dimension: '1', // 查询条件-统计维度
+  queryType: '3', // 查询条件-统计类型值
+  objectType: '', // 查询条件-资产分类值
+  endTime: undefined, // 查询条件-结束时间,
+  startTime: undefined, // 查询条件-开始时间
+  assetName: '', //  查询条件-资产名称或编码
+  status: ['-1'], // 查询条件-资产状态值,多选
+  assetType: ['-1'], // 查询条件-资产类型值,多选
+};
 export default {
   name: 'index',
   components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip, EditTableHeader },
@@ -572,7 +569,15 @@ export default {
         });
       });
     },
-
+    reset() {
+      this.queryObj = { ...queryObj };
+      this.paginationObj.pageNo = 1;
+      this.paginationObj.pageLength = 10;
+      this.paginationObj.totalCount = 0;
+      this.generateStartTimeOption();
+      this.generateEndTimeOption();
+      this.queryTableData({ type: 'search' });
+    },
     // 查询列表数据
     async queryTableData({ pageNo = 1, pageLength = 10, type }) {
       await this.getColumns();
@@ -649,7 +654,19 @@ export default {
       // 查询统计数据
       // if (type === 'search') { this.queryStatisticsInfo(form) }
     },
-
+    // 获取开始年份
+    generateStartTimeOption() {
+      let currentYear = new Date().getFullYear() - 1; // 默认当前年份-1
+      let arr = [];
+      for (let i = 0; i <= 15; i++) {
+        arr.push({ title: String(currentYear + i - 10), key: String(currentYear + i - 10) });
+      }
+      this.startTimeOptions = [...arr];
+      Object.assign(this.queryObj, {
+        startTime: String(currentYear),
+        endTime: String(currentYear + 1), // 默认当前年份
+      });
+    },
     // 生成结束时间选项
     generateEndTimeOption() {
       const {
@@ -719,17 +736,7 @@ export default {
     // 初始化Table列头
     let { fixedColumns } = this;
     this.tableObj.columns = fixedColumns;
-    // 获取开始年份
-    let currentYear = new Date().getFullYear() - 1; // 默认当前年份-1
-    let arr = [];
-    for (let i = 0; i <= 15; i++) {
-      arr.push({ title: String(currentYear + i - 10), key: String(currentYear + i - 10) });
-    }
-    this.startTimeOptions = [...arr];
-    Object.assign(this.queryObj, {
-      startTime: String(currentYear),
-      endTime: String(currentYear + 1), // 默认当前年份
-    });
+    this.generateStartTimeOption();
     this.generateEndTimeOption();
   },
 
@@ -775,6 +782,16 @@ export default {
   }
 }
 .asset_worth {
+  /deep/.content-form {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    .btn-content {
+      grid-column-start: 5;
+      grid-column-end: 5;
+    }
+  }
   .custom-table {
     padding: 8px 0 70px;
     /*if you want to set scroll: { x: true }*/
