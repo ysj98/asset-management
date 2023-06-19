@@ -125,11 +125,10 @@ export default {
       padding: 0 70px 0 76px;
       .search-icon {
         display: inline-block;
-        width: 106px;
-        height: 76px;
+        width: 84px;
+        height: 60px;
         background-image: url('../../assets/image/icon/search-icon.png');
-        background-size: 80% 80%;
-        background-repeat: no-repeat ;
+        background-size: 100% 100%;
       }
     }
     .content-form {

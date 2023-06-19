@@ -35,7 +35,7 @@
           </a-col>
         </a-row>
       </div>
-      <div slot="contentForm" style="margin-top: 15px">
+      <template slot="contentForm">
         <a-row :gutter="8" style="width: 100%">
           <a-col :span="4" :offset="3">
             <a-select
@@ -52,13 +52,14 @@
             <a-select v-model="queryObj.ownershipStatus" style="width: 100%" placeholder="请选择权属情况" :options="$addTitle(ownershipOptions)" />
           </a-col>
           <a-col :span="7">
-            <a-range-picker @change="changeDate" style="width: 100%" :placeholder="['开始接管时间', '结束接管时间']" />
-          </a-col>
-          <a-col :span="2">
-            <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
+            <a-range-picker v-model="takeOverDate" @change="changeDate" style="width: 100%" :placeholder="['开始接管时间', '结束接管时间']" />
           </a-col>
         </a-row>
-      </div>
+        <div class="btn-content">
+          <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
+          <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
+        </div>
+      </template>
     </search-container>
     <!--数据概览信息-->
     <a-spin :spinning="overviewNumSpinning">
@@ -432,6 +433,16 @@ const detailColumns = [
     width: 150,
   },
 ];
+
+const queryObj = {
+  takeOver: '', // 查询条件-接管状态值
+  sourceType: '', // 查询条件-来源方式值
+  ownershipStatus: '', // 查询条件-权属值
+  propertyOperation: '', // 查询条件-转物业值
+  endTakeOverDate: '', // 查询条件-结束接管时间值
+  startTakeOverDate: '', // 查询条件-开始接管时间值
+  transferToOperation: '', // 查询条件-转运营状态值
+};
 export default {
   name: 'index',
   components: { OverviewNumber, SearchContainer, OrganProject, NoDataTip, TableHeaderSettings },
@@ -551,7 +562,15 @@ export default {
         return (this.sourceTypeOptions = [{ title: '全部来源方式', key: '' }].concat(list));
       });
     },
-
+    reset() {
+      this.queryObj = { ...queryObj };
+      this.paginationObj.pageNo = 1;
+      this.paginationObj.pageLength = 10;
+      this.paginationObj.totalCount = 0;
+      this.projectStatus = [];
+      this.takeOverDate = [];
+      this.queryTableData({ type: 'search' });
+    },
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const {
@@ -747,6 +766,13 @@ export default {
     tr:nth-last-child(1) {
       font-weight: bold;
     }
+  }
+}
+/deep/.content-form {
+  display: flex;
+  height: min-content;
+  .btn-content {
+    width: 200px;
   }
 }
 /deep/.ant-table-tbody {

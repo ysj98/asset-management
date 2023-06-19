@@ -148,6 +148,12 @@ export default {
       const { province, city } = this;
       this.$emit('input', { province, city, district });
     },
+    value: {
+      handler: function (value) {
+        Object.assign(this, { ...value });
+      },
+      deep: true,
+    },
   },
 };
 </script>

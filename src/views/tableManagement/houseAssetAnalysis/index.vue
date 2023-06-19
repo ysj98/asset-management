@@ -2,30 +2,25 @@
 <template>
   <div class="asset_analysis">
     <!--查询条件部分-->
-    <a-row :gutter="8" class="search_style">
-      <a-col :span="9">
-        <organ-project v-model="organProjectValue" :isShowBuilding="false" :showSearch="true" mode="multiple" />
-      </a-col>
-      <a-col :span="3">
-        <a-select
-          mode="multiple"
-          :maxTagCount="1"
-          style="width: 100%"
-          v-model="objectType"
-          @change="objectTypeChange"
-          placeholder="请选择资产分类"
-          :options="$addTitle(objectTypeOptions)"
-        />
-      </a-col>
-      <a-col :span="9">
-        <province-city-district v-model="provinceCityDistrict" />
-      </a-col>
-      <a-col :span="2">
+    <div :gutter="8" class="search_style">
+      <organ-project v-model="organProjectValue" :isShowBuilding="false" :showSearch="true" mode="multiple" />
+      <a-select
+        mode="multiple"
+        :maxTagCount="1"
+        style="width: 100%"
+        v-model="objectType"
+        @change="objectTypeChange"
+        placeholder="请选择资产分类"
+        :options="$addTitle(objectTypeOptions)"
+      />
+      <ProvinceCityDistrict v-model="provinceCityDistrict" />
+      <div>
         <SG-Button type="primary" @click="queryData">查询</SG-Button>
-      </a-col>
-    </a-row>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
+      </div>
+    </div>
     <div style="padding: 0 45px 35px">
-      <SG-Button type="primary" @click="searchDetail">查看明细</SG-Button>
+      <SG-Button class="mt20" type="primary" @click="searchDetail">查看明细</SG-Button>
       <!--汇总分析图表部分-->
       <chart-part :queryInfo="queryInfo" :titleList="titleList" />
       <!--查询列表部分-->
@@ -92,6 +87,15 @@ export default {
         }
       });
     },
+    reset() {
+      this.objectType = [];
+      this.provinceCityDistrict = {
+        province: undefined,
+        city: undefined,
+        district: undefined,
+      };
+      this.queryData();
+    },
     // 查询数据
     queryData() {
       const {
@@ -134,6 +138,9 @@ export default {
     width: 100%;
     padding: 20px 20px 20px 30px;
     border-bottom: 1px solid #e8e8e8;
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr 200px;
+    grid-column-gap: 20px;
   }
 }
 </style>
