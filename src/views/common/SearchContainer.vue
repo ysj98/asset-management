@@ -128,7 +128,8 @@ export default {
         width: 106px;
         height: 76px;
         background-image: url('../../assets/image/icon/search-icon.png');
-        background-size: 100% 100%;
+        background-size: 80% 80%;
+        background-repeat: no-repeat ;
       }
     }
     .content-form {
