@@ -16,8 +16,8 @@
         </a-radio-group>
         <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :showSearch="true"></treeSelect>
       </div>
-      <div slot="contentForm" style="margin-top: 15px">
-        <div class="dbl">
+      <template slot="contentForm">
+        <div class="mt5">
           <span>资产类型：</span>
           <a-radio-group v-model="queryCondition.assetType" @change="allQuery">
             <a-radio v-for="(item, index) in assetTypeList" :value="item.value" :key="index">{{ item.name }}</a-radio>
@@ -25,31 +25,33 @@
         </div>
         <a-select
           v-model="queryCondition.projectId"
-          :style="allStyle"
           :options="$addTitle(projectOptions)"
           placeholder="请选择资产项目"
           :showSearch="true"
           :filterOption="filterOption"
         ></a-select>
-        <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="全部分类" v-model="queryCondition.objectType">
+        <a-select v-if="+queryCondition.type === 2" placeholder="全部分类" v-model="queryCondition.objectType">
           <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">{{
             item.name
           }}</a-select-option>
         </a-select>
-        <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="是否纳入考核" v-model="queryCondition.managementType">
+        <a-select v-if="+queryCondition.type === 2" placeholder="是否纳入考核" v-model="queryCondition.managementType">
           <a-select-option value="">全部</a-select-option>
           <a-select-option value="1">纳入考核</a-select-option>
           <a-select-option value="0">不纳入考核</a-select-option>
         </a-select>
-        <a-select v-if="+queryCondition.type === 2" :style="allStyle" placeholder="是否有证" v-model="queryCondition.ownershipStatus">
+        <a-select v-if="+queryCondition.type === 2" placeholder="是否有证" v-model="queryCondition.ownershipStatus">
           <a-select-option value="">全部</a-select-option>
           <a-select-option value="1">有证</a-select-option>
           <a-select-option value="0">无证</a-select-option>
           <a-select-option value="2">待办</a-select-option>
         </a-select>
-        <a-input v-if="+queryCondition.type === 2" v-model.trim="queryCondition.assetNameOrCode" :style="allStyle" placeholder="资产名称或编码" />
-        <SG-Button type="primary" style="margin-right: 10px" @click="allQuery">查询</SG-Button>
-      </div>
+        <a-input v-if="+queryCondition.type === 2" v-model.trim="queryCondition.assetNameOrCode" placeholder="资产名称或编码" />
+        <div class="btn-content">
+          <SG-Button type="primary" style="margin-right: 10px" @click="allQuery">查询</SG-Button>
+          <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
+        </div>
+      </template>
     </SearchContainer>
     <div class="table-layout-fixed" :class="{ overflowX: tableData.length === 0 }">
       <a-table bordered class="custom-total-one" :scroll="scroll" :loading="loading" :columns="columns" :dataSource="tableData" :pagination="false">
@@ -284,6 +286,11 @@ export default {
         }
       });
     },
+    reset() {
+      const organId = this.queryCondition.organId;
+      this.queryCondition = { ...queryCondition, organId };
+      this.allQuery();
+    },
     // 搜索
     allQuery(str) {
       this.queryCondition.pageNum = 1;
@@ -441,6 +448,17 @@ export default {
   // }
 }
 .landAssetsView {
+  /deep/.content-form {
+    display: grid;
+    height: min-content;
+    grid-template-columns:200px repeat(5, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+    .btn-content {
+      grid-column-start: 7;
+      grid-column-end: 7;
+    }
+  }
   .from-second {
     padding-top: 14px;
   }
