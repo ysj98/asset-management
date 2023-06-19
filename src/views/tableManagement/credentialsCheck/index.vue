@@ -3,7 +3,7 @@
   <div class="credentialsCheck">
     <!--查询调件-->
     <a-row :gutter="8" style="width: 100%; padding: 20px 20px 20px 30px">
-      <a-col :span="10" :offset="4">
+      <a-col :span="8" :offset="4">
         <!-- 组织机构和资产项目下拉框 mode="multiple"(多选) -->
         <organ-project v-model="organProjectValue" :isShowBuilding="false" />
       </a-col>
@@ -22,8 +22,9 @@
         <!-- 资产名称/编码 -->
         <a-input v-model.trim="queryObj.assetNameOrCode" style="width: 100%" placeholder="资产名称或编码" />
       </a-col>
-      <a-col :span="2">
+      <a-col :span="4" class="tr">
         <SG-Button type="primary" @click="queryTableData()">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </a-col>
     </a-row>
     <!--列表Table-->
@@ -36,6 +37,10 @@
 import { queryAssetTypeList } from 'src/views/common/commonQueryApi';
 import OrganProject from 'src/views/common/OrganProjectBuilding';
 import { tableColumns, ownershipStatus } from './tableColumns.js';
+const queryObj = {
+  assetType: '-1', // 查询条件-资产类型值,多选
+  assetNameOrCode: '', //  查询条件-资产名称或编码
+};
 export default {
   name: 'credentialsCheck',
   components: { OrganProject },
@@ -80,7 +85,13 @@ export default {
         this.assetTypeOptions = [{ title: '全部资产类型', key: '-1' }].concat(list);
       });
     },
-
+    reset() {
+      this.queryObj = { ...queryObj };
+      this.paginationObj.pageNo = 1;
+      this.paginationObj.pageLength = 10;
+      this.paginationObj.totalCount = 0;
+      this.queryTableData();
+    },
     // 查询列表数据
     queryTableData(pageNo = 1, pageLength = 10) {
       const {
