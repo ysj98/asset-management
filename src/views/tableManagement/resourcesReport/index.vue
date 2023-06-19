@@ -40,6 +40,7 @@
           }}</a-select-option>
         </a-select>
         <SG-Button type="primary" style="margin-right: 10px" @click="query">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
     </SearchContainer>
     <!--数据总览-->
@@ -311,6 +312,11 @@ export default {
           }
         });
       });
+    },
+    reset() {
+      let organId = this.queryCondition.organId;
+      this.queryCondition = { ...queryCondition, organId };
+      this.query();
     },
     // 查询
     query(str) {
