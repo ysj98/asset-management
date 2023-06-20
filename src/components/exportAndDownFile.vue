@@ -16,8 +16,8 @@
           <div class="r-title">第一步</div>
           <div class="r-color mb15">选择导入位置</div>
           <div class="process">1</div>
-          <treeSelect :value="organInfo.organId" :name="organInfo.organName" class="treeSelect-file" width="350"
-            size="medium" @changeTree="changeTree"></treeSelect>
+          <treeSelect class="treeSelect-file" width="350" size="medium" @changeTree="changeTree" :showSearch="true">
+          </treeSelect>
         </div>
         <div class="r-nav mt30">
           <div class="r-title">第二步</div>
@@ -223,7 +223,7 @@ export default {
       width: 72px;
       height: 72px;
       margin-bottom: 4px;
-      background-image: url('../../assets/image/assets/xls72px.png');
+      background-image: url('../assets/image/undertake/xls72px.png');
       background-size: 100% 100%;
     }
 

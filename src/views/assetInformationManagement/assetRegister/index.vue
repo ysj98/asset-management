@@ -73,7 +73,7 @@ import moment from 'moment';
 import OperationPopover from '@/components/OperationPopover';
 import noDataTips from '@/components/noDataTips';
 import OverviewNumber from 'src/views/common/OverviewNumber';
-import exportAndDownFile from '@/components/downFile'
+import exportAndDownFile from '@/components/exportAndDownFile'
 import { win } from '@/utils/utils'
 const approvalStatusData = [
   {
@@ -218,7 +218,11 @@ export default {
         return
       }
       let loadingName = this.SG_Loding('请求中...')
-      this.$api.assets.downloadTemplateBatch({ organId: this.exportOriganId }).then((res) => {
+      const params = {
+        "assetType": "1", "scope": "1,2", "buildIds": ["-1"],
+        organId: this.exportOriganId
+      }
+      this.$api.assets.downloadTemplateBatch(params).then((res) => {
         if (Number(res.data.code) === 0) {
           this.DE_Loding(loadingName).then(() => {
             this.cancelFn()
