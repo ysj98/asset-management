@@ -564,7 +564,7 @@ export default {
             handoverDate: conditionalJudgment.includes(values.handoverDate) ? '' : `${values.handoverDate.format('YYYY-MM-DD')}`, // 交接日期
             houseOwner: conditionalJudgment.includes(values.houseOwner) ? '' : values.houseOwner, // 房屋所有权人(使用权证所有)
             tenant: conditionalJudgment.includes(values.tenant) ? '' : values.tenant, // (使用权证所有)
-            entrustOrganization: conditionalJudgment.includes(values.entrustOrganization) ? '' : values.entrustOrganization, // 委托管理单位(使用权证所有)
+            entrustOrganization: conditionalJudgment.includes(values.entrustOrganization) ? '' : values.entrustOrganization, // 被委托管理单位(使用权证所有)
             totalFloor: conditionalJudgment.includes(values.totalFloor) ? '' : values.totalFloor, // 总层数(使用权证所有)
             placeFloor: conditionalJudgment.includes(values.placeFloor) ? '' : values.placeFloor, // 所在层(使用权证所有)
             houseNo: conditionalJudgment.includes(values.houseNo) ? '' : values.houseNo, // 房屋号(使用权证所有)

@@ -108,7 +108,7 @@ export function positionSelectAsyn(data) {
 export function queryBellowPositionType(data) {
   return axiosGet(building.queryBellowPositionType, data);
 }
-// 下载房屋模板
+// 下载房屋导出模板
 export function downLoadExcel(data) {
   return axiosGet(building.downLoadExcel, data, false, {
     responseType: 'blob',
@@ -117,6 +117,16 @@ export function downLoadExcel(data) {
 // 导入房间资料
 export function importExcel(organId, data) {
   return axiosPost(building.importExcel + '/' + organId, data);
+}
+// 下载房屋批量导出模板
+export function downLoadExcelV2(data) {
+  return axiosGet(building.downLoadExcelV2, data, false, {
+    responseType: 'blob',
+  });
+}
+// 批量导入房间资料
+export function importExcelV2(organId, data) {
+  return axiosPost(building.importExcelV2 + '/' + organId, data);
 }
 // 房间批量更新
 export function acctHouseCodeImport(data) {
@@ -152,15 +162,26 @@ export function inventoryDetail(data) {
 export function updateCheckPlanStatus(data) {
   return axiosPost(inventory.updateCheckPlanStatus, data);
 }
-// 下载楼栋模板
+// 下载楼栋导入模板
 export function buildingDownLoadExcel(data) {
   return axiosGet(building.buildingDownLoadExcel, data, false, {
     responseType: 'blob',
   });
 }
-// 楼栋批量导入
+// 楼栋导入
 export function buildImportExcel(organId, data) {
   return axiosPost(building.buildImportExcel + organId, data, false, false, { timeout: 1000 * 60 * 10 });
+}
+
+// 下载楼栋批量导入模板
+export function buildingDownLoadExcelV2(data) {
+  return axiosGet(building.buildingDownLoadExcelV2, data, false, {
+    responseType: 'blob',
+  });
+}
+// 楼栋批量导入
+export function buildImportExcelV2(organId, data) {
+  return axiosPost(building.buildImportExcelV2 + organId, data, false, false, { timeout: 1000 * 60 * 10 });
 }
 // 土地分页列表
 export function blankApiPageList(data) {

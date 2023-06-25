@@ -10,21 +10,14 @@
       <!-- 按钮控制 -->
       <div class="create-btn">
         <span class="create-title">楼栋信息</span>
-        <div>
-          <SG-Button v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="fr tree-btn" weaken>新增楼层</SG-Button>
-          <SG-Button
-            v-if="showCreateUnitBtn"
-            :class="[childNodeType === '0' && 'mr5']"
-            @click="createPage('unit')"
-            type="primary"
-            class="fr tree-btn"
-            weaken
-            >新增单元</SG-Button
-          >
-          <SG-Button v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="fr tree-btn" weaken>新增楼栋</SG-Button>
-          <SG-Button v-if="showCreateBuildBtn" @click="openImportModal('build')" type="primary" class="fr tree-btn mr5" weaken
+        <div style="width: 196px; overflow-x: auto; white-space: nowrap">
+          <SG-Button v-if="showCreateBuildBtn" @click="openImportModal('build')" type="primary" class="tree-btn mr5" weaken>导入楼栋</SG-Button>
+          <SG-Button v-if="showCreateBatchBuildBtn" @click="openImportModal('batchBuild')" type="primary" class="tree-btn mr5" weaken
             >批量导入楼栋</SG-Button
           >
+          <SG-Button v-if="showCreateBuildBtn" @click="createPage('build')" type="primary" class="tree-btn" weaken>新增楼栋</SG-Button>
+          <SG-Button v-if="showCreateUnitBtn" @click="createPage('unit')" type="primary" class="tree-btn" weaken>新增单元</SG-Button>
+          <SG-Button v-if="showCreateFloorBtn" @click="createPage('floor')" type="primary" class="tree-btn" weaken>新增楼层</SG-Button>
         </div>
       </div>
       <div class="tree-content">
@@ -83,7 +76,7 @@
       </div>
     </div>
     <!-- 批量更新 -->
-    <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" title="批量导入楼栋" />
+    <eportAndDownFile @upload="uploadModeFile" @down="downModeFile" ref="eportAndDownFile" :title="exportAndDownFileTitle" />
     <!-- 导入错误信息 -->
     <downErrorFile ref="downErrorFile">
       <div>{{ upErrorInfo }}</div>
@@ -122,6 +115,7 @@ export default {
   },
   data() {
     return {
+      exportAndDownFileTitle: '',
       organId: '',
       selectedKeysDefault: [],
       expandedKeysDefault: [],
@@ -172,6 +166,10 @@ export default {
     showCreateBuildBtn() {
       return this.activeType === '-2' && this.$power.has(ASSET_MANAGEMENT.ASSET_BUILD_ADD);
     },
+    // 显示批量导入楼栋
+    showCreateBatchBuildBtn() {
+      return this.activeType === '-2' && this.$power.has(ASSET_MANAGEMENT.ASSET_BATCH_BUILD_ADD);
+    },
     // 显示创建单元按钮
     showCreateUnitBtn() {
       return this.activeType === '0' && ['0', '1'].includes(this.childNodeType) && this.$power.has(ASSET_MANAGEMENT.ASSET_UNIT_ADD);
@@ -202,13 +200,11 @@ export default {
       }
     },
     changePage(total) {
-      // console.log(total,'11111223123')
       this.totalPage = Math.ceil(total / this.pageLength);
     },
     handleChange(value) {
       this.pageLength = String(value);
       this.pageNo = 1;
-      console.log('yunxing', value);
       setTimeout(() => {
         this.$refs.positionTree.positionSelectAsyn();
       }, 0);
@@ -277,14 +273,15 @@ export default {
     // 下载模板文件
     downModeFile() {
       let loadingName = this.SG_Loding('下载中...');
-      this.$api.building.buildingDownLoadExcel({ organId: this.organId }).then(
+      const url = this.exportType === 'build' ? 'buildingDownLoadExcel' : 'buildingDownLoadExcelV2';
+      this.$api.building[url]({ organId: this.organId }).then(
         (res) => {
           this.$SG_Message.destroy(loadingName);
           let blob = new Blob([res.data]);
           let a = document.createElement('a');
           a.href = URL.createObjectURL(blob);
           // ${this.organName}
-          a.download = `导入楼栋模板.xls`;
+          a.download = `${this.exportType === 'build' ? '' : '批量'}导入楼栋模板.xls`;
           a.style.display = 'none';
           document.body.appendChild(a);
           a.click();
@@ -292,19 +289,20 @@ export default {
         },
         () => {
           this.$SG_Message.destroy(loadingName);
-          this.$SG_Message.error('附属配套模板!');
+          this.$SG_Message.error('下载模版错误!');
         }
       );
     },
     // 上传文件
     uploadModeFile(file) {
       // this.$refs.eportAndDownFile.hideModal()
-      console.log('批量更新', file);
       let fileData = new FormData();
       fileData.append('file', file);
       let loadingName = this.SG_Loding('导入中...');
-      this.$api.building.buildImportExcel(this.organId, fileData).then(
+      const url = this.exportType === 'build' ? 'buildImportExcel' : 'buildImportExcelV2';
+      this.$api.building[url](this.organId, fileData).then(
         (res) => {
+          this.$refs.eportAndDownFile.visible = false;
           if (res.data.code === '0') {
             this.DE_Loding(loadingName).then(() => {
               this.$SG_Message.success('导入成功！');
@@ -326,8 +324,10 @@ export default {
       );
     },
     // 显示导入弹窗
-    openImportModal() {
+    openImportModal(type) {
+      this.exportType = type;
       this.$refs.eportAndDownFile.visible = true;
+      this.exportAndDownFileTitle = type === 'build' ? '导入楼栋' : '批量导入楼栋';
     },
     computedHeight() {
       let elem = this.$refs.buildingInfo;
@@ -373,8 +373,8 @@ export default {
 }
 .create-btn {
   height: 69px;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 6px;
+  // padding-right: 12px;
   border-bottom: 1px solid rgba(238, 242, 245, 1);
   display: flex;
   justify-content: space-between;

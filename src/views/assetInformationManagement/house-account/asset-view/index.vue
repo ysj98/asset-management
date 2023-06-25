@@ -1258,4 +1258,9 @@ export default {
 /deep/ .sg-FooterPagination {
   z-index: 2;
 }
+
+/deep/ .ant-table-fixed-left table,
+/deep/ .ant-table-fixed-right table {
+  width: min-content;
+}
 </style>

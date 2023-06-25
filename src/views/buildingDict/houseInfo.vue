@@ -11,6 +11,9 @@
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSEZL_IN" @click="showHouseDataImport">
           <segiIcon type="#icon-ziyuan4" class="mr10" />房间资料导入
         </SG-Button>
+        <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_BATCH_HOUSEZL_IN" @click="showHouseDataImport('batch')">
+          <segiIcon type="#icon-ziyuan4" class="mr10" />房间资料批量导入
+        </SG-Button>
         <SG-Button class="mr10" v-power="ASSET_MANAGEMENT.ASSET_HOUSE_OUT" @click="openExportModal">
           <segiIcon type="#icon-ziyuan10" class="mr10" />房间导出
         </SG-Button>
@@ -152,9 +155,10 @@
         @change="handleChange"
       />
     </div>
-    <!-- 房间资料导入 -->
+    <!-- 房间资料导入/房间资料批量导入 -->
     <houseDataImport
       ref="houseDataImport"
+      title="房间资料导入"
       :organIdCopy="queryCondition.organId"
       :defaultOrganName="selectedOrganName"
       @success="houseDataImportSuccess"
@@ -761,8 +765,9 @@ export default {
       });
     },
     // 显示房间资料导入弹窗
-    showHouseDataImport() {
+    showHouseDataImport(type) {
       this.$refs.houseDataImport.visible = true;
+      this.$refs.houseDataImport.title = type === 'batch' ? '房间资料批量导入' : '房间资料导入';
     },
     // 显示房间导出弹出
     openExportModal() {

@@ -112,7 +112,7 @@ const accessCard = [
   { text: '实际保管单位', value: 'safekeepUnit' },
   { text: '房屋所有权人', value: 'houseOwner' },
   { text: '承租人', value: 'tenantIdName' },
-  { text: '委托管理单位', value: 'entrustOrganization' },
+  { text: '被委托管理单位', value: 'entrustOrganization' },
   { text: '建筑面积(㎡)', value: 'buildArea' },
   { text: '使用面积(㎡)', value: 'useArea' },
   { text: '专有建筑面积(㎡)', value: 'exclusiveBuildArea' },
