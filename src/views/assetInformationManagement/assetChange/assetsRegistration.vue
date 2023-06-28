@@ -1,5 +1,5 @@
 <!--
-  资产变更单
+  资产变更单- /assetChangeRegister
 -->
 <template>
   <div class="assetsRegistration">
@@ -12,6 +12,7 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="query">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-checkbox style="line-height: 32px" :checked="queryCondition.currentOrgan" @change="checkboxFn">仅当前机构下资产变更单</a-checkbox>
@@ -186,6 +187,19 @@ const columns = [
     scopedSlots: { customRender: 'operation' },
   },
 ];
+
+const queryCondition = {
+  approvalStatus: '', // 审批状态 0草稿 2待审批、已驳回3、已审批1 已取消4
+  pageNum: 1, // 当前页
+  pageSize: 10, // 每页显示记录数
+  projectId: '', // 资产项目Id
+  organId: '', // 组织机构id
+  changeType: '', // 备注：变更类型id(多个用，分割)
+  assetType: '', // 资产类型，多个用，分隔
+  startCreateDate: getThreeMonthsAgoDate(), // 备注：开始创建日期
+  endCreateDate: getCurrentDate(), // 备注：结束创建日期
+  currentOrgan: false, // 备注：仅当前机构下资产清理单 0 否 1 是
+};
 export default {
   components: {
     TreeSelect,
@@ -261,6 +275,11 @@ export default {
   },
   methods: {
     moment,
+    reset() {
+      let organId = this.queryCondition.organId;
+      this.queryCondition = { ...queryCondition, organId };
+      this.query();
+    },
     // 查询
     query() {
       if (!this.queryCondition.organId) {
