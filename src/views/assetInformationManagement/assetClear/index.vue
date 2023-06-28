@@ -31,6 +31,7 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-checkbox style="line-height: 32px" :checked="queryCondition.onlyCurrentOrgan" @change="onOnlyCurrentOrganChange"
@@ -217,6 +218,15 @@ const approvalStatusData = [
     value: '4',
   },
 ];
+const queryCondition = {
+  approvalStatus: [''],
+  cleanupType: [''], // 出库原因
+  assetProject: '',
+  assetType: [''],
+  beginDate: getThreeMonthsAgoDate(),
+  endDate: getCurrentDate(),
+  onlyCurrentOrgan: false,
+};
 export default {
   components: {
     TreeSelect,
@@ -288,6 +298,14 @@ export default {
   },
   methods: {
     moment,
+    reset() {
+      this.queryCondition = { ...queryCondition };
+      this.paginator.pageNo = 1;
+      this.paginator.pageLength = 10;
+      this.paginator.totalCount = 0;
+      this.registerDate = [moment(getThreeMonthsAgoDate()), moment(getCurrentDate())];
+      this.queryClick();
+    },
     // 点击查询
     queryClick() {
       this.paginator.pageNo = 1;
