@@ -62,7 +62,8 @@
         <div class="box">
           <segi-range-picker
             label="创建日期"
-            :defaultValue="[moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')]"
+            :defaultValue="getCurrentDateRange()"
+            v-model="dateRange"
             :canSelectToday="true"
             @dateChange="onDateChange"
           ></segi-range-picker>
@@ -236,6 +237,7 @@ export default {
         endCreateDate: getCurrentDate(), // 备注：结束创建日期
         currentOrgan: false, // 备注：仅当前机构下资产清理单 0 否 1 是
       },
+      dateRange: [],
       // defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       count: '',
       changeTypeData: [],
@@ -278,6 +280,7 @@ export default {
     reset() {
       let organId = this.queryCondition.organId;
       this.queryCondition = { ...queryCondition, organId };
+      this.dateRange = this.getCurrentDateRange();
       this.query();
     },
     // 查询
@@ -349,6 +352,9 @@ export default {
     // 高级搜索控制
     searchContainerFn(val) {
       this.toggle = val;
+    },
+    getCurrentDateRange() {
+      return [moment(queryCondition.startCreateDate, 'YYYY-MM-DD'), moment(queryCondition.endCreateDate, 'YYYY-MM-DD')];
     },
     // 起止日期发生变化
     onDateChange(val) {
