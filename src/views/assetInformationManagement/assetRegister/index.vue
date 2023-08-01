@@ -19,6 +19,7 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select
@@ -173,6 +174,17 @@ const columns = [
     scopedSlots: { customRender: 'operation' },
   },
 ];
+const queryCondition = {
+  approvalStatus: '', // 状态
+  pageNum: 1, // 当前页
+  pageSize: 10, // 每页显示记录数
+  projectId: undefined, // 资产项目Id
+  organId: 1, // 组织机构id
+  assetType: '', // 变动类型id(多个用，分割)
+  createDateS: '', // 开始创建日期
+  crateDateE: '', // 结束创建日期
+  registerOrderName: '', // 登记单名称/编码
+};
 export default {
   components: { TreeSelect, noDataTips, OperationPopover, OverviewNumber },
   props: {},
@@ -197,17 +209,7 @@ export default {
         { title: '待入库', key: 'waitStorage', value: 0, bgColor: '#1890FF' },
         { title: '已入库', key: 'alreadyStorage', value: 0, bgColor: '#DD81E6' },
       ], // 概览数字数据, title 标题，value 数值，bgColor 背景色
-      queryCondition: {
-        approvalStatus: '', // 状态
-        pageNum: 1, // 当前页
-        pageSize: 10, // 每页显示记录数
-        projectId: undefined, // 资产项目Id
-        organId: 1, // 组织机构id
-        assetType: '', // 变动类型id(多个用，分割)
-        createDateS: '', // 开始创建日期
-        crateDateE: '', // 结束创建日期
-        registerOrderName: '', // 登记单名称/编码
-      },
+      queryCondition: { ...queryCondition },
       createDateValue: null, // 去掉时间的默认值 [moment([moment().year(), '0', '1']), moment(new Date())],  查询起始时间默认为今年1月1号
       count: '',
       assetTypeData: [
@@ -416,6 +418,12 @@ export default {
           this.$message.error(res.data.message);
         }
       });
+    },
+    reset() {
+      let organId = this.queryCondition.organId;
+      this.queryCondition = { ...queryCondition, organId };
+      this.createDateValue = [];
+      this.allQuery();
     },
     allQuery() {
       this.queryCondition.pageNum = 1;
