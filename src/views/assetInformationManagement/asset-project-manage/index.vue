@@ -10,55 +10,37 @@
         >
       </div>
       <div slot="contentForm" style="text-align: left; width: 100%; position: absolute; display: contents">
-        <a-row :gutter="8" style="width: 100%">
-          <a-col :span="5" style="text-align: left; width: 20%">
-            <tree-select @changeTree="changeTree" style="width: 100%" placeholder="请选择组织机构" :allowClear="false" />
-          </a-col>
-          <a-col :span="5" style="text-align: left; width: 20%">
+        <div class="search-form">
+          <div class="search-left">
+            <tree-select @changeTree="changeTree" style="width: 180px" placeholder="请选择组织机构" :allowClear="false" />
             <a-select
               v-model="approvalStatusList"
               mode="multiple"
               :maxTagCount="2"
               :options="$addTitle(statusOptions)"
               placeholder="请选择项目状态"
-              style="width: 100%"
+              style="width: 180px"
             />
-          </a-col>
-          <a-col :span="5" style="text-align: left; width: 20%">
             <a-select
               v-model="sourceTypeList"
               mode="multiple"
               :maxTagCount="1"
               placeholder="请选择来源方式"
-              style="width: 100%"
+              style="width: 180px"
               :options="$addTitle(sourceTypeOptions)"
             />
-          </a-col>
-          <a-col :span="5" style="text-align: left; width: 20%">
-            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 100%" :options="$addTitle(takeOverOptions)" />
-          </a-col>
-          <a-col :span="4" style="text-align: left; width: 10%">
-            <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
-            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
-          </a-col>
-        </a-row>
-        <a-row :gutter="8" style="margin-top: 14px">
-          <a-col :span="5" style="text-align: left; width: 20%">
-            <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 100%" :options="$addTitle(operateOptions)" />
-          </a-col>
-          <a-col :span="5" style="text-align: left; width: 20%">
-            <a-input placeholder="请输入资产项目名称" v-model="projectName" />
-          </a-col>
-          <a-col :span="5" style="text-align: left; width: 20%">
-            <a-date-picker @change="onChangeStart" placeholder="请选择创建开始日期" style="width: 100%" />
-          </a-col>
-          <a-col :span="5" style="text-align: left; width: 20%">
-            <a-date-picker @change="onChangeEnd" placeholder="请选择创建结束日期" style="width: 100%" />
-          </a-col>
-          <a-col :span="4" style="text-align: left; width: 20%">
+            <a-select v-model="takeOver" placeholder="请选择接管时资产状态" style="width: 180px" :options="$addTitle(takeOverOptions)" />
+            <a-select v-model="transferToOperation" placeholder="请选择运营状态" style="width: 180px" :options="$addTitle(operateOptions)" />
+            <a-input placeholder="请输入资产项目名称" v-model="projectName" style="width: 180px" />
+            <a-date-picker v-model="params.startDate" @change="onChangeStart" placeholder="请选择创建开始日期" style="width: 180px" />
+            <a-date-picker v-model="params.endDate" @change="onChangeEnd" placeholder="请选择创建结束日期" style="width: 180px" />
             <a-checkbox :checked="isCurrent" @change="changeChecked" style="margin-top: 7px">仅当前机构下资产项目</a-checkbox>
-          </a-col>
-        </a-row>
+          </div>
+          <div class="query-content">
+            <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
+            <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
+          </div>
+        </div>
       </div>
     </search-container>
     <!--概览-->
@@ -171,6 +153,10 @@ export default {
       isCurrent: false, // 查询条件-是否仅当前机构
       organId: '', // 查询条件-组织Id
       organName: '', // 查询条件-组织Id
+      params: {
+        startDate: null,
+        endDate: null,
+      },
       approvalStatusList: undefined, // 查询条件-项目状态
       statusOptions: [
         { key: 'all', title: '全部状态' },
@@ -417,7 +403,20 @@ export default {
       this.organName = name;
       id && this.queryTableData({ type: 'search' });
     },
-
+    reset() {
+      this.approvalStatusList = undefined;
+      this.sourceTypeList = undefined;
+      this.takeOver = undefined;
+      this.isCurrent = undefined;
+      this.projectName = undefined;
+      this.transferToOperation = undefined;
+      this.paginationObj.pageNo = 1;
+      this.paginationObj.pageLength = 10;
+      this.paginationObj.totalCount = 0;
+      this.params.startDate = null;
+      this.params.endDate = null;
+      this.queryTableData({ type: 'search' });
+    },
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const { organId, approvalStatusList, sourceTypeList, takeOver, isCurrent, projectName, transferToOperation } = this;
@@ -581,6 +580,20 @@ export default {
   /deep/.ant-table-header {
     font-weight: 700;
     font-size: 13px;
+  }
+  .search-form {
+    display: flex;
+    .search-left {
+      display: grid;
+      padding-left: 10px;
+      grid-template-columns: repeat(5, 1fr);
+      row-gap: 10px;
+      column-gap: 10px;
+    }
+    .query-content {
+      text-align: right;
+      width: 200px;
+    }
   }
   .custom-table {
     //padding-bottom: 70px;

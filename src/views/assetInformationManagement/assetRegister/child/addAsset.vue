@@ -1,3 +1,4 @@
+<!-- 资产登记 新建 弹窗 -->
 <template>
   <div class="addAsset">
     <SG-Modal width="650px" v-model="show" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
