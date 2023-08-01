@@ -2,30 +2,24 @@
 <template>
   <div>
     <!--搜索条件-->
-    <div style="padding: 20px 30px">
-      <a-row :gutter="8">
-        <a-col :span="12">
-          <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
-            >导出组织机构视图</SG-Button
-          >
-        </a-col>
-        <a-col :span="5">
-          <tree-select @changeTree="changeTree" style="width: 100%" :showSearch="true" />
-        </a-col>
-        <a-col :span="5">
-          <a-select
-            v-model="statusList"
-            mode="multiple"
-            :maxTagCount="1"
-            style="width: 100%"
-            placeholder="请选择资产状态"
-            :options="$addTitle(statusListOpt)"
-          />
-        </a-col>
-        <a-col :span="2">
-          <SG-Button icon="search" type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
-        </a-col>
-      </a-row>
+    <div style="padding: 20px 30px; display: flex">
+      <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
+        >导出组织机构视图</SG-Button
+      >
+      <div style="flex: 1; text-align: right">
+        <tree-select @changeTree="changeTree" style="width: 180px" :showSearch="true" />
+        <a-select
+          v-model="statusList"
+          mode="multiple"
+          class="ml10"
+          :maxTagCount="1"
+          style="width: 180px"
+          placeholder="请选择资产状态"
+          :options="$addTitle(statusListOpt)"
+        />
+        <SG-Button type="primary" class="ml10" @click="queryTableData({ type: 'search' })">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
+      </div>
     </div>
     <!--概览-->
     <a-spin :spinning="overviewNumSpinning">
@@ -180,7 +174,10 @@ export default {
       };
       this.$router.push({ path: '/organView/detail', query: query || {} });
     },
-
+    reset() {
+      this.statusList = [];
+      this.queryTableData({ type: 'search' });
+    },
     // 查询列表数据
     queryTableData({ pageNo = 1, pageLength = 10, type }) {
       const { sumObj, organId, current, statusList } = this;
