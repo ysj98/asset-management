@@ -97,7 +97,7 @@
           </div>
           <div class="two-row-box">
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-            <SG-Button @click="restQuery">清除</SG-Button>
+            <SG-Button @click="restQuery">重置</SG-Button>
           </div>
         </div>
       </SearchContainer>
