@@ -44,7 +44,7 @@
             />
             <a-input :maxLength="30" placeholder="资产名称/编码" v-model="queryCondition.landName" :style="allStyle" />
             <SG-Button @click="searchQuery" class="mr10" type="primary">查询</SG-Button>
-            <SG-Button @click="handleClear" class="mr10" type="info">清空</SG-Button>
+            <SG-Button @click="handleClear" class="mr10" type="info">重置</SG-Button>
           </div>
         </div>
       </div>

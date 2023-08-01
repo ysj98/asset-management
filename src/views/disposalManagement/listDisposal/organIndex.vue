@@ -86,7 +86,7 @@
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px" @click="queryFn">查询</SG-Button>
-          <SG-Button @click="eliminateFn">清空</SG-Button>
+          <SG-Button @click="eliminateFn">重置</SG-Button>
         </div>
       </div>
     </SearchContainer>

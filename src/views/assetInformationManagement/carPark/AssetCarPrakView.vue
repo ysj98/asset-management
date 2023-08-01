@@ -119,7 +119,7 @@
           </a-col>
           <a-col :span="3" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
-            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">清空</SG-Button>-->
+            <!--<SG-Button style="margin-left: 10px" @click="handleClick('import')">重置</SG-Button>-->
           </a-col>
         </a-row>
         <!-- <a-row :gutter="12" style="margin-top: 14px">

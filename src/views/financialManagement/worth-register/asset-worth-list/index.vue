@@ -61,7 +61,7 @@
           </a-col>
           <a-col :span="3" style="text-align: left">
             <SG-Button type="primary" @click="queryTableData({})">查询</SG-Button>
-            <!--<SG-Button style="margin-left: 10px" @click="handleReset">清空</SG-Button>-->
+            <!--<SG-Button style="margin-left: 10px" @click="handleReset">重置</SG-Button>-->
           </a-col>
         </a-row>
       </div>
