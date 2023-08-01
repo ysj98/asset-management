@@ -69,6 +69,7 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="allQuery">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select
@@ -215,6 +216,20 @@ const requiredColumn = [
     scopedSlots: { customRender: 'operation' },
   },
 ];
+const queryCondition = {
+  pageNum: 1, // 当前页
+  pageSize: 10, // 每页显示记录数
+  projectId: undefined, // 资产项目Id
+  organId: 1, // 组织机构id
+  assetType: [''], // 资产类型id(多个用，分割)
+  approvalStatus: '', // 状态
+  address: '', //详细地址
+  assetNameCode: '', // 资产名称/编码
+  assetClassify: [''], // 资产分类
+  registerOrderNameOrId: '', // 登记单编号
+  sourceModes: [''], // 来源方式
+  originSource: '', // 资产原始来源方
+};
 export default {
   components: { TreeSelect, OverviewNumber, noDataTips, segiIcon, EquipmentSelectTree, ProvinceCityDistrict, TableHeaderSettings },
   data() {
@@ -239,20 +254,7 @@ export default {
       tableData: [],
       count: '',
       noPageTools: false,
-      queryCondition: {
-        pageNum: 1, // 当前页
-        pageSize: 10, // 每页显示记录数
-        projectId: undefined, // 资产项目Id
-        organId: 1, // 组织机构id
-        assetType: [''], // 资产类型id(多个用，分割)
-        approvalStatus: '', // 状态
-        address: '', //详细地址
-        assetNameCode: '', // 资产名称/编码
-        assetClassify: [''], // 资产分类
-        registerOrderNameOrId: '', // 登记单编号
-        sourceModes: [''], // 来源方式
-        originSource: '', // 资产原始来源方
-      },
+      queryCondition: { ...queryCondition },
       numList: [
         { title: '全部', key: 'whole', value: 0, fontColor: '#324057' },
         { title: '未核实', key: 'notVerified', value: 0, bgColor: '#FD7474' },
@@ -394,6 +396,17 @@ export default {
           this.loading = false;
         }
       });
+    },
+    reset() {
+      let organId = this.queryCondition.organId;
+      this.queryCondition = { ...queryCondition, organId };
+      this.defaultValue = [];
+      this.provinces = {
+        province: undefined,
+        city: undefined,
+        district: undefined,
+      };
+      this.allQuery();
     },
     allQuery() {
       this.queryCondition.pageNum = 1;
