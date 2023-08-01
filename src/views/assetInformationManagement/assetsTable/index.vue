@@ -55,6 +55,7 @@
       </div>
       <div slot="btns">
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
       <div slot="form" class="formCon">
         <a-select
@@ -101,6 +102,7 @@
           label="出库日期"
           style="width: 232px"
           pickerType="RangePicker"
+          v-model="defaultValue"
           :defaultValue="defaultValue"
           format="YYYY-MM-DD"
           @change="onDateChange"
@@ -261,6 +263,19 @@ const requiredColumn = [
     scopedSlots: { customRender: 'operation' },
   },
 ];
+const queryData = {
+  assetTypeList: [''], // 全部资产类型
+  objectTypeList: [''], // 资产分类
+  cleanupTypeList: [''], // 出库原因
+  approvalStatusList: [''], // 出库单状态
+  projectIdList: [''], // 资产项目
+  maxDate: '',
+  minDate: '',
+  assetName: '', // 资产名称/编码
+  cleaningOrderCode: '', // 出库单/编码
+  pageSize: 10,
+  pageNum: 1,
+};
 export default {
   components: {
     TreeSelect,
@@ -282,19 +297,7 @@ export default {
       },
       organName: '',
       organId: '',
-      queryData: {
-        assetTypeList: [''], // 全部资产类型
-        objectTypeList: [''], // 资产分类
-        cleanupTypeList: [''], // 出库原因
-        approvalStatusList: [''], // 出库单状态
-        projectIdList: [''], // 资产项目
-        maxDate: '',
-        minDate: '',
-        assetName: '', // 资产名称/编码
-        cleaningOrderCode: '', // 出库单/编码
-        pageSize: 10,
-        pageNum: 1,
-      },
+      queryData: { ...queryData },
       defaultValue: [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())],
       pageTotalCount: 0,
       assetClassifyData: [
@@ -496,6 +499,17 @@ export default {
         URL.revokeObjectURL(link.href);
         document.body.removeChild(link);
       });
+    },
+    reset() {
+      let organId = this.queryData.organId;
+      this.queryData = { ...queryData, organId };
+      this.defaultValue = [moment(new Date() - 24 * 1000 * 60 * 60 * 90), moment(new Date())];
+      this.provinces = {
+        province: undefined,
+        city: undefined,
+        district: undefined,
+      };
+      this.queryClick();
     },
     // 点击查询
     queryClick() {
