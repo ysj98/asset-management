@@ -41,6 +41,7 @@
           >仅选择当前机构下资产项目</a-checkbox
         >
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
+        <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
     </SG-SearchContainer>
     <!--概览-->
@@ -303,6 +304,14 @@ export default {
       this.paginator.pageNo = page.pageNo;
       this.paginator.pageLength = page.pageLength;
       this.queryList();
+    },
+    reset() {
+      this.paginator.pageNo = 1;
+      this.paginator.pageLength = 10;
+      this.paginator.totalCount = 0;
+      this.assetProject = '';
+      this.status = ['all'];
+      this.queryClick()
     },
     // 点击查询
     queryClick() {
