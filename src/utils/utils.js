@@ -1,5 +1,7 @@
 import sg_calc from 'sg-calc';
 import store from 'store';
+import Vue from 'vue'
+let _this = new Vue()
 /**
  * 工具函数库
  */
@@ -888,3 +890,32 @@ export const accAdd = (arg1, arg2) => {
   }
   return (arg1 + arg2) / m;
 };
+
+
+// 获取平台编码
+export async function platformDict(dictCode) {
+  if (!dictCode ) return
+  const { code, data, message } = await _this.$api.global.dictionary({ dictCode })
+  if (+code !== 0) return _this.$SG_Message.error(message)
+  return data.map((item) => {
+    return {
+      name: item.dictName,
+      value: item.directValue
+    }
+  })
+}
+
+// 获取机构编码
+export async function organDict(organId, dictCode) {
+  if (!organId) return 
+  const {data:{ code, data, message }} = await _this.$api.global.organDict({ organId, dictCode })
+  console.log('res', data);
+  if (+code !== 0) return _this.$SG_Message.error(message)
+  return data.map((item) => {
+    return {
+      name: item.dictName,
+      value: item.directValue
+    }
+  })
+  
+}

@@ -4,7 +4,7 @@
  * 日期：2019年7月11日
  */
 
-import { axiosPost } from '../utils/axios';
+import { axiosPost, axiosGet } from '../utils/axios';
 import { Global } from '../config/config.url';
 
 /**
@@ -26,4 +26,12 @@ export function assetRolListV2(data) {
 }
 export function addCustomShowV2(data) {
   return axiosPost(Global.addCustomShowV2, data, true);
+}
+
+
+export function organDict(data) {
+  return axiosGet( '/esm/organDict/list', data )
+}
+export function dictionary(data) {
+  return axiosGet( '/esm/dictionary/list', data )
 }

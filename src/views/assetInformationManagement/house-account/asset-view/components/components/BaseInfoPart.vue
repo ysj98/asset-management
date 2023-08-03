@@ -88,6 +88,13 @@ export default {
         { title: '涉诉', key: 'lawsuitName' },
         { title: '涉诉情况', key: 'lawsuitRemark' },
         { title: '是否缴纳土地出让金', key: 'isLandSell' },
+        { title: '权属是否清晰', key: 'isRightClearChange' },
+        { title: '权属不清晰原因', key: 'rightClearReason' },
+        { title: '是否账外资产', key: 'isAccountOut' },
+        { title: '所属园区', key: 'belongToParkName' },
+        { title: '产生或有资产原因', key: 'assetReasonName' },
+        { title: '或有资产取得时间', key: 'getAssetDate' },
+        { title: '预计转确认资产时间', key: 'confirmAssetDate' },
         { title: '相关描述', key: 'remark', span: 16 },
         { title: '附件', key: 'attachmentList', span: 16 },
         // {title: '资产二维码', key: 'QRCode', span: 24}

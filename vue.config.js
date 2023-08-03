@@ -34,6 +34,7 @@ const proxyURL = [
   '/car-parking',
   '/uis/',
   '/ams/',
+  '/esm/',
   '/charging-api/',
   '/datacachesvr-api-netty/',
   '/car-parking-api/',

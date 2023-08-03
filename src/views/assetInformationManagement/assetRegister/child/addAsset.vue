@@ -306,28 +306,95 @@
               </a-form-item>
             </a-col>
             <a-col class="playground-col" :span="12">
-              <a-form-item :colon="false" label="权属情况：" v-bind="formItemLayout">
-                <label slot="label">权属是否清晰：</label>
+              <a-form-item :colon="false" label="权属是否清晰：" v-bind="formItemLayout">
                 <a-select
                   showSearch
                   :style="allWidth"
-                  placeholder="请选择权属情况"
+                  @change="isRightClearChange"
                   v-decorator="[
-                    'ownershipStatus',
+                    'isRightClear',
                     {
-                      rules: [{ required: true, message: '请选择权属情况' }],
-                      initialValue: params.ownershipStatus,
+                      rules: [{ required: true, message: '请选择权属是否清晰' }],
                     },
                   ]"
                   :allowClear="false"
-                  :filterOption="filterOption"
-                  @change="ownershipStatusChange"
-                  notFoundContent="没有查询到权属情况"
                 >
-                  <a-select-option :title="item.name" v-for="item in ownershipStatusList" :key="item.value" :value="item.value">
+                  <a-select-option title="清晰" value="清晰"> 清晰 </a-select-option>
+                  <a-select-option title="不清晰" value="不清晰"> 不清晰 </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" v-bind="formItemLayout">
+                <label slot="label">权属不清晰原因：</label>
+                <a-input
+                  placeholder="请输入权属不清晰原因"
+                  :style="allWidth"
+                  :max="100"
+                  v-decorator="[
+                    'rightClearReason',
+                    {
+                      rules: [
+                        { required: params.isRightClear === '不清晰', message: '请输入权属不清晰原因' },
+                        { max: 100, whitespace: true, message: '请输入权属不清晰原因' },
+                      ],
+                    },
+                  ]"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="是否账外资产：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  v-decorator="[
+                    'isAccountOut',
+                    {
+                      rules: [{ required: true, message: '请选择是否账外资产' }],
+                    },
+                  ]"
+                  :allowClear="false"
+                >
+                  <a-select-option title="是" value="是"> 是 </a-select-option>
+                  <a-select-option title="否" value="否"> 否 </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="所属园区：" v-bind="formItemLayout">
+                <label slot="label">所属园区：</label>
+                <a-select
+                  v-decorator="['belongToPark']"
+                  :style="allWidth"
+                  placeholder="请选择所属园区"
+                  :allowClear="false"
+                  notFoundContent="没有查询到所属园区"
+                >
+                  <a-select-option :title="item.name" v-for="item in ams_park" :key="item.value" :value="item.value">
                     {{ item.name }}
                   </a-select-option>
                 </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="产生或有资产原因：" v-bind="formItemLayout">
+                <label slot="label">产生或有资产原因：</label>
+                <a-select v-decorator="['assetReason']"  :style="allWidth" placeholder="请选择产生或有资产原因" :allowClear="false" notFoundContent="没有查询到产生或有资产原因">
+                  <a-select-option :title="item.name" v-for="item in ams_asset_reason" :key="item.value" :value="item.value">
+                    {{ item.name }}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="或有资产取得时间：" v-bind="formItemLayout">
+                <a-date-picker v-decorator="['getAssetDate']" clearable dateType="date" format="YYYY-MM-DD"></a-date-picker>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="预计转确认资产时间：" v-bind="formItemLayout">
+                <a-date-picker v-decorator="['confirmAssetDate']" clearable dateType="date" format="YYYY-MM-DD"></a-date-picker>
               </a-form-item>
             </a-col>
           </a-row>
@@ -616,7 +683,7 @@
   </div>
 </template>
 <script>
-import { debounce } from 'utils/utils';
+import { debounce, organDict } from 'utils/utils';
 import _ from 'lodash';
 import moment from 'moment';
 const formItemTextarea = {
@@ -701,6 +768,8 @@ export default {
       oldAssetSourceOptions: [], // 原始来源方式列表
       ownershipData: [], // 权属类型列表
       buildAddress: '', //坐落位置 需根据选择的房间自动带出来展示；---只读，不可修改
+      ams_park: [], // 所属园区
+      ams_asset_reason: [], // 所属园区
       assetTypeData: [{ name: '房屋', value: '1' }], // 资产类型
       ownershipStatusList: [
         { name: '无证', value: '0' },
@@ -739,11 +808,14 @@ export default {
       return '楼栋名称';
     },
   },
-  mounted() {
+  async mounted() {
     // this.platformDictFn() // 获取资产类型
     this.debounceMothed(); // 获取楼栋列表
     this.getAssetSourceOptions(); // 获取资产来源下拉列表
     this.getOldAssetSourceOptions(); // 获取资产原始来源下拉列表
+    this.ams_park = await organDict(this.organId, 'ams_park'); // 所属园区
+    this.ams_asset_reason = await organDict(this.organId, 'ams_asset_reason'); // 所属园区
+
     this.ownershipFn(); // 获取权属类型
     this.$nextTick(() => {
       this.$textReplace();
@@ -775,6 +847,12 @@ export default {
           this.$message.error(res.data.message);
         }
       });
+    },
+    isRightClearChange(value) {
+      const { setFieldsValue } = this.form;
+      setFieldsValue({ isRightClear: value });
+      this.params.isRightClear = value;
+      // 在这里更新其他相关的状态或数据
     },
     // 获取资产来源下拉列表
     getAssetSourceOptions() {
@@ -964,6 +1042,9 @@ export default {
           // type 1楼栋 2房屋
           obj.type = obj.houseNumber ? '2' : '1';
           obj.objectId = obj.houseNumber ? obj.houseNumber : obj.buildId;
+          obj.getAssetDate = moment(obj.getAssetDate).format('YYYY-MM-DD');
+          obj.confirmAssetDate = moment(obj.confirmAssetDate).format('YYYY-MM-DD');
+          console.log('submitAsset', obj);
           this.$emit('submitAsset', _.cloneDeep([].concat(obj)));
         } else {
           this.$message.error('请按照规则填写信息');
