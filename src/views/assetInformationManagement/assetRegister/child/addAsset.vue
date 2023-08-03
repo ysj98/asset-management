@@ -397,6 +397,60 @@
                 <a-date-picker v-decorator="['confirmAssetDate']" clearable dateType="date" format="YYYY-MM-DD"></a-date-picker>
               </a-form-item>
             </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="是否投资性房地产：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  v-decorator="[
+                    'isInvestAsset',
+                    {
+                      rules: [{ required: true, message: '请选择是否投资性房地产' }],
+                    },
+                  ]"
+                  :allowClear="false"
+                >
+                  <a-select-option title="是" value="是"> 是 </a-select-option>
+                  <a-select-option title="否" value="否"> 否 </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="是否闲置：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  v-decorator="[
+                    'isIdle',
+                    {
+                      rules: [{ required: true, message: '请选择是否闲置' }],
+                    },
+                  ]"
+                  :allowClear="false"
+                >
+                  <a-select-option title="是" value="是"> 是 </a-select-option>
+                  <a-select-option title="否" value="否"> 否 </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="实际用途与证载用途是否一致：" v-bind="formItemLayout">
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  v-decorator="[
+                    'isUsetypeConsistent',
+                    {
+                      rules: [{ required: true, message: '请选择实际用途与证载用途是否一致' }],
+                    },
+                  ]"
+                  :allowClear="false"
+                >
+                  <a-select-option title="是" value="是"> 是 </a-select-option>
+                  <a-select-option title="否" value="否"> 否 </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
           </a-row>
           <a-row v-show="warrantNbrShow">
             <a-col class="playground-col" :span="12">

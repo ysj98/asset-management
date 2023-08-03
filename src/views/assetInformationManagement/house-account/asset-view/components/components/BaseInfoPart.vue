@@ -95,6 +95,9 @@ export default {
         { title: '产生或有资产原因', key: 'assetReasonName' },
         { title: '或有资产取得时间', key: 'getAssetDate' },
         { title: '预计转确认资产时间', key: 'confirmAssetDate' },
+        { title: '是否投资性房地产', key: 'isInvestAsset' },
+        { title: '是否闲置', key: 'isIdle' },
+        { title: '实际用途与证载用途是否一致', key: 'isUsetypeConsistent' },
         { title: '相关描述', key: 'remark', span: 16 },
         { title: '附件', key: 'attachmentList', span: 16 },
         // {title: '资产二维码', key: 'QRCode', span: 24}
