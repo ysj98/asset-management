@@ -230,6 +230,7 @@ const columnsData = [
   { title: '权属单位', dataIndex: 'organName', width: 150, disabled: true },
   { title: '宗地号', dataIndex: 'theNo', width: 150 },
   { title: '宗地位置', dataIndex: 'location', width: 150 },
+  { title: '产权地址', dataIndex: 'seatingPosition', width: 300 },
   { title: '土地面积(㎡)', dataIndex: 'landArea', width: 150, scopedSlots: { customRender: 'landArea' } },
   { title: '资产项目名称', dataIndex: 'projectName', width: 150 },
   { title: '权属用途', dataIndex: 'landCategory', width: 150 },

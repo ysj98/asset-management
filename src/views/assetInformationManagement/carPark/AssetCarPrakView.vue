@@ -424,6 +424,7 @@ export default {
           { title: '权属单位', dataIndex: 'ownerOrganName', width: 150 },
           { title: '资产项目', dataIndex: 'projectName', width: 300 },
           { title: '资产位置', dataIndex: 'address', width: 300 },
+          { title: '产权地址', dataIndex: 'seatingPosition', width: 300 },
           { title: '建筑面积(㎡)', dataIndex: 'area', width: 150, scopedSlots: { customRender: 'area' } },
           { title: '车场名称', dataIndex: 'placeName', scopedSlots: { customRender: 'placeName' }, width: 200 },
           { title: '车场类型', dataIndex: 'objectTypeName', scopedSlots: { customRender: 'objectTypeName' }, width: 120 },

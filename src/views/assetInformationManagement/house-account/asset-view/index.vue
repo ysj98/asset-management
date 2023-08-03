@@ -342,6 +342,7 @@ const detailColumns = [
   { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200 },
   { title: '产证附件状态', dataIndex: 'uploadAttachment', scopedSlots: { customRender: 'uploadAttachment' }, width: 120 },
   { title: '地理位置', dataIndex: 'address', width: 300 },
+  { title: '产权地址', dataIndex: 'seatingPosition', width: 300 },
   { title: '楼栋名称', dataIndex: 'buildName', scopedSlots: { customRender: 'buildName' }, width: 150 },
   { title: '单元', dataIndex: 'unitName', width: 100 },
   { title: '楼层', dataIndex: 'floor', width: 60 },

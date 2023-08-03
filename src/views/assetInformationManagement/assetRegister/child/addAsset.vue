@@ -305,6 +305,31 @@
                 />
               </a-form-item>
             </a-col>
+            <a-col class="playground-col" :span="12">
+              <a-form-item :colon="false" label="权属情况：" v-bind="formItemLayout">
+                <label slot="label">权属是否清晰：</label>
+                <a-select
+                  showSearch
+                  :style="allWidth"
+                  placeholder="请选择权属情况"
+                  v-decorator="[
+                    'ownershipStatus',
+                    {
+                      rules: [{ required: true, message: '请选择权属情况' }],
+                      initialValue: params.ownershipStatus,
+                    },
+                  ]"
+                  :allowClear="false"
+                  :filterOption="filterOption"
+                  @change="ownershipStatusChange"
+                  notFoundContent="没有查询到权属情况"
+                >
+                  <a-select-option :title="item.name" v-for="item in ownershipStatusList" :key="item.value" :value="item.value">
+                    {{ item.name }}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
           </a-row>
           <a-row v-show="warrantNbrShow">
             <a-col class="playground-col" :span="12">
