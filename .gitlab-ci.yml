@@ -83,8 +83,8 @@ deploy-job-dev:
     - chmod 600 /root/.ssh/known_hosts
   script:
     - echo "部署：上传开发服务器"
-    - tar -czvf dist.tar.gz dist/
-    - scp dist.tar.gz "${DEV_SSH_USER}@${DEV_ENV_IP}:/data/segingx/web/asset-management/"
+    - tar -czvf asset-management.tar.gz asset-management/
+    - scp asset-management.tar.gz "${DEV_SSH_USER}@${DEV_ENV_IP}:/data/segingx/web/asset-management/"
     - ssh -p22 "${DEV_SSH_USER}@${DEV_ENV_IP}" 'cd /data/segingx/web/asset-management; tar -xzvf dist.tar.gz; ls;'
   after_script:
     - echo "部署：完成"
