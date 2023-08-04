@@ -1,0 +1,100 @@
+# 指定使用的Docker镜像
+image: node:current
+
+# 定义作业阶段及执行顺序
+stages:
+  - preInstall  # 安装之前检测依赖是否发生变化
+  - install     # 安装依赖
+  - build       # 代码打包
+  - deploy-dev  # 部署到开发环境
+  - deploy-beta # 部署到测试环境
+
+# 定义默认的标签，可用于在执行作业时指定Runner
+# default:
+#   tags:
+#     - $H5_RUNNER_NAME
+
+# 定义缓存，加快作业执行速度
+cache:
+  paths:
+    - node_modules
+    - dist
+
+# 安装之前检测依赖是否发生变化的任务
+preInstall-job:
+  stage: preInstall
+  only:
+    refs:
+      - dev
+      - beta
+    changes:
+      - package.json
+  script:
+    - echo "依赖发生变化，开始install，分支：$CI_COMMIT_BRANCH"
+    - npm install
+    - echo "完成install"
+
+# 安装依赖的任务
+install-job:
+  stage: install
+  only:
+    refs:
+      - dev
+      - beta
+  script:
+    - echo "开始install，分支：$CI_COMMIT_BRANCH"
+    - if [ ! -d "./node_modules/" ];then 
+        echo "--install开始";   
+        npm install;   
+        echo "--install成功"; 
+      else   
+        echo "缓存存在,跳过install"; 
+      fi
+
+# 代码打包的任务
+build-job:
+  stage: build
+  only:
+    - dev
+    - beta
+  script:
+    - echo "开始代码打包，分支：$CI_COMMIT_BRANCH"
+    - npm run build
+    - echo "完成代码打包"
+  artifacts:
+    name: '$CI_COMMIT_REF_NAME'
+    expire_in: 60min
+    paths:
+      - dist/
+
+# 部署到开发环境的任务
+deploy-job-dev:
+  stage: deploy-dev
+  only:
+    - dev
+  before_script:
+    - echo "部署：添加ssh免密"
+    - mkdir -p /root/.ssh
+    - echo "$DEV_SSH_KEY" > /root/.ssh/id_rsa
+    - chmod 700 /root/.ssh
+    - chmod 600 /root/.ssh/id_rsa
+    # 确保目标服务器的公钥已经被添加到本地密钥列表中
+    - ssh-keyscan -p "$DEV_ENV_PORT" "$DEV_ENV_IP" >> /root/.ssh/known_hosts
+    - chmod 600 /root/.ssh/known_hosts
+  script:
+    - echo "部署：上传开发服务器"
+    - tar -czvf dist.tar.gz dist/
+    - scp dist.tar.gz "${DEV_SSH_USER}@${DEV_ENV_IP}:/data/segingx/web/asset-management/"
+    - ssh -p22 "${DEV_SSH_USER}@${DEV_ENV_IP}" 'cd /data/segingx/web/asset-management; tar -xzvf dist.tar.gz; ls;'
+  after_script:
+    - echo "部署：完成"
+
+# 部署到测试环境的任务
+deploy-job-beta:
+  stage: deploy-beta
+  only:
+    - beta
+  script:
+    - echo "部署：上传BETA服务器"
+  after_script:
+    - echo "部署：完成"
