@@ -59,8 +59,16 @@ export async function initTableColumns({ columns, detailColumns, requiredColumn,
   // 利用js "传址" 特性,便利函数封装，使用者应注意函数副作用
   columns.splice(0, columns.length);
   // 暂不考虑固定表头顺序问题，目前只有操作列
-  const res = await getTableHeaders({ funType });
-  res.customShow.forEach((ele) => {
+  const {customShow = []} = await getTableHeaders({ funType });
+ // 产权单位交换位置 
+  const seatingPositionIndex = customShow.findIndex((item) => item.colCode === 'seatingPosition');
+  const addressIndex = customShow.findIndex((item) => item.colCode === 'address');
+  if (seatingPositionIndex !== -1 && addressIndex !== -1) {
+    const seatingPosition = customShow[seatingPositionIndex];
+    customShow.splice(seatingPositionIndex, 1);
+    customShow.splice(addressIndex + 1, 0, seatingPosition);
+  }
+  customShow.forEach((ele) => {
     let mapRes = {};
     // 匹配用户预设表头，使用前端代码对应表头配置
     const temp = detailColumns.find((item) => {
