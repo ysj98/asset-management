@@ -1,5 +1,5 @@
 # 指定使用的Docker镜像
-image: node:current
+image: node:14.18.2
 
 # 定义作业阶段及执行顺序
 stages:
