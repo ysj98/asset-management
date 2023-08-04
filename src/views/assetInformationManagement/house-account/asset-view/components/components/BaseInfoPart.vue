@@ -88,7 +88,7 @@ export default {
         { title: '涉诉', key: 'lawsuitName' },
         { title: '涉诉情况', key: 'lawsuitRemark' },
         { title: '是否缴纳土地出让金', key: 'isLandSell' },
-        { title: '权属是否清晰', key: 'isRightClearChange' },
+        { title: '权属是否清晰', key: 'isRightClear' },
         { title: '权属不清晰原因', key: 'rightClearReason' },
         { title: '是否账外资产', key: 'isAccountOut' },
         { title: '所属园区', key: 'belongToParkName' },

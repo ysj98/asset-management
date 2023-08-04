@@ -71,7 +71,7 @@ export default {
         { title: '地块是否已签订土地交储协议', key: 'isSign' },
         { title: '是否确权', key: 'isRight' },
         { title: '是否缴纳土地出让金', key: 'isSell' },
-        { title: '权属是否清晰', key: 'isRightClearChange' },
+        { title: '权属是否清晰', key: 'isRightClear' },
         { title: '权属不清晰原因', key: 'rightClearReason' },
         { title: '是否账外资产', key: 'isAccountOut' },
         { title: '所属园区', key: 'belongToParkName' },
