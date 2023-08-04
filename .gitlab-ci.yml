@@ -10,9 +10,9 @@ stages:
   - deploy-beta # 部署到测试环境
 
 # 定义默认的标签，可用于在执行作业时指定Runner
-# default:
-#   tags:
-#     - $H5_RUNNER_NAME
+default:
+  tags:
+    - docker-did-runner
 
 # 定义缓存，加快作业执行速度
 cache:
