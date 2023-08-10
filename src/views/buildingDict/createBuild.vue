@@ -112,6 +112,16 @@
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
+              <a-form-item :labelCol="{span:7}" label="地上建筑面积(㎡)" v-bind="formItemLayout">
+                <a-input-number :precision="4" :max="100000000" :min="0" :style="allWidth" v-decorator="['upBuiltArea', { initialValue: '' || undefined }]" />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
+              <a-form-item :labelCol="{span:7}" label="地下建筑面积(㎡)" v-bind="formItemLayout">
+                <a-input-number :precision="4" :max="100000000" :min="0" :style="allWidth" v-decorator="['downBuiltArea', { initialValue: '' || undefined }]" />
+              </a-form-item>
+            </a-col>
+            <a-col v-bind="formSpan">
               <a-form-item label="楼栋类型" v-bind="formItemLayout">
                 <a-select
                   :style="allWidth"
