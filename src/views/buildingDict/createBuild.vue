@@ -112,13 +112,25 @@
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{span:7}" label="地上建筑面积(㎡)" v-bind="formItemLayout">
-                <a-input-number :precision="4" :max="100000000" :min="0" :style="allWidth" v-decorator="['upBuiltArea', { initialValue: '' || undefined }]" />
+              <a-form-item :labelCol="{ span: 7 }" label="地上建筑面积(㎡)" v-bind="formItemLayout">
+                <a-input-number
+                  :precision="4"
+                  :max="100000000"
+                  :min="0"
+                  :style="allWidth"
+                  v-decorator="['upBuiltArea', { initialValue: '' || undefined }]"
+                />
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{span:7}" label="地下建筑面积(㎡)" v-bind="formItemLayout">
-                <a-input-number :precision="4" :max="100000000" :min="0" :style="allWidth" v-decorator="['downBuiltArea', { initialValue: '' || undefined }]" />
+              <a-form-item :labelCol="{ span: 7 }" label="地下建筑面积(㎡)" v-bind="formItemLayout">
+                <a-input-number
+                  :precision="4"
+                  :max="100000000"
+                  :min="0"
+                  :style="allWidth"
+                  v-decorator="['downBuiltArea', { initialValue: '' || undefined }]"
+                />
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
@@ -215,6 +227,20 @@
                 <div class="address-box">
                   <a-select
                     :style="allWidth1"
+                    placeholder="国家"
+                    :getPopupContainer="getPopupContainer"
+                    showSearch
+                    optionFilterProp="children"
+                    :options="countryList"
+                    :allowClear="false"
+                    @change="(e, val) => cityOrRegionChange(e, val, 'country')"
+                    :filterOption="filterOption"
+                    notFoundContent="没有查询到数据"
+                    v-decorator="['country', {rules: [{ required: true, message: '请选择国家' }] }]"
+                  />
+                  <a-select
+                    v-if="country === 'China'"
+                    :style="allWidth1"
                     placeholder="省"
                     :getPopupContainer="getPopupContainer"
                     showSearch
@@ -224,12 +250,10 @@
                     @change="(e, val) => cityOrRegionChange(e, val, 'province')"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
-                    v-decorator="[
-                      'province',
-                      { initialValue: '' || undefined, rules: [{ required: true, message: '请选择省' }, { validator: validateAddress }] },
-                    ]"
+                    v-decorator="['province', { initialValue: '' || undefined, rules: [{ required: true, message: '请选择省' }] }]"
                   />
                   <a-select
+                    v-if="country === 'China'"
                     :style="allWidth1"
                     placeholder="市"
                     :getPopupContainer="getPopupContainer"
@@ -243,6 +267,7 @@
                     notFoundContent="没有查询到数据"
                   />
                   <a-select
+                    v-if="country === 'China'"
                     :style="allWidth1"
                     placeholder="区/县"
                     :getPopupContainer="getPopupContainer"
@@ -255,8 +280,8 @@
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
                   />
-                  <!-- @input="getLL" -->
-                  <a-input :maxLength="100" :disabled="true" v-model="address" :style="allWidth2" placeholder="详细地址" />
+                  <!-- V2.0.14-中电资产 去掉了 禁用选择经纬度回填地址 :disabled="country === 'China'" -->
+                  <a-input :maxLength="100" v-model="address" :style="allWidth2" placeholder="详细地址" />
                 </div>
               </a-form-item>
             </a-col>
@@ -334,13 +359,13 @@
                 <a-input :maxLength="30" :style="allWidth" v-decorator="['organFee', { initialValue: '' || undefined }]" />
               </a-form-item>
             </a-col>
-            <a-col v-bind="formSpan" >
-              <a-form-item :labelCol="{span:7}" label="分摊土地面积(㎡)" v-bind="formItemLayout">
+            <a-col v-bind="formSpan">
+              <a-form-item :labelCol="{ span: 7 }" label="分摊土地面积(㎡)" v-bind="formItemLayout">
                 <a-input-number :precision="4" :min="0" :style="allWidth" v-decorator="['landArea', { initialValue: '' || undefined }]" />
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{span:7}" label="房产设计使用年限" v-bind="formItemLayout">
+              <a-form-item :labelCol="{ span: 7 }" label="房产设计使用年限" v-bind="formItemLayout">
                 <a-input-number :precision="4" :min="0" :style="allWidth" v-decorator="['usefulLife', { initialValue: '' || undefined }]" />
               </a-form-item>
             </a-col>
@@ -417,6 +442,7 @@
 import FormFooter from '@/components/FormFooter.vue';
 import newSelectLngAndLat from '@/views/common/newSelectLngAndLat.vue';
 import utils from '@/utils/utils';
+import { platformDict } from '@/utils/utils';
 import moment from 'moment';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 import dictMixin from './dictMixin.js';
@@ -481,9 +507,11 @@ export default {
         sm: 12,
       },
       loading: false,
+      country: 'China', // 国家
       region: undefined, // 区/县
       city: undefined, // 市
       address: '', // 详细地址
+      countryList: [], // 国家
       provinceOpt: [], // 省
       cityOpt: [], // 市
       regionOpt: [], // 区/县
@@ -541,7 +569,7 @@ export default {
       return this.type === 'edit' ? '编辑楼栋' : '新增楼栋';
     },
   },
-  mounted() {
+  async mounted() {
     this.fromType = this.$route.query.fromType;
     if (this.fromType === 'portal') {
       this.resetAll();
@@ -549,6 +577,8 @@ export default {
     }
     this.queryProvinceList();
     this.platformDictFn();
+    this.countryList = (await platformDict('country_list', (item) => ({ title: item.dictName, value: item.directValue }))) || [];
+
     this.init();
     this.handleBtn();
   },
@@ -706,6 +736,7 @@ export default {
             data.filepaths = this.filepaths.map((item) => item.url).join(',');
           }
           // 处理省市区的联动start
+          data.country = this.country;
           data.city = this.city;
           data.region = this.region;
           data.address = this.address;
@@ -844,6 +875,7 @@ export default {
         });
       }
       // 处理省市区的联动start
+      this.country = data.country || 'China';
       this.city = data.city;
       this.region = data.region;
       this.address = data.address;
@@ -886,6 +918,7 @@ export default {
           values[key] = data[key];
         }
       });
+      values.country = this.country;
       // console.log('得到值all=>', values)
       this.form.setFieldsValue(values);
       this.DE_Loding(loadingName);
@@ -907,7 +940,7 @@ export default {
     },
     // 显示百度地图
     showSelectMap() {
-      if (!this.region) {
+      if (this.country === 'China' && !this.region) {
         this.$message.info('请先选择省市区');
         return;
       }
@@ -1027,6 +1060,13 @@ export default {
         lng: '',
         lat: '',
       };
+      if (type === 'country') {
+        this.country = e;
+        this.province = undefined;
+        this.city = undefined;
+        this.region = undefined;
+        this.address = '';
+      }
       // 如果是区/县 请求经纬度
       if (type === 'region') {
         // this.getLL()

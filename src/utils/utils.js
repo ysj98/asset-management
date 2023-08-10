@@ -893,11 +893,12 @@ export const accAdd = (arg1, arg2) => {
 
 
 // 获取平台编码
-export async function platformDict(dictCode) {
+export async function platformDict(dictCode,fn) {
   if (!dictCode ) return
-  const { code, data, message } = await _this.$api.global.dictionary({ dictCode })
+  const {data:{ code, data, message }} = await _this.$api.global.dictionary({ dictCode })
+  console.log('res', data);
   if (+code !== 0) return _this.$SG_Message.error(message)
-  return data.map((item) => {
+  return fn ? data.map(fn) : data.map((item) => {
     return {
       name: item.dictName,
       value: item.directValue
