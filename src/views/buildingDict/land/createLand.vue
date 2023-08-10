@@ -93,7 +93,7 @@
                 <a-form-item v-bind="formItemLayout">
                   <span slot="label" title="土地面积">土地面积(㎡)</span>
                   <a-input-number
-                    :max="999999.9999"
+                    :max="99999999"
                     :min="0"
                     :style="allWidth"
                     :precision="4"
