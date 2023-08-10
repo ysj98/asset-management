@@ -346,7 +346,7 @@ export default {
 
           this.blankInfo.isEncloseWall = data.isEncloseWall === '1' ? '有围墙' : '无围墙';
           // 处理地址
-          this.blankInfo.address = data.provinceName + data.cityName + data.regionName + data.address;
+          this.blankInfo.address = data.countryName + data.provinceName + data.cityName + data.regionName + data.address;
           // 处理平面图
           if (data.redMap) {
             this.redMap = [{ url: data.redMap, name: '' }];

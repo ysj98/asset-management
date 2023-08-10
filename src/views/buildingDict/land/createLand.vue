@@ -131,6 +131,20 @@
                   <div class="address-box">
                     <a-select
                       :style="allWidth1"
+                      placeholder="国家"
+                      :getPopupContainer="getPopupContainer"
+                      showSearch
+                      optionFilterProp="children"
+                      :options="countryList"
+                      :allowClear="false"
+                      @change="cityOrRegionChange($event, 'country')"
+                      :filterOption="filterOption"
+                      notFoundContent="没有查询到数据"
+                      v-decorator="['country', { initialValue: 'China', rules: [{ required: true, message: '请选择国家' }] }]"
+                    />
+                    <a-select
+                      v-if="country === 'China'"
+                      :style="allWidth1"
                       placeholder="省"
                       :getPopupContainer="getPopupContainer"
                       showSearch
@@ -148,6 +162,7 @@
                       ]"
                     />
                     <a-select
+                      v-if="country === 'China'"
                       :style="allWidth1"
                       placeholder="市"
                       :getPopupContainer="getPopupContainer"
@@ -161,6 +176,7 @@
                       notFoundContent="没有查询到数据"
                     />
                     <a-select
+                      v-if="country === 'China'"
                       :style="allWidth1"
                       placeholder="区/县"
                       :getPopupContainer="getPopupContainer"
@@ -608,6 +624,7 @@
 import { yesOrNoOptions } from '@/views/buildingDict/land/dict';
 import FormFooter from '@/components/FormFooter.vue';
 import { utils } from '@/utils/utils';
+import { platformDict } from '@/utils/utils';
 import dictMixin from '../dictMixin.js';
 import selectLngAndLat from '@/views/common/selectLngAndLat.vue';
 import TreeSelect from '@/views/common/treeSelect';
@@ -635,6 +652,8 @@ export default {
       region: undefined, // 区/县
       city: undefined, // 市
       address: '', // 详细地址
+      country: 'China', // 国家
+      countryList: [], // 国家
       provinceOpt: [], // 省
       cityOpt: [], // 市
       regionOpt: [], // 区/县
@@ -692,13 +711,14 @@ export default {
   beforeCreate() {
     this.form = this.$form.createForm(this);
   },
-  mounted() {
+  async mounted() {
     let { organName, organId, type, blankId } = this.$route.query;
     this.organIdMain = organId;
     this.organNameMain = organName;
     Object.assign(this, {
       routeQuery: { organName, organId, type, blankId },
     });
+    this.countryList = (await platformDict('country_list', (item) => ({ title: item.dictName, value: item.directValue }))) || [];
     this.init();
   },
   methods: {
@@ -807,6 +827,7 @@ export default {
             data.filePath = this.filePath.map((item) => item.url).join(',');
           }
           // 处理省市区的联动start
+          data.country = this.country;
           data.city = this.city;
           data.region = this.region;
           data.address = this.address;
@@ -950,6 +971,7 @@ export default {
                 data.communityId = '';
               }
               // 处理省市区的联动start
+              this.country = data.country || 'China';
               this.city = data.city;
               this.region = data.region;
               this.address = data.address;
@@ -964,6 +986,7 @@ export default {
                   values[key] = data[key];
                 }
               });
+              values.country = this.country;
               this.organIdMain = data.organId;
               this.$textReplace(data.organId);
               let { organId: organTopId, organName: organTopName } = await queryTopOrganByOrganID({
@@ -1143,6 +1166,13 @@ export default {
     },
     cityOrRegionChange(e, type) {
       console.log('改变项', e, type);
+      if (type === 'country') {
+        this.country = e;
+        this.province = undefined;
+        this.city = undefined;
+        this.region = undefined;
+        this.address = '';
+      }
       // 如果是区/县 请求经纬度
       if (type === 'region') {
         this.getLL();

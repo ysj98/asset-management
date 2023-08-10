@@ -507,10 +507,10 @@ export default {
         sm: 12,
       },
       loading: false,
-      country: 'China', // 国家
       region: undefined, // 区/县
       city: undefined, // 市
       address: '', // 详细地址
+      country: 'China', // 国家
       countryList: [], // 国家
       provinceOpt: [], // 省
       cityOpt: [], // 市
@@ -926,6 +926,7 @@ export default {
     // 重置所有数据
     resetAll() {
       this.form.resetFields();
+      this.country = 'China'; // 国家
       this.region = undefined; // 区/县
       this.city = undefined; // 市
       this.address = ''; // 详细地址
