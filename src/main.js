@@ -44,6 +44,7 @@ Vue.use(Directive);
 
 Vue.prototype.$importf = importf;
 
+// 全局给下拉框添加title
 Vue.prototype.$addTitle = function (options) {
   options = options || [];
   options.forEach((ele) => {

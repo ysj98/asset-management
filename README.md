@@ -1,10 +1,14 @@
 # 资产管理
 
-### 新增页面：
-
 路由 `src\router\production.js`
 
 开发环境菜单 `src\config\config.devMenu.js`
+
+
+
+房屋、车辆的资产视图表头是可定制的，接口 `/ams/assetShowConfig/assetRolListV2`
+
+
 
 ### 2.2.23生产化版本  2023-06-19
 
