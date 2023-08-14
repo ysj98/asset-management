@@ -236,7 +236,7 @@
                     @change="(e, val) => cityOrRegionChange(e, val, 'country')"
                     :filterOption="filterOption"
                     notFoundContent="没有查询到数据"
-                    v-decorator="['country', {rules: [{ required: true, message: '请选择国家' }] }]"
+                    v-decorator="['country', {initialValue: 'China',rules: [{ required: true, message: '请选择国家' }] }]"
                   />
                   <a-select
                     v-if="country === 'China'"
