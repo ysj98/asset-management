@@ -112,7 +112,7 @@
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{ span: 7 }" label="地上建筑面积(㎡)" v-bind="formItemLayout">
+              <a-form-item :labelCol="{ span: 9 }" label="地上建筑面积(㎡)" v-bind="formItemLayout">
                 <a-input-number
                   :precision="4"
                   :max="100000000"
@@ -123,7 +123,7 @@
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{ span: 7 }" label="地下建筑面积(㎡)" v-bind="formItemLayout">
+              <a-form-item :labelCol="{ span: 9 }" label="地下建筑面积(㎡)" v-bind="formItemLayout">
                 <a-input-number
                   :precision="4"
                   :max="100000000"
@@ -360,12 +360,12 @@
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{ span: 7 }" label="分摊土地面积(㎡)" v-bind="formItemLayout">
+              <a-form-item :labelCol="{ span: 9 }" label="分摊土地面积(㎡)" v-bind="formItemLayout">
                 <a-input-number :precision="4" :min="0" :style="allWidth" v-decorator="['landArea', { initialValue: '' || undefined }]" />
               </a-form-item>
             </a-col>
             <a-col v-bind="formSpan">
-              <a-form-item :labelCol="{ span: 7 }" label="房产设计使用年限" v-bind="formItemLayout">
+              <a-form-item :labelCol="{ span: 9 }" label="房产设计使用年限" v-bind="formItemLayout">
                 <a-input-number :precision="4" :min="0" :style="allWidth" v-decorator="['usefulLife', { initialValue: '' || undefined }]" />
               </a-form-item>
             </a-col>

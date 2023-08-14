@@ -22,8 +22,8 @@ const getIPAdress = () => {
 
 const localhost = getIPAdress();
 console.log('IP', localhost);
-// const target = 'http://beta.uhomecp.com/';
-const target = 'http://192.168.1.38:8080';
+const target = 'http://beta.uhomecp.com/';
+// const target = 'http://192.168.1.38:8080';
 const proxyURL = [
   '/uhomecp-sso/',
   '/uhome-portal/',
