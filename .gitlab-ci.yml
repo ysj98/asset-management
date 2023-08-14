@@ -7,7 +7,7 @@ variables:
   USER: 'uhome'
   HOST: '192.168.1.38'
   PASSWORD: 'WvR2inESH97tH^'
-  ASSETS_PATH: '/data/segingx/web/'
+  ASSETS_PATH: '/data/segingx/'
 default:
   image: node:14.10.0
   tags: 
