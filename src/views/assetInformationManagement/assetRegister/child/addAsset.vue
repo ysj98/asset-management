@@ -1,7 +1,7 @@
 <!-- 资产登记 新建 弹窗 -->
 <template>
   <div class="addAsset">
-    <SG-Modal width="650px" v-model="show" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
+    <SG-Modal width="800px" v-model="show" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
       <a-form :form="form">
         <span class="section-title blue">基本信息</span>
         <div class="playground-row">
@@ -749,11 +749,11 @@ const formItemTextarea = {
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 9 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 15 },
   },
 };
 const params = {
@@ -1144,5 +1144,10 @@ export default {
   background-image: none;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
+}
+/deep/.ant-form-item-no-colon{
+  width: 100%;
+  word-wrap: auto;
+  line-height: 1rem;
 }
 </style>
