@@ -76,7 +76,7 @@ import necessaryCaaessories from './necessaryCaaessories';
 import valueToRegister from './valueToRegister';
 import directionUse from './directionUse';
 import correlativeCharges from './correlativeCharges';
-import basic from './basic';
+import basic from './basic.vue';
 import { handleAssetTypeField } from '@/views/assetInformationManagement/assetRegister/common/share';
 import { SET_PARKING_PLACE_RESOURCE_TYPE, SET_PARKING_OBJ_TYPE } from 'store/types/platformDictTypes';
 export default {
