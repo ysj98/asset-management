@@ -1147,7 +1147,11 @@ export default {
 }
 /deep/.ant-form-item-no-colon{
   width: 100%;
-  word-wrap: auto;
   line-height: 1rem;
+  display: inline-block;
+  vertical-align: middle;
+  padding-right: 10px;
+  white-space: initial;
+  text-wrap: balance;
 }
 </style>
