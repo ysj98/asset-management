@@ -36,11 +36,12 @@
           <tooltip-text width="150" :text="text" />
         </template>
         <template slot="assessmentValue" slot-scope="text, record">
-          <a-input-number
+          <a-input
             :min="0"
             step="0.01"
             :precision="2"
             :max="999999999.99"
+            :maxLength="13"
             style="width: 120px"
             v-model="record.assessmentValue"
             @change="calcSum(tableObj.dataSource)"
