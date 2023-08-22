@@ -1,4 +1,4 @@
-<!--资产视图业务-房屋资产视图列表页面-->
+<!-- /assetView 资产视图业务-房屋资产视图列表页面   -->
 <template>
   <div>
     <!--搜索条件-->
@@ -308,6 +308,7 @@ import EditRemark from './components/components/EditRemark.vue';
 import { queryAssetLabelConfig } from '@/api/publicCode.js';
 import { throttle } from '@/utils/utils';
 import { initTableColumns } from '@/utils/share.js';
+import _ from 'lodash';
 const judgment = [undefined, null, ''];
 const supportMaterialOpt = [
   { label: '全部证件情况', value: '' },
@@ -400,6 +401,15 @@ const detailColumns = [
     width: 120,
   },
 ];
+
+const numList = [
+  { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
+  { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+  { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+  { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+  { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
+  { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
+]; // 概览数据，title 标题，value 数值，color 背景色
 const requiredColumn = [{ title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }];
 // 面积最多保留4位小数
 const decimalFormat = (area) => {
@@ -495,14 +505,7 @@ export default {
         columns: [],
       },
       key: 0, // 更新Modal包裹的子组件
-      numList: [
-        { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
-        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
-        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
-        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
-        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
-        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
-      ], // 概览数据，title 标题，value 数值，color 背景色
+      numList: _.cloneDeep(numList), // 概览数据，title 标题，value 数值，color 背景色
       checkedHeaderArr: [], // 格式如['name', 'age']
       exportHouseBtn: false, // 导出房屋卡片button loading标志
       exportAssetBtn: false, // 导出资产视图button loading标志
@@ -568,10 +571,10 @@ export default {
   mounted() {
     this.getSourceOptions();
     this.getOldSourceOptions();
+    initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   created() {
     // this.initHeader();
-    initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   activated() {
     const info = this.$route.query;
@@ -594,21 +597,25 @@ export default {
     decimalFormat,
     // 数据概览信息配置
     useForConfig() {
+      this.numList = _.cloneDeep(numList);
       this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.configOrganId }).then((res) => {
         if (res.data.code == 0) {
           this.hiddenConfig = [];
           let data = res.data.data;
+          
           data.forEach((item) => {
-            this.numList.forEach((e) => {
-              if (item.code == e.code) {
-                e.bgColor = item.color;
-                e.isAble = item.isAble;
-                e.title = item.alias || item.statusName;
-              }
-            });
-            this.numList = this.numList.filter((i) => {
-              return i.isAble === 'Y';
-            });
+            this.numList = this.numList
+              .map((e) => {
+                if (item.code == e.code) {
+                  e.bgColor = item.color;
+                  e.isAble = item.isAble;
+                  e.title = item.alias || item.statusName;
+                }
+                return e;
+              })
+              .filter((i) => {
+                return i.isAble === 'Y';
+              });
             // 列表设置里面的命名也同步更新
             if (item.code == 1001) {
               this.aliasConfig.transferOperationArea = item.alias || item.statusName;
