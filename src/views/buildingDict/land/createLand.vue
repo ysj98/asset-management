@@ -578,7 +578,7 @@
               <a-col :span="24">
                 <!-- 文本框 -->
                 <a-form-item label="备注" v-bind="formItemLayout2">
-                  <a-textarea :maxLength="200" v-decorator="['blankDesc', { initialValue: '' }]" />
+                  <a-textarea :maxLength="500" v-decorator="['blankDesc', { initialValue: '' }]" />
                 </a-form-item>
               </a-col>
               <a-col :span="24">
