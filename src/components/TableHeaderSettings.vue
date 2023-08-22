@@ -95,6 +95,7 @@ export default {
         this.$message.error(message);
       }
     },
+    // 提交弹窗
     commonFn() {
       const chooseList = this.listData
         .filter((ele) => this.listValue.includes(ele.colCode))
