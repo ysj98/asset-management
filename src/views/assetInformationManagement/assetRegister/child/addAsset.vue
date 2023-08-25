@@ -549,14 +549,14 @@
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">占地面积(㎡)：</label>
+                <label slot="label">占用面积(㎡)：</label>
                 <a-input-number
                   :min="0"
                   :max="9999999.9999"
                   :step="0.0001"
-                  placeholder="请输入占地面积"
+                  placeholder="请输入占用面积"
                   :style="allWidth"
-                  v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占地面积' }], initialValue: params.occupationArea }]"
+                  v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占用面积' }], initialValue: params.occupationArea }]"
                 />
               </a-form-item>
             </a-col>
@@ -791,7 +791,7 @@ const params = {
   otherArea: '', // 其他面积
   idleArea: '', // 闲置面积
   selfUserArea: '', // 自用面积
-  occupationArea: '', // 占地面积
+  occupationArea: '', // 占用面积
   creditorAmount: '', //债券金额
   debtAmount: '', // 债务金额
   pledge: '', // 是否质押

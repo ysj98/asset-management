@@ -111,32 +111,20 @@
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="15">
-              <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
-            </a-col>
-            <a-col :span="4" style="padding-top: 13px; padding-left: 0">
-              <a-input placeholder="详细地址" v-model="address" :maxLength="20" />
-            </a-col>
-            <a-col :span="4" style="padding-top: 13px; padding-left: 0">
-              <a-input placeholder="资产原始来源方" v-model="originSource" :maxLength="100" />
-            </a-col>
-          </a-row>
-          <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="4">
-              <a-select
-                :style="allStyle"
-                mode="multiple"
-                :maxTagCount="1"
-                style="width: 100%"
-                v-model="oldSourceModes"
-                option-filter-prop="title"
-                placeholder="请选择原始来源方式"
-                :options="$addTitle(oldSourceOptions)"
-                @change="changeOldSource"
-              />
-            </a-col>
-          </a-row>
+          <ProvinceCityDistrict class="city" style="width: 550px" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+          <a-input :style="allStyle" placeholder="详细地址" v-model="address" :maxLength="20" />
+          <a-input :style="allStyle" placeholder="资产原始来源方" v-model="originSource" :maxLength="100" />
+          <a-select
+            :style="allStyle"
+            mode="multiple"
+            :maxTagCount="1"
+            style="width: 100%"
+            v-model="oldSourceModes"
+            option-filter-prop="title"
+            placeholder="请选择原始来源方式"
+            :options="$addTitle(oldSourceOptions)"
+            @change="changeOldSource"
+          />
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px" @click="query">查询</SG-Button>
