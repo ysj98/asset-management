@@ -111,32 +111,20 @@
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="15">
-              <ProvinceCityDistrict class="city" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
-            </a-col>
-            <a-col :span="4" style="padding-top: 13px; padding-left: 0">
-              <a-input placeholder="详细地址" v-model="address" :maxLength="20" />
-            </a-col>
-            <a-col :span="4" style="padding-top: 13px; padding-left: 0">
-              <a-input placeholder="资产原始来源方" v-model="originSource" :maxLength="100" />
-            </a-col>
-          </a-row>
-          <a-row :gutter="12" style="margin-right: -78px">
-            <a-col :span="4">
-              <a-select
-                :style="allStyle"
-                mode="multiple"
-                :maxTagCount="1"
-                style="width: 100%"
-                v-model="oldSourceModes"
-                option-filter-prop="title"
-                placeholder="请选择原始来源方式"
-                :options="$addTitle(oldSourceOptions)"
-                @change="changeOldSource"
-              />
-            </a-col>
-          </a-row>
+          <ProvinceCityDistrict class="city" style="width: 550px" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+          <a-input :style="allStyle" placeholder="详细地址" v-model="address" :maxLength="20" />
+          <a-input :style="allStyle" placeholder="资产原始来源方" v-model="originSource" :maxLength="100" />
+          <a-select
+            :style="allStyle"
+            mode="multiple"
+            :maxTagCount="1"
+            style="width: 100%"
+            v-model="oldSourceModes"
+            option-filter-prop="title"
+            placeholder="请选择原始来源方式"
+            :options="$addTitle(oldSourceOptions)"
+            @change="changeOldSource"
+          />
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px" @click="query">查询</SG-Button>
@@ -173,6 +161,14 @@
       </template>
       <template slot="marketValue" slot-scope="text">
         <span>{{ getFormat(text) }}</span>
+      </template>
+      <template slot="desc" slot-scope="text">
+        <a-tooltip placement="topLeft">
+          <template slot="title">
+            {{ text }}
+          </template>
+          <p class="ellipsis">{{ text }}</p>
+        </a-tooltip>
       </template>
       <span slot="action" slot-scope="text, record">
         <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
@@ -258,7 +254,7 @@ const columnsData = [
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
   { title: '涉诉情况', dataIndex: 'lawsuitRemark', width: 150 },
-  { title: '地块是否已签订土地交储协议', dataIndex: 'isSign', width: 150 },
+  { title: '地块是否已签订土地交储协议', dataIndex: 'isSign', width: 160 },
   { title: '是否城市更新项目', dataIndex: 'cityUpdate', width: 150 },
   { title: '三旧改造图编号', dataIndex: 'transformDrawingNo', width: 150 },
   { title: '四至范围', dataIndex: 'fourToRange', width: 350 },
@@ -266,6 +262,7 @@ const columnsData = [
   { title: '缴纳土地出让金时间', dataIndex: 'payAssignmentTime', width: 150 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
   { title: '原始来源方式', dataIndex: 'oldSourceModeName', width: 150 },
+  { title: '土地备注', dataIndex: 'desc', width: 150, scopedSlots: { customRender: 'desc' } },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right' },
 ];
 const approvalStatusData = [
@@ -330,7 +327,7 @@ export default {
       current: '',
       listValue: ['changeOrderDetailId', 'assetCode', 'assetName'],
       columnsData,
-      scroll: { x: 1200, y: 'calc(100vh - 481px)' },
+      scroll: { x: 1300, y: 'calc(100vh - 481px)' },
       numList: numList,
       provinces: {
         province: undefined,
@@ -497,7 +494,7 @@ export default {
         }
       });
       this.columns = arr;
-      this.scroll = { x: this.columns.length * 150 - 60, y: 'calc(100vh - 481px)' };
+      this.scroll = { x: this.columns.length * 150, y: 'calc(100vh - 481px)' };
       this.modalShow = false;
     },
     // 组织机构树
@@ -760,6 +757,13 @@ export default {
 </script>
 <style lang="less" scoped>
 .landAssetsView {
+  .ellipsis {
+    width: 150px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   .from-second {
     padding-top: 14px;
   }

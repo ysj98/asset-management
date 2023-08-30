@@ -1,4 +1,4 @@
-<!--资产视图业务-房屋资产视图列表页面-->
+<!-- /assetView 资产视图业务-房屋资产视图列表页面   -->
 <template>
   <div>
     <!--搜索条件-->
@@ -307,7 +307,8 @@ import EditPledge from './components/components/EditPledge.vue';
 import EditRemark from './components/components/EditRemark.vue';
 import { queryAssetLabelConfig } from '@/api/publicCode.js';
 import { throttle } from '@/utils/utils';
-import { initTableColumns } from '@/utils/share.js';
+import { getTableHeaders } from '@/utils/share.js';
+import _ from 'lodash';
 const judgment = [undefined, null, ''];
 const supportMaterialOpt = [
   { label: '全部证件情况', value: '' },
@@ -400,6 +401,15 @@ const detailColumns = [
     width: 120,
   },
 ];
+
+const numList = [
+  { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
+  { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+  { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+  { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+  { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
+  { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
+]; // 概览数据，title 标题，value 数值，color 背景色
 const requiredColumn = [{ title: '操作', dataIndex: 'action', scopedSlots: { customRender: 'action' }, fixed: 'right', width: 100 }];
 // 面积最多保留4位小数
 const decimalFormat = (area) => {
@@ -495,14 +505,7 @@ export default {
         columns: [],
       },
       key: 0, // 更新Modal包裹的子组件
-      numList: [
-        { title: '所有资产(㎡)', key: 'totalArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
-        { title: '运营(㎡)', key: 'totalOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
-        { title: '闲置(㎡)', key: 'totalIdleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
-        { title: '自用(㎡)', key: 'totalSelfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
-        { title: '占用(㎡)', key: 'totalOccupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
-        { title: '其他(㎡)', key: 'totalOtherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
-      ], // 概览数据，title 标题，value 数值，color 背景色
+      numList: _.cloneDeep(numList), // 概览数据，title 标题，value 数值，color 背景色
       checkedHeaderArr: [], // 格式如['name', 'age']
       exportHouseBtn: false, // 导出房屋卡片button loading标志
       exportAssetBtn: false, // 导出资产视图button loading标志
@@ -534,6 +537,7 @@ export default {
     fold(val) {
       this.tableObj.scroll.y = val ? 300 : 420;
     },
+    // 选择组织机构-资产项目-楼栋
     organProjectBuildingValue: function (val, pre) {
       if (!this.$route.query.organIds) {
         this.queryTableData({ type: 'search' });
@@ -571,7 +575,6 @@ export default {
   },
   created() {
     // this.initHeader();
-    initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
   activated() {
     const info = this.$route.query;
@@ -593,22 +596,27 @@ export default {
   methods: {
     decimalFormat,
     // 数据概览信息配置
-    useForConfig() {
+    async useForConfig() {
+      this.numList = _.cloneDeep(numList);
+      await this.initTableColumns({ detailColumns, requiredColumn, funType: this.funType });
       this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.configOrganId }).then((res) => {
         if (res.data.code == 0) {
           this.hiddenConfig = [];
           let data = res.data.data;
+          
           data.forEach((item) => {
-            this.numList.forEach((e) => {
-              if (item.code == e.code) {
-                e.bgColor = item.color;
-                e.isAble = item.isAble;
-                e.title = item.alias || item.statusName;
-              }
-            });
-            this.numList = this.numList.filter((i) => {
-              return i.isAble === 'Y';
-            });
+            this.numList = this.numList
+              .map((e) => {
+                if (item.code == e.code) {
+                  e.bgColor = item.color;
+                  e.isAble = item.isAble;
+                  e.title = item.alias || item.statusName;
+                }
+                return e;
+              })
+              .filter((i) => {
+                return i.isAble === 'Y';
+              });
             // 列表设置里面的命名也同步更新
             if (item.code == 1001) {
               this.aliasConfig.transferOperationArea = item.alias || item.statusName;
@@ -672,9 +680,65 @@ export default {
       this.modalType = 4;
       this.modalObj.title = '房屋资产信息备注';
     },
-    handleTableHeaderSuccess() {
+    async initTableColumns({ detailColumns, requiredColumn, funType }) {
+      // 利用js "传址" 特性,便利函数封装，使用者应注意函数副作用
+      let columns = [];
+      // 暂不考虑固定表头顺序问题，目前只有操作列
+      const { customShow = [] } = await getTableHeaders({ funType });
+      // 产权单位交换位置
+      const seatingPositionIndex = customShow.findIndex((item) => item.colCode === 'seatingPosition');
+      const addressIndex = customShow.findIndex((item) => item.colCode === 'address');
+      if (seatingPositionIndex !== -1 && addressIndex !== -1) {
+        const seatingPosition = customShow[seatingPositionIndex];
+        customShow.splice(seatingPositionIndex, 1);
+        customShow.splice(addressIndex + 1, 0, seatingPosition);
+      }
+      customShow.forEach((ele) => {
+        let mapRes = {};
+        // 匹配用户预设表头，使用前端代码对应表头配置
+        const temp = detailColumns.find((item) => {
+          return [item.key, item.dataIndex].includes(ele.colCode);
+        });
+        if (temp) {
+          mapRes = temp;
+        } else {
+          mapRes = {
+            title: ele.colName,
+            dataIndex: ele.colCode,
+            width: 120, // 给新加的列默认一个宽度
+          };
+        }
+        columns.push(mapRes);
+      });
+      // 给每一列设置 ellipsis:true 保证 表头和数据对齐(都需要有宽度)
+      columns.forEach((ele) => {
+        ele.ellipsis = true;
+      });
+
+      // 操作列 放在最后
+      if (requiredColumn) {
+        requiredColumn.forEach((ele) => {
+          columns.splice(columns.length, 0, ele);
+        });
+      }
+      // 增加空白列 占用多余空间
+      columns.push({ title: '', dataIndex: '' });
+
+      // 最后一列添加空白列，所以不需要特殊处理最后一列的 width 属性了
+      // 特殊处理最后一列 删除 width 属性
+      // const lastColumn  = columns.pop()
+      // const resLastColumn = {
+      //   ...lastColumn
+      // }
+      // delete resLastColumn.width
+      // columns.push(resLastColumn)
+      console.log('columns', columns);
+      this.tableObj.columns = columns;
+    },
+    // 点击表头设置确定
+    async handleTableHeaderSuccess() {
       this.changeListSettingsModal(false);
-      initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
+      await this.initTableColumns({ detailColumns, requiredColumn, funType: this.funType });
     },
     changeListSettingsModal(val) {
       this.modalObj.switch = val;
@@ -682,18 +746,6 @@ export default {
     // 选择附件上传状态
     attachmentStatusFn(val) {
       console.log(val);
-    },
-    initHeader() {
-      // 初始化Table列头
-      let { columns } = this.tableObj;
-      this.tableObj.initColumns = columns;
-      // 默认不展示xx表头
-      this.tableObj.columns = this.tableObj.columns.filter((ele) => !ele.defaultHide);
-      // 初始化被选中的列头数据
-      this.checkedHeaderArr = columns
-        .filter((ele) => !ele.defaultHide)
-        .map((m) => m.dataIndex)
-        .filter((n) => n !== 'action' && n !== 'fileStatus');
     },
     assetLabelFn(value) {
       this.$nextTick(function () {

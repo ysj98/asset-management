@@ -88,10 +88,11 @@ export default {
     };
   },
   watch: {
-    organIdCopy(nv) {
-      if (nv) {
+    organIdCopy: {
+      handler(nv) {
         this.organId = nv;
-      }
+      },
+      immediate: true,
     },
     defaultOrganName(newValue) {
       if (newValue) {
@@ -103,12 +104,15 @@ export default {
         this.hiddeModal();
       }
     },
-    organId(newVal) {
-      this.buildId = undefined;
-      this.buildOpt = [];
-      if (newVal) {
+    organId: {
+      handler(newVal) {
+        this.buildId = undefined;
+        this.buildOpt = [];
+        if (newVal) {
         this.queryBuildList(newVal);
       }
+      },
+      immediate: true,
     },
   },
   created() {},

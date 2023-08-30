@@ -35,28 +35,26 @@
 | 27963 |                              √                               | [【中电信息】资产信息新增字段](https://pm.uhomecp.com/index.php?m=story&f=view&storyID=27963&onlybody=yes) |
 
 ALTER TABLE `ams`.`ams_asset_house`  
- ADD COLUMN `is_land_sell` VARCHAR(4) NULL COMMENT '是否缴纳土地出让金' AFTER `e_data_id`,
- ADD COLUMN `is_right_clear` VARCHAR(4) NULL  COMMENT '权属是否清晰' AFTER `is_land_sell`,
- ADD COLUMN `right_clear_reason` VARCHAR(250) NULL  COMMENT '权属不清晰原因' AFTER `is_right_clear`,
- ADD COLUMN `is_account_out` VARCHAR(2) NULL  COMMENT '是否账外资产' AFTER `right_clear_reason`,
- ADD COLUMN `belong_to_park` VARCHAR(32) NULL  COMMENT '所属园区' AFTER `is_account_out`,
- ADD COLUMN `asset_reason` VARCHAR(32) NULL  COMMENT '产生或有资产原因' AFTER `belong_to_park`,
- ADD COLUMN `get_asset_date` DATETIME NULL  COMMENT '或有资产取得时间' AFTER `asset_reason`,
- ADD COLUMN `confirm_asset_date` DATETIME NULL  COMMENT '预计转确认资产时间' AFTER `get_asset_date`,
- ADD COLUMN `is_invest_asset` VARCHAR(2) NULL  COMMENT '是否投资性房地产' AFTER `confirm_asset_date`,
- ADD COLUMN `is_idle` VARCHAR(2) NULL  COMMENT '是否闲置' AFTER `is_invest_asset`,
- ADD COLUMN `is_usetype_consistent` VARCHAR(2) NULL  COMMENT '实际用途与证载用途是否一致' AFTER `is_idle`;
-
-
+ ADD COLUMN `isLandSell` VARCHAR(4) NULL COMMENT '是否缴纳土地出让金' AFTER `e_data_id`,
+ ADD COLUMN `isRightClear` VARCHAR(4) NULL  COMMENT '权属是否清晰' AFTER `is_land_sell`,
+ ADD COLUMN `rightClearReason` VARCHAR(250) NULL  COMMENT '权属不清晰原因' AFTER `is_right_clear`,
+ ADD COLUMN `isAccountOut` VARCHAR(2) NULL  COMMENT '是否账外资产' AFTER `right_clear_reason`,
+ ADD COLUMN `belongsToPark` VARCHAR(32) NULL  COMMENT '所属园区' AFTER `is_account_out`,
+ ADD COLUMN `assetReason` VARCHAR(32) NULL  COMMENT '产生或有资产原因' AFTER `belongs_to_park`,
+ ADD COLUMN `getAssetDate` DATETIME NULL  COMMENT '或有资产取得时间' AFTER `asset_reason`,
+ ADD COLUMN `confirmAssetDate` DATETIME NULL  COMMENT '预计转确认资产时间' AFTER `get_asset_date`,
+ ADD COLUMN `isInvestAsset` VARCHAR(2) NULL  COMMENT '是否投资性房地产' AFTER `confirm_asset_date`,
+ ADD COLUMN `isIdle` VARCHAR(2) NULL  COMMENT '是否闲置' AFTER `is_invest_asset`,
+ ADD COLUMN `isUsetypeConsistent` VARCHAR(2) NULL  COMMENT '实际用途与证载用途是否一致' AFTER `is_idle`;
 
 ALTER TABLE `ams`.`ams_asset_land`  
- ADD COLUMN `is_right_clear` VARCHAR(4) NULL  COMMENT '权属是否清晰' AFTER `is_land_sell`,
- ADD COLUMN `right_clear_reason` VARCHAR(250) NULL  COMMENT '权属不清晰原因' AFTER `is_right_clear`,
- ADD COLUMN `is_account_out` VARCHAR(2) NULL  COMMENT '是否账外资产' AFTER `right_clear_reason`,
- ADD COLUMN `belong_to_park` VARCHAR(32) NULL  COMMENT '所属园区' AFTER `is_account_out`,
- ADD COLUMN `asset_reason` VARCHAR(32) NULL  COMMENT '产生或有资产原因' AFTER `belong_to_park`,
- ADD COLUMN `get_asset_date` DATETIME NULL  COMMENT '或有资产取得时间' AFTER `asset_reason`,
- ADD COLUMN `confirm_asset_date` DATETIME NULL  COMMENT '预计转确认资产时间' AFTER `get_asset_date`,
- ADD COLUMN `use_nature` VARCHAR(32) NULL  COMMENT '土地使用性质' AFTER `confirm_asset_date`,
- ADD COLUMN `use_utilize` VARCHAR(32) NULL  COMMENT '土地利用情况' AFTER `use_nature`,
- ADD COLUMN `use_condition` VARCHAR(32) NULL  COMMENT '土地使用状况' AFTER `use_utilize`;
+ ADD COLUMN `isRightClear` VARCHAR(4) NULL  COMMENT '权属是否清晰' AFTER `is_land_sell`,
+ ADD COLUMN `rightClearReason` VARCHAR(250) NULL  COMMENT '权属不清晰原因' AFTER `is_right_clear`,
+ ADD COLUMN `isAccountOut` VARCHAR(2) NULL  COMMENT '是否账外资产' AFTER `right_clear_reason`,
+ ADD COLUMN `belongsToPark` VARCHAR(32) NULL  COMMENT '所属园区' AFTER `is_account_out`,
+ ADD COLUMN `assetReason` VARCHAR(32) NULL  COMMENT '产生或有资产原因' AFTER `belongs_to_park`,
+ ADD COLUMN `getAssetDate` DATETIME NULL  COMMENT '或有资产取得时间' AFTER `asset_reason`,
+ ADD COLUMN `confirmAssetDate` DATETIME NULL  COMMENT '预计转确认资产时间' AFTER `get_asset_date`,
+ ADD COLUMN `useNature` VARCHAR(32) NULL  COMMENT '土地使用性质' AFTER `confirm_asset_date`,
+ ADD COLUMN `useUtilize` VARCHAR(32) NULL  COMMENT '土地利用情况' AFTER `use_nature`,
+ ADD COLUMN `useCondition` VARCHAR(32) NULL  COMMENT '土地使用状况' AFTER `use_utilize`;

@@ -1,7 +1,7 @@
 <!-- 资产登记 新建 弹窗 -->
 <template>
   <div class="addAsset">
-    <SG-Modal width="650px" v-model="show" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
+    <SG-Modal width="800px" v-model="show" title="资产登记" confirmText="提交" @ok="onConfirm" @cancel="onCancel">
       <a-form :form="form">
         <span class="section-title blue">基本信息</span>
         <div class="playground-row">
@@ -380,7 +380,13 @@
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" label="产生或有资产原因：" v-bind="formItemLayout">
                 <label slot="label">产生或有资产原因：</label>
-                <a-select v-decorator="['assetReason']"  :style="allWidth" placeholder="请选择产生或有资产原因" :allowClear="false" notFoundContent="没有查询到产生或有资产原因">
+                <a-select
+                  v-decorator="['assetReason']"
+                  :style="allWidth"
+                  placeholder="请选择产生或有资产原因"
+                  :allowClear="false"
+                  notFoundContent="没有查询到产生或有资产原因"
+                >
                   <a-select-option :title="item.name" v-for="item in ams_asset_reason" :key="item.value" :value="item.value">
                     {{ item.name }}
                   </a-select-option>
@@ -543,14 +549,14 @@
             </a-col>
             <a-col class="playground-col" :span="12">
               <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">占地面积(㎡)：</label>
+                <label slot="label">占用面积(㎡)：</label>
                 <a-input-number
                   :min="0"
                   :max="9999999.9999"
                   :step="0.0001"
-                  placeholder="请输入占地面积"
+                  placeholder="请输入占用面积"
                   :style="allWidth"
-                  v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占地面积' }], initialValue: params.occupationArea }]"
+                  v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占用面积' }], initialValue: params.occupationArea }]"
                 />
               </a-form-item>
             </a-col>
@@ -749,11 +755,11 @@ const formItemTextarea = {
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 9 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 15 },
   },
 };
 const params = {
@@ -785,7 +791,7 @@ const params = {
   otherArea: '', // 其他面积
   idleArea: '', // 闲置面积
   selfUserArea: '', // 自用面积
-  occupationArea: '', // 占地面积
+  occupationArea: '', // 占用面积
   creditorAmount: '', //债券金额
   debtAmount: '', // 债务金额
   pledge: '', // 是否质押
@@ -1086,24 +1092,40 @@ export default {
     onConfirm() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.$parent.modelStatus = false;
           let obj = _.cloneDeep(values);
           for (const key in this.params) {
             if (!Object.hasOwnProperty.call(obj, key)) {
               obj[key] = this.params[key];
             }
           }
-          // type 1楼栋 2房屋
-          obj.type = obj.houseNumber ? '2' : '1';
-          obj.objectId = obj.houseNumber ? obj.houseNumber : obj.buildId;
-          obj.getAssetDate = moment(obj.getAssetDate).format('YYYY-MM-DD');
-          obj.confirmAssetDate = moment(obj.confirmAssetDate).format('YYYY-MM-DD');
-          console.log('submitAsset', obj);
-          this.$emit('submitAsset', _.cloneDeep([].concat(obj)));
+          // 建筑面积与使用方向信息面积之和不相等
+          const flag = +obj.area !== +obj.transferOperationArea + +obj.otherArea + +obj.idleArea + +obj.selfUserArea + +obj.occupationArea;
+          if (flag) {
+            const self = this;
+            this.$confirm({
+              title: '您好，您登记资产建筑面积与使用方向信息面积之和不相等，是否继续登记？',
+              onOk() {
+                self.submit(obj);
+              },
+              onCancel() {},
+            });
+          } else {
+            this.submit(obj);
+          }
         } else {
           this.$message.error('请按照规则填写信息');
         }
       });
+    },
+    submit(obj) {
+      this.$destroyAll(); // 关闭this.$confirm
+      this.$parent.modelStatus = false;
+      // type 1楼栋 2房屋
+      obj.type = obj.houseNumber ? '2' : '1';
+      obj.objectId = obj.houseNumber ? obj.houseNumber : obj.buildId;
+      obj.getAssetDate = moment(obj.getAssetDate).format('YYYY-MM-DD');
+      obj.confirmAssetDate = moment(obj.confirmAssetDate).format('YYYY-MM-DD');
+      this.$emit('submitAsset', _.cloneDeep([].concat(obj)));
     },
     onCancel() {
       this.$parent.modelStatus = false;
@@ -1144,5 +1166,14 @@ export default {
   background-image: none;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
+}
+/deep/.ant-form-item-no-colon {
+  width: 100%;
+  line-height: 1rem;
+  display: inline-block;
+  vertical-align: middle;
+  padding-right: 10px;
+  white-space: initial;
+  text-wrap: balance;
 }
 </style>

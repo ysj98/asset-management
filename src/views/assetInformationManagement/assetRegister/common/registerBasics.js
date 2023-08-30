@@ -32,6 +32,16 @@ export const columnsData = [
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
   { title: '是否缴纳土地出让金', dataIndex: 'isLandSell', width: 180 },
+  { title: '权属是否清晰', dataIndex: 'isRightClear', width: 180 },
+  { title: '权属不清晰原因', dataIndex: 'rightClearReason', width: 180 },
+  { title: '是否账外资产', dataIndex: 'isAccountOut', width: 180 },
+  { title: '所属园区', dataIndex: 'belongToParkName', width: 180 },
+  { title: '产生或有资产原因', dataIndex: 'assetReasonName', width: 180 },
+  { title: '或有资产取得时间', dataIndex: 'getAssetDate', width: 180 },
+  { title: '预计转确认资产时间', dataIndex: 'confirmAssetDate', width: 180 },
+  { title: '是否投资性房地产', dataIndex: 'isInvestAsset', width: 180 },
+  { title: '是否闲置', dataIndex: 'isIdle', width: 180 },
+  { title: '实际用途与证载用途是否一致', dataIndex: 'isUsetypeConsistent', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' } },
 ];
 
@@ -190,6 +200,16 @@ export const landData = [
   { title: '无证原因明细', dataIndex: 'noShipReason', width: 300 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 180 },
   { title: '是否缴纳土地出让金', dataIndex: 'isLandSell', width: 180 },
+  { title: '权属是否清晰', dataIndex: 'isRightClear', width: 180 },
+  { title: '权属不清晰原因', dataIndex: 'rightClearReason', width: 180 },
+  { title: '是否账外资产', dataIndex: 'isAccountOut', width: 180 },
+  { title: '所属园区', dataIndex: 'belongToParkName', width: 180 },
+  { title: '产生或有资产原因', dataIndex: 'assetReasonName', width: 180 },
+  { title: '或有资产取得时间', dataIndex: 'getAssetDate', width: 180 },
+  { title: '预计转确认资产时间', dataIndex: 'confirmAssetDate', width: 180 },
+  { title: '土地使用性质', dataIndex: 'useNatureName', width: 180 },
+  { title: '土地利用情况', dataIndex: 'useUtilizeName', width: 180 },
+  { title: '土地使用状况', dataIndex: 'useConditionName', width: 180 },
   { title: '操作', dataIndex: 'operation', align: 'center', fixed: 'right', width: 100, scopedSlots: { customRender: 'operation' } },
 ];
 

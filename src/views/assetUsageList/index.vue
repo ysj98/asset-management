@@ -79,34 +79,39 @@
         <!-- 经营情况 -->
         <!-- 建筑面积 -->
         <template slot="area" slot-scope="text, record">
-          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
-          <span v-else>{{ text }}</span>
+          <span>{{ text }}</span>
+          <!-- <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
+          <span v-else>{{ text }}</span> -->
         </template>
         <!-- 可租面积 -->
         <template slot="useArea" slot-scope="text, record">
-          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
-          <span v-else>{{ text }}</span>
+          <span>{{ text }}</span>
+          <!-- <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
+          <span v-else>{{ text }}</span> -->
         </template>
         <!-- 可租面积 -->
         <template slot="rentArea" slot-scope="text, record">
-          <span
+          <span>{{ text }}</span>
+          <!-- <span
             v-if="record.key !== 'sg-t'"
             class="tab-text-decoration"
             @click="nextDetailFn(record)"
             :class="{ 'tab-red-color': record.managerArea !== record.pointer }"
             >{{ text }}</span
           >
-          <span v-else>{{ text }}</span>
+          <span v-else>{{ text }}</span> -->
         </template>
         <!-- 已租面积 -->
         <template slot="rentAlreadyArea" slot-scope="text, record">
-          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
-          <span v-else>{{ text }}</span>
+          <span>{{ text }}</span>
+          <!-- <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
+          <span v-else>{{ text }}</span> -->
         </template>
         <!-- 未租面积 -->
         <template slot="rentNotArea" slot-scope="text, record">
-          <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
-          <span v-else>{{ text }}</span>
+          <span>{{ text }}</span>
+          <!-- <span v-if="record.key !== 'sg-t'" class="tab-text-decoration" @click="nextDetailFn(record)">{{ text }}</span>
+          <span v-else>{{ text }}</span> -->
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
@@ -451,7 +456,7 @@ export default {
   /deep/.content-form {
     display: grid;
     height: min-content;
-    grid-template-columns:200px repeat(5, 1fr);
+    grid-template-columns: 200px repeat(5, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 20px;
     .btn-content {
