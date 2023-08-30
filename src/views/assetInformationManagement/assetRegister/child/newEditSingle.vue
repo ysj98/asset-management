@@ -163,26 +163,8 @@ export default {
       this.modelStatus = false;
       this.handleSubmit();
     },
-    // 资产登记是否校验权证面积
-    async getApproveConfig() {
-      let {
-        data: { code, data },
-      } = await this.$api.paramsConfig.queryParamsConfigDetail({
-        serviceType: 1009,
-        organId: this.organId,
-      });
-      if (code === '0') {
-        const { isValid } = data;
-        if (isValid === 1) {
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    },
-    confirmArea(detail) {
+
+    async confirmArea(detail) {
       if (this.activeStepIndex === 0 && !this.registerOrderId) {
         if (detail) {
           this.handleSubmit(detail);
@@ -200,8 +182,26 @@ export default {
             array.push(item.assetName);
           }
         });
+        // 资产登记是否校验权证面积
+        let flag = false;
+        let {
+          data: { code, data },
+        } = await this.$api.paramsConfig.queryParamsConfigDetail({
+          serviceType: 1009,
+          organId: this.organId,
+        });
+        if (code === '0') {
+          const { isValid } = data;
+          if (isValid === 1) {
+            flag = true;
+          } else {
+            flag = false;
+          }
+        } else {
+          flag = false;
+        }
         // 有不相等的情况，且相关配置页面已经开启了权证号校验
-        if (array.length && this.getApproveConfig()) {
+        if (array.length && flag) {
           this.tips = array.join('、');
           this.modelStatus = true;
           // this.$SG_Message.confirmDelete({
