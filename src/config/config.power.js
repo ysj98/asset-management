@@ -89,6 +89,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_EDIT_HOUSE: 'zcgl_edit_house',
   // 楼盘字典-房间资料导入
   ASSET_HOUSEZL_IN: 'zcgl_housezl_in',
+  // 楼盘字典-房间资料批量导入
+  ASSET_BATCH_HOUSEZL_IN: 'zcgl_batch_housezl_in',
   // 楼盘字典-房间导入批量更新
   ASSET_HOUSE_IN: 'zcgl_house_in',
   // 楼盘字典-房间导出
@@ -97,6 +99,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_HOUSE_STATE: 'zcgl_house_state',
   // 楼盘字典-新建楼栋
   ASSET_BUILD_ADD: 'zcgl_build_add',
+  // 楼盘字典-批量导入楼栋
+  ASSET_BATCH_BUILD_ADD: 'zcgl_batch_build_add',
   // 楼盘字典-编辑楼栋
   ASSET_BUILD_EDIT: 'zcgl_build_edit',
   // 楼盘字典-删除楼栋
@@ -187,6 +191,8 @@ export const ASSET_MANAGEMENT = {
   ASSET_REGISTER_VERIFY: 'zcgl_asset_register_verify',
   // 资产登记-撤销核实
   ASSET_REGISTER_UNDOCHECK: 'zcgl_asset_register_undoCheck',
+  // 资产登记-批量导入
+  BATCH_INPUT: 'zcgl_asset_batch_input',
 
   /**
    * 资产项目管理APM （asset-project-manage）

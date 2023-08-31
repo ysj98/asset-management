@@ -6,7 +6,7 @@
 <template>
   <SG-Modal
     @cancel="hiddeModal"
-    title="导入数据"
+    :title="title"
     v-model="visible"
     :width="543"
     @ok="handleSave"
@@ -80,6 +80,7 @@ export default {
   data() {
     return {
       // uuid: getUuid(),
+      title: '导入数据',
       visible: false,
       organId: '',
       upErrorInfo: '',
@@ -121,11 +122,12 @@ export default {
         return this.$message.error('请先上传文件!');
       }
       let loadingName = this.SG_Loding('导入中...');
-      this.$api.building.importExcel(this.organId, this.formData).then(
+      const url = this.title === '房间资料导入' ? 'importExcel' : 'importExcelV2';
+      this.$api.building[url](this.organId, this.formData).then(
         (res) => {
           if (res.data.code === '0') {
             this.DE_Loding(loadingName).then(() => {
-              this.$SG_Message.success('导入成功！');
+              this.$SG_Message.success(`${this.title}成功！`);
               this.visible = false;
               this.$emit('success');
             });
@@ -137,8 +139,8 @@ export default {
           }
         },
         () => {
-          this.DE_Loding(loadingName).then((res) => {
-            this.$SG_Message.error('导入失败！');
+          this.DE_Loding(loadingName).then(() => {
+            this.$SG_Message.error(`${this.title}失败！`);
           });
         }
       );
@@ -160,7 +162,7 @@ export default {
         type: myFileType,
       };
     },
-    change(files, e) {
+    change(files) {
       if (!files.length) {
         return;
       }
@@ -185,10 +187,11 @@ export default {
     // 下载文件
     downHouseSource() {
       if (!this.organId) {
-        return this.$message.error('请选择公司!');
+        return this.$message.error('请选择机构!');
       }
       let loadingName = this.$SG_Message.loading({ content: '下载中...' });
-      this.$api.building.downLoadExcel({ organId: this.organId }).then(
+      const url = this.title === '房间资料导入' ? 'downLoadExcel' : 'downLoadExcelV2';
+      this.$api.building[url]({ organId: this.organId }).then(
         (res) => {
           this.$SG_Message.destroy(loadingName);
           let blob = new Blob([res.data]);

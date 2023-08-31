@@ -151,6 +151,10 @@ export const assets = {
   },
   // 资产登记
   assetRegister: {
+    // 资产登记-下载批量导入模板
+    downloadTemplateBatch: '/ams/registerOrder/downloadTemplateBatch',
+    // 资产登记-批量导入
+    uploadTemplateBatch: '/ams/registerOrder/uploadTemplateBatch',
     // 资产登记-删除
     deleteByRegisterOrderId: '/ams/registerOrder/deleteByRegisterOrderId',
     // 资产登记-列表统计
@@ -595,14 +599,22 @@ export const building = {
   downLoadExcel: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/downLoadExcel',
   // 导入房间资料
   importExcel: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/importExcel',
+  // 下载房屋资料批量导入模板-（房间信息导入）
+  downLoadExcelV2: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/downLoadExcelV2',
+  // 批量导入房间资料
+  importExcelV2: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/importExcelV2',
   // 房间批量更新
   acctHouseCodeImport: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/acctHouseCodeImport',
   // 房屋导出
   exportHouse: '/basic-data-batch-api/rest-api/v1/ams/houseFileApi/exportHouse',
   // 下载楼栋导入模板
   buildingDownLoadExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/downLoadExcel',
-  // 楼栋批量导入
+  // 楼栋导入
   buildImportExcel: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcel/',
+  // 下载楼栋批量导入模板
+  buildingDownLoadExcelV2: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/downLoadExcelV2',
+  // 楼栋批量导入
+  buildImportExcelV2: '/basic-data-batch-api/rest-api/v1/ams/buildFileApi/importExcelV2/',
   // 土地分页列表
   blankApiPageList: '/basic-data-api/rest-api/v1/ams/blankApi/pageList',
   // 查询土地列表合计

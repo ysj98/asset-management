@@ -18,7 +18,7 @@ export const accessCard = [
     required: true,
   },
   {
-    label: '委托管理单位',
+    label: '被委托管理单位',
     attrCode: 'entrustOrganization',
     formType: 'input',
     attrValue: '',
@@ -255,7 +255,7 @@ export const titleDeed = [
     chooseArray: [],
     formType: 'select',
     attrValue: '',
-    required: true,
+    required: false,
   },
   {
     label: '建筑面积(㎡)',
@@ -448,7 +448,7 @@ export const landDeed = [
     attrCode: 'rigisterDate',
     formType: 'date',
     attrValue: '',
-    required: true,
+    required: false,
   },
   {
     label: '交接日期',
@@ -486,7 +486,7 @@ export const newCardData = {
   handoverDate: '', // 类型：String  必有字段  备注：交接日期
   houseOwner: '', // 类型：String  必有字段  备注：房屋所有权人(使用权证所有)
   tenant: '', // 类型：String  必有字段  备注：承租人(使用权证所有)
-  entrustOrganization: '', // 类型：String  必有字段  备注：委托管理单位(使用权证所有)
+  entrustOrganization: '', // 类型：String  必有字段  备注：被委托管理单位(使用权证所有)
   totalFloor: '', // 类型：String  必有字段  备注：总层数(使用权证所有)
   placeFloor: '', // 类型：String  必有字段  备注：所在层(使用权证所有)
   houseNo: '', // 类型：String  必有字段  备注：房屋号(使用权证所有)

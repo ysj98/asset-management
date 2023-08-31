@@ -80,7 +80,7 @@ export async function initTableColumns({ columns, detailColumns, requiredColumn,
       mapRes = {
         title: ele.colName,
         dataIndex: ele.colCode,
-        width: 120, // 给新加的列默认一个宽度
+        width: 130, // 给新加的列默认一个宽度
       };
     }
     columns.push(mapRes);

@@ -388,7 +388,7 @@ const detailColumns = [
   { title: '产权证土地用途', dataIndex: 'landUse', width: 150 },
   { title: '产权证有无抵押', dataIndex: 'isMortgage', width: 150 },
   { title: '公安门牌号', dataIndex: 'houseNumber', width: 150 },
-  { title: '质押情况', dataIndex: 'pledge', width: 120 },
+  // { title: '质押情况', dataIndex: 'pledge', width: 120 },
   { title: '质押', dataIndex: 'pledgeName', width: 100 },
   { title: '抵押', dataIndex: 'mortgageName', width: 100 },
   { title: '涉诉', dataIndex: 'lawsuitName', width: 100 },
@@ -1311,5 +1311,10 @@ export default {
 // }
 /deep/ .sg-FooterPagination {
   z-index: 2;
+}
+
+/deep/ .ant-table-fixed-left table,
+/deep/ .ant-table-fixed-right table {
+  width: min-content;
 }
 </style>
