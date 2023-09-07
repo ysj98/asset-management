@@ -20,6 +20,7 @@
         type="getUseDirection"
         v-if="showvalueAndUseDirection"
         :useDirectionDetail="valueAndUseDirection"
+        :assetId="assetId"
       ></basicDetails>
       <tableList title="附属配套" id="necessaryCaaessories" type="necessaryCaaessories" :assetId="assetId"></tableList>
       <tableList title="相关费用" id="correlativeCharges" type="correlativeCharges" :assetId="assetId"></tableList>

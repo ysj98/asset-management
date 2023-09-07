@@ -20,6 +20,7 @@
         type="getUseDirection"
         v-if="showvalueAndUseDirection"
         :useDirectionDetail="valueAndUseDirection"
+        :assetId="assetId"
       ></basicDetails>
       <tableList
         title="附属配套"

@@ -252,7 +252,7 @@ export default {
               if (item.code == e.code) {
                 e.bgColor = item.color;
                 e.isAble = item.isAble;
-                e.title = item.alias || e.title;
+                e.title = item.alias + '面积(㎡)' || e.title + '面积(㎡)';
               }
             });
           });

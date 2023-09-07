@@ -176,11 +176,11 @@
       <div class="edit-box-content">
         <div class="asset-condition">
           <a-row class="asset-project-header">
-            <a-col v-for="(item, index) in assetStatistics" :key="index" :span="4">
+            <a-col v-for="(item, index) in assetStatistics" :key="index" :span="4" :style="{ 'background-color': item.bgColor }">
               <div class="asset-project-item custom-height">
                 <div class="asset-project-item-title" style="font-size: 14px; margin-bottom: 10px">{{ item.title }}</div>
                 <div class="asset-project-item-number" style="font-size: 20px; font-weight: bold; color: #324057">
-                  {{ item.area || 0 }}<span v-show="item.percent">({{ item.percent }})</span>
+                  {{ item.value || 0 }}<span v-show="item.percent">({{ item.percent }})</span>
                 </div>
               </div>
             </a-col>
@@ -346,12 +346,12 @@ export default {
       ownershipColumns,
       ownershipDataSource: [],
       assetStatistics: [
-        { title: '所有资产(㎡)', area: '', percent: '' },
-        { title: '运营(㎡)', area: '', percent: '' },
-        { title: '闲置(㎡)', area: '', percent: '' },
-        { title: '自用(㎡)', area: '', percent: '' },
-        { title: '占用(㎡)', area: '', percent: '' },
-        { title: '其他(㎡)', area: '', percent: '' },
+        { title: '所有资产(㎡)', key: 'measuredArea', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y', percent: '' },
+        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', percent: '' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', percent: '' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', percent: '' },
+        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', percent: '' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', percent: '' },
       ],
       assetList: [],
       imgPrx: window.__configs.hostImg,
@@ -364,6 +364,28 @@ export default {
     };
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.detail.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.assetStatistics.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '面积(㎡)' || item.statusName + '面积(㎡)';
+              }
+            });
+          });
+          this.assetStatistics = this.assetStatistics.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     formatDate(value) {
       if (value) {
         return dateToString(new Date(value), 'yyyy-mm-dd');
@@ -384,6 +406,7 @@ export default {
         if (res.data.code === '0') {
           let { sourceType, projectId, ...others } = res.data.data;
           this.detail = others;
+          this.useForConfig();
           projectId && this.getOwnershipData(projectId);
           this.sourceType = String(sourceType);
           this.detail.attachment.forEach((item) => {
@@ -433,16 +456,16 @@ export default {
       this.$api.assets.viewProjectHouseDetails(form).then((res) => {
         if (res.data.code === '0') {
           let data = res.data.data;
-          this.assetStatistics[0].area = data.allArea.toFixed(2);
-          this.assetStatistics[1].area = data.operationNum.toFixed(2);
+          this.assetStatistics[0].value = data.allArea.toFixed(2);
+          this.assetStatistics[1].value = data.operationNum.toFixed(2);
           this.assetStatistics[1].percent = data.operationNumPercent;
-          this.assetStatistics[2].area = data.idleNum.toFixed(2);
+          this.assetStatistics[2].value = data.idleNum.toFixed(2);
           this.assetStatistics[2].percent = data.idleNumPercent;
-          this.assetStatistics[3].area = data.selfUseNum.toFixed(2);
+          this.assetStatistics[3].value = data.selfUseNum.toFixed(2);
           this.assetStatistics[3].percent = data.selfUseNumPercent;
-          this.assetStatistics[4].area = data.occupyNum.toFixed(2);
+          this.assetStatistics[4].value = data.occupyNum.toFixed(2);
           this.assetStatistics[4].percent = data.occupyNumPercent;
-          this.assetStatistics[5].area = data.otherNum.toFixed(2);
+          this.assetStatistics[5].value = data.otherNum.toFixed(2);
           this.assetStatistics[5].percent = data.otherNumPercent;
         } else {
           this.$message.error(res.data.message);
@@ -571,21 +594,21 @@ export default {
               background: white;
               color: #49505e;
             }
-            &:nth-child(2) {
-              background: #1ec76a;
-            }
-            &:nth-child(3) {
-              background: #46a6ff;
-            }
-            &:nth-child(4) {
-              background: #e49aeb;
-            }
-            &:nth-child(5) {
-              background: #fd9090;
-            }
-            &:nth-child(6) {
-              background: #bbc8d6;
-            }
+            // &:nth-child(2) {
+            //   background: #1ec76a;
+            // }
+            // &:nth-child(3) {
+            //   background: #46a6ff;
+            // }
+            // &:nth-child(4) {
+            //   background: #e49aeb;
+            // }
+            // &:nth-child(5) {
+            //   background: #fd9090;
+            // }
+            // &:nth-child(6) {
+            //   background: #bbc8d6;
+            // }
           }
         }
         .asset-project-content {

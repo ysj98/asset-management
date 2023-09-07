@@ -106,7 +106,7 @@ export default {
         { text: '其他面积(㎡)', value: 'otherArea' },
         { text: '闲置面积(㎡)', value: 'idleArea' },
       ],
-      // useDirectionDetail: {}
+      useDirectionCom: [],
     };
   },
   computed: {
@@ -115,21 +115,6 @@ export default {
     },
     assetType() {
       return String(this.$route.query.assetType);
-    },
-    useDirectionCom() {
-      const { HOUSE, LAND, YARD, EQUIPMENT } = this.ASSET_TYPE_CODE;
-      const info = [
-        { text: '转物业日期', value: 'transferTime' },
-        { text: '使用方向', value: 'useDirectionName', assetType: [EQUIPMENT] },
-        { text: '转物业面积(㎡)', value: 'transferArea', assetType: [HOUSE, LAND, YARD] },
-        { text: '转运营日期', value: 'transferOperationTime', assetType: [HOUSE, LAND, YARD] },
-        { text: '运营面积(㎡)', value: 'transferOperationArea', assetType: [HOUSE, LAND, YARD] },
-        { text: '自用面积(㎡)', value: 'selfUserArea', assetType: [HOUSE, LAND, YARD] },
-        { text: '占用面积(㎡)', value: 'occupationArea', assetType: [HOUSE, LAND, YARD] },
-        { text: '其他面积(㎡)', value: 'otherArea', assetType: [HOUSE, LAND, YARD] },
-        { text: '闲置面积(㎡)', value: 'idleArea', assetType: [HOUSE, LAND, YARD] },
-      ];
-      return info.filter(this.handleInfoArr);
     },
     getBasicCom() {
       const { HOUSE, LAND, YARD, EQUIPMENT } = this.ASSET_TYPE_CODE;
@@ -169,11 +154,52 @@ export default {
       case 'getBasicCom':
         this.getAssetById();
         break;
+      case 'getUseDirection':
+        this.getAssetById();
+        break;
       default:
         break;
     }
   },
   methods: {
+    setUseDirectionCom() {
+      const { HOUSE, LAND, YARD, EQUIPMENT } = this.ASSET_TYPE_CODE;
+      const info = [
+        { text: '转物业日期', value: 'transferTime', isAble: 'Y' },
+        { text: '使用方向', value: 'useDirectionName', assetType: [EQUIPMENT], isAble: 'Y' },
+        { text: '转物业面积(㎡)', value: 'transferArea', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+        { text: '转运营日期', value: 'transferOperationTime', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+        { text: '运营面积(㎡)', value: 'transferOperationArea', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+        { text: '自用面积(㎡)', value: 'selfUserArea', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+        { text: '占用面积(㎡)', value: 'occupationArea', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+        { text: '其他面积(㎡)', value: 'otherArea', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+        { text: '闲置面积(㎡)', value: 'idleArea', assetType: [HOUSE, LAND, YARD], isAble: 'Y' },
+      ];
+      return info.filter(this.handleInfoArr);
+    },
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.getBasicDetail.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          let useDirectionCom = this.setUseDirectionCom();
+          data.forEach((item) => {
+            useDirectionCom.forEach((e) => {
+              if (item.fieldValue == e.value) {
+                e.isAble = item.isAble;
+                e.text = item.alias + '面积(㎡)' || item.statusName + '面积(㎡)';
+              }
+            });
+          });
+
+          this.useDirectionCom = useDirectionCom.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     /*
      * 根据 assetType 数据 过滤
      * assetType 没有元素时意味着 所有资产类型 都显示，如果存在数据则根据 当前资产类型 判断是否显示
@@ -218,15 +244,16 @@ export default {
       this.$api.subsidiary.getAssetById(data).then((res) => {
         if (res.data.code === '0') {
           let obj = res.data.data || {};
-          if (this.type === 'getBasicCom') {
-            const ASSET_TYPE_DETAIL = handleAssetTypeField(this.assetType, 'detail');
-            const resData = obj[ASSET_TYPE_DETAIL];
-            this.getBasicDetail = { ...obj };
-            for (let key in resData) {
-              this.getBasicDetail[key] = resData[key];
-            }
-            this.$emit('change', resData || {});
+          const ASSET_TYPE_DETAIL = handleAssetTypeField(this.assetType, 'detail');
+          const resData = obj[ASSET_TYPE_DETAIL];
+          this.getBasicDetail = { ...obj };
+          for (let key in resData) {
+            this.getBasicDetail[key] = resData[key];
           }
+          if (this.type === 'getUseDirection') {
+            this.useForConfig();
+          }
+          this.$emit('change', resData || {});
         } else {
           this.$message.error(res.data.message);
         }
