@@ -479,42 +479,52 @@ export default {
         oldSourceModes: ['all'],
       },
       numList: [
-        { title: '资产数量', key: 'total', value: 0, fontColor: '#324057' },
+        { title: '资产数量', key: 'total', value: 0, fontColor: '#324057', code: '1000', isAble: 'Y' },
         {
           title: '运营',
           key: 'operate',
           value: 0,
           bgColor: '#4BD288',
+          code: '1001',
+          isAble: 'Y',
         },
         {
           title: '闲置',
           key: 'idle',
           value: 0,
           bgColor: '#1890FF',
+          code: '1002',
+          isAble: 'Y',
         },
         {
           title: '自用',
           key: 'self',
           value: 0,
           bgColor: '#DD81E6',
+          code: '1003',
+          isAble: 'Y',
         },
         {
           title: '其他',
           key: 'other',
           value: 0,
           bgColor: '#BBC8D6',
+          code: '1005',
+          isAble: 'Y',
         },
         {
           title: '资产原值(元)',
           key: 'originalValue',
           value: 0,
           bgColor: '#FD7474',
+          isAble: 'Y',
         },
         {
           title: '最新价值(元)',
           key: 'marketValue',
           value: 0,
           bgColor: '#808080',
+          isAble: 'Y',
         },
       ],
       selectedRowKeys: [],
@@ -547,6 +557,43 @@ export default {
     },
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias || item.statusName;
+              }
+            });
+            // 同步修改表头的字段名称
+            this.tableOptions.columns.forEach((m, i) => {
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
+              let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
+              if (flag) {
+                m.title = item.alias || item.statusName;
+                if (item.isAble === 'N') {
+                  this.tableOptions.columns.splice(i, 1);
+                }
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     // 原始来源方式
     changeOldSource(value) {
       let lastIndex = value.length - 1;
@@ -711,6 +758,7 @@ export default {
       this.getObjectKeyValueByOrganIdFn({ organId });
       this.queryTableDataAndTotal();
       this.getAssetLabel({ organId });
+      this.useForConfig();
     },
     // 获取 tableData
     queryTableData(options) {

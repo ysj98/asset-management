@@ -176,7 +176,7 @@
       <div class="edit-box-content">
         <div class="asset-condition">
           <a-row class="asset-project-header">
-            <a-col v-for="(item, index) in assetStatistics" :key="index" :span="4">
+            <a-col v-for="(item, index) in assetStatistics" :key="index" :span="4" :style="{ backgroundColor: item.bgColor }">
               <div class="asset-project-item custom-height">
                 <div class="asset-project-item-title" style="font-size: 14px; margin-bottom: 10px">{{ item.title }}</div>
                 <div class="asset-project-item-number" style="font-size: 20px; font-weight: bold; color: #324057">
@@ -347,12 +347,12 @@ export default {
       ownershipColumns,
       ownershipDataSource: [],
       assetStatistics: [
-        { title: '所有资产(㎡)', area: '', percent: '' },
-        { title: '运营(㎡)', area: '', percent: '' },
-        { title: '闲置(㎡)', area: '', percent: '' },
-        { title: '自用(㎡)', area: '', percent: '' },
-        { title: '占用(㎡)', area: '', percent: '' },
-        { title: '其他(㎡)', area: '', percent: '' },
+        { title: '所有资产(㎡)', area: '', percent: '', isAble: 'Y' },
+        { title: '运营(㎡)', area: '', percent: '', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', area: '', percent: '', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', area: '', percent: '', code: '1003', isAble: 'Y' },
+        { title: '占用(㎡)', area: '', percent: '', code: '1004', isAble: 'Y' },
+        { title: '其他(㎡)', area: '', percent: '', code: '1005', isAble: 'Y' },
       ],
       assetList: [],
       imgPrx: window.__configs.hostImg,
@@ -365,6 +365,28 @@ export default {
     };
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.assetStatistics.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+          });
+          this.assetStatistics = this.assetStatistics.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     formatDate(value) {
       if (value) {
         return dateToString(new Date(value), 'yyyy-mm-dd');
@@ -484,6 +506,7 @@ export default {
     this.getTransferInfo();
     this.getAssetStatistics();
     this.getAssetList();
+    this.useForConfig();
   },
 };
 </script>

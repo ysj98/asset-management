@@ -144,38 +144,47 @@ export default {
           key: 'landArea',
           value: 0,
           fontColor: '#324057',
+          isAble: 'Y',
         },
         {
           title: '运营(㎡)',
           key: 'transferOperationArea',
           value: 0,
           bgColor: '#4BD288',
+          code: '1001',
+          isAble: 'Y',
         },
-        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
         {
           title: '自用(㎡)',
           key: 'selfUserArea',
           value: 0,
           bgColor: '#DD81E6',
+          code: '1003',
+          isAble: 'Y',
         },
         {
           title: '占用(㎡)',
           key: 'occupationArea',
           value: 0,
           bgColor: '#FD7474',
+          code: '1004',
+          isAble: 'Y',
         },
-        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
         {
           title: '资产原值(万元)',
           key: 'originalValue',
           value: 0,
           bgColor: '#DD81E6',
+          isAble: 'Y',
         },
         {
           title: '最新估值(万元)',
           key: 'marketValue',
           value: 0,
           bgColor: '#1890FF',
+          isAble: 'Y',
         },
       ],
       table: {
@@ -206,8 +215,32 @@ export default {
     this.viewGetAssetHouseListForOrgan();
     this.viewGetAssetHouseStatisticsForOrgan();
     this.queryOrganViewDetail();
+    this.useForConfig();
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      let { organId } = this.$route.query;
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     // 查询详情列表
     viewGetAssetHouseListForOrgan() {
       let data = { ...this.routeQueryStore, ...this.queryCondition };

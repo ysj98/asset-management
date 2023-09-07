@@ -98,10 +98,10 @@ export default {
       details: {}, // 编辑基本信息数据
       modalObj: { title: '编辑资产信息', status: false, okText: '保存', cancelText: '取消', width: 550, loading: false },
       numList: [
-        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288' },
-        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
-        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6' },
-        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+        { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y' },
       ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
       bigImg: {
         // 查看大图所需数据
@@ -113,6 +113,29 @@ export default {
   },
 
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      const { organId } = this.$route.query;
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     goDetail() {
       const { organId, organName } = this.$route.query;
       const { landId } = this.infoData;
@@ -173,6 +196,7 @@ export default {
 
   created() {
     this.queryDetailInfo();
+    this.useForConfig();
   },
 };
 </script>

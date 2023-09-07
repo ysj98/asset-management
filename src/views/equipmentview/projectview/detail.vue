@@ -63,6 +63,7 @@ export default {
           percentageKey: 'assetCount',
           value: 0,
           fontColor: '#324057',
+          isAble: 'Y',
         },
         {
           title: '运营',
@@ -70,6 +71,8 @@ export default {
           percentageKey: 'operationPercentage',
           value: 0,
           bgColor: '#4BD288',
+          code: '1001',
+          isAble: 'Y',
         },
         {
           title: '闲置',
@@ -77,6 +80,8 @@ export default {
           percentageKey: 'idlePercentage',
           value: 0,
           bgColor: '#1890FF',
+          code: '1002',
+          isAble: 'Y',
         },
         {
           title: '自用',
@@ -84,6 +89,8 @@ export default {
           percentageKey: 'selfPercentage',
           value: 0,
           bgColor: '#DD81E6',
+          code: '1003',
+          isAble: 'Y',
         },
         {
           title: '其他',
@@ -91,6 +98,8 @@ export default {
           percentageKey: 'otherPercentage',
           value: 0,
           bgColor: '#BBC8D6',
+          code: '1005',
+          isAble: 'Y',
         },
       ],
       tableOptions: {
@@ -232,6 +241,28 @@ export default {
     };
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.basicInfoOptions.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     async getDetail() {
       const req = {
         projectId: this.queryParams.projectId,
@@ -302,6 +333,7 @@ export default {
               this.numList.forEach((ele) => {
                 ele.value = Number(tempRes[ele.key] || 0);
               });
+              this.useForConfig();
             } else {
               if (code1 !== '0') {
                 this.$message.error(message1);

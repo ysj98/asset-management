@@ -72,13 +72,13 @@ export default {
       isShowFloatView: false, // 控制浮窗显示
       maxTotalArea: 1, // 每层所有房间面积之和中的最大值
       numList: [
-        { title: '车位数量', key: 'parkingNums', value: 0, bgColor: '#4BD288' },
-        { title: '车场面积(㎡)', key: 'placeArea', value: 0, bgColor: '#1890FF' },
-        { title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#DD81E6' },
-        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#FD7474' },
-        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6' },
-        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474' },
-        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288' },
+        { title: '车位数量', key: 'parkingNums', value: 0, bgColor: '#4BD288', isAble: 'Y' },
+        { title: '车场面积(㎡)', key: 'placeArea', value: 0, bgColor: '#1890FF', isAble: 'Y' },
+        { title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#DD81E6', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#FD7474', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#BBC8D6', code: '1003', isAble: 'Y' },
+        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288', code: '1005', isAble: 'Y' },
       ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
       // mouseData: [
       //   {title: '车位名称', key: 'operationArea', value: 0},
@@ -101,6 +101,28 @@ export default {
   },
 
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     goDetail({ id }) {
       const tabTitle = '车位详情';
       const tabUrl = `/asset-management/#/buildingDict/detailViewStall?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&placeId=${this.placeId}&parkingId=${id}`;
@@ -241,6 +263,7 @@ export default {
   mounted() {
     this.queryNameList();
     this.queryPlaceArea();
+    this.useForConfig();
   },
 };
 </script>

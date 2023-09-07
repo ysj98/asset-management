@@ -65,11 +65,11 @@ export default {
       isShowFloatView: false, // 控制浮窗显示
       maxTotalArea: 1, // 每层所有房间面积之和中的最大值
       numList: [
-        { title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288' },
-        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF' },
-        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6' },
-        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474' },
-        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6' },
+        { title: '运营(㎡)', key: 'operationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+        { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+        { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+        { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#FD7474', code: '1004', isAble: 'Y', flag: '3' },
+        { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#BBC8D6', code: '1005', isAble: 'Y', flag: '4' },
       ], // 概览数据,如是格式，title 标题，value 数值，color 背景色
       bgColorObj: {
         idleArea: '#1890FF',
@@ -85,6 +85,28 @@ export default {
   },
 
   methods: {
+    // 配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.map((item) => {
+            this.numList.map((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias || e.title;
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     goDetail({ id }) {
       const tabTitle = '房间详情';
       const tabUrl = `/asset-management/#/buildingDict/detailHouse?type=detail&organId=${this.organId}&selectedOrganName=${this.organName}&houseId=${id}&searchBuildName=`;
@@ -233,6 +255,7 @@ export default {
   mounted() {
     this.queryUnit();
     this.queryHouseAreaInfo();
+    this.useForConfig();
   },
 };
 </script>

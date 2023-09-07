@@ -179,13 +179,13 @@ const columns = [
 ];
 // 概览数字数据, title 标题，value 数值，bgColor 背景色
 const numList = [
-  { title: '土地数量', key: 'landCount', value: 0, fontColor: '#324057' },
-  { title: '土地面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#FD7474' },
-  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', flag: '0' },
-  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', flag: '1' },
-  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', flag: '2' },
-  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#BBC8D6', flag: '3' },
-  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474', flag: '4' },
+  { title: '土地数量', key: 'landCount', value: 0, fontColor: '#324057', isAble: 'Y' },
+  { title: '土地面积(㎡)', key: 'measuredArea', value: 0, bgColor: '#FD7474', isAble: 'Y' },
+  { title: '运营(㎡)', key: 'transferOperationArea', value: 0, bgColor: '#4BD288', code: '1001', isAble: 'Y', flag: '0' },
+  { title: '闲置(㎡)', key: 'idleArea', value: 0, bgColor: '#1890FF', code: '1002', isAble: 'Y', flag: '1' },
+  { title: '自用(㎡)', key: 'selfUserArea', value: 0, bgColor: '#DD81E6', code: '1003', isAble: 'Y', flag: '2' },
+  { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#BBC8D6', code: '1004', isAble: 'Y', flag: '3' },
+  { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#FD7474', code: '1005', isAble: 'Y', flag: '4' },
 ];
 
 export default {
@@ -248,6 +248,43 @@ export default {
     },
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias || item.statusName;
+              }
+            });
+            // 同步修改表头的字段名称
+            this.columns.forEach((m, i) => {
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
+              let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
+              if (flag) {
+                m.title = item.alias || item.statusName;
+                if (item.isAble === 'N') {
+                  this.columns.splice(i, 1);
+                }
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     // 点击总览数据块
     handleClickOverview({ i }) {
       this.current = i;
@@ -369,6 +406,7 @@ export default {
             .filter((item) => {
               return item.value !== 0;
             });
+          this.useForConfig();
           Object.keys(sumObj).forEach(
             (key) =>
               (sumObj[key] = temp[key]

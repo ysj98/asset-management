@@ -295,12 +295,12 @@ export default {
       ownershipColumns,
       ownershipDataSource: [],
       assetStatistics: [
-        { title: '所有资产(㎡)', area: '', percent: '' },
-        { title: '运营(㎡)', area: '', percent: '' },
-        { title: '闲置(㎡)', area: '', percent: '' },
-        { title: '自用(㎡)', area: '', percent: '' },
-        { title: '占用(㎡)', area: '', percent: '' },
-        { title: '其他(㎡)', area: '', percent: '' },
+        { title: '所有资产(㎡)', area: '', percent: '', isAble: 'Y' },
+        { title: '运营(㎡)', area: '', percent: '', code: '1001', isAble: 'Y' },
+        { title: '闲置(㎡)', area: '', percent: '', code: '1002', isAble: 'Y' },
+        { title: '自用(㎡)', area: '', percent: '', code: '1003', isAble: 'Y' },
+        { title: '占用(㎡)', area: '', percent: '', code: '1004', isAble: 'Y' },
+        { title: '其他(㎡)', area: '', percent: '', code: '1005', isAble: 'Y' },
       ],
       assetList: [],
       imgPrx: window.__configs.hostImg,
@@ -313,6 +313,28 @@ export default {
     };
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.detail.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.assetStatistics.forEach((e) => {
+              if (item.code == e.code) {
+                e.bgColor = item.color;
+                e.isAble = item.isAble;
+                e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+          });
+          this.assetStatistics = this.assetStatistics.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     formatDate(value) {
       if (value) {
         return dateToString(new Date(value), 'yyyy-mm-dd');
@@ -339,6 +361,7 @@ export default {
             item.url = item.attachmentPath;
             item.name = item.oldAttachmentName;
           });
+          this.useForConfig();
         } else {
           this.$message.error(res.data.message);
         }
