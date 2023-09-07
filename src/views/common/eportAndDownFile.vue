@@ -156,9 +156,7 @@ export default {
       this.$emit('upload', this.formData);
     },
   },
-  mounted() {
-    console.log(this.$slots.upLoadModule);
-  },
+  mounted() {},
 };
 </script>
 <style lang="less" scoped>

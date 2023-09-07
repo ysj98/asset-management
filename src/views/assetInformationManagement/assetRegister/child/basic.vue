@@ -221,7 +221,6 @@ export default {
         }
       });
     },
-    tempFn(value) {},
     generateYardClassification(record) {
       const { type, objectType } = record;
       let data = [];
