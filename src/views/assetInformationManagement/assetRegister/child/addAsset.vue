@@ -488,75 +488,16 @@
                 <a-input placeholder="请输入转运营日期" :style="allWidth" v-model="transferTime" @click="timeShow = true" />
               </a-form-item>
             </a-col>
-            <a-col class="playground-col" :span="12">
+            <a-col class="playground-col" :span="12" v-for="item in numList" :key="item.key">
               <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">运营面积(㎡)：</label>
+                <label slot="label">{{ item.title }}：</label>
                 <a-input-number
                   :min="0"
                   :max="9999999.9999"
                   :step="0.0001"
-                  placeholder="请输入运营面积"
+                  :placeholder="'请输入' + item.title"
                   :style="allWidth"
-                  v-decorator="[
-                    'transferOperationArea',
-                    { rules: [{ required: true, message: '请输入请输入运营面积' }], initialValue: params.transferOperationArea },
-                  ]"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col class="playground-col" :span="12">
-              <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">其他面积(㎡)：</label>
-                <a-input-number
-                  :min="0"
-                  :max="9999999.9999"
-                  :step="0.0001"
-                  placeholder="请输入其他面积"
-                  :style="allWidth"
-                  v-decorator="['otherArea', { rules: [{ required: true, message: '请输入其他面积' }], initialValue: params.otherArea }]"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="12">
-              <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">闲置面积(㎡)：</label>
-                <a-input-number
-                  :min="0"
-                  :max="9999999.9999"
-                  :step="0.0001"
-                  placeholder="请输入闲置面积"
-                  :style="allWidth"
-                  v-decorator="['idleArea', { rules: [{ required: true, message: '请输入闲置面积' }], initialValue: params.idleArea }]"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col class="playground-col" :span="12">
-              <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">自用面积(㎡)：</label>
-                <a-input-number
-                  :min="0"
-                  :max="9999999.9999"
-                  :step="0.0001"
-                  placeholder="请输入自用面积"
-                  :style="allWidth"
-                  v-decorator="['selfUserArea', { rules: [{ required: true, message: '请输入自用面积' }], initialValue: params.selfUserArea }]"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col class="playground-col" :span="12">
-              <a-form-item :colon="false" v-bind="formItemLayout">
-                <label slot="label">占用面积(㎡)：</label>
-                <a-input-number
-                  :min="0"
-                  :max="9999999.9999"
-                  :step="0.0001"
-                  placeholder="请输入占用面积"
-                  :style="allWidth"
-                  v-decorator="['occupationArea', { rules: [{ required: true, message: '请输入占用面积' }], initialValue: params.occupationArea }]"
+                  v-decorator="[item.key, { rules: [{ required: true, message: '请输入' + item.title }], initialValue: params[item.key] }]"
                 />
               </a-form-item>
             </a-col>
@@ -725,7 +666,7 @@
                 <a-textarea
                   placeholder="请输入诉讼情况"
                   :style="widthBox"
-                  :autosize="{ minRows: 2, maxRows: 4 }"
+                  :autoSize="{ minRows: 2, maxRows: 4 }"
                   v-decorator="[
                     'lawsuitRemark',
                     { rules: [{ required: false, max: 500, message: '请输入诉讼情况(不超过500字符)' }], initialValue: params.lawsuitRemark },
@@ -800,6 +741,14 @@ const params = {
   lawsuitRemark: '', //诉讼情况
   originSource: '', // 资产原始来源方
 };
+
+const numList = [
+  { title: '运营', key: 'transferOperationArea', code: '1001', isAble: 'Y' },
+  { title: '闲置', key: 'idleArea', code: '1002', isAble: 'Y' },
+  { title: '自用', key: 'selfUserArea', code: '1003', isAble: 'Y' },
+  { title: '占用', key: 'occupationArea', code: '1004', isAble: 'Y' },
+  { title: '其他', key: 'otherArea', code: '1005', isAble: 'Y' },
+]; // 概览数据
 export default {
   props: {
     organId: {
@@ -850,6 +799,7 @@ export default {
       transferTime: '',
       transferTimeTemp: '',
       lawsuitRemarkShow: false,
+      numList: _.cloneDeep(numList),
     };
   },
   watch: {
@@ -880,9 +830,31 @@ export default {
     this.$nextTick(() => {
       this.$textReplace();
     });
+    this.useForConfig();
   },
   methods: {
     moment,
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.numList.forEach((e) => {
+              if (item.code == e.code) {
+                e.isAble = item.isAble;
+                e.title = item.alias + '面积(㎡)' || item.statusName + '面积(㎡)';
+              }
+            });
+          });
+          this.numList = this.numList.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     // 获取资产编码
     getAssetCode() {
       const params = {
