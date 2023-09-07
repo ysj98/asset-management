@@ -132,7 +132,6 @@ export default {
     },
     // 打开 地图标注 详情
     handleOpenAssetDetail(obj, SOURCE) {
-      console.log('拿到数据=>', obj);
       let { resourceType } = obj;
       const { HOUSE, LAND, YARD, EQUIPMENT } = MAP_ASSET_TYPE_CODE;
       let detailMap = {
@@ -235,7 +234,7 @@ export default {
     },
     // 搜索地图全量
     handleSearchMap(data = {}) {
-      console.log('拿到查询参数=>', data);
+      // console.log('拿到查询参数=>', data);
       if (data) {
         this.organId = data.organId;
       }
@@ -370,7 +369,7 @@ export default {
       ComplexCustomOverlay.prototype = new BMap.Overlay();
       ComplexCustomOverlay.prototype.initialize = function (map) {
         let that = this;
-        console.log('初始化进来=>', this);
+        // console.log('初始化进来=>', this);
         this._map = map;
         // 拿取全局配置
         var configOpt = markerMap[this.opt.resourceType];
@@ -441,7 +440,6 @@ export default {
           tipDiv.style.display = 'none';
         };
         div.onclick = function () {
-          console.log('点击数据');
           if (that.moreFlag) {
             self.handleOpenAssetList(that.allOpt);
           } else {

@@ -111,22 +111,32 @@ const columnsThree = [
   {
     title: '运营',
     dataIndex: 'transferOperationAreaPercent',
-  },
-  {
-    title: '自用',
-    dataIndex: 'selfUserAreaPercent',
+    code: '1001',
+    isAble: 'Y',
   },
   {
     title: '闲置',
     dataIndex: 'idleAreaPercent',
+    code: '1002',
+    isAble: 'Y',
+  },
+  {
+    title: '自用',
+    dataIndex: 'selfUserAreaPercent',
+    code: '1003',
+    isAble: 'Y',
   },
   {
     title: '占用',
     dataIndex: 'occupationAreaPercent',
+    code: '1004',
+    isAble: 'Y',
   },
   {
     title: '其他',
     dataIndex: 'otherAreaPercent',
+    code: '1005',
+    isAble: 'Y',
   },
 ];
 let getDataRow = (obj, columns) => {
@@ -205,9 +215,33 @@ export default {
       return '-';
     },
   },
+  mounted() {
+    this.useForConfig();
+  },
   methods: {
     handleSwitch() {
       this.$emit('close', 'land');
+    },
+    // 数据概览信息配置
+    useForConfig() {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            this.tableThree.columns.forEach((e) => {
+              if (item.code == e.code) {
+                e.isAble = item.isAble;
+                e.title = item.alias || item.statusName;
+              }
+            });
+          });
+          this.tableThree.columns = this.tableThree.columns.filter((i) => {
+            return i.isAble === 'Y';
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
     },
   },
 };
@@ -222,19 +256,23 @@ export default {
   font-size: 13px;
   overflow: hidden;
 }
+
 .detail-content-right {
   > img {
     width: 100%;
     height: auto;
   }
 }
+
 .detail-page {
   max-height: calc(100vh - 96px);
   overflow-y: auto;
 }
+
 .detail-table {
   padding: 0 15px 15px 15px;
 }
+
 .detail-top-head {
   padding: 0 15px;
   height: 32px;
@@ -243,15 +281,18 @@ export default {
   background-color: #0084ff;
   color: #fff;
 }
+
 .detail-top {
   background-color: #0084ff;
   color: #fff;
   padding-bottom: 15px;
+
   .detail-top-content {
     display: grid;
     grid-template-columns: auto 124px;
     margin: 0 15px;
   }
+
   .detail-top-item {
     margin-top: 15px;
   }
