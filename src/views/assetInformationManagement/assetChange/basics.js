@@ -153,19 +153,20 @@ export const changeDirectionUse = [
     width: 120,
   },
   {
-    title: '自用面积(㎡)',
-    dataIndex: 'selfUserArea',
-    align: 'center',
-    scopedSlots: { customRender: 'selfUserArea' },
-    width: 120,
-  },
-  {
     title: '闲置面积(㎡)',
     dataIndex: 'idleArea',
     align: 'center',
     scopedSlots: { customRender: 'idleArea' },
     width: 120,
   },
+  {
+    title: '自用面积(㎡)',
+    dataIndex: 'selfUserArea',
+    align: 'center',
+    scopedSlots: { customRender: 'selfUserArea' },
+    width: 120,
+  },
+
   {
     title: '占用面积(㎡)',
     dataIndex: 'occupationArea',

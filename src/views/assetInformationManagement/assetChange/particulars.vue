@@ -172,6 +172,7 @@ export default {
             ? utils.deepClone(changeDirectionUseEq)
             : utils.deepClone(changeDirectionUse);
         this.columns = arr.splice(0, arr.length - 1);
+        this.useForConfig();
       } else if (val === '3') {
         arr = utils.deepClone(variationOriginalValue);
         this.columns = arr.splice(0, arr.length - 1);
@@ -198,6 +199,34 @@ export default {
     },
   },
   methods: {
+    // 数据概览信息配置
+    useForConfig() {
+      const { organId } = this.$route.query;
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId }).then((res) => {
+        if (res.data.code == 0) {
+          let data = res.data.data;
+          data.forEach((item) => {
+            // 同步修改表头的字段名称
+            this.columns.forEach((m, i) => {
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'operationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
+              let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
+              if (flag) {
+                m.title = item.alias + '面积(㎡)' || item.statusName + '面积(㎡)';
+                if (item.isAble === 'N') {
+                  this.columns.splice(i, 1);
+                }
+              }
+            });
+          });
+        } else {
+          this.$message.error(res.message || '系统内部错误');
+        }
+      });
+    },
     // 按钮操作
     handleBtn(operResult) {
       if (operResult === 0) {
