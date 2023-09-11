@@ -62,7 +62,7 @@
               </a-col>
             </a-row>
           </div>
-          <div class="detail-content-right pt10">
+          <div class="detail-content-right pt10" style="cursor: pointer" @click="previewVisible = true">
             <img v-if="imgSrc" :src="imgSrc" alt="" />
             <img v-else src="../images/default_house.png" />
           </div>
@@ -87,6 +87,12 @@
         <a-table class="table-boxs" bordered v-bind="tableThree"> </a-table>
       </div>
     </div>
+
+    <!-- 图片放大预览 -->
+    <a-modal :visible="previewVisible" :footer="null" @cancel="previewVisible = false">
+      <img style="width: 100%" v-if="imgSrc" :src="imgSrc" alt="" />
+      <img style="width: 100%" v-else src="../images/default_house.png" />
+    </a-modal>
   </div>
 </template>
 
@@ -209,6 +215,7 @@ export default {
         dataSource: [],
         pagination: false,
       },
+      previewVisible: false,
     };
   },
   watch: {
