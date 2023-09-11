@@ -633,13 +633,18 @@ export default {
       return data;
     },
     getAssetLabel(id) {
-      queryAssetLabelConfig({ organId: id })
+      let data = {
+        code: 'ASSET_CAR_LABEL',
+        organId: id,
+      };
+      this.$api.assets
+        .organDict(data)
         .then((res) => {
           let { data, code } = res.data;
           if (!data) this.assetLabelOpt = [];
           if (code === '0') {
-            this.assetLabelOpt = data.data.map((item) => {
-              return { label: item.labelName, value: item.labelValue };
+            this.assetLabelOpt = data.map((item) => {
+              return { label: item.name, value: item.value };
             });
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: '全部资产标签', value: '' }, ...this.assetLabelOpt] : [];
           }

@@ -442,9 +442,9 @@ export const ASSET_MANAGEMENT = {
   HOUSE_ACCOUNT_AVD_EXPORT: 'house_account_asset_view_detail_export', // 房屋台账-资产视图详情导出
   HOUSE_ACCOUNT_OV_EXPORT: 'house_account_organ_view_export', // 房屋台账-组织机构视图导出
   HOUSE_ACCOUNT_BV_ASSET_LABEL: 'house_account_bv_asset_label', // 房屋台账-楼栋视图资产标签
-  HOUSE_ACCOUNT_AV_ASSET_LABEL: 'house_account_av_asset_label', // 房屋台账-房屋资产试图资产标签
-  HOUSE_ACCOUNT_AV_ASSET_PLEDGE: 'house_account_av_asset_pledge', // 房屋台账-房屋资产试图质押情况
-  HOUSE_ACCOUNT_AV_ASSET_REMARK: 'house_account_av_asset_remark', // 房屋台账-房屋资产试图资产备注
+  HOUSE_ACCOUNT_AV_ASSET_LABEL: 'house_account_av_asset_label', // 房屋台账-房屋资产视图资产标签
+  HOUSE_ACCOUNT_AV_ASSET_PLEDGE: 'house_account_av_asset_pledge', // 房屋台账-房屋资产视图质押情况
+  HOUSE_ACCOUNT_AV_ASSET_REMARK: 'house_account_av_asset_remark', // 房屋台账-房屋资产视图资产备注
 
   /**
    * V2.0.2资产入库
@@ -493,6 +493,7 @@ export const ASSET_MANAGEMENT = {
   LAND_PROJECT_EXPORT: 'land_project_export', // 土地台账资产项目列表导出
   LAND_ORGAN_EXPORT: 'land_organ_export', // 土地台账资产项目列表导出,
   LAND_ASSET_VIEW_EXPORT: 'land_asset_view_export', //土地台账 资产视图列表导出
+  LAND_ACCOUNT_AV_ASSET_LABEL: 'land_account_asset_label', // 土地台账-土地资产视图资产标签
 
   /**
    * 2.0.2

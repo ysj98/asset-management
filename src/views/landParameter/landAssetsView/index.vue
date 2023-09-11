@@ -12,6 +12,14 @@
           >导出资产视图</SG-Button
         >
         <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
+        <SG-Button
+          type="default"
+          @click="clickAsset"
+          v-power="ASSET_MANAGEMENT.LAND_ACCOUNT_AV_ASSET_LABEL"
+          v-if="queryCondition.organId && queryCondition.organId.split(',').length === 1"
+          style="margin: 0 10px"
+          >资产标签</SG-Button
+        >
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
         <treeSelect
@@ -125,6 +133,16 @@
             :options="$addTitle(oldSourceOptions)"
             @change="changeOldSource"
           />
+          <a-select
+            v-if="queryCondition.organId && queryCondition.organId.split(',').length === 1"
+            style="width: 170px; margin-top: 14px"
+            v-model="label"
+            mode="multiple"
+            :maxTagCount="1"
+            @select="assetLabelFn"
+            :options="$addTitle(assetLabelSelect)"
+            placeholder="资产标签"
+          />
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px" @click="query">查询</SG-Button>
@@ -137,7 +155,26 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
     <!-- <div class="table-layout-fixed"> -->
-    <a-table :columns="columns" :scroll="scroll" :loading="loading" :data-source="tableData" :pagination="false" size="middle" class="pb70">
+    <a-table
+      :columns="columns"
+      :scroll="scroll"
+      :loading="loading"
+      :data-source="tableData"
+      rowKey="assetLandId"
+      :row-selection="{
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange,
+        getCheckboxProps: (record) => ({
+          props: {
+            disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
+            name: record.assetName,
+          },
+        }),
+      }"
+      :pagination="false"
+      size="middle"
+      class="pb70"
+    >
       <template slot="landArea" slot-scope="text">
         <span>{{ getFormat(text) }}</span>
       </template>
@@ -189,7 +226,7 @@
       v-model="modalShow"
       okText="确定"
       title="列表设置"
-      @ok="commonFn"
+      @ok="handleModalOk"
       @cancel="
         () => {
           modalShow = false;
@@ -197,13 +234,15 @@
       "
     >
       <div>
-        <a-checkbox-group v-model="listValue">
+        <a-checkbox-group v-if="modalType === 1" v-model="listValue">
           <a-row>
-            <a-col class="p10" :span="8" v-for="(item, index) in columnsData" :key="index">
+            <a-col class="p10" :span="12" v-for="(item, index) in columnsData" :key="index">
               <a-checkbox :value="item.dataIndex" :disabled="item.disabled ? item.disabled : false">{{ item.title }}</a-checkbox>
             </a-col>
           </a-row>
         </a-checkbox-group>
+
+        <edit-tag v-if="modalType === 2 && modalShow" :options="assetLabelOpt" ref="editTagRef" />
       </div>
     </SG-Modal>
   </div>
@@ -218,6 +257,8 @@ import OverviewNumber from 'src/views/common/OverviewNumber';
 import ProvinceCityDistrict from '../../common/ProvinceCityDistrict';
 import { querySourceType, queryOldSourceType } from '@/views/common/commonQueryApi';
 import { ASSET_MANAGEMENT } from '@/config/config.power';
+import EditTag from './components/components/editTag.vue';
+import { queryAssetLabelConfig } from '@/api/publicCode.js';
 const judgment = [undefined, null, ''];
 const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
 const columnsData = [
@@ -307,8 +348,9 @@ const numList = [
   { title: '占用(㎡)', key: 'occupationArea', value: 0, bgColor: '#BBC8D6', code: '1004', isAble: 'Y', flag: '3' },
   { title: '其他(㎡)', key: 'otherArea', value: 0, bgColor: '#4BD288', code: '1005', isAble: 'Y', flag: '4' },
 ];
+import { throttle } from '@/utils/utils';
 export default {
-  components: { SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict },
+  components: { SearchContainer, TreeSelect, noDataTips, OverviewNumber, ProvinceCityDistrict, EditTag },
   props: {},
   watch: {
     toggle(val) {
@@ -389,13 +431,58 @@ export default {
         marketValue: '', // 最新估值
       },
       listLength: 0,
+      modalType: '',
+      label: '',
+      assetLabelOpt: [],
+      assetLabelSelect: [],
+      selectedRowKeys: [],
+      selectedRows: [],
     };
   },
   computed: {},
   methods: {
+    // 多选
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.selectedRowKeys = selectedRowKeys;
+      this.selectedRows = selectedRows;
+    },
+    // 获取资产标签
+    getAssetLabel() {
+      let data = {
+        code: 'ASSET_LAND_LABEL',
+        organId: this.queryCondition.organId.split(',')[0],
+      };
+      this.$api.assets
+        .organDict(data)
+        .then((res) => {
+          let { data, code } = res.data;
+          if (!data) this.assetLabelOpt = [];
+          if (code === '0') {
+            this.assetLabelOpt = data.map((item) => {
+              return { label: item.name, value: item.value };
+            });
+            this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: '全部资产标签', value: '' }, ...this.assetLabelOpt] : [];
+          }
+          this.label = this.assetLabelOpt.length > 0 ? '' : undefined;
+        })
+        .catch((err) => {
+          this.$message.error(err || '当前组织机构下无资产标签');
+        });
+    },
+    // 资产标签
+    clickAsset: throttle(function () {
+      if (this.assetLabelOpt.length === 0) return this.$message.error('该组织机构下暂无资产标签');
+      this.modalType = 2;
+      this.modalShow = true;
+    }, 3000),
+    assetLabelFn(value) {
+      this.$nextTick(function () {
+        this.label = this.handleMultipleSelectValue(value, this.label, this.assetLabelSelect);
+      });
+    },
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.queryCondition.organId.split(',')[0] }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -448,7 +535,7 @@ export default {
       // 选择导出的列名
       let obj = {};
       if (options) obj = options;
-      return {
+      let data = {
         city: this.provinces.city ? this.provinces.city : '', // 市
         province: this.provinces.province ? this.provinces.province : '', // 省
         region: this.provinces.district ? this.provinces.district : '', // 区
@@ -466,8 +553,11 @@ export default {
         originSource: this.originSource, // 资产原始来源方
         sourceModes: this.alljudge(this.queryCondition.sourceModes),
         oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
+        label: this.label ? this.label.join('、') : '',
         ...obj,
       };
+      if (data.label === '全部资产标签' || !data.label) delete data.label;
+      return data;
     },
     // 导出数据
     handleExport() {
@@ -519,21 +609,45 @@ export default {
         .map((item) => {
           return item.dataIndex;
         });
+      this.modalType = 1;
       this.modalShow = true;
     },
-    commonFn() {
-      let arr = [];
-      columnsData.forEach((item) => {
-        if (this.listValue.includes(item.dataIndex)) {
-          // 当做过列表设置确定操作之后,判断默认不展示的属性删除掉,按照旧有逻辑进行
-          delete item.defaultHide;
-          arr.push(item);
-        }
-      });
-      this.columns = arr;
-      this.scroll = { x: this.columns.length * 150, y: 'calc(100vh - 481px)' };
+    // 列表设置Modal保存
+    handleModalOk: throttle(function () {
+      if (this.modalType === 2 && !this.selectedRowKeys.length) {
+        return this.$message.error('请选择要添加标签的资产!');
+      }
+
       this.modalShow = false;
-    },
+
+      if (this.modalType === 1) {
+        let arr = [];
+        columnsData.forEach((item) => {
+          if (this.listValue.includes(item.dataIndex)) {
+            // 当做过列表设置确定操作之后,判断默认不展示的属性删除掉,按照旧有逻辑进行
+            delete item.defaultHide;
+            arr.push(item);
+          }
+        });
+        this.columns = arr;
+        this.scroll = { x: this.columns.length * 150, y: 'calc(100vh - 481px)' };
+      }
+
+      if (this.modalType === 2) {
+        let arr = this.$refs.editTagRef.checkedList;
+        let data = {
+          landIds: this.selectedRowKeys.join(','),
+          labelCode: arr.join('、'),
+        };
+        if (!data.labelCode) delete data.labelCode;
+        this.$api.assets.updateAssetLabelConfig(data).then((res) => {
+          if (res.data.code === '0') {
+            this.selectedRowKeys = [];
+            this.allQuery();
+          }
+        });
+      }
+    }, 3000),
     // 组织机构树
     changeTree(value, label) {
       this.organName = label;
@@ -547,6 +661,7 @@ export default {
       this.getListFn();
       this.allQuery();
       this.queryLandUseList();
+      this.getAssetLabel();
     },
     // 搜索
     allQuery(str) {
@@ -774,9 +889,9 @@ export default {
       let data = {
         dictCode: 'OCM_LANDUSE',
         dictFlag: '1',
-        groupIds: this.queryCondition.organId[0],
+        groupIds: this.queryCondition.organId.split(',')[0],
         code: 'OCM_LANDUSE',
-        organId: this.queryCondition.organId[0],
+        organId: this.queryCondition.organId.split(',')[0],
       };
       this.$api.basics.organDict(data).then((res) => {
         if (res.data.code === '0') {

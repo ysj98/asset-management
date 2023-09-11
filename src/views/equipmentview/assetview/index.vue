@@ -79,7 +79,7 @@
           <a-col :span="4">
             <a-input v-model="queryForm.originSource" class="search-item" :maxLength="100" placeholder="资产原始来源方"></a-input>
           </a-col>
-          <a-col :span="5">
+          <a-col :span="4">
             <EquipmentSelectTree
               v-model="queryForm.equipmentTypes"
               :multiple="true"
@@ -90,9 +90,20 @@
               placeholder="全部资产分类"
             />
           </a-col>
+          <a-col :span="4">
+            <a-select
+              v-model="queryForm.labels"
+              :options="assetLabelOpt"
+              :maxTagCount="1"
+              :allowClear="true"
+              mode="multiple"
+              class="search-item"
+              placeholder="全部资产标签"
+            ></a-select>
+          </a-col>
         </a-row>
         <a-row :gutter="10" style="margin-top: 10px">
-          <a-col :span="16">
+          <a-col :span="12">
             <province-city-district class="search-item-address" v-model="provinceCityDistrictValue" @input="handleAddress" />
           </a-col>
           <a-col :span="4">
@@ -106,17 +117,6 @@
               placeholder="全部使用方向"
             ></a-select
           ></a-col>
-          <a-col :span="4">
-            <a-select
-              v-model="queryForm.labels"
-              :options="labelOptions"
-              :maxTagCount="1"
-              :allowClear="true"
-              mode="multiple"
-              class="search-item"
-              placeholder="全部资产标签"
-            ></a-select>
-          </a-col>
         </a-row>
         <a-row :gutter="10" style="margin-top: 10px">
           <a-col :span="4"> </a-col>
@@ -155,8 +155,8 @@
       @cancel="doClosePop('setAssetLabel')"
       @ok="setAssetLabelPopSave"
     >
-      <div v-if="labelOptions.length">
-        <a-checkbox-group v-model="selectedLabel" :options="labelOptions"></a-checkbox-group>
+      <div v-if="assetLabelOpt.length">
+        <a-checkbox-group v-model="selectedLabel" :options="assetLabelOpt"></a-checkbox-group>
       </div>
       <div v-else>
         <a-empty />
@@ -443,7 +443,7 @@ export default {
         },
       },
       selectedLabel: [],
-      labelOptions: [],
+      assetLabelOpt: [],
       totalLoadingFlag: false,
       statusListOpt: [
         { title: '未生效', key: '0' },
@@ -684,27 +684,24 @@ export default {
     },
     // 获取 资产标签
     getAssetLabel({ organId }) {
-      this.$api.publicCode
-        .queryAssetLabelConfig({ organId: organId.split(',')[0] })
-        .then(({ data: { code, message, data } }) => {
+      let data = {
+        code: 'ASSET_EQUIPMENT_LABEL',
+        organId: organId.split(',')[0],
+      };
+      this.$api.assets
+        .organDict(data)
+        .then((res) => {
+          let { data, code } = res.data;
+          if (!data) this.assetLabelOpt = [];
           if (code === '0') {
-            if (data.data) {
-              this.labelOptions = data.data.map((ele) => {
-                return {
-                  value: ele.labelValue,
-                  title: ele.labelName,
-                  label: ele.labelName,
-                };
-              });
-            }
-          } else {
-            console.warn(message);
-            // this.$message.error(message);
+            this.assetLabelOpt = data.map((item) => {
+              return { label: item.name, value: item.value };
+            });
+            // this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: '全部资产标签', value: '' }, ...this.assetLabelOpt] : [];
           }
         })
         .catch((err) => {
-          // this.$message.error("系统内部错误，请重载当前页面后重试");
-          console.error(err);
+          this.$message.error(err || '当前组织机构下无资产标签');
         });
     },
     // 打开详情页

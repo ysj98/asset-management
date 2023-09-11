@@ -329,11 +329,7 @@ const attachmentStatus = [
     value: '1',
   },
 ];
-const assetLabelOpt = [
-  // { label: "全部资产标签  ", value: "" },
-  // { label: "正常", value: 1 },
-  // { label: "异常", value: 0 },
-];
+
 const detailColumns = [
   { title: '资产名称', dataIndex: 'assetName', scopedSlots: { customRender: 'assetName' }, fixed: 'left', width: 160, ellipsis: true },
   { title: '资产编码', dataIndex: 'assetCode', scopedSlots: { customRender: 'assetCode' }, width: 150, ellipsis: true },
@@ -464,7 +460,7 @@ export default {
       supportMaterial: '',
       selectedRowKeys: [],
       selectedRows: [],
-      assetLabelOpt,
+      assetLabelOpt: [],
       assetLabelSelect: [],
       label: '',
       sourceModes: [], // 查询条件-来源方式
@@ -603,7 +599,6 @@ export default {
         if (res.data.code == 0) {
           this.hiddenConfig = [];
           let data = res.data.data;
-          
           data.forEach((item) => {
             this.numList = this.numList
               .map((e) => {
@@ -771,13 +766,18 @@ export default {
       return data;
     },
     getAssetLabel(id) {
-      queryAssetLabelConfig({ organId: id })
+      let data = {
+        code: 'ASSET_HOUSE_LABEL',
+        organId: id,
+      };
+      this.$api.assets
+        .organDict(data)
         .then((res) => {
           let { data, code } = res.data;
           if (!data) this.assetLabelOpt = [];
           if (code === '0') {
-            this.assetLabelOpt = data.data.map((item) => {
-              return { label: item.labelName, value: item.labelValue };
+            this.assetLabelOpt = data.map((item) => {
+              return { label: item.name, value: item.value };
             });
             this.assetLabelSelect = this.assetLabelOpt.length > 0 ? [{ label: '全部资产标签', value: '' }, ...this.assetLabelOpt] : [];
           }
