@@ -27,7 +27,7 @@
           :title="selectedRowKeys.length ? '资产标签' : '请选择资产'"
           v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING"
         >
-          资产标签
+          设备设施资产标签
         </SG-Button>
       </div>
       <div slot="headerForm">

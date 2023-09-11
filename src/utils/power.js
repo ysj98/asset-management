@@ -13,7 +13,7 @@ export const Power = {
   has(...codes) {
     // 如果开发环境配置了全部权限，则全部返回为 true
     if (process.env.NODE_ENV === 'development') {
-      return true
+      return true;
     }
     // 判断用户权限编码中是否包含权限
     return codes.every(function (el) {

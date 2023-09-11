@@ -4,7 +4,9 @@
     <!--搜索条件-->
     <search-container v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="import" @click="newAsset" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_IN_LIST_REGISTER">入库登记</SG-Button>
+        <SG-Button icon="import" @click="newAsset" type="primary" style="margin-right: 8px" v-power="ASSET_MANAGEMENT.ASSET_IN_LIST_REGISTER"
+          >入库登记</SG-Button
+        >
         <SG-Button icon="export" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.ASSET_IN_LIST_EXPORT">导出</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">

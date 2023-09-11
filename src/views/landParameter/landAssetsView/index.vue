@@ -18,7 +18,7 @@
           v-power="ASSET_MANAGEMENT.LAND_ACCOUNT_AV_ASSET_LABEL"
           v-if="queryCondition.organId && queryCondition.organId.split(',').length === 1"
           style="margin: 0 10px"
-          >资产标签</SG-Button
+          >土地资产标签</SG-Button
         >
       </div>
       <div slot="headerForm" style="float: right; text-align: left">

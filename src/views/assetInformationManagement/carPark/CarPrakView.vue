@@ -5,12 +5,12 @@
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
         <a-col :span="3">
-          <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.CARPARK_VIEW_EXPORT"
+          <SG-Button icon="export" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.CARPARK_VIEW_EXPORT"
             >导出车场视图</SG-Button
           >
         </a-col>
         <a-col :span="3">
-          <SG-Button v-power="ASSET_MANAGEMENT.CARPARK_VIEW_LABEL_SET" type="default" @click="clickAsset">资产标签</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.CARPARK_VIEW_LABEL_SET" type="default" @click="clickAsset">车场资产标签</SG-Button>
         </a-col>
         <!--<a-col :span="15">-->
         <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->

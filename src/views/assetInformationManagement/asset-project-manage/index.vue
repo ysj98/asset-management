@@ -186,7 +186,7 @@ export default {
         loading: false,
         pagination: false,
         rowKey: 'projectId',
-        scroll: { x: 1800, y: 300 },
+        scroll: { x: 1800, y: 'calc(100vh - 350px)' },
         columns: [
           { title: '权属单位', dataIndex: 'organName', scopedSlots: { customRender: 'organName' }, width: 200, fixed: 'left' },
           { title: '资产项目名称', dataIndex: 'projectName', scopedSlots: { customRender: 'projectName' }, width: 200, fixed: 'left' },

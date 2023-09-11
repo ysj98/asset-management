@@ -47,7 +47,7 @@
     <!--概览-->
     <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     <div>
-      <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false" :scroll="{ x: 1900, y: 400 }">
+      <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false" :scroll="{ x: 1900, y: 'calc(100vh - 350px)' }">
         <template slot="operation" slot-scope="text, record">
           <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn" @click="toDetail(record)"
             >详情</a
@@ -311,7 +311,7 @@ export default {
       this.paginator.totalCount = 0;
       this.assetProject = '';
       this.status = ['all'];
-      this.queryClick()
+      this.queryClick();
     },
     // 点击查询
     queryClick() {

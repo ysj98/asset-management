@@ -26,7 +26,7 @@
           @click="clickAsset"
           v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET"
           v-show="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1"
-          >资产标签</SG-Button
+          >车场资产标签</SG-Button
         >
       </div>
       <div slot="headerForm">

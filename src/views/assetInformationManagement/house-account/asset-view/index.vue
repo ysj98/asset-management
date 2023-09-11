@@ -30,7 +30,7 @@
           v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL"
           v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1"
           style="margin: 0 10px"
-          >资产标签</SG-Button
+          >房屋资产标签</SG-Button
         >
         <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_REMARK" @click="openRemark">信息备注</SG-Button>
         <!-- <SG-Button type="default" @click="modalObj.status=true;modalType=3" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_PLEDGE">质押情况</SG-Button> -->

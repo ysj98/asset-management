@@ -13,7 +13,7 @@
         <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
         <a-col :span="3">
-          <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_ASSET_LABEL" type="default" @click="clickAsset">资产标签</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_BV_ASSET_LABEL" type="default" @click="clickAsset">房屋资产标签</SG-Button>
           <SG-Button type="default" @click="clickHeader">列表设置</SG-Button>
         </a-col>
         <a-col :span="4">
@@ -79,9 +79,6 @@
       <template slot="buildName" slot-scope="text">
         <tooltip-text :text="text" />
       </template>
-      <span slot="assetNum" slot-scope="text">
-        <span style="color: #0084ff; cursor: pointer">{{ text }}</span>
-      </span>
       <span slot="action" slot-scope="text, record">
         <span style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
       </span>
