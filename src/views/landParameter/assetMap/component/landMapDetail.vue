@@ -17,62 +17,74 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">宗地号：</span><span class="detail-main">{{ detailInfo.theNo | filterNullValue }}</span>
+                  <span class="detail-label">宗地号：</span><span class="detail-main">{{ detailInfo.theNo | filterNullValue
+                  }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">土地面积：</span><span class="detail-main">{{ detailInfo.landArea | filterNullValueSquare }}</span>
+                  <span class="detail-label">土地面积：</span><span class="detail-main">{{ detailInfo.landArea |
+                    filterNullValueSquare }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">土地用途：</span><span class="detail-main">{{ detailInfo.landuseName | filterNullValue }}</span>
+                  <span class="detail-label">土地用途：</span><span class="detail-main">{{ detailInfo.landuseName |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">土地类型：</span><span class="detail-main">{{ detailInfo.landTypeName | filterNullValue }}</span>
+                  <span class="detail-label">土地类型：</span><span class="detail-main">{{ detailInfo.landTypeName |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">土地性质：</span><span class="detail-main">{{ detailInfo.landProperties | filterNullValue }}</span>
+                  <span class="detail-label">土地性质：</span><span class="detail-main">{{ detailInfo.landProperties |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">批准日期：</span><span class="detail-main">{{ detailInfo.approvalDate | filterNullValue }}</span>
+                  <span class="detail-label">批准日期：</span><span class="detail-main">{{ detailInfo.approvalDate |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">计容面积：</span><span class="detail-main">{{ detailInfo.acreage | filterNullValueSquare }}</span>
+                  <span class="detail-label">计容面积：</span><span class="detail-main">{{ detailInfo.acreage |
+                    filterNullValueSquare }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">容积率：</span><span class="detail-main">{{ detailInfo.landRate | filterNullValue }}</span>
+                  <span class="detail-label">容积率：</span><span class="detail-main">{{ detailInfo.landRate | filterNullValue
+                  }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">使用期限：</span><span class="detail-main">{{ detailInfo | filterNullValueDateRange }}</span>
+                  <span class="detail-label">使用期限：</span><span class="detail-main">{{ detailInfo |
+                    filterNullValueDateRange }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">所属组织：</span><span class="detail-main">{{ detailInfo.organName | filterNullValue }}</span>
+                  <span class="detail-label">所属组织：</span><span class="detail-main">{{ detailInfo.organName |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">资产项目：</span><span class="detail-main">{{ detailInfo.projectName | filterNullValue }}</span>
+                  <span class="detail-label">资产项目：</span><span class="detail-main">{{ detailInfo.projectName |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position | filterNullValue }} </span>
+                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position |
+                    filterNullValue }} </span>
                 </div>
               </a-col>
             </a-row>
@@ -216,6 +228,9 @@ export default {
         console.log('拿到数据', getDataRow(nv, columns), getDataRow(nv, columnsTwo));
       }
     },
+    organId(val) {
+      val && this.useForConfig();
+    }
   },
   computed: {
     imgSrc() {
@@ -237,7 +252,6 @@ export default {
     },
   },
   mounted() {
-    this.useForConfig();
   },
 
   methods: {
@@ -287,7 +301,7 @@ export default {
 }
 
 .detail-content-right {
-  > img {
+  >img {
     width: 100%;
     height: auto;
   }
@@ -325,5 +339,4 @@ export default {
   .detail-top-item {
     margin-top: 15px;
   }
-}
-</style>
+}</style>

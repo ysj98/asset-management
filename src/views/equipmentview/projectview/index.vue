@@ -3,28 +3,17 @@
     <!-- 搜索区域-->
     <search-container type="" :value="false">
       <div slot="headerBtns">
-        <SG-Button
-          :loading="exportFlag"
-          @click="handleExport"
-          icon="import"
-          type="primary"
-          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_PROJECT_VIEW_EXPORT"
-        >
+        <SG-Button :loading="exportFlag" @click="handleExport" icon="import" type="primary"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_PROJECT_VIEW_EXPORT">
           导出
         </SG-Button>
       </div>
       <div slot="headerForm">
         <div class="headerForm">
-          <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :showSearch="true" :multiple="true" :treeCheckable="true" />
-          <a-select
-            v-model="queryForm.projectIdList"
-            :options="projectData"
-            :maxTagCount="1"
-            :allowClear="true"
-            mode="multiple"
-            class="search-item"
-            placeholder="全部资产项目"
-          ></a-select>
+          <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :showSearch="true"
+            :multiple="true" :treeCheckable="true" />
+          <a-select v-model="queryForm.projectIdList" :options="projectData" :maxTagCount="1" :allowClear="true"
+            mode="multiple" class="search-item" placeholder="全部资产项目"></a-select>
           <a-checkbox v-model="isCurrentOrgan"> 仅当前机构资产项目 </a-checkbox>
           <a-button @click="doSearch" type="primary">查询</a-button>
         </div>
@@ -99,13 +88,13 @@ const detailColumns = [
     width: 150,
   },
   {
-    title: '自用',
-    dataIndex: 'selfCount',
+    title: '闲置',
+    dataIndex: 'idleCount',
     width: 150,
   },
   {
-    title: '闲置',
-    dataIndex: 'idleCount',
+    title: '自用',
+    dataIndex: 'selfCount',
     width: 150,
   },
   {
@@ -226,7 +215,7 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.queryForm.organId.split(',')[0] }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -239,11 +228,11 @@ export default {
             });
             // 同步修改表头的字段名称
             this.tableOptions.columns.forEach((m, i) => {
-              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
-              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
-              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'operationCount';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleCount';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfCount';
               let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
-              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherCount';
               let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
               if (flag) {
                 m.title = item.alias || item.statusName;
@@ -305,8 +294,8 @@ export default {
     goDetail({ projectId }) {
       const queryParams = {
         projectId,
+        organId: this.queryForm.organId.split(',')[0]
       };
-      console.log({ queryParams });
       this.$router.push({
         path: '/equipmentprojectview/detail',
         query: queryParams,

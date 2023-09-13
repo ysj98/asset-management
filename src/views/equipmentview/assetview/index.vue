@@ -3,120 +3,65 @@
     <!-- 搜索条件 -->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button
-          :loading="exportFlag"
-          @click="handleExport"
-          icon="import"
-          type="primary"
-          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_EXPORT"
-        >
+        <SG-Button :loading="exportFlag" @click="handleExport" icon="import" type="primary"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_EXPORT">
           导出
         </SG-Button>
-        <SG-Button
-          @click="openSetTableHeaderPop"
-          icon="setting"
-          style="margin: 0 10px"
-          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_HEADERS_SETTING"
-        >
+        <SG-Button @click="openSetTableHeaderPop" icon="setting" style="margin: 0 10px"
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_HEADERS_SETTING">
           列表设置
         </SG-Button>
-        <SG-Button
-          @click="openSetAssetLabelPop"
-          type="default"
-          :disabled="!selectedRowKeys.length"
+        <SG-Button @click="openSetAssetLabelPop" type="default" :disabled="!selectedRowKeys.length"
           :title="selectedRowKeys.length ? '资产标签' : '请选择资产'"
-          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING"
-        >
+          v-power="ASSET_MANAGEMENT.EQUIPMENTVIEW_ASSET_VIEW_LABELS_SETTING">
           设备设施资产标签
         </SG-Button>
       </div>
       <div slot="headerForm">
         <a-row :gutter="10">
           <a-col :offset="12" :span="6">
-            <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :multiple="true" :treeCheckable="true" />
+            <tree-select :allowClear="false" @changeTree="changeTree" class="search-item" :multiple="true"
+              :treeCheckable="true" />
           </a-col>
           <a-col :span="6">
-            <a-select
-              v-model="queryForm.projectIdList"
-              :options="projectData"
-              :maxTagCount="1"
-              :allowClear="true"
-              mode="multiple"
-              class="search-item"
-              placeholder="全部资产项目"
-            ></a-select>
+            <a-select v-model="queryForm.projectIdList" :options="projectData" :maxTagCount="1" :allowClear="true"
+              mode="multiple" class="search-item" placeholder="全部资产项目"></a-select>
           </a-col>
         </a-row>
       </div>
       <div slot="contentForm">
         <a-row :gutter="10">
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="queryForm.oldSourceModes"
-              option-filter-prop="title"
-              placeholder="请选择原始来源方式"
-              :options="$addTitle(oldSourceOptions)"
-              @change="changeOldSource"
-            />
+            <a-select mode="multiple" :maxTagCount="1" style="width: 100%" v-model="queryForm.oldSourceModes"
+              option-filter-prop="title" placeholder="请选择原始来源方式" :options="$addTitle(oldSourceOptions)"
+              @change="changeOldSource" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              v-model="queryForm.statusList"
-              :options="statusListOpt"
-              :allowClear="true"
-              :maxTagCount="1"
-              mode="multiple"
-              class="search-item"
-              placeholder="全部资产状态"
-            ></a-select
-          ></a-col>
+            <a-select v-model="queryForm.statusList" :options="statusListOpt" :allowClear="true" :maxTagCount="1"
+              mode="multiple" class="search-item" placeholder="全部资产状态"></a-select></a-col>
           <a-col :span="4">
             <a-input v-model="queryForm.assetName" class="search-item" placeholder="资产名称/编码"></a-input>
           </a-col>
           <a-col :span="4">
-            <a-input v-model="queryForm.originSource" class="search-item" :maxLength="100" placeholder="资产原始来源方"></a-input>
+            <a-input v-model="queryForm.originSource" class="search-item" :maxLength="100"
+              placeholder="资产原始来源方"></a-input>
           </a-col>
           <a-col :span="4">
-            <EquipmentSelectTree
-              v-model="queryForm.equipmentTypes"
-              :multiple="true"
-              :top-organ-id="queryForm.organIds"
-              :maxTagCount="1"
-              :allowClear="true"
-              class="search-item"
-              placeholder="全部资产分类"
-            />
+            <EquipmentSelectTree v-model="queryForm.equipmentTypes" :multiple="true" :top-organ-id="queryForm.organIds"
+              :maxTagCount="1" :allowClear="true" class="search-item" placeholder="全部资产分类" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              v-model="queryForm.labels"
-              :options="assetLabelOpt"
-              :maxTagCount="1"
-              :allowClear="true"
-              mode="multiple"
-              class="search-item"
-              placeholder="全部资产标签"
-            ></a-select>
+            <a-select v-model="queryForm.labels" :options="assetLabelOpt" :maxTagCount="1" :allowClear="true"
+              mode="multiple" class="search-item" placeholder="全部资产标签"></a-select>
           </a-col>
         </a-row>
-        <a-row :gutter="10" style="margin-top: 10px">
-          <a-col :span="12">
-            <province-city-district class="search-item-address" v-model="provinceCityDistrictValue" @input="handleAddress" />
-          </a-col>
+        <a-row :gutter="10" style="margin-top: 10px;display: flex;">
+          <province-city-district class="search-item-address" v-model="provinceCityDistrictValue"
+            @input="handleAddress" />
           <a-col :span="4">
-            <a-select
-              v-model="queryForm.useTypes"
-              :options="amsUseDirectionCom"
-              :maxTagCount="1"
-              :allowClear="true"
-              mode="multiple"
-              class="search-item"
-              placeholder="全部使用方向"
-            ></a-select
-          ></a-col>
+            <a-select v-model="queryForm.useTypes" :options="amsUseDirectionCom" :maxTagCount="1" :allowClear="true"
+              mode="multiple" class="search-item" placeholder="全部使用方向"></a-select>
+          </a-col>
         </a-row>
         <a-row :gutter="10" style="margin-top: 10px">
           <a-col :span="4"> </a-col>
@@ -135,7 +80,8 @@
     <!-- table表格 -->
     <div>
       <!-- size="middle" -->
-      <a-table v-bind="tableOptions" :columns="tableOptions.columns" :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }">
+      <a-table v-bind="tableOptions" :columns="tableOptions.columns"
+        :rowSelection="{ selectedRowKeys, onChange: handleSelectChange }">
         <!-- 操作-->
         <template #action="text, { assetEquipmentId, assetId, organId, equipmentId }">
           <a @click="goDetail({ assetEquipmentId, assetId, organId, equipmentId })">详情</a>
@@ -147,14 +93,8 @@
     <!-- 分页 -->
     <SG-FooterPagination v-bind="paginationObj" @change="changePage" />
     <!-- 设置资产标签-->
-    <SG-Modal
-      v-model="modalList.setAssetLabel.show"
-      :title="modalList.setAssetLabel.title"
-      okText="保存"
-      :maskClosable="false"
-      @cancel="doClosePop('setAssetLabel')"
-      @ok="setAssetLabelPopSave"
-    >
+    <SG-Modal v-model="modalList.setAssetLabel.show" :title="modalList.setAssetLabel.title" okText="保存"
+      :maskClosable="false" @cancel="doClosePop('setAssetLabel')" @ok="setAssetLabelPopSave">
       <div v-if="assetLabelOpt.length">
         <a-checkbox-group v-model="selectedLabel" :options="assetLabelOpt"></a-checkbox-group>
       </div>
@@ -180,12 +120,8 @@
         </a-row>
       </a-checkbox-group>
     </SG-Modal> -->
-    <TableHeaderSettings
-      v-if="modalList.setTableHeader.show"
-      :funType="funType"
-      @cancel="changeListSettingsModal(false)"
-      @success="handleTableHeaderSuccess"
-    />
+    <TableHeaderSettings v-if="modalList.setTableHeader.show" :funType="funType" @cancel="changeListSettingsModal(false)"
+      @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -559,7 +495,7 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.queryForm.organIds.split(',')[0] }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -843,12 +779,14 @@ export default {
   flex-wrap: wrap;
   justify-content: flex-start;
 }
+
 .search-item {
   width: 100%;
   min-width: 150px;
   /* margin-right: 10px;
   margin-bottom: 10px; */
 }
+
 .search-item-address {
   width: 660px;
   /* margin-right: 10px;
@@ -862,6 +800,7 @@ export default {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
+
   tr:hover {
     td {
       white-space: normal;

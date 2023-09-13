@@ -5,41 +5,18 @@
   <div class="asset-project-view-list">
     <SG-SearchContainer background="white">
       <div slot="headBtns">
-        <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT"
-          >导出</SG-Button
-        >
+        <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading"
+          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AP_EXPORT">导出</SG-Button>
       </div>
       <div slot="headRight">
-        <treeSelect
-          @changeTree="changeTree"
-          placeholder="请选择组织机构"
-          :allowClear="false"
-          :style="allStyle"
-          :showSearch="true"
-          :multiple="true"
-          :treeCheckable="true"
-        ></treeSelect>
-        <a-select
-          showSearch
-          placeholder="请选择资产项目"
-          optionFilterProp="children"
-          :style="allStyle"
-          v-model="assetProject"
-          :options="$addTitle(assetProjectOptions)"
-          :filterOption="filterOption"
-        ></a-select>
-        <a-select
-          mode="multiple"
-          :maxTagCount="1"
-          v-model="status"
-          :style="allStyle"
-          @change="statusChange"
-          :options="$addTitle(statusOptions)"
-          placeholder="请选择资产状态"
-        />
-        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange"
-          >仅选择当前机构下资产项目</a-checkbox
-        >
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle"
+          :showSearch="true" :multiple="true" :treeCheckable="true"></treeSelect>
+        <a-select showSearch placeholder="请选择资产项目" optionFilterProp="children" :style="allStyle" v-model="assetProject"
+          :options="$addTitle(assetProjectOptions)" :filterOption="filterOption"></a-select>
+        <a-select mode="multiple" :maxTagCount="1" v-model="status" :style="allStyle" @change="statusChange"
+          :options="$addTitle(statusOptions)" placeholder="请选择资产状态" />
+        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan"
+          @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
         <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
@@ -47,22 +24,17 @@
     <!--概览-->
     <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     <div>
-      <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false" :scroll="{ x: 1900, y: 'calc(100vh - 350px)' }">
+      <a-table :columns="columns" :dataSource="dataSource" size="middle" :pagination="false"
+        :scroll="{ x: 1900, y: 'calc(100vh - 350px)' }">
         <template slot="operation" slot-scope="text, record">
-          <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn" @click="toDetail(record)"
-            >详情</a
-          >
+          <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn"
+            @click="toDetail(record)">详情</a>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
-    <SG-FooterPagination
-      :pageLength="paginator.pageLength"
-      :totalCount="paginator.totalCount"
-      location="absolute"
-      v-model="paginator.pageNo"
-      @change="handlePageChange"
-    />
+    <SG-FooterPagination :pageLength="paginator.pageLength" :totalCount="paginator.totalCount" location="absolute"
+      v-model="paginator.pageNo" @change="handlePageChange" />
   </div>
 </template>
 
@@ -361,22 +333,23 @@ export default {
                 ? ['buildNum', 'assetNum'].includes(key)
                   ? Number(item[key])
                   : ['originalValue', 'marketValue'].includes(key)
-                  ? Math.round(item[key] * 100) / 100
-                  : Math.round(item[key] * 10000) / 10000
+                    ? Math.round(item[key] * 100) / 100
+                    : Math.round(item[key] * 10000) / 10000
                 : 0;
               if (index === data.length - 1) {
                 pageSum[key] = ['buildNum', 'assetNum'].includes(key)
                   ? pageSum[key]
                   : ['originalValue', 'marketValue'].includes(key)
-                  ? Math.round(pageSum[key] * 100) / 100
-                  : Math.round(pageSum[key] * 10000) / 10000;
+                    ? Math.round(pageSum[key] * 100) / 100
+                    : Math.round(pageSum[key] * 10000) / 10000;
               }
             });
             for (let key in item) {
               item[key] = item[key] || '--';
             }
           });
-          this.dataSource = data.length ? data.concat({ ...pageSum, projectCode: '当前页-合计', key: Date.now() }) : [];
+          this.dataSource = data
+          // this.dataSource = data.length ? data.concat({ ...pageSum, projectCode: '当前页-合计', key: Date.now() }) : [];
           if (type !== 'click' && this.dataSource.length) {
             this.dataSource.push({ ...sumObj, projectCode: '所有页-合计', key: Date.now() + 100 });
           }
@@ -403,13 +376,13 @@ export default {
           });
           Object.keys(sumObj).forEach(
             (key) =>
-              (sumObj[key] = temp[key]
-                ? ['buildNum', 'assetNum'].includes(key)
-                  ? Number(temp[key])
-                  : ['originalValue', 'marketValue'].includes(key)
+            (sumObj[key] = temp[key]
+              ? ['buildNum', 'assetNum'].includes(key)
+                ? Number(temp[key])
+                : ['originalValue', 'marketValue'].includes(key)
                   ? Math.round(temp[key] * 100) / 100
                   : Math.round(temp[key] * 10000) / 10000
-                : 0)
+              : 0)
           );
           sumObj.area = measuredArea ? Math.round(measuredArea * 10000) / 10000 : 0;
           this.sumObj = sumObj;
@@ -450,15 +423,19 @@ export default {
     bottom: 0;
     background: #fff;
   }
-  tr:nth-last-child(2) {
-    position: sticky;
-    bottom: 43px;
-    background: #fff;
-  }
+
+  // tr:nth-last-child(2) {
+  //   position: sticky;
+  //   bottom: 43px;
+  //   background: #fff;
+  // }
 }
+
 .custom-table {
   padding-bottom: 50px;
+
   & /deep/ table {
+
     tr:last-child,
     tr:nth-last-child(2) {
       font-weight: bold;
@@ -469,6 +446,7 @@ export default {
     padding: 9px 0 6px 6px;
     background-color: #fff;
     color: #49505e;
+
     .ant-table-thead {
       font-size: 14px;
       background-color: #fff;

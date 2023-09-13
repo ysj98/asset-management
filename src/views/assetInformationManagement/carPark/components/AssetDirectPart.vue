@@ -11,13 +11,8 @@
             <span style="line-height: 32px; font-weight: bold; color: #49505e; font-size: 14px">车位列表</span>
           </a-col>
           <a-col :span="12" style="text-align: right" v-if="unitOptions.length">
-            <a-select
-              v-model="parkingAreaName"
-              @change="queryFloorInfo"
-              style="width: 200px"
-              placeholder="单元选择"
-              :options="$addTitle(unitOptions)"
-            />
+            <a-select v-model="parkingAreaName" @change="queryFloorInfo" style="width: 200px" placeholder="单元选择"
+              :options="$addTitle(unitOptions)" />
           </a-col>
         </a-row>
         <div class="building_style" v-if="placingList.length">
@@ -271,12 +266,15 @@ export default {
 <style lang="less" scoped>
 .asset_detail {
   margin: 10px;
+
   .building_style {
     border: 1px solid #e5e9f2;
     border-bottom: none;
+
     .floor_style {
       height: 60px;
       border-bottom: 1px solid #e5e9f2;
+
       .floor_num {
         width: 80px;
         float: left;
@@ -287,16 +285,19 @@ export default {
         text-align: center;
         border-right: 1px solid #e5e9f2;
       }
+
       .floor_rooms {
         height: 100%;
         margin-left: 81px;
         white-space: nowrap;
         overflow-x: auto; // 房间设置了min-width，防止车场过多情况
         overflow-y: hidden;
+
         /*设置横向滚动样式*/
         &::-webkit-scrollbar {
           height: 5px;
         }
+
         .room_style {
           height: 100%;
           /*color: #fff;*/
@@ -321,12 +322,14 @@ export default {
   .ant-popover-arrow {
     position: unset;
   }
+
   .ant-popover-inner {
     div {
       background-color: rgba(0, 0, 0, 0.5);
       color: #fff;
       text-align: center;
       border-radius: 5px;
+
       .ant-popover-title {
         font-size: 16px;
       }

@@ -3,33 +3,14 @@
   <div class="car-project-view-list">
     <SG-SearchContainer background="white">
       <div slot="headBtns">
-        <SG-Button
-          icon="import"
-          type="primary"
-          @click="handleExport"
-          :loading="exportBtnLoading"
-          v-power="ASSET_MANAGEMENT.CARPARK_PROJECT_VIEW_EXPORT"
-          >导出</SG-Button
-        >
+        <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading"
+          v-power="ASSET_MANAGEMENT.CARPARK_PROJECT_VIEW_EXPORT">导出</SG-Button>
       </div>
       <div slot="headRight">
-        <treeSelect
-          @changeTree="changeTree"
-          placeholder="请选择组织机构"
-          :style="allStyle"
-          :showSearch="true"
-          :multiple="true"
-          :treeCheckable="true"
-        ></treeSelect>
-        <a-select
-          showSearch
-          placeholder="请选择资产项目"
-          optionFilterProp="children"
-          :style="allStyle"
-          v-model="assetProject"
-          :options="$addTitle(assetProjectOptions)"
-          :filterOption="filterOption"
-        ></a-select>
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :style="allStyle" :showSearch="true" :multiple="true"
+          :treeCheckable="true"></treeSelect>
+        <a-select showSearch placeholder="请选择资产项目" optionFilterProp="children" :style="allStyle" v-model="assetProject"
+          :options="$addTitle(assetProjectOptions)" :filterOption="filterOption"></a-select>
         <!-- <a-select
           mode="multiple"
           :maxTagCount="1"
@@ -39,28 +20,19 @@
           :options="$addTitle(statusOptions)"
           placeholder="请选择资产状态"
         /> -->
-        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange"
-          >仅选择当前机构下资产项目</a-checkbox
-        >
+        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan"
+          @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
       </div>
     </SG-SearchContainer>
     <!--概览-->
     <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     <div>
-      <a-table
-        :columns="columns"
-        :dataSource="dataSource"
-        class="custom-table pb70 car"
-        :pagination="false"
-        :scroll="scroll"
-        size="middle"
-        :customRow="customRow"
-      >
+      <a-table :columns="columns" :dataSource="dataSource" class="custom-table pb70 car" :pagination="false"
+        :scroll="scroll" size="middle" :customRow="customRow">
         <template slot="operation" slot-scope="text, record">
-          <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn" @click="toDetail(record)"
-            >详情</a
-          >
+          <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn"
+            @click="toDetail(record)">详情</a>
         </template>
         <template slot="organName" slot-scope="text">
           <a-popover placement="topLeft">
@@ -73,13 +45,8 @@
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
-    <SG-FooterPagination
-      :pageLength="paginator.pageLength"
-      :totalCount="paginator.totalCount"
-      location="absolute"
-      v-model="paginator.pageNo"
-      @change="handlePageChange"
-    />
+    <SG-FooterPagination :pageLength="paginator.pageLength" :totalCount="paginator.totalCount" location="absolute"
+      v-model="paginator.pageNo" @change="handlePageChange" />
   </div>
 </template>
 
@@ -151,13 +118,13 @@ const columns = [
     width: 100,
   },
   {
-    title: '自用(㎡)',
-    dataIndex: 'selfUserArea',
+    title: '闲置(㎡)',
+    dataIndex: 'idleArea',
     width: 100,
   },
   {
-    title: '闲置(㎡)',
-    dataIndex: 'idleArea',
+    title: '自用(㎡)',
+    dataIndex: 'selfUserArea',
     width: 100,
   },
   {
@@ -264,7 +231,7 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId.split(',')[0] }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -339,7 +306,7 @@ export default {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     },
     toDetail(record) {
-      this.$router.push({ path: '/carPrakProjectView/detail', query: { projectId: record.projectId } });
+      this.$router.push({ path: '/carPrakProjectView/detail', query: { projectId: record.projectId, organId: this.organId.split(',')[0] } });
     },
     // 页码发生变化
     handlePageChange(page) {
@@ -475,20 +442,24 @@ export default {
 
 <style lang="less" scoped>
 .custom-table {
+
   //padding-bottom: 70px;
   & /deep/ table {
+
     tr:last-child,
     tr:nth-last-child(2) {
       font-weight: bold;
     }
   }
 }
+
 /deep/.ant-table-tbody {
   tr:nth-last-child(1) {
     position: sticky;
     bottom: 0;
     background: #fff;
   }
+
   tr:nth-last-child(2) {
     position: sticky;
     bottom: 43px;
@@ -507,6 +478,7 @@ export default {
     }
   }
 }
+
 .car .ant-table-fixed-header .ant-table-scroll .ant-table-header {
   height: 52px !important;
 }

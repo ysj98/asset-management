@@ -12,33 +12,39 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">车场编码：</span><span class="detail-main">{{ detailInfo.placeCode | filterNullValue }}</span>
+                  <span class="detail-label">车场编码：</span><span class="detail-main">{{ detailInfo.placeCode |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">车场面积：</span><span class="detail-main">{{ detailInfo.placeArea | filterNullValueSquare }}</span>
+                  <span class="detail-label">车场面积：</span><span class="detail-main">{{ detailInfo.placeArea |
+                    filterNullValueSquare }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">车位数量：</span><span class="detail-main">{{ detailInfo.placeNums | filterNullValue }}</span>
+                  <span class="detail-label">车位数量：</span><span class="detail-main">{{ detailInfo.placeNums |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
                   <!-- TODO:缺少车场类型 -->
-                  <span class="detail-label">车场类型：</span><span class="detail-main">{{ detailInfo.typeName | filterNullValue }}</span>
+                  <span class="detail-label">车场类型：</span><span class="detail-main">{{ detailInfo.typeName |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position | filterNullValue }}</span>
+                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">运营项目：</span><span class="detail-main">{{ detailInfo.communityName | filterNullValue }}</span>
+                  <span class="detail-label">运营项目：</span><span class="detail-main">{{ detailInfo.communityName |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
             </a-row>
@@ -168,6 +174,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    organId: {
+      default: '',
+    },
   },
   data() {
     return {
@@ -201,6 +210,9 @@ export default {
         this.tableThree.dataSource = [getDataRow(nv, columnsThree)];
       }
     },
+    organId(val) {
+      val && this.useForConfig();
+    }
   },
   computed: {
     imgSrc() {
@@ -222,7 +234,6 @@ export default {
     },
   },
   mounted() {
-    this.useForConfig();
   },
   methods: {
     handleSwitch() {
@@ -264,7 +275,7 @@ export default {
 }
 
 .detail-content-right {
-  > img {
+  >img {
     width: 100%;
     height: auto;
   }

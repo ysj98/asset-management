@@ -243,7 +243,8 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.basicInfoOptions.organId }).then((res) => {
+      const { organId } = this.$route.query
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -333,7 +334,7 @@ export default {
               this.numList.forEach((ele) => {
                 ele.value = Number(tempRes[ele.key] || 0);
               });
-              this.useForConfig();
+
             } else {
               if (code1 !== '0') {
                 this.$message.error(message1);
@@ -352,6 +353,7 @@ export default {
   mounted() {
     this.queryParams.projectId = this.$route.query.projectId;
     this.getDetail();
+    this.useForConfig();
   },
 };
 </script>
@@ -360,6 +362,7 @@ export default {
 .equipmentview-projectview-detail {
   padding: 20px 60px;
 }
+
 .asset-col {
   font-size: 16px;
   text-align: center;

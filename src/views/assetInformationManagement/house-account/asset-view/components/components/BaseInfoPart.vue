@@ -10,14 +10,8 @@
           judgingCondition.includes(infoData[key]) ? '' : infoData[key]
         }}</span>
         <div v-else>
-          <UploadFile
-            :show="true"
-            :customDownload="customDownload"
-            :baseImgURL="configBase.hostImg1"
-            v-model="infoData[key]"
-            type="all"
-            :maxSize="51200"
-          >
+          <UploadFile :show="true" :customDownload="customDownload" :baseImgURL="configBase.hostImg1"
+            v-model="infoData[key]" type="all" :maxSize="51200">
           </UploadFile>
         </div>
       </a-col>
@@ -28,7 +22,8 @@
       <a-col v-for="{ title, key, span } in spaceInfoKeys" :span="span || 8" :key="key">
         <span style="color: #282d5b">{{ title }}:</span>
         <span style="margin: 0 15px 0 4px; color: #49505e">{{ infoData[key] || '' }}</span>
-        <a-icon v-if="key === 'address'" type="environment" style="color: #e4393c; cursor: pointer" @click="handleModalOpen('location')" />
+        <a-icon v-if="key === 'address'" type="environment" style="color: #e4393c; cursor: pointer"
+          @click="handleModalOpen('location')" />
       </a-col>
     </a-row>
     <!--资产使用方向-->
@@ -127,7 +122,8 @@ export default {
   methods: {
     // 配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      const { organId } = this.$route.query
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.map((item) => {

@@ -10,7 +10,8 @@
     <overview-number :numList="numList" />
     <div class="button-box">
       <div v-show="setType === 'new' && !registerOrderId">
-        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW_ONE" weaken @click="openAddAsset">单条资产登记</SG-Button>
+        <SG-Button type="primary" v-power="ASSET_MANAGEMENT.ASSET_REGISTER_NEW_ONE" weaken
+          @click="openAddAsset">单条资产登记</SG-Button>
         <div class="buttonRight">
           <SG-Button type="primary" weaken @click="downloadTemplate">下载模板</SG-Button>
           <SG-Button class="choice" type="primary" weaken @click="addTheAsset">导入资产清单</SG-Button>
@@ -24,7 +25,8 @@
       </div>
     </div>
     <div class="table-borders" :class="{ overflowX: tableData.length === 0 }">
-      <a-table class="table-boxs" :scroll="{ y: 450, x: 2300 }" :columns="columns" :dataSource="tableData" :pagination="false" :loading="loading">
+      <a-table class="table-boxs" :scroll="{ y: 450, x: 2300 }" :columns="columns" :dataSource="tableData"
+        :pagination="false" :loading="loading">
         <template slot="operation" slot-scope="text, record">
           <span class="postAssignment-icon" @click="deleteFn(record)">删除</span>
         </template>
@@ -42,38 +44,21 @@
         </template>
       </a-table>
       <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-      <SG-FooterPagination
-        v-show="['detail', 'edit', 'new'].includes(setType) && registerOrderId"
-        :pageLength="footer.pageSize"
-        :totalCount="count"
-        location="static"
-        :noPageTools="false"
-        v-model="footer.pageNum"
-        @change="handleChange"
-      />
+      <SG-FooterPagination v-show="['detail', 'edit', 'new'].includes(setType) && registerOrderId"
+        :pageLength="footer.pageSize" :totalCount="count" location="static" :noPageTools="false" v-model="footer.pageNum"
+        @change="handleChange" />
     </div>
     <basicDownload ref="basicDownload"></basicDownload>
     <!--  添加资产导入  -->
-    <AssetImportModal
-      ref="assetImportModalRef"
-      :modalData="modalObj.add"
-      @handleAdditionAsset="handleAdditionAsset"
-      @doClosePop="
-        () => {
-          modalObj.add.flag = false;
-        }
-      "
-    />
+    <AssetImportModal ref="assetImportModalRef" :modalData="modalObj.add" @handleAdditionAsset="handleAdditionAsset"
+      @doClosePop="() => {
+        modalObj.add.flag = false;
+      }
+        " />
     <input ref="fileUpload" @change="change($event.target.files, $event)" type="file" style="display: none" />
     <input ref="batchUpload" @change="batchUploadFn($event.target.files, $event)" type="file" style="display: none" />
-    <add-asset
-      ref="addAsset"
-      v-if="modelStatus"
-      :organId="organId"
-      :projectId="projectId"
-      :sourceType="sourceType"
-      @submitAsset="submitAsset"
-    ></add-asset>
+    <add-asset ref="addAsset" v-if="modelStatus" :organId="organId" :projectId="projectId" :sourceType="sourceType"
+      @submitAsset="submitAsset"></add-asset>
   </div>
 </template>
 
@@ -191,7 +176,7 @@ export default {
       return this.$store.state.ASSET_TYPE_CODE;
     },
   },
-  created() {},
+  created() { },
   mounted() {
     this.init();
     this.getMangementRight();
@@ -628,7 +613,7 @@ export default {
             }
           }
           // 判断只能为整数
-          if (publicData[j].type === 'num ber') {
+          if (publicData[j].type === 'number') {
             if (arrData[i][publicData[j].dataIndex] && !/^\d{1,11}$/.test(Number(arrData[i][publicData[j].dataIndex]))) {
               return `请输入正确${publicData[j].title}`;
             }
@@ -719,12 +704,12 @@ export default {
         if (readExcelModelV2ResData.data.code === '0') {
           let ASSET_TYPE_LIST = handleAssetTypeField(this.assetType, 'list');
           let arrData = readExcelModelV2ResData.data.data[ASSET_TYPE_LIST];
-          let validateRes = this.handleValidateExcelData(arrData);
-          if (validateRes) {
-            await this.DE_Loding(loadingName);
-            await this.$message.info(validateRes);
-            return null;
-          }
+          // let validateRes = this.handleValidateExcelData(arrData);
+          // if (validateRes) {
+          //   await this.DE_Loding(loadingName);
+          //   await this.$message.info(validateRes);
+          //   return null;
+          // }
           // 追加 默认 sourceMode 信息
           /*
            * */
@@ -1018,28 +1003,35 @@ export default {
     overflow: hidden;
     margin-bottom: 10px;
     margin-top: 20px;
+
     .buttonRight {
       float: right;
+
       .choice {
         margin: 0 10px;
       }
     }
   }
+
   .table-borders {
     border: 1px solid rgba(239, 244, 249, 1);
   }
+
   .postAssignment-icon {
     cursor: pointer;
     color: #0084ff;
   }
+
   .postAssignment-icon:hover {
     color: red;
   }
 }
+
 .overflowX {
   /deep/ .ant-table-scroll {
     overflow-x: auto;
   }
+
   /deep/.ant-table-header {
     padding-bottom: 0px !important;
     margin-bottom: 0px !important;

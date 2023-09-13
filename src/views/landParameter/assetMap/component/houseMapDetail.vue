@@ -17,47 +17,56 @@
             <a-row>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">宗地号：</span><span class="detail-main">{{ detailInfo.addressNo | filterNullValue }}</span>
+                  <span class="detail-label">宗地号：</span><span class="detail-main">{{ detailInfo.addressNo |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">总层数：</span><span class="detail-main">{{ detailInfo.buildFloor | filterNullValue }}</span>
+                  <span class="detail-label">总层数：</span><span class="detail-main">{{ detailInfo.buildFloor |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">房屋数量：</span><span class="detail-main">{{ detailInfo.houseNum | filterNullValue }}</span>
+                  <span class="detail-label">房屋数量：</span><span class="detail-main">{{ detailInfo.houseNum |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑面积：</span><span class="detail-main">{{ detailInfo.builtArea | filterNullValue }}</span>
+                  <span class="detail-label">建筑面积：</span><span class="detail-main">{{ detailInfo.builtArea |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">楼栋类型：</span><span class="detail-main">{{ detailInfo.buildType | filterNullValue }}</span>
+                  <span class="detail-label">楼栋类型：</span><span class="detail-main">{{ detailInfo.buildType |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">用途：</span><span class="detail-main">{{ detailInfo.useType | filterNullValue }}</span>
+                  <span class="detail-label">用途：</span><span class="detail-main">{{ detailInfo.useType | filterNullValue
+                  }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑年代：</span><span class="detail-main">{{ detailInfo.builtAge | filterNullValue }}</span>
+                  <span class="detail-label">建筑年代：</span><span class="detail-main">{{ detailInfo.builtAge |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="12">
                 <div class="detail-top-item">
-                  <span class="detail-label">建筑结构：</span><span class="detail-main">{{ detailInfo.buildStruct | filterNullValue }}</span>
+                  <span class="detail-label">建筑结构：</span><span class="detail-main">{{ detailInfo.buildStruct |
+                    filterNullValue }}</span>
                 </div>
               </a-col>
               <a-col :span="24">
                 <div class="detail-top-item">
-                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position | filterNullValue }} </span>
+                  <span class="detail-label">地理位置：</span><span class="detail-main">{{ detailInfo.position |
+                    filterNullValue }} </span>
                 </div>
               </a-col>
             </a-row>
@@ -228,9 +237,11 @@ export default {
         this.tableThree.dataSource = [getDataRow(nv, columnsThree)];
       }
     },
+    organId(val) {
+      val && this.useForConfig();
+    }
   },
   mounted() {
-    this.useForConfig();
   },
 
   computed: {
@@ -297,19 +308,23 @@ export default {
   font-size: 13px;
   overflow: hidden;
 }
+
 .detail-content-right {
-  > img {
+  >img {
     width: 100%;
     height: auto;
   }
 }
+
 .detail-page {
   max-height: calc(100vh - 96px);
   overflow-y: auto;
 }
+
 .detail-table {
   padding: 0 15px 15px 15px;
 }
+
 .detail-top-head {
   padding: 0 15px;
   height: 32px;
@@ -318,15 +333,18 @@ export default {
   background-color: #0084ff;
   color: #fff;
 }
+
 .detail-top {
   background-color: #0084ff;
   color: #fff;
   padding-bottom: 15px;
+
   .detail-top-content {
     display: grid;
     grid-template-columns: auto 124px;
     margin: 0 15px;
   }
+
   .detail-top-item {
     margin-top: 15px;
   }

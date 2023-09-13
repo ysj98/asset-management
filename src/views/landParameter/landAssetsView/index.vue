@@ -8,141 +8,66 @@
   <div class="landAssetsView">
     <SearchContainer v-model="toggle" @input="searchContainerFn" :contentStyle="{ paddingTop: '16px' }">
       <div slot="headerBtns">
-        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT"
-          >导出资产视图</SG-Button
-        >
+        <SG-Button icon="import" type="primary" :loading="exportBtnLoading" @click="handleExport"
+          v-power="ASSET_MANAGEMENT.LAND_ASSET_VIEW_EXPORT">导出资产视图</SG-Button>
         <SG-Button type="primary" @click="listSet" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button
-          type="default"
-          @click="clickAsset"
-          v-power="ASSET_MANAGEMENT.LAND_ACCOUNT_AV_ASSET_LABEL"
+        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.LAND_ACCOUNT_AV_ASSET_LABEL"
           v-if="queryCondition.organId && queryCondition.organId.split(',').length === 1"
-          style="margin: 0 10px"
-          >土地资产标签</SG-Button
-        >
+          style="margin: 0 10px">土地资产标签</SG-Button>
       </div>
       <div slot="headerForm" style="float: right; text-align: left">
-        <treeSelect
-          @changeTree="changeTree"
-          placeholder="请选择组织机构"
-          :allowClear="false"
-          style="width: 170px; margin-right: 10px"
-          :showSearch="true"
-          :multiple="true"
-          :treeCheckable="true"
-        ></treeSelect>
-        <a-input-search
-          v-model="queryCondition.landName"
-          placeholder="资产名称/编码"
-          :maxLength="40"
-          style="width: 140px; margin-right: 10px"
-          @search="allQuery"
-        />
-        <a-input-search
-          v-model="queryCondition.landCategory"
-          placeholder="权属用途"
-          :maxLength="20"
-          style="width: 140px; margin-right: 10px"
-          @search="allQuery"
-        />
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false"
+          style="width: 170px; margin-right: 10px" :showSearch="true" :multiple="true" :treeCheckable="true"></treeSelect>
+        <a-input-search v-model="queryCondition.landName" placeholder="资产名称/编码" :maxLength="40"
+          style="width: 140px; margin-right: 10px" @search="allQuery" />
+        <a-input-search v-model="queryCondition.landCategory" placeholder="权属用途" :maxLength="20"
+          style="width: 140px; margin-right: 10px" @search="allQuery" />
       </div>
       <div slot="contentForm" class="search-content-box">
         <div class="search-from-box">
-          <a-select
-            optionFilterProp="children"
-            :maxTagCount="1"
-            :style="allStyle"
-            mode="multiple"
-            placeholder="全部来源方式"
-            :tokenSeparators="[',']"
-            @select="changeSource"
-            v-model="queryCondition.sourceModes"
-          >
+          <a-select optionFilterProp="children" :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部来源方式"
+            :tokenSeparators="[',']" @select="changeSource" v-model="queryCondition.sourceModes">
             <a-select-option :title="item.name" v-for="item in sourceOptions" :key="item.key" :value="item.key">
               {{ item.title }}
             </a-select-option>
           </a-select>
-          <a-select
-            optionFilterProp="children"
-            :maxTagCount="1"
-            :style="allStyle"
-            style="min-width: 165px"
-            mode="multiple"
-            placeholder="全部状态"
-            :tokenSeparators="[',']"
-            @select="approvalStatusFn"
-            v-model="queryCondition.statuss"
-          >
-            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index" :value="item.value">
+          <a-select optionFilterProp="children" :maxTagCount="1" :style="allStyle" style="min-width: 165px"
+            mode="multiple" placeholder="全部状态" :tokenSeparators="[',']" @select="approvalStatusFn"
+            v-model="queryCondition.statuss">
+            <a-select-option :title="item.name" v-for="(item, index) in approvalStatusData" :key="index"
+              :value="item.value">
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <a-select
-            :style="allStyle"
-            :showSearch="true"
-            mode="multiple"
-            :filterOption="filterOption"
-            @select="projectIdFn"
-            :tokenSeparators="[',']"
-            placeholder="全部资产项目"
-            v-model="queryCondition.projectId"
-          >
+          <a-select :style="allStyle" :showSearch="true" mode="multiple" :filterOption="filterOption"
+            @select="projectIdFn" :tokenSeparators="[',']" placeholder="全部资产项目" v-model="queryCondition.projectId">
             <a-select-option :title="item.name" v-for="(item, index) in projectData" :key="index" :value="item.value">
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <a-select
-            optionFilterProp="children"
-            :maxTagCount="1"
-            :style="allStyle"
-            mode="multiple"
-            placeholder="全部分类"
-            :tokenSeparators="[',']"
-            @select="assetClassifyDataFn"
-            v-model="queryCondition.objectTypes"
-          >
-            <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index" :value="item.value">
+          <a-select optionFilterProp="children" :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部分类"
+            :tokenSeparators="[',']" @select="assetClassifyDataFn" v-model="queryCondition.objectTypes">
+            <a-select-option :title="item.name" v-for="(item, index) in assetClassifyData" :key="index"
+              :value="item.value">
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <a-select
-            optionFilterProp="children"
-            :maxTagCount="1"
-            :style="allStyle"
-            mode="multiple"
-            placeholder="全部用途"
-            :tokenSeparators="[',']"
-            @select="useTypeChange"
-            v-model="queryCondition.useType"
-          >
+          <a-select optionFilterProp="children" :maxTagCount="1" :style="allStyle" mode="multiple" placeholder="全部用途"
+            :tokenSeparators="[',']" @select="useTypeChange" v-model="queryCondition.useType">
             <a-select-option :title="item.name" v-for="(item, index) in useTypeOptions" :key="index" :value="item.value">
               {{ item.name }}
             </a-select-option>
           </a-select>
-          <ProvinceCityDistrict class="city" style="width: 550px" ref="ProvinceCityDistrict" v-model="provinces"></ProvinceCityDistrict>
+          <ProvinceCityDistrict class="city" style="width: 550px" ref="ProvinceCityDistrict" v-model="provinces">
+          </ProvinceCityDistrict>
           <a-input :style="allStyle" placeholder="详细地址" v-model="address" :maxLength="20" />
           <a-input :style="allStyle" placeholder="资产原始来源方" v-model="originSource" :maxLength="100" />
-          <a-select
-            :style="allStyle"
-            mode="multiple"
-            :maxTagCount="1"
-            style="width: 100%"
-            v-model="oldSourceModes"
-            option-filter-prop="title"
-            placeholder="请选择原始来源方式"
-            :options="$addTitle(oldSourceOptions)"
-            @change="changeOldSource"
-          />
-          <a-select
-            v-if="queryCondition.organId && queryCondition.organId.split(',').length === 1"
-            style="width: 170px; margin-top: 14px"
-            v-model="label"
-            mode="multiple"
-            :maxTagCount="1"
-            @select="assetLabelFn"
-            :options="$addTitle(assetLabelSelect)"
-            placeholder="资产标签"
-          />
+          <a-select :style="allStyle" mode="multiple" :maxTagCount="1" style="width: 100%" v-model="oldSourceModes"
+            option-filter-prop="title" placeholder="请选择原始来源方式" :options="$addTitle(oldSourceOptions)"
+            @change="changeOldSource" />
+          <a-select v-if="queryCondition.organId && queryCondition.organId.split(',').length === 1"
+            style="width: 170px; margin-top: 14px" v-model="label" mode="multiple" :maxTagCount="1" @select="assetLabelFn"
+            :options="$addTitle(assetLabelSelect)" placeholder="资产标签" />
         </div>
         <div class="two-row-box">
           <SG-Button type="primary" style="margin-right: 10px" @click="query">查询</SG-Button>
@@ -155,12 +80,7 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
     <!-- <div class="table-layout-fixed"> -->
-    <a-table
-      :columns="columns"
-      :scroll="scroll"
-      :loading="loading"
-      :data-source="tableData"
-      rowKey="assetLandId"
+    <a-table :columns="columns" :scroll="scroll" :loading="loading" :data-source="tableData" rowKey="assetLandId"
       :row-selection="{
         selectedRowKeys: selectedRowKeys,
         onChange: onSelectChange,
@@ -170,11 +90,7 @@
             name: record.assetName,
           },
         }),
-      }"
-      :pagination="false"
-      size="middle"
-      class="pb70"
-    >
+      }" :pagination="false" size="middle" class="pb70">
       <template slot="landArea" slot-scope="text">
         <span>{{ getFormat(text) }}</span>
       </template>
@@ -208,36 +124,24 @@
         </a-tooltip>
       </template>
       <span slot="action" slot-scope="text, record">
-        <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer" @click="handleViewDetail(record)">详情</span>
+        <span v-if="record.assetName !== '所有页-合计'" style="color: #0084ff; cursor: pointer"
+          @click="handleViewDetail(record)">详情</span>
       </span>
     </a-table>
     <!-- </div> -->
     <no-data-tips v-show="tableData.length === 0"></no-data-tips>
-    <SG-FooterPagination
-      :pageLength="queryCondition.pageSize"
-      :totalCount="count"
-      :location="location"
-      :noPageTools="noPageTools"
-      v-model="queryCondition.pageNum"
-      @change="handleChange"
-    />
-    <SG-Modal
-      width="500px"
-      v-model="modalShow"
-      okText="确定"
-      title="列表设置"
-      @ok="handleModalOk"
-      @cancel="
-        () => {
-          modalShow = false;
-        }
-      "
-    >
+    <SG-FooterPagination :pageLength="queryCondition.pageSize" :totalCount="count" :location="location"
+      :noPageTools="noPageTools" v-model="queryCondition.pageNum" @change="handleChange" />
+    <SG-Modal width="500px" v-model="modalShow" okText="确定" title="列表设置" @ok="handleModalOk" @cancel="() => {
+      modalShow = false;
+    }
+      ">
       <div>
         <a-checkbox-group v-if="modalType === 1" v-model="listValue">
           <a-row>
             <a-col class="p10" :span="12" v-for="(item, index) in columnsData" :key="index">
-              <a-checkbox :value="item.dataIndex" :disabled="item.disabled ? item.disabled : false">{{ item.title }}</a-checkbox>
+              <a-checkbox :value="item.dataIndex" :disabled="item.disabled ? item.disabled : false">{{ item.title
+              }}</a-checkbox>
             </a-col>
           </a-row>
         </a-checkbox-group>
@@ -259,6 +163,7 @@ import { querySourceType, queryOldSourceType } from '@/views/common/commonQueryA
 import { ASSET_MANAGEMENT } from '@/config/config.power';
 import EditTag from './components/components/editTag.vue';
 import { queryAssetLabelConfig } from '@/api/publicCode.js';
+import _ from 'lodash'
 const judgment = [undefined, null, ''];
 const allWidth = { width: '170px', 'margin-right': '10px', flex: 1, 'margin-top': '14px', display: 'inline-block', 'vertical-align': 'middle' };
 const columnsData = [
@@ -381,7 +286,7 @@ export default {
       location: 'absolute',
       allStyle: allWidth,
       toggle: true,
-      columns: columnsData,
+      columns: _.cloneDeep(columnsData),
       organName: '',
       organId: '',
       address: '',
@@ -512,6 +417,8 @@ export default {
           this.numList = this.numList.filter((i) => {
             return i.isAble === 'Y';
           });
+          console.log(_.cloneDeep(this.columns));
+
         } else {
           this.$message.error(res.message || '系统内部错误');
         }
@@ -649,7 +556,8 @@ export default {
       }
     }, 3000),
     // 组织机构树
-    changeTree(value, label) {
+    async changeTree(value, label) {
+      this.useForConfig()
       this.organName = label;
       this.queryCondition.organId = value;
       this.queryCondition.pageNum = 1;
@@ -877,7 +785,7 @@ export default {
             .filter((item) => {
               return item.value !== 0;
             });
-          this.useForConfig();
+          this.useForConfig()
         } else {
           this.$message.error(res.data.message);
           this.overviewNumSpinning = false;
@@ -901,7 +809,7 @@ export default {
       });
     },
   },
-  created() {},
+  created() { },
   mounted() {
     this.getOldSourceOptions();
     this.columns = this.columns.filter((ele) => !ele.defaultHide);
@@ -920,37 +828,47 @@ export default {
   .from-second {
     padding-top: 14px;
   }
+
   .box {
     display: inline-block;
   }
+
   .box-left {
     margin-left: 10px;
   }
+
   .custom-table {
+
     //padding-bottom: 60px;
     & /deep/ table {
+
       tr:last-child,
       tr:nth-last-child(1) {
         font-weight: bold;
       }
     }
   }
+
   .overflowX {
     /deep/ .ant-table-scroll {
       overflow-x: auto;
     }
+
     /deep/.ant-table-header {
       padding-bottom: 0px !important;
       margin-bottom: 0px !important;
     }
   }
+
   .city {
     width: 100%;
+
     // float: right;
     // margin-right: 8px;
     /deep/.ant-col-8 {
       width: 180px;
     }
+
     /deep/.province_style {
       width: 170px;
       margin: 14px 10px 0 0;
@@ -959,6 +877,7 @@ export default {
       display: inline-block;
       vertical-align: middle;
     }
+
     /deep/.city_style {
       width: 170px;
       margin: 14px 10px 0 0;
@@ -967,6 +886,7 @@ export default {
       display: inline-block;
       vertical-align: middle;
     }
+
     /deep/.district_style {
       width: 170px;
       margin: 14px 10px 0 0;
@@ -977,15 +897,18 @@ export default {
     }
   }
 }
+
 .search-content-box {
   display: flex;
   justify-content: space-between;
+
   .search-from-box {
     display: flex;
     flex: 1;
     flex-wrap: wrap;
     text-align: right;
   }
+
   .two-row-box {
     padding-top: 14px;
     flex: 0 0 190px;

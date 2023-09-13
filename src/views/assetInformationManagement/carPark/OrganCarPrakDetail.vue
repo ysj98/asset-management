@@ -5,15 +5,8 @@
       <SG-Title noMargin title="权属概况" />
     </div>
     <!-- 权属表格 -->
-    <a-table
-      size="middle"
-      bordered
-      :loading="tableFirst.loading"
-      :pagination="false"
-      :columns="tableFirst.columns"
-      :dataSource="tableFirst.dataSource"
-      :locale="{ emptyText: '暂无数据' }"
-    ></a-table>
+    <a-table size="middle" bordered :loading="tableFirst.loading" :pagination="false" :columns="tableFirst.columns"
+      :dataSource="tableFirst.dataSource" :locale="{ emptyText: '暂无数据' }"></a-table>
     <!-- 标题 -->
     <div class="mb30 mt30" style="margin-left: -12px">
       <SG-Title noMargin title="资产概况" />
@@ -23,16 +16,12 @@
       <overview-number :numList="numList" />
     </a-spin>
     <div class="table-layout-fixed pb70">
-      <a-table :loading="table.loading" :columns="table.columns" :dataSource="table.dataSource" size="middle" :pagination="false" />
+      <a-table :loading="table.loading" :columns="table.columns" :dataSource="table.dataSource" size="middle"
+        :pagination="false" />
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
-      <SG-FooterPagination
-        :pageLength="queryCondition.pageSize"
-        :totalCount="table.totalCount"
-        :location="footerOpt.location"
-        :noPageTools="footerOpt.noPageTools"
-        v-model="queryCondition.pageNum"
-        @change="handleChange"
-      />
+      <SG-FooterPagination :pageLength="queryCondition.pageSize" :totalCount="table.totalCount"
+        :location="footerOpt.location" :noPageTools="footerOpt.noPageTools" v-model="queryCondition.pageNum"
+        @change="handleChange" />
     </div>
   </div>
 </template>
@@ -133,12 +122,12 @@ let columns = [
     dataIndex: 'transferOperationArea',
   },
   {
-    title: '自用(㎡)',
-    dataIndex: 'selfUserArea',
-  },
-  {
     title: '闲置(㎡)',
     dataIndex: 'idleArea',
+  },
+  {
+    title: '自用(㎡)',
+    dataIndex: 'selfUserArea',
   },
   {
     title: '占用(㎡)',
@@ -265,7 +254,8 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      let { organId } = this.$route.query;
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -274,6 +264,21 @@ export default {
                 e.bgColor = item.color;
                 e.isAble = item.isAble;
                 e.title = item.alias + '(㎡)' || item.statusName + '(㎡)';
+              }
+            });
+            // 同步修改表头的字段名称
+            this.table.columns.forEach((m, i) => {
+              let isTransferOperationArea = item.code == 1001 && m.dataIndex === 'transferOperationArea';
+              let isIdleArea = item.code == 1002 && m.dataIndex === 'idleArea';
+              let isSelfUserArea = item.code == 1003 && m.dataIndex === 'selfUserArea';
+              let isOccupationArea = item.code == 1004 && m.dataIndex === 'occupationArea';
+              let isOthernArea = item.code == 1005 && m.dataIndex === 'otherArea';
+              let flag = isTransferOperationArea || isIdleArea || isSelfUserArea || isOccupationArea || isOthernArea;
+              if (flag) {
+                m.title = item.alias || item.statusName;
+                if (item.isAble === 'N') {
+                  this.table.columns.splice(i, 1);
+                }
               }
             });
           });

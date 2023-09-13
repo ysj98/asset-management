@@ -4,14 +4,8 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold" v-if="isSearch">
       <div slot="headerBtns">
-        <SG-Button
-          icon="import"
-          type="primary"
-          :loading="exportAssetBtn"
-          @click="handleExport('exportAssetBtn')"
-          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT"
-          >导出资产视图</SG-Button
-        >
+        <SG-Button icon="import" type="primary" :loading="exportAssetBtn" @click="handleExport('exportAssetBtn')"
+          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_EXPORT">导出资产视图</SG-Button>
         <!--二期开发-->
         <!--<SG-Button-->
         <!--icon="import"-->
@@ -24,85 +18,44 @@
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
         <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px">列表设置</SG-Button>
-        <SG-Button
-          type="default"
-          @click="clickAsset"
-          v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL"
+        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_LABEL"
           v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1"
-          style="margin: 0 10px"
-          >房屋资产标签</SG-Button
-        >
+          style="margin: 0 10px">房屋资产标签</SG-Button>
         <SG-Button v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_REMARK" @click="openRemark">信息备注</SG-Button>
         <!-- <SG-Button type="default" @click="modalObj.status=true;modalType=3" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_AV_ASSET_PLEDGE">质押情况</SG-Button> -->
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
-          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true" :isShowBuilding="false" />
+          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true"
+            :isShowBuilding="false" />
         </div>
       </div>
       <div slot="contentForm">
         <a-row :gutter="12">
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="sourceModes"
-              option-filter-prop="title"
-              placeholder="请选择来源方式"
-              :options="$addTitle(sourceOptions)"
-              @change="changeSource"
-            />
+            <a-select mode="multiple" :maxTagCount="1" style="width: 100%" v-model="sourceModes"
+              option-filter-prop="title" placeholder="请选择来源方式" :options="$addTitle(sourceOptions)"
+              @change="changeSource" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="oldSourceModes"
-              option-filter-prop="title"
-              placeholder="请选择原始来源方式"
-              :options="$addTitle(oldSourceOptions)"
-              @change="changeOldSource"
-            />
+            <a-select mode="multiple" :maxTagCount="1" style="width: 100%" v-model="oldSourceModes"
+              option-filter-prop="title" placeholder="请选择原始来源方式" :options="$addTitle(oldSourceOptions)"
+              @change="changeOldSource" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              v-model="status"
-              @change="statusChange"
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              placeholder="请选择资产状态"
-              :options="$addTitle(statusOptions)"
-            />
+            <a-select v-model="status" @change="statusChange" mode="multiple" :maxTagCount="1" style="width: 100%"
+              placeholder="请选择资产状态" :options="$addTitle(statusOptions)" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="categoryId"
-              option-filter-prop="title"
-              placeholder="请选择资产分类"
-              :options="$addTitle(categoryOptions)"
-              @change="categoryChange"
-            />
+            <a-select mode="multiple" :maxTagCount="1" style="width: 100%" v-model="categoryId" option-filter-prop="title"
+              placeholder="请选择资产分类" :options="$addTitle(categoryOptions)" @change="categoryChange" />
           </a-col>
           <a-col :span="4">
             <a-input placeholder="请输入资产名称或编码" v-model="assetName" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              v-model="useType"
-              style="width: 100%"
-              @change="useTypeChange"
-              option-filter-prop="title"
-              :options="$addTitle(useTypeOptions)"
-              placeholder="请选择用途"
-            />
+            <a-select mode="multiple" :maxTagCount="1" v-model="useType" style="width: 100%" @change="useTypeChange"
+              option-filter-prop="title" :options="$addTitle(useTypeOptions)" placeholder="请选择用途" />
           </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
@@ -116,54 +69,34 @@
             <a-input placeholder="公安门牌号" v-model="houseNumber" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              :filter-option="filterOption"
-              show-search
-              v-model="ownershipUse"
-              style="width: 100%"
-              :options="$addTitle(ownershipUseOPt)"
-              placeholder="权属用途"
-            />
+            <a-select :filter-option="filterOption" show-search v-model="ownershipUse" style="width: 100%"
+              :options="$addTitle(ownershipUseOPt)" placeholder="权属用途" />
           </a-col>
-          <a-col :span="4" v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
-            <a-select
-              v-model="label"
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              @select="assetLabelFn"
-              :options="$addTitle(assetLabelSelect)"
-              placeholder="资产标签"
-            />
+          <a-col :span="4"
+            v-if="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">
+            <a-select v-model="label" mode="multiple" :maxTagCount="1" style="width: 100%" @select="assetLabelFn"
+              :options="$addTitle(assetLabelSelect)" placeholder="资产标签" />
           </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
           <a-col :span="4">
-            <a-select
-              v-model="uploadAttachment"
-              style="width: 100%"
-              @select="attachmentStatusFn"
-              :options="$addTitle(attachmentStatus)"
-              placeholder="全部附件状态"
-            />
+            <a-select v-model="uploadAttachment" style="width: 100%" @select="attachmentStatusFn"
+              :options="$addTitle(attachmentStatus)" placeholder="全部附件状态" />
           </a-col>
           <a-col :span="4">
-            <a-select :allowClear="true" v-model="pledge" style="width: 100%" :options="$addTitle(pledgeList)" placeholder="请选择质押情况" />
+            <a-select :allowClear="true" v-model="pledge" style="width: 100%" :options="$addTitle(pledgeList)"
+              placeholder="请选择质押情况" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              :allowClear="true"
-              v-model="ownershipStatus"
-              style="width: 100%"
-              :options="$addTitle(ownershipStatusList)"
-              placeholder="请选择权属状态"
-            />
+            <a-select :allowClear="true" v-model="ownershipStatus" style="width: 100%"
+              :options="$addTitle(ownershipStatusList)" placeholder="请选择权属状态" />
           </a-col>
           <a-col :span="4">
             <a-input placeholder="请输入资产原始来源方" v-model="originSource" :maxLength="100" />
           </a-col>
           <a-col :span="4">
-            <a-select v-model="supportMaterial" style="width: 100%" :options="$addTitle(supportMaterialOpt)" placeholder="权属用途" />
+            <a-select v-model="supportMaterial" style="width: 100%" :options="$addTitle(supportMaterialOpt)"
+              placeholder="权属用途" />
           </a-col>
         </a-row>
         <a-row :gutter="12" style="margin-top: 14px">
@@ -179,21 +112,17 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
     <!--列表Table-->
-    <a-table
-      v-bind="tableObj"
-      size="middle"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-        onSelectAll: onSelectAll,
-        getCheckboxProps: (record) => ({
-          props: {
-            disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
-            name: record.assetName,
-          },
-        }),
-      }"
-    >
+    <a-table v-bind="tableObj" size="middle" :row-selection="{
+      selectedRowKeys: selectedRowKeys,
+      onChange: onSelectChange,
+      onSelectAll: onSelectAll,
+      getCheckboxProps: (record) => ({
+        props: {
+          disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
+          name: record.assetName,
+        },
+      }),
+    }">
       <template slot="assetName" slot-scope="text">
         <a-tooltip>
           <template slot="title">
@@ -213,11 +142,8 @@
         </a-tooltip>
       </template>
       <span slot="action" slot-scope="text, record">
-        <router-link
-          v-if="record.assetName !== '所有页-合计'"
-          :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId } }"
-          >详情</router-link
-        >
+        <router-link v-if="record.assetName !== '所有页-合计'"
+          :to="{ path: '/assetView/assetViewDetail', query: { houseId: record.assetHouseId, assetId: record.assetId, organId: organProjectBuildingValue.organId.split(',')[0] } }">详情</router-link>
       </span>
       <template slot="fireMaterial" slot-scope="text, record">
         <span v-if="record.assetName !== '所有页-合计'">
@@ -265,9 +191,11 @@
     </a-table>
     <!-- <div style="height: 70px"></div> -->
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px" />
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
+    <SG-FooterPagination v-bind="paginationObj"
+      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
     <!--编辑列表表头-->
-    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="handleModalStatus(false)" width="800px">
+    <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="handleModalStatus(false)"
+      width="800px">
       <!-- <edit-table-header
         v-if="modalType === 1"
         :key="key"
@@ -279,14 +207,8 @@
       <edit-pledge v-if="modalType === 3 && modalObj.status" :options="pledgeList" ref="pledgeRef" />
       <edit-remark v-if="modalType === 4 && modalObj.status" ref="remarkRef" :list="selectedRows" />
     </SG-Modal>
-    <TableHeaderSettings
-      v-if="modalObj.switch"
-      :aliasConfig="aliasConfig"
-      :hiddenConfig="hiddenConfig"
-      :funType="funType"
-      @cancel="changeListSettingsModal(false)"
-      @success="handleTableHeaderSuccess"
-    />
+    <TableHeaderSettings v-if="modalObj.switch" :aliasConfig="aliasConfig" :hiddenConfig="hiddenConfig" :funType="funType"
+      @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -1132,32 +1054,32 @@ export default {
       let form =
         type === 'exportHouseBtn'
           ? {
-              assetHouseId: buildIdList.join(','),
-            }
+            assetHouseId: buildIdList.join(','),
+          }
           : {
-              assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
-              organId: 1,
-              organIds: organId,
-              buildIdList,
-              projectIdList,
-              flag: current ? current : '',
-              province,
-              city,
-              region,
-              ownershipUse,
-              assetName,
-              address,
-              originSource,
-              statusList: status.includes('all') ? [] : status,
-              display: columns.map((m) => m.dataIndex).filter((n) => n !== 'action'),
-              useTypes: useType.includes('all') ? '' : useType.join(','),
-              objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
-              sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
-              oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
-              label: label ? label.join('、') : '',
-              uploadAttachment: this.uploadAttachment,
-              ownershipStatus,
-            };
+            assetType: this.$store.state.ASSET_TYPE_CODE.HOUSE,
+            organId: 1,
+            organIds: organId,
+            buildIdList,
+            projectIdList,
+            flag: current ? current : '',
+            province,
+            city,
+            region,
+            ownershipUse,
+            assetName,
+            address,
+            originSource,
+            statusList: status.includes('all') ? [] : status,
+            display: columns.map((m) => m.dataIndex).filter((n) => n !== 'action'),
+            useTypes: useType.includes('all') ? '' : useType.join(','),
+            objectTypes: this.categoryId.includes('all') ? '' : this.categoryId.join(','),
+            sourceModes: this.sourceModes.includes('all') ? '' : this.sourceModes.join(','),
+            oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
+            label: label ? label.join('、') : '',
+            uploadAttachment: this.uploadAttachment,
+            ownershipStatus,
+          };
       if (!this.uploadAttachment) delete form.uploadAttachment;
       if (label === '全部资产标签' || !label) {
         delete form.label;
@@ -1274,7 +1196,9 @@ export default {
     background: #fff;
   }
 }
+
 .custom-table {
+
   //padding-bottom: 55px;
   /*if you want to set scroll: { x: true }*/
   /*you need to add style .ant-table td { white-space: nowrap; }*/
@@ -1283,18 +1207,22 @@ export default {
       white-space: nowrap;
     }
   }
+
   & /deep/ table {
+
     tr:last-child,
     tr:nth-last-child(1) {
       font-weight: bold;
     }
   }
+
   /deep/.ant-table-fixed {
     padding: 9px 0 6px 0px;
     background-color: #fff;
     color: #49505e;
   }
 }
+
 // /deep/.ant-table-fixed {
 //   td {
 //     white-space: nowrap !important;

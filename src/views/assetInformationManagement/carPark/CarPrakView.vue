@@ -5,54 +5,31 @@
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
         <a-col :span="3">
-          <SG-Button icon="export" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.CARPARK_VIEW_EXPORT"
-            >导出车场视图</SG-Button
-          >
+          <SG-Button icon="export" type="primary" @click="handleExport" :loading="exportBtnLoading"
+            v-power="ASSET_MANAGEMENT.CARPARK_VIEW_EXPORT">导出车场视图</SG-Button>
         </a-col>
         <a-col :span="3">
-          <SG-Button v-power="ASSET_MANAGEMENT.CARPARK_VIEW_LABEL_SET" type="default" @click="clickAsset">车场资产标签</SG-Button>
+          <SG-Button v-power="ASSET_MANAGEMENT.CARPARK_VIEW_LABEL_SET" type="default"
+            @click="clickAsset">车场资产标签</SG-Button>
         </a-col>
         <!--<a-col :span="15">-->
         <!--<organ-project-building v-model="organProjectBuildingValue" mode="multiple"/>-->
         <!--</a-col>-->
         <a-col :span="4">
-          <a-select
-            showSearch
-            style="width: 100%"
-            :options="$addTitle(organOptions)"
-            @change="queryBuildingList"
-            :filterOption="filterOption"
-            placeholder="请选择组织机构"
-            v-model="organProjectBuildingValue.organId"
-          ></a-select>
+          <a-select showSearch style="width: 100%" :options="$addTitle(organOptions)" @change="queryBuildingList"
+            :filterOption="filterOption" placeholder="请选择组织机构" v-model="organProjectBuildingValue.organId"></a-select>
         </a-col>
         <a-col :span="4">
           <AssetProject :organId="organProjectBuildingValue.organId" @projectChange="projectChange" modeStr="multiple" />
         </a-col>
         <a-col :span="4">
-          <a-select
-            allowClear
-            showSearch
-            mode="multiple"
-            :maxTagCount="1"
-            style="width: 100%"
-            placeholder="请选择车场"
-            :options="$addTitle(buildingOptions)"
-            :filterOption="filterOption"
-            v-model="organProjectBuildingValue.placeId"
-            @select="placeFun"
-          ></a-select>
+          <a-select allowClear showSearch mode="multiple" :maxTagCount="1" style="width: 100%" placeholder="请选择车场"
+            :options="$addTitle(buildingOptions)" :filterOption="filterOption" v-model="organProjectBuildingValue.placeId"
+            @select="placeFun"></a-select>
         </a-col>
         <a-col :span="4">
-          <a-select
-            v-model="label"
-            mode="multiple"
-            :maxTagCount="1"
-            @select="assetLabelFn"
-            style="width: 100%"
-            placeholder="请选择资产标签"
-            :options="$addTitle(assetLabelSelect)"
-          />
+          <a-select v-model="label" mode="multiple" :maxTagCount="1" @select="assetLabelFn" style="width: 100%"
+            placeholder="请选择资产标签" :options="$addTitle(assetLabelSelect)" />
         </a-col>
         <a-col :span="2">
           <SG-Button icon="search" type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
@@ -65,11 +42,8 @@
       <overview-number :numList="numList" @click="handleClickOverview" />
     </a-spin>
     <!--列表部分-->
-    <a-table
-      v-bind="tableObj"
-      size="middle"
-      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll }"
-    >
+    <a-table v-bind="tableObj" size="middle"
+      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelectAll: onSelectAll }">
       <!-- <template slot="buildName" slot-scope="text">
         <tooltip-text :text="text"/>
       </template> -->
@@ -81,7 +55,8 @@
       </template> -->
     </a-table>
     <!-- <no-data-tip v-if="!tableObj.dataSource.length"/> -->
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
+    <SG-FooterPagination v-bind="paginationObj"
+      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
     <!--编辑资产标签-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="modalObj.status = false">
       <edit-tag ref="editTagRef" :options="assetLabelOpt" />
@@ -182,7 +157,7 @@ export default {
   methods: {
     // 数据概览信息配置
     useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organProjectBuildingValue.organId }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -573,6 +548,7 @@ export default {
 <style lang="less" scoped>
 .custom-table {
   padding-bottom: 70px;
+
   /*if you want to set scroll: { x: true }*/
   /*you need to add style .ant-table td { white-space: nowrap; }*/
   & /deep/ .ant-table {
@@ -580,12 +556,14 @@ export default {
       white-space: nowrap;
     }
   }
+
   /deep/.ant-table-fixed {
     padding: 9px 0 6px 0px;
     background-color: #fff;
     color: #49505e;
   }
 }
+
 /deep/ .sg-FooterPagination {
   z-index: 2;
 }

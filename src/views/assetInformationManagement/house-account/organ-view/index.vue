@@ -3,20 +3,12 @@
   <div>
     <!--搜索条件-->
     <div style="padding: 20px 30px; display: flex">
-      <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading" v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT"
-        >导出组织机构视图</SG-Button
-      >
+      <SG-Button icon="import" type="primary" @click="handleExport" :loading="exportBtnLoading"
+        v-power="ASSET_MANAGEMENT.HOUSE_ACCOUNT_OV_EXPORT">导出组织机构视图</SG-Button>
       <div style="flex: 1; text-align: right">
         <tree-select @changeTree="changeTree" style="width: 180px" :showSearch="true" />
-        <a-select
-          v-model="statusList"
-          mode="multiple"
-          class="ml10"
-          :maxTagCount="1"
-          style="width: 180px"
-          placeholder="请选择资产状态"
-          :options="$addTitle(statusListOpt)"
-        />
+        <a-select v-model="statusList" mode="multiple" class="ml10" :maxTagCount="1" style="width: 180px"
+          placeholder="请选择资产状态" :options="$addTitle(statusListOpt)" />
         <SG-Button type="primary" class="ml10" @click="queryTableData({ type: 'search' })">查询</SG-Button>
         <SG-Button class="ml10" type="secondary" @click="reset">重置</SG-Button>
       </div>
@@ -35,7 +27,8 @@
       </span>
     </a-table>
     <no-data-tip v-if="!tableObj.dataSource.length" />
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
+    <SG-FooterPagination v-bind="paginationObj"
+      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
   </div>
 </template>
 
@@ -269,13 +262,13 @@ export default {
              */
             Object.keys(sumObj).forEach(
               (key) =>
-                (obj[key] = list[key]
-                  ? ['buildNum', 'assetNum'].includes(key)
-                    ? Number(list[key])
-                    : ['originalValue', 'marketValue'].includes(key)
+              (obj[key] = list[key]
+                ? ['buildNum', 'assetNum'].includes(key)
+                  ? Number(list[key])
+                  : ['originalValue', 'marketValue'].includes(key)
                     ? Math.round(list[key] * 100) / 100
                     : Math.round(list[key] * 10000) / 10000
-                  : 0)
+                : 0)
             );
             this.sumObj = obj;
             dataSource.length &&
@@ -336,7 +329,7 @@ export default {
     },
   },
 
-  created() {},
+  created() { },
 };
 </script>
 
@@ -348,29 +341,35 @@ export default {
     bottom: 0;
     background: #fff;
   }
+
   // tr:nth-last-child(2){
   //   position: sticky;
   //   bottom: 43px;
   //   background: #fff;
   // }
 }
+
 .custom-table {
   padding-bottom: 55px;
+
   /*if you want to set scroll: { x: true }*/
   /*you need to add style .ant-table td { white-space: nowrap; }*/
   & /deep/ .ant-table {
     .ant-table-thead th {
       white-space: nowrap;
     }
+
     tr:last-child,
     tr:nth-last-child(1) {
       font-weight: bold;
     }
+
     td {
       white-space: nowrap !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
     }
+
     tr:hover {
       td {
         white-space: normal !important;

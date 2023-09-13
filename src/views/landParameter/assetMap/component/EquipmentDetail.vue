@@ -135,6 +135,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    organId: {
+      default: '',
+    },
   },
   data() {
     return {
@@ -160,6 +163,9 @@ export default {
         this.tableThree.dataSource = [getDataRow(nv, columnsThree)];
       }
     },
+    organId(val) {
+      val && this.useForConfig();
+    }
   },
   computed: {
     imgSrc() {
@@ -172,7 +178,6 @@ export default {
     },
   },
   mounted() {
-    this.useForConfig();
   },
   methods: {
     handleSwitch() {
@@ -212,19 +217,23 @@ export default {
   font-size: 13px;
   overflow: hidden;
 }
+
 .detail-content-right {
-  > img {
+  >img {
     width: 100%;
     height: auto;
   }
 }
+
 .detail-page {
   max-height: calc(100vh - 96px);
   overflow-y: auto;
 }
+
 .detail-table {
   padding: 0 15px 15px 15px;
 }
+
 .detail-top-head {
   padding: 0 15px;
   height: 32px;
@@ -233,19 +242,23 @@ export default {
   background-color: #0084ff;
   color: #fff;
 }
+
 .detail-top {
   background-color: #0084ff;
   color: #fff;
   padding-bottom: 15px;
+
   .detail-top-content {
     display: grid;
     grid-template-columns: auto 124px;
     margin: 0 15px;
   }
+
   .detail-top-item {
     margin-top: 15px;
   }
 }
+
 .detail-info {
   min-height: 100px;
   max-height: 300px;

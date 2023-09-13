@@ -4,9 +4,8 @@
     <!--搜索条件-->
     <search-container size="fold" v-model="fold">
       <div slot="headerBtns">
-        <SG-Button icon="import" type="primary" :loading="exportAssetBtn" @click="handleExport()" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_EXPORT"
-          >导出资产视图</SG-Button
-        >
+        <SG-Button icon="import" type="primary" :loading="exportAssetBtn" @click="handleExport()"
+          v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_EXPORT">导出资产视图</SG-Button>
         <!--二期开发-->
         <!--<SG-Button-->
         <!--icon="import"-->
@@ -18,81 +17,42 @@
         <!--&gt;导出房屋卡片</SG-Button>-->
         <!--<SG-Button icon="sync" @click="handleTransform('tenement')">转物业</SG-Button>-->
         <!--<SG-Button icon="home" style="margin: 0 10px" @click="handleTransform('operation')">转运营</SG-Button>-->
-        <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_HEADER_SET"
-          >列表设置</SG-Button
-        >
-        <SG-Button
-          type="default"
-          @click="clickAsset"
-          v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET"
-          v-show="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1"
-          >车场资产标签</SG-Button
-        >
+        <SG-Button icon="setting" @click="handleSettings(true)" style="margin: 0 10px"
+          v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_HEADER_SET">列表设置</SG-Button>
+        <SG-Button type="default" @click="clickAsset" v-power="ASSET_MANAGEMENT.CARPARK_ASSET_VIEW_LABEL_SET"
+          v-show="organProjectBuildingValue.organId && organProjectBuildingValue.organId.split(',').length === 1">车场资产标签</SG-Button>
       </div>
       <div slot="headerForm">
         <div style="width: 55%; float: right; margin-right: 8px; text-align: left">
-          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true" :isShowBuilding="false" />
+          <organ-project-building v-model="organProjectBuildingValue" mode="multiple" :multiple="true"
+            :isShowBuilding="false" />
         </div>
       </div>
       <div slot="contentForm">
         <a-row :gutter="12">
           <a-col :span="4">
-            <a-select
-              style="width: 100%"
-              v-model="sourceModes"
-              option-filter-prop="title"
-              placeholder="请选择资产形态"
-              :options="$addTitle(sourceOptions)"
-            />
+            <a-select style="width: 100%" v-model="sourceModes" option-filter-prop="title" placeholder="请选择资产形态"
+              :options="$addTitle(sourceOptions)" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              v-model="status"
-              @change="statusChange"
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              placeholder="请选择资产状态"
-              :options="$addTitle(statusOptions)"
-            />
+            <a-select v-model="status" @change="statusChange" mode="multiple" :maxTagCount="1" style="width: 100%"
+              placeholder="请选择资产状态" :options="$addTitle(statusOptions)" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="categoryId"
-              option-filter-prop="title"
-              placeholder="请选择资产分类"
-              :options="$addTitle(categoryOptions)"
-              @change="categoryChange"
-            />
+            <a-select mode="multiple" :maxTagCount="1" style="width: 100%" v-model="categoryId" option-filter-prop="title"
+              placeholder="请选择资产分类" :options="$addTitle(categoryOptions)" @change="categoryChange" />
           </a-col>
           <a-col :span="4">
             <a-input placeholder="请输入资产名称或编码" v-model="assetName" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              v-model="label"
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              @select="assetLabelFn"
-              :options="$addTitle(assetLabelSelect)"
-              placeholder="资产标签"
-            />
+            <a-select v-model="label" mode="multiple" :maxTagCount="1" style="width: 100%" @select="assetLabelFn"
+              :options="$addTitle(assetLabelSelect)" placeholder="资产标签" />
           </a-col>
           <a-col :span="4">
-            <a-select
-              mode="multiple"
-              :maxTagCount="1"
-              style="width: 100%"
-              v-model="oldSourceModes"
-              option-filter-prop="title"
-              placeholder="请选择原始来源方式"
-              :options="$addTitle(oldSourceOptions)"
-              @change="changeOldSource"
-            />
+            <a-select mode="multiple" :maxTagCount="1" style="width: 100%" v-model="oldSourceModes"
+              option-filter-prop="title" placeholder="请选择原始来源方式" :options="$addTitle(oldSourceOptions)"
+              @change="changeOldSource" />
           </a-col>
           <!-- <a-col :span="4">
             <a-select
@@ -169,21 +129,17 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
     <!--列表Table-->
-    <a-table
-      v-bind="tableObj"
-      size="middle"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-        onSelectAll: onSelectAll,
-        getCheckboxProps: (record) => ({
-          props: {
-            disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
-            name: record.assetName,
-          },
-        }),
-      }"
-    >
+    <a-table v-bind="tableObj" size="middle" :row-selection="{
+      selectedRowKeys: selectedRowKeys,
+      onChange: onSelectChange,
+      onSelectAll: onSelectAll,
+      getCheckboxProps: (record) => ({
+        props: {
+          disabled: record.assetName === '所有页-合计', // Column configuration not to be checked
+          name: record.assetName,
+        },
+      }),
+    }">
       <template slot="assetName" slot-scope="text">
         <a-tooltip>
           <template slot="title">
@@ -195,14 +151,10 @@
         </a-tooltip>
       </template>
       <span slot="action" slot-scope="text, record">
-        <router-link
-          v-if="record.assetName !== '所有页-合计'"
-          :to="{
-            path: '/assetCarPrakView/detail',
-            query: { assetCarParkId: record.assetCarParkId, assetId: record.assetId, organId: record.organId },
-          }"
-          >详情</router-link
-        >
+        <router-link v-if="record.assetName !== '所有页-合计'" :to="{
+          path: '/assetCarPrakView/detail',
+          query: { assetCarParkId: record.assetCarParkId, assetId: record.assetId, organId: record.organId },
+        }">详情</router-link>
       </span>
       <template slot="fireMaterial" slot-scope="text, record">
         <span v-if="record.assetName !== '所有页-合计'">
@@ -250,7 +202,8 @@
     </a-table>
     <div style="height: 70px"></div>
     <no-data-tip v-if="!tableObj.dataSource.length" style="margin-top: -30px" />
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
+    <SG-FooterPagination v-bind="paginationObj"
+      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
     <!--编辑列表表头-->
     <SG-Modal v-bind="modalObj" v-model="modalObj.status" @ok="handleModalOk" @cancel="handleModalStatus(false)">
       <!-- <edit-table-header
@@ -262,7 +215,8 @@
       /> -->
       <edit-tag v-if="modalType === 2 && modalObj.status" :options="assetLabelOpt" ref="editTagRef" />
     </SG-Modal>
-    <TableHeaderSettings v-if="modalObj.switch" :funType="funType" @cancel="changeListSettingsModal(false)" @success="handleTableHeaderSuccess" />
+    <TableHeaderSettings v-if="modalObj.switch" :funType="funType" @cancel="changeListSettingsModal(false)"
+      @success="handleTableHeaderSuccess" />
   </div>
 </template>
 
@@ -504,10 +458,10 @@ export default {
           this.getAssetLabel(val.organId);
         }
         this.queryNodesByRootCode();
+        this.useForConfig();
       }
     },
     fold(val) {
-      console.log(val);
       if (val) {
         this.tableObj.scroll.y = 'calc(100vh -  480px)';
       } else {
@@ -532,13 +486,14 @@ export default {
   },
   created() {
     //this.initHeader()
-    initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
+    // initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
   },
 
   methods: {
     // 数据概览信息配置
-    useForConfig() {
-      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organId }).then((res) => {
+    async useForConfig() {
+      await initTableColumns({ columns: this.tableObj.columns, detailColumns, requiredColumn, funType: this.funType });
+      this.$api.houseStatusConfig.querySettingByOrganId({ organId: this.organProjectBuildingValue.organId }).then((res) => {
         if (res.data.code == 0) {
           let data = res.data.data;
           data.forEach((item) => {
@@ -564,6 +519,7 @@ export default {
                 }
               }
             });
+
           });
           this.numList = this.numList.filter((i) => {
             return i.isAble === 'Y';
@@ -797,7 +753,6 @@ export default {
         organIds: organId,
         label: label ? label.join('、') : '',
       };
-      console.log(form, '------');
       if (label === '全部资产标签' || !label) delete form.label;
       this.$api.carPark
         .parkingPage(form)
@@ -843,7 +798,6 @@ export default {
             .filter((item) => {
               return item.value + '' !== '0';
             });
-          this.useForConfig();
           for (let key in data) {
             data[key] = getFormat(data[key]);
           }
@@ -995,6 +949,7 @@ export default {
 
 <style lang="less" scoped>
 .custom-table {
+
   //padding-bottom: 70px;
   /*if you want to set scroll: { x: true }*/
   /*you need to add style .ant-table td { white-space: nowrap; }*/
@@ -1003,21 +958,26 @@ export default {
       white-space: nowrap;
     }
   }
+
   & /deep/ table {
+
     tr:last-child,
     tr:nth-last-child(1) {
       font-weight: bold;
     }
   }
+
   /deep/.ant-table-fixed {
     padding: 9px 0 6px 0px;
     background-color: #fff;
     color: #49505e;
   }
 }
+
 /deep/ .sg-FooterPagination {
   z-index: 2;
 }
+
 //   /deep/.ant-table-fixed {
 //     td{
 //       white-space: nowrap !important;
