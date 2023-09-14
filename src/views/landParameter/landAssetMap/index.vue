@@ -3,7 +3,8 @@
     <div class="top-block">
       <div class="progress-block left-block">
         <span class="text" style="line-height: 32px">透明度</span>
-        <a-progress @click="handleProgress" type="line" class="progress" :percent="progress" :strokeWidt="20" status="normal" />
+        <a-progress @click="handleProgress" type="line" class="progress" :percent="progress" :strokeWidt="20"
+          status="normal" />
       </div>
       <TreeSelect class="left-block tree-select" @changeTree="changeTree" placeholder="请选择" />
       <SG-Select class="left-block" v-model="layerSchemeId" placeholder="请选择方案" @change="changeMethod">
@@ -21,16 +22,9 @@
         {{ errorText }}
       </div>
       <div v-else id="leaflet-map"></div>
-      <AssetLandList
-        ref="AssetLandListRef"
-        class="filter-block"
-        :class="{ 'filter-block-full': isFull }"
-        v-if="mapFlag"
-        :popupDataSource="popupDataSource"
-        :previewMode="true"
-        @handleDraw="handleClickAsset"
-        @initAssetLayers="initAssetLayers"
-      />
+      <AssetLandList ref="AssetLandListRef" class="filter-block" :class="{ 'filter-block-full': isFull }" v-if="mapFlag"
+        :popupDataSource="popupDataSource" :previewMode="true" @handleDraw="handleClickAsset"
+        @initAssetLayers="initAssetLayers" />
     </div>
     <div class="bottom-show">
       <!--      <button @click="autoChange">开启自动轮播</button>-->
@@ -599,6 +593,7 @@ export default {
   height: 100%;
   position: relative;
   background: transparent;
+
   .bottom-show {
     border-top: 1px solid #edf0f4;
     overflow: auto;
@@ -608,18 +603,21 @@ export default {
     display: flex;
     align-items: center;
     position: relative;
+
     .item {
       height: 100%;
       margin-right: 20px;
       display: flex;
       align-items: baseline;
       margin-left: 40px;
+
       .color-block {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         margin-right: 8px;
       }
+
       .text {
         line-height: 16px;
         font-size: 12px;
@@ -628,13 +626,16 @@ export default {
       }
     }
   }
+
   .middle-content {
     width: 100%;
     height: calc(100% - 70px);
     position: relative;
+
     .default-close-btn {
       display: none;
     }
+
     .full-screen-close {
       position: absolute;
       right: 34px;
@@ -649,14 +650,17 @@ export default {
 
       z-index: 999;
     }
+
     #leaflet-map {
       height: 100%;
       width: 100%;
       background-color: #ffffff;
+
       .custom-popup {
         width: 400px;
       }
     }
+
     .filter-block {
       position: absolute;
       left: 20px;
@@ -664,10 +668,12 @@ export default {
       z-index: 999;
       min-width: 600px;
     }
+
     .filter-block-full {
       display: none;
     }
   }
+
   .top-block {
     display: flex;
     position: absolute;
@@ -675,6 +681,7 @@ export default {
     right: 30px;
     z-index: 999;
     height: 38px;
+
     .progress-block {
       height: 32px;
       width: 250px;
@@ -682,16 +689,19 @@ export default {
       background-color: #fff;
       padding: 0 16px;
       border: 1px solid #d9d9d9;
+
       .text {
         width: 40px;
         display: inline-block;
       }
+
       .progress {
         margin-left: 10px;
         display: inline-block;
         width: 160px;
       }
     }
+
     .full-icon-block {
       border-radius: 50%;
       background-color: #fff;
@@ -701,19 +711,23 @@ export default {
       line-height: 32px;
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3);
     }
+
     .tree-select {
       width: 200px;
       border-color: #dde1e6;
       border-radius: 16px;
+
       ::v-deep .ant-select-selection {
         border-radius: 16px;
       }
     }
   }
 }
+
 .left-block {
   margin-right: 20px;
 }
+
 .place {
   width: 100%;
   height: 100%;
@@ -723,20 +737,25 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 #landDetailPopup {
   overflow: auto;
 }
+
 ::v-deep .leaflet-popup-tip-container {
   display: none;
 }
+
 .summary {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   .title {
     font-weight: bold;
   }
 }
+
 .export {
   position: absolute;
   top: 50%;

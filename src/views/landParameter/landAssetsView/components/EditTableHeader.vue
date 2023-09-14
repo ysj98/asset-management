@@ -77,8 +77,10 @@ export default {
     padding-bottom: 10px;
     border-bottom: 1px solid #e9e9e9;
   }
+
   & /deep/ .ant-checkbox-group {
     width: 100%;
+
     .ant-checkbox-group-item {
       width: 23%;
       padding: 5px 0;

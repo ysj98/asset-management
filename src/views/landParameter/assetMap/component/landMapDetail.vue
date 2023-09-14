@@ -252,6 +252,7 @@ export default {
     },
   },
   mounted() {
+    this.useForConfig();
   },
 
   methods: {
@@ -339,4 +340,5 @@ export default {
   .detail-top-item {
     margin-top: 15px;
   }
-}</style>
+}
+</style>

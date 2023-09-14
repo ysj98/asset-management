@@ -1,21 +1,9 @@
 <template>
   <div class="select-organ-container">
-    <a-tree-select
-      class="tree-select"
-      :class="{ 'have-default-name': showDefaultOrganName }"
-      :multiple="multiple"
-      :showSearch="showSearch"
-      :dropdownStyle="dropdownStyle"
-      :treeData="treeData"
-      :placeholder="placeholder"
-      :allowClear="allowClear"
-      :loadData="onLoadData"
-      v-model="organId"
-      :disabled="disabled"
-      :treeCheckable="treeCheckable"
-      :treeDefaultExpandAll="treeDefaultExpandAll"
-      @change="changeTree"
-    >
+    <a-tree-select class="tree-select" :class="{ 'have-default-name': showDefaultOrganName }" :multiple="multiple"
+      :showSearch="showSearch" :dropdownStyle="dropdownStyle" :treeData="treeData" :placeholder="placeholder"
+      :allowClear="allowClear" :loadData="onLoadData" v-model="organId" :disabled="disabled"
+      :treeCheckable="treeCheckable" :treeDefaultExpandAll="treeDefaultExpandAll" @change="changeTree">
     </a-tree-select>
     <div class="default-organ-name" v-show="showDefaultOrganName">{{ defaultOrganName }}</div>
   </div>
@@ -171,7 +159,7 @@ export default {
       }
     },
   },
-  created() {},
+  created() { },
   mounted() {
     this.organId = this.value;
     this.initDepartment();
@@ -182,18 +170,23 @@ export default {
 .select-organ-container {
   position: relative;
   display: inline-block;
+
   .tree-select {
     width: 100%;
   }
+
   .have-default-name {
     z-index: 100;
+
     /deep/ .ant-select-selection-selected-value {
       opacity: 0;
     }
+
     /deep/ .ant-select-selection {
       background: transparent;
     }
   }
+
   .default-organ-name {
     position: absolute;
     top: 0;

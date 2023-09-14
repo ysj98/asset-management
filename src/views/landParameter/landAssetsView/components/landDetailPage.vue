@@ -4,13 +4,8 @@
     <!--基础信息部分-->
     <base-info-part ref="baseInfoPart" v-if="assetLandId" :assetLandId="assetLandId" @updateTransfer="updateTransfer" />
     <!--其它信息部分-->
-    <other-info-part
-      v-if="assetLandId"
-      :assetLandId="assetLandId"
-      :assetId="assetId"
-      :transferOperationArea="transferOperationArea"
-      :transferOperationTime="transferOperationTime"
-    />
+    <other-info-part v-if="assetLandId" :assetLandId="assetLandId" :assetId="assetId"
+      :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime" />
   </div>
 </template>
 
@@ -50,9 +45,11 @@ export default {
 .asset_view {
   position: relative;
   padding: 42px 70px 0;
+
   /*抽离子组件的公共样式*/
   & /deep/ .title_div {
     margin-left: 45px;
+
     .ant-col-8,
     .ant-col-24,
     .ant-col-12,

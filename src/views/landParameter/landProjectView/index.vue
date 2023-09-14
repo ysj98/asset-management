@@ -5,45 +5,24 @@
   <div class="asset-project-view-list" style="overflow-x: hidden">
     <a-row :gutter="8" style="padding: 20px 30px">
       <a-col :span="7">
-        <SG-Button icon="import" type="primary" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_PROJECT_EXPORT" :loading="exportBtnLoading"
-          >导出资产项目视图</SG-Button
-        >
+        <SG-Button icon="import" type="primary" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_PROJECT_EXPORT"
+          :loading="exportBtnLoading">导出资产项目视图</SG-Button>
       </a-col>
       <a-col :span="5">
-        <treeSelect
-          @changeTree="changeTree"
-          placeholder="请选择组织机构"
-          :allowClear="false"
-          :style="allStyle"
-          :multiple="true"
-          :treeCheckable="true"
-        ></treeSelect>
+        <treeSelect @changeTree="changeTree" placeholder="请选择组织机构" :allowClear="false" :style="allStyle" :multiple="true"
+          :treeCheckable="true"></treeSelect>
       </a-col>
       <a-col :span="3">
-        <a-select
-          showSearch
-          placeholder="请选择资产项目"
-          optionFilterProp="children"
-          :style="allStyle"
-          v-model="assetProject"
-          :options="$addTitle(assetProjectOptions)"
-          :filterOption="filterOption"
-        ></a-select>
+        <a-select showSearch placeholder="请选择资产项目" optionFilterProp="children" :style="allStyle" v-model="assetProject"
+          :options="$addTitle(assetProjectOptions)" :filterOption="filterOption"></a-select>
       </a-col>
       <a-col :span="3">
-        <a-select
-          v-model="statusList"
-          mode="multiple"
-          :maxTagCount="1"
-          style="width: 100%"
-          placeholder="请选择资产状态"
-          :options="$addTitle(statusListOpt)"
-        />
+        <a-select v-model="statusList" mode="multiple" :maxTagCount="1" style="width: 100%" placeholder="请选择资产状态"
+          :options="$addTitle(statusListOpt)" />
       </a-col>
       <a-col :span="4">
-        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan" @change="onOnlyCurrentOrganChange"
-          >仅选择当前机构下资产项目</a-checkbox
-        >
+        <a-checkbox style="line-height: 32px; margin-right: 5px" :checked="onlyCurrentOrgan"
+          @change="onOnlyCurrentOrganChange">仅选择当前机构下资产项目</a-checkbox>
       </a-col>
       <a-col :span="2">
         <SG-Button type="primary" @click="queryClick">查询</SG-Button>
@@ -54,29 +33,17 @@
       <overview-number :numList="numList" isEmit @click="handleClickOverview" />
     </a-spin>
     <div>
-      <a-table
-        :loading="loading"
-        :columns="columns"
-        :dataSource="dataSource"
-        size="middle"
-        :pagination="false"
-        :scroll="{ x: 2200, y: 'calc(100vh - 337px)' }"
-      >
+      <a-table :loading="loading" :columns="columns" :dataSource="dataSource" size="middle" :pagination="false"
+        :scroll="{ x: 2200, y: 'calc(100vh - 337px)' }">
         <template slot="operation" slot-scope="text, record">
-          <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn" @click="toDetail(record)"
-            >详情</a
-          >
+          <a v-if="record.projectCode !== '当前页-合计' && record.projectCode !== '所有页-合计'" class="operation-btn"
+            @click="toDetail(record)">详情</a>
         </template>
       </a-table>
       <no-data-tips v-show="showNoDataTips"></no-data-tips>
     </div>
-    <SG-FooterPagination
-      :pageLength="paginator.pageLength"
-      :totalCount="paginator.totalCount"
-      location="absolute"
-      v-model="paginator.pageNo"
-      @change="handlePageChange"
-    />
+    <SG-FooterPagination :pageLength="paginator.pageLength" :totalCount="paginator.totalCount" location="absolute"
+      v-model="paginator.pageNo" @change="handlePageChange" />
   </div>
 </template>
 
@@ -357,15 +324,15 @@ export default {
                 ? ['buildNum', 'assetNum'].includes(key)
                   ? Number(item[key])
                   : ['originalValue', 'marketValue'].includes(key)
-                  ? Math.round(item[key] * 100) / 100
-                  : Math.round(item[key] * 10000) / 10000
+                    ? Math.round(item[key] * 100) / 100
+                    : Math.round(item[key] * 10000) / 10000
                 : 0;
               if (index === data.length - 1) {
                 pageSum[key] = ['buildNum', 'assetNum'].includes(key)
                   ? pageSum[key]
                   : ['originalValue', 'marketValue'].includes(key)
-                  ? Math.round(pageSum[key] * 100) / 100
-                  : Math.round(pageSum[key] * 10000) / 10000;
+                    ? Math.round(pageSum[key] * 100) / 100
+                    : Math.round(pageSum[key] * 10000) / 10000;
               }
             });
             for (let key in item) {
@@ -409,13 +376,13 @@ export default {
           this.useForConfig();
           Object.keys(sumObj).forEach(
             (key) =>
-              (sumObj[key] = temp[key]
-                ? ['buildNum', 'assetNum'].includes(key)
-                  ? Number(temp[key])
-                  : ['originalValue', 'marketValue'].includes(key)
+            (sumObj[key] = temp[key]
+              ? ['buildNum', 'assetNum'].includes(key)
+                ? Number(temp[key])
+                : ['originalValue', 'marketValue'].includes(key)
                   ? Math.round(temp[key] * 100) / 100
                   : Math.round(temp[key] * 10000) / 10000
-                : 0)
+              : 0)
           );
           sumObj.area = measuredArea ? Math.round(measuredArea * 10000) / 10000 : 0;
           this.sumObj = sumObj;
@@ -485,24 +452,29 @@ export default {
 <style lang="less" scoped>
 .custom-table {
   padding-bottom: 50px;
+
   & /deep/ table {
+
     tr:last-child,
     tr:nth-last-child(2) {
       font-weight: bold;
     }
   }
+
   /deep/.ant-table-fixed {
     padding: 9px 0 6px 0px;
     background-color: #fff;
     color: #49505e;
   }
 }
+
 /deep/.ant-table-tbody {
   tr:nth-last-child(1) {
     position: sticky;
     bottom: 4px;
     background: #fff;
   }
+
   tr:nth-last-child(2) {
     position: sticky;
     bottom: 43px;

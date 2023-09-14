@@ -242,6 +242,7 @@ export default {
     }
   },
   mounted() {
+    this.useForConfig();
   },
 
   computed: {

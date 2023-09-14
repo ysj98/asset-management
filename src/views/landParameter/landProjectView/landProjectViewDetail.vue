@@ -169,7 +169,8 @@
     <div class="edit-box">
       <div class="edit-box-title"><i></i><span>权属概况</span></div>
       <div class="edit-box-content">
-        <a-table bordered :columns="ownershipColumns" :dataSource="ownershipDataSource" class="custom-table th-td-padding-10-20" :pagination="false">
+        <a-table bordered :columns="ownershipColumns" :dataSource="ownershipDataSource"
+          class="custom-table th-td-padding-10-20" :pagination="false">
         </a-table>
       </div>
     </div>
@@ -181,7 +182,8 @@
             <a-col v-for="(item, index) in assetStatistics" :key="index" :span="4">
               <div class="asset-project-item custom-height">
                 <div class="asset-project-item-title" style="font-size: 14px; margin-bottom: 10px">{{ item.title }}</div>
-                <div class="asset-project-item-number" style="font-size: 20px; font-weight: bold; color: #324057">{{ item.area || 0 }}</div>
+                <div class="asset-project-item-number" style="font-size: 20px; font-weight: bold; color: #324057">{{
+                  item.area || 0 }}</div>
               </div>
             </a-col>
           </a-row>
@@ -192,49 +194,44 @@
                 <div class="asset-project-introduction-name">{{ item.landName }}</div>
               </div>
             </a-col>
-            <a-col :span="4"
-              ><div class="asset-project-item">
+            <a-col :span="4">
+              <div class="asset-project-item">
                 <div class="asset-project-item-number">
                   {{ item.operationNum }}<span>({{ item.operationNumPercent }})</span>
                 </div>
-              </div></a-col
-            >
-            <a-col :span="4"
-              ><div class="asset-project-item">
+              </div>
+            </a-col>
+            <a-col :span="4">
+              <div class="asset-project-item">
                 <div class="asset-project-item-number">
                   {{ item.idleNum }}<span>({{ item.idleNumPercent }})</span>
                 </div>
-              </div></a-col
-            >
-            <a-col :span="4"
-              ><div class="asset-project-item">
+              </div>
+            </a-col>
+            <a-col :span="4">
+              <div class="asset-project-item">
                 <div class="asset-project-item-number">
                   {{ item.selfUseNum }}<span>({{ item.selfUseNumPercent }})</span>
                 </div>
-              </div></a-col
-            >
-            <a-col :span="4"
-              ><div class="asset-project-item">
+              </div>
+            </a-col>
+            <a-col :span="4">
+              <div class="asset-project-item">
                 <div class="asset-project-item-number">
                   {{ item.occupyNum }}<span>({{ item.occupyNumPercent }})</span>
                 </div>
-              </div></a-col
-            >
-            <a-col :span="4"
-              ><div class="asset-project-item">
+              </div>
+            </a-col>
+            <a-col :span="4">
+              <div class="asset-project-item">
                 <div class="asset-project-item-number">
                   {{ item.otherNum }}<span>({{ item.otherNumPercent }})</span>
                 </div>
-              </div></a-col
-            >
+              </div>
+            </a-col>
           </a-row>
-          <SG-FooterPagination
-            :pageLength="paginator.pageLength"
-            :totalCount="paginator.totalCount"
-            location="absolute"
-            v-model="paginator.pageNo"
-            @change="handlePageChange"
-          />
+          <SG-FooterPagination :pageLength="paginator.pageLength" :totalCount="paginator.totalCount" location="absolute"
+            v-model="paginator.pageNo" @change="handlePageChange" />
         </div>
       </div>
     </div>
@@ -441,14 +438,17 @@ export default {
 <style lang="less" scoped>
 .asset-project-view-detail {
   padding: 40px 105px 0 95px;
+
   .edit-box {
     text-align: left;
     color: #49505e;
     margin-bottom: 40px;
+
     .edit-box-title {
       height: 14px;
       font-size: 14px;
       font-weight: bold;
+
       i {
         display: block;
         height: 14px;
@@ -457,6 +457,7 @@ export default {
         background: #0084ff;
         float: left;
       }
+
       span {
         display: block;
         float: left;
@@ -465,16 +466,19 @@ export default {
         font-family: PingFang-SC-Heavy;
       }
     }
+
     .edit-box-content {
       margin: 30px 40px 0 40px;
       position: relative;
       display: inline-block;
       width: 100%;
+
       .edit-box-content-item {
         width: 33%;
         float: left;
         font-size: 12px;
         margin-bottom: 30px;
+
         .label-name {
           float: left;
           font-family: PingFang-SC-Regular;
@@ -482,9 +486,11 @@ export default {
           margin-right: 3px;
         }
       }
+
       .edit-box-content-item.total-width {
         width: 100%;
       }
+
       .asset-condition {
         border: 1px solid #eff2f7;
         /*border-left: 1px solid #EFF2F7;*/
@@ -492,10 +498,12 @@ export default {
         border-right: none;
         position: relative;
         padding-bottom: 50px;
+
         .custom-height {
           padding: 18px 0;
           height: auto !important;
         }
+
         .asset-project-header {
           .asset-project-item {
             height: 80px;
@@ -504,41 +512,51 @@ export default {
             color: white;
             border-right: 1px solid #eff2f7;
             border-bottom: 1px solid #eff2f7;
+
             .asset-project-item-title {
               font-size: 12px;
               margin-bottom: 3px;
             }
+
             .asset-project-item-number {
               font-size: 16px;
               font-weight: bold;
+
               span {
                 font-size: 12px;
                 font-weight: normal;
               }
             }
           }
+
           .ant-col-4 {
             &:nth-child(1) .asset-project-item {
               background: white;
               color: #49505e;
             }
+
             &:nth-child(2) {
               background: #1ec76a;
             }
+
             &:nth-child(3) {
               background: #46a6ff;
             }
+
             &:nth-child(4) {
               background: #e49aeb;
             }
+
             &:nth-child(5) {
               background: #fd9090;
             }
+
             &:nth-child(6) {
               background: #bbc8d6;
             }
           }
         }
+
         .asset-project-content {
           .asset-project-introduction {
             height: 80px;
@@ -547,12 +565,14 @@ export default {
             border-bottom: 1px solid #eff2f7;
             display: flex;
             align-items: center;
+
             img {
               width: 60px;
               height: 60px;
               margin-right: 10px;
             }
           }
+
           .asset-project-item {
             height: 80px;
             text-align: center;
@@ -562,9 +582,11 @@ export default {
             display: flex;
             align-items: center;
             justify-content: center;
+
             .asset-project-item-number {
               font-size: 16px;
               font-weight: bold;
+
               span {
                 font-size: 12px;
                 font-weight: normal;
@@ -575,6 +597,7 @@ export default {
       }
     }
   }
+
   .custom-table {
     & /deep/ .ant-table .ant-table-placeholder {
       display: block;

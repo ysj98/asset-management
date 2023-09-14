@@ -29,9 +29,8 @@
           <div class="search-item-label">类型:</div>
           <div class="search-item-content">
             <SG-CheckboxGroup :value="assetTypes" @change="checkboxGroupChnage">
-              <span class="search-checkbox" v-for="item in assetTypeListOpt" :key="item.value"
-                ><SG-Checkbox :value="item.value" :key="item.value">{{ item.label }}</SG-Checkbox></span
-              >
+              <span class="search-checkbox" v-for="item in assetTypeListOpt" :key="item.value"><SG-Checkbox
+                  :value="item.value" :key="item.value">{{ item.label }}</SG-Checkbox></span>
             </SG-CheckboxGroup>
           </div>
         </div>
@@ -39,14 +38,9 @@
         <div class="search-item">
           <div class="search-item-label">省份:</div>
           <div class="search-item-content">
-            <span
-              class="search-item-province ellipsis pointer"
-              :class="queryCondition.province === item.value && 'active'"
-              v-for="item in provinceOpt"
-              @click="handleSelectAdress('province', item)"
-              :key="item.key"
-              :title="item.label"
-            >
+            <span class="search-item-province ellipsis pointer"
+              :class="queryCondition.province === item.value && 'active'" v-for="item in provinceOpt"
+              @click="handleSelectAdress('province', item)" :key="item.key" :title="item.label">
               {{ item.label }}
             </span>
           </div>
@@ -55,14 +49,8 @@
         <div class="search-item">
           <div class="search-item-label">城市:</div>
           <div class="search-item-content">
-            <span
-              class="search-item-province ellipsis pointer"
-              :class="queryCondition.city === item.value && 'active'"
-              v-for="item in cityOpt"
-              @click="handleSelectAdress('city', item)"
-              :key="item.key"
-              :title="item.label"
-            >
+            <span class="search-item-province ellipsis pointer" :class="queryCondition.city === item.value && 'active'"
+              v-for="item in cityOpt" @click="handleSelectAdress('city', item)" :key="item.key" :title="item.label">
               {{ item.label }}
             </span>
           </div>
@@ -71,21 +59,16 @@
         <div class="search-item">
           <div class="search-item-label">县区:</div>
           <div class="search-item-content">
-            <span
-              class="search-item-province ellipsis pointer"
-              :class="queryCondition.region === item.value && 'active'"
-              v-for="item in regionOpt"
-              @click="handleSelectAdress('region', item)"
-              :key="item.key"
-              :title="item.label"
-            >
+            <span class="search-item-province ellipsis pointer" :class="queryCondition.region === item.value && 'active'"
+              v-for="item in regionOpt" @click="handleSelectAdress('region', item)" :key="item.key" :title="item.label">
               {{ item.label }}
             </span>
           </div>
         </div>
         <!-- 详细地址 -->
         <div>
-          <a-input v-model="queryCondition.address" class="searchwidth"></a-input><a-button @click="searchDetail" type="primary">查询</a-button>
+          <a-input v-model="queryCondition.address" class="searchwidth"></a-input><a-button @click="searchDetail"
+            type="primary">查询</a-button>
         </div>
         <!-- 表格 -->
         <div>
@@ -455,6 +438,7 @@ export default {
 .suspensionRightBlock-page {
   width: 450px;
 }
+
 .nav-top {
   background-color: #fff;
   height: 30px;
@@ -463,28 +447,33 @@ export default {
 
   box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
 }
+
 .map-search-box {
   margin-top: 5px;
   background-color: #fff;
   box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.14);
   border-radius: 4px;
   overflow: hidden;
+
   .search-title {
     height: 32px;
     line-height: 32px;
     padding: 0px 15px;
     border-bottom: 1px solid #dadada;
   }
+
   .search-content {
     padding: 10px 15px;
     // min-height: 400px;
     max-height: calc(100vh - 127px);
     overflow-y: auto;
   }
+
   .search-checkbox {
     //width: 90px;
     display: inline-block;
   }
+
   .search-item-province {
     width: 62px;
     display: inline-block;
@@ -492,43 +481,52 @@ export default {
     color: #6d7585;
     line-height: 26px;
     margin-right: 10px;
+
     &:hover,
     &.active {
       color: #0084ff;
     }
   }
+
   .searchwidth {
     width: 85%;
   }
+
   .search-item {
     display: grid;
     grid-template-columns: 50px auto;
     grid-template-rows: auto;
     margin-top: 13px;
+
     .search-item-label {
       font-size: 15px;
       font-weight: bold;
       color: #6d7585;
     }
   }
+
   /deep/ .ant-select-selection {
     border: 1px solid #dce1e6;
     border-radius: 16px;
   }
+
   /deep/ .sg-checkbox-group .ant-checkbox-wrapper {
     font-size: 14px;
   }
+
   /deep/ .ant-select-focused .ant-select-selection,
   .ant-select-selection:focus,
   .ant-select-selection:active {
     box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1);
   }
+
   /deep/ .ant-select-focused .ant-select-selection,
   .ant-select-selection:focus,
   .ant-select-selection {
     box-shadow: 0 0 0 1px rgba(151, 151, 151, 0.1);
   }
 }
+
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;

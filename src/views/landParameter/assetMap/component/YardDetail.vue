@@ -234,6 +234,7 @@ export default {
     },
   },
   mounted() {
+    this.useForConfig();
   },
   methods: {
     handleSwitch() {

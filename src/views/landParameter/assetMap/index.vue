@@ -14,7 +14,8 @@
       </div>
       <!-- 显示弹窗 -->
       <div class="show-map-detail" v-show="showDetailModal">
-        <component :is="currentTabComponent" :detailInfo="detailInfo" :organId="organId" @close="closeDetailMap"></component>
+        <component :is="currentTabComponent" :detailInfo="detailInfo" :organId="organId" @close="closeDetailMap">
+        </component>
       </div>
       <div class="list-container" v-show="showDetailListModal">
         <div class="list-container-top">
@@ -29,7 +30,8 @@
               <a @click="handleAssetItemClick(record)">{{ record.resourceName }}</a>
             </template>
           </a-table>
-          <a-pagination v-bind="listPageObj" size="small" :total="listTableOptions.dataSource.length" @change="listTableChangePage" />
+          <a-pagination v-bind="listPageObj" size="small" :total="listTableOptions.dataSource.length"
+            @change="listTableChangePage" />
         </div>
       </div>
     </div>
@@ -466,21 +468,25 @@ export default {
 .assetMap-page {
   position: relative;
   height: calc(100vh - 40px);
+
   .asset-map-box {
     height: 100%;
   }
 }
+
 .suspensionRightBlock {
   position: absolute;
   top: 10px;
   right: 10px;
   z-index: 2;
 }
+
 .show-map-detail {
   position: absolute;
   top: 12px;
   left: 12px;
 }
+
 .list-container {
   max-height: 600px;
   overflow: auto;
@@ -493,10 +499,12 @@ export default {
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 1px 2px 2px 0px rgb(0 0 0 / 14%);
+
   &-line {
     height: 1px;
     //background-color: #fff;
   }
+
   &-top {
     height: 32px;
     border-bottom: 1px solid #e8e8e8;
@@ -506,6 +514,7 @@ export default {
     justify-content: space-between;
     align-items: center;
   }
+
   &-content {
     padding: 20px;
     //padding: 15px 0;

@@ -10,15 +10,8 @@
       <SG-Title noMargin title="权属概况" />
     </div>
     <!-- 权属表格 -->
-    <a-table
-      size="middle"
-      bordered
-      :loading="tableFirst.loading"
-      :pagination="false"
-      :columns="tableFirst.columns"
-      :dataSource="tableFirst.dataSource"
-      :locale="{ emptyText: '暂无数据' }"
-    ></a-table>
+    <a-table size="middle" bordered :loading="tableFirst.loading" :pagination="false" :columns="tableFirst.columns"
+      :dataSource="tableFirst.dataSource" :locale="{ emptyText: '暂无数据' }"></a-table>
     <!-- 标题 -->
     <div class="mb30 mt30" style="margin-left: -12px">
       <SG-Title noMargin title="资产概况" />
@@ -28,16 +21,12 @@
       <overview-number :numList="numList" />
     </a-spin>
     <div class="table-layout-fixed">
-      <a-table :loading="table.loading" :columns="table.columns" :dataSource="table.dataSource" size="middle" :pagination="false" />
+      <a-table :loading="table.loading" :columns="table.columns" :dataSource="table.dataSource" size="middle"
+        :pagination="false" />
       <no-data-tips v-show="table.dataSource.length === 0"></no-data-tips>
-      <SG-FooterPagination
-        :pageLength="queryCondition.pageSize"
-        :totalCount="table.totalCount"
-        :location="footerOpt.location"
-        :noPageTools="footerOpt.noPageTools"
-        v-model="queryCondition.pageNum"
-        @change="handleChange"
-      />
+      <SG-FooterPagination :pageLength="queryCondition.pageSize" :totalCount="table.totalCount"
+        :location="footerOpt.location" :noPageTools="footerOpt.noPageTools" v-model="queryCondition.pageNum"
+        @change="handleChange" />
     </div>
   </div>
 </template>

@@ -19,7 +19,8 @@
         <span style="color: #282d5b">{{ title }}:</span>
         <span v-if="type === 'text'" style="margin: 0 15px 0 4px; color: #49505e">{{ infoData[key] || '' }}</span>
         <div class="img-icon" v-else-if="type === 'img' && infoData[key] && infoData[key].length">
-          <img v-for="(url, index) in infoData[key]" :src="getUrl(url)" @click="openBigImg(infoData[key], index)" alt="" :key="index" />
+          <img v-for="(url, index) in infoData[key]" :src="getUrl(url)" @click="openBigImg(infoData[key], index)" alt=""
+            :key="index" />
         </div>
         <span v-else></span>
       </a-col>
@@ -27,7 +28,8 @@
     <!--资产使用方向-->
     <SG-Title title="资产使用方向" noMargin />
     <overview-number :numList="numList" class="title_div" style="margin-top: 21px" />
-    <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex="bigImg.imgIndex" :list="bigImg.list"></preview-images>
+    <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex="bigImg.imgIndex"
+      :list="bigImg.list"></preview-images>
   </a-spin>
 </template>
 
@@ -209,6 +211,7 @@ export default {
   width: auto;
   max-width: 240px;
   height: 50px;
+
   img {
     cursor: pointer;
     margin-left: 10px;

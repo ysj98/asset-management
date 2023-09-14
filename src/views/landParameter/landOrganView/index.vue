@@ -5,22 +5,15 @@
     <div style="padding: 20px 30px">
       <a-row :gutter="8">
         <a-col :span="12">
-          <SG-Button icon="import" type="primary" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT" :loading="exportBtnLoading"
-            >导出组织机构视图</SG-Button
-          >
+          <SG-Button icon="import" type="primary" @click="handleExport" v-power="ASSET_MANAGEMENT.LAND_ORGAN_EXPORT"
+            :loading="exportBtnLoading">导出组织机构视图</SG-Button>
         </a-col>
         <a-col :span="5">
           <tree-select @changeTree="changeTree" style="width: 100%" />
         </a-col>
         <a-col :span="5">
-          <a-select
-            v-model="statusList"
-            mode="multiple"
-            :maxTagCount="1"
-            style="width: 100%"
-            placeholder="请选择资产状态"
-            :options="$addTitle(statusListOpt)"
-          />
+          <a-select v-model="statusList" mode="multiple" :maxTagCount="1" style="width: 100%" placeholder="请选择资产状态"
+            :options="$addTitle(statusListOpt)" />
         </a-col>
         <a-col :span="2">
           <SG-Button icon="search" type="primary" @click="queryTableData({ type: 'search' })">查询</SG-Button>
@@ -38,7 +31,8 @@
       </span>
     </a-table>
     <!-- <no-data-tip v-if="!tableObj.dataSource.length" /> -->
-    <SG-FooterPagination v-bind="paginationObj" @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
+    <SG-FooterPagination v-bind="paginationObj"
+      @change="({ pageNo, pageLength }) => queryTableData({ pageNo, pageLength })" />
   </div>
 </template>
 
@@ -235,25 +229,25 @@ export default {
                   ? ['landCount'].includes(key)
                     ? Number(item[key])
                     : ['originalValue', 'marketValue'].includes(key)
-                    ? Math.round(item[key] * 100) / 100
-                    : Math.round(item[key] * 10000) / 10000
+                      ? Math.round(item[key] * 100) / 100
+                      : Math.round(item[key] * 10000) / 10000
                   : 0;
                 if (index === data.length - 1) {
                   pageSum[key] = ['buildNum'].includes(key)
                     ? pageSum[key]
                     : ['originalValue', 'marketValue'].includes(key)
-                    ? Math.round(pageSum[key] * 100) / 100
-                    : Math.round(pageSum[key] * 10000) / 10000;
+                      ? Math.round(pageSum[key] * 100) / 100
+                      : Math.round(pageSum[key] * 10000) / 10000;
                 }
               });
             });
             this.tableObj.dataSource = data.length
               ? data.concat({
-                  ...pageSum,
-                  organName: '本页合计',
-                  organId: '-999',
-                  totalRow: true,
-                })
+                ...pageSum,
+                organName: '本页合计',
+                organId: '-999',
+                totalRow: true,
+              })
               : [];
             // 查询楼栋面积统计数据
             if (type !== 'search') {
@@ -304,13 +298,13 @@ export default {
             let list = res.data || {};
             Object.keys(sumObj).forEach(
               (key) =>
-                (obj[key] = list[key]
-                  ? ['landCount'].includes(key)
-                    ? list[key]
-                    : ['originalValue', 'marketValue'].includes(key)
+              (obj[key] = list[key]
+                ? ['landCount'].includes(key)
+                  ? list[key]
+                  : ['originalValue', 'marketValue'].includes(key)
                     ? Math.round(list[key] * 100) / 100
                     : Math.round(list[key] * 10000) / 10000
-                  : 0)
+                : 0)
             );
             this.sumObj = obj;
             dataSource.length &&
@@ -376,31 +370,35 @@ export default {
     },
   },
 
-  created() {},
+  created() { },
 };
 </script>
 
 <style lang="less" scoped>
 .custom-table {
   padding-bottom: 55px;
+
   /*if you want to set scroll: { x: true }*/
   /*you need to add style .ant-table td { white-space: nowrap; }*/
   & /deep/ .ant-table {
     .ant-table-thead th {
       white-space: nowrap;
     }
+
     tr:last-child,
     tr:nth-last-child(2) {
       font-weight: bold;
     }
   }
 }
+
 /deep/.ant-table-tbody {
   tr:nth-last-child(1) {
     position: sticky;
     bottom: 4px;
     background: #fff;
   }
+
   tr:nth-last-child(2) {
     position: sticky;
     bottom: 43px;

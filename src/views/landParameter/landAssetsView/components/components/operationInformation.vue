@@ -14,16 +14,18 @@
         <span style="color: #49505e">{{ transferOperationTime || '' }}</span>
       </a-col>
     </a-row>
-    <a-table class="custom-table operation" :pagination="false" :columns="table.columns" :dataSource="table.dataSource"> </a-table>
-    <SG-FooterPagination :pageLength="table.pageSize" :totalCount="table.totalCount" v-model="table.pageNum" @change="handleChange" />
+    <a-table class="custom-table operation" :pagination="false" :columns="table.columns" :dataSource="table.dataSource">
+    </a-table>
+    <SG-FooterPagination :pageLength="table.pageSize" :totalCount="table.totalCount" v-model="table.pageNum"
+      @change="handleChange" />
   </div>
 </template>
 <script>
 import moment from 'moment';
 let getUuid = (
   (uuid = 1) =>
-  () =>
-    ++uuid
+    () =>
+      ++uuid
 )();
 let columns = [
   {

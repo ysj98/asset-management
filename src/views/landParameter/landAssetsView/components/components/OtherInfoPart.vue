@@ -12,54 +12,42 @@
           </a-col>
         </a-row>
         <!--列表部分-->
-        <div v-if="item['table']['tableTitle']" style="color: #49505e; margin: 15px 0; font-weight: bold">{{ item['table']['tableTitle'] }}</div>
-        <a-table class="custom-table td-pd10 table-border" :columns="item['table']['columns']" :dataSource="tableData" :pagination="false">
-          <span slot="operation" style="color: #0084ff; cursor: pointer" slot-scope="text, record" @click="checkDetail(record)">详情</span>
+        <div v-if="item['table']['tableTitle']" style="color: #49505e; margin: 15px 0; font-weight: bold">{{
+          item['table']['tableTitle'] }}</div>
+        <a-table class="custom-table td-pd10 table-border" :columns="item['table']['columns']" :dataSource="tableData"
+          :pagination="false">
+          <span slot="operation" style="color: #0084ff; cursor: pointer" slot-scope="text, record"
+            @click="checkDetail(record)">详情</span>
           <span class="img-icon" slot="attachmentList" slot-scope="text, record">
-            <img
-              v-if="record.attachmentList.length"
-              :src="getUrl(record.attachmentList[0].attachmentPath)"
-              alt=""
-              @click="openBigImg(record.attachmentList)"
-            />
+            <img v-if="record.attachmentList.length" :src="getUrl(record.attachmentList[0].attachmentPath)" alt=""
+              @click="openBigImg(record.attachmentList)" />
             <span v-if="record.attachmentList.length" class="ing-mum">{{ record.attachmentList.length }}</span>
             <span v-else>--</span>
           </span>
           <span class="img-icon" slot="rectifyAttachmentList" slot-scope="text, record">
-            <img
-              v-if="record.rectifyAttachmentList.length"
-              :src="getUrl(record.rectifyAttachmentList[0].attachmentPath)"
-              alt=""
-              @click="openBigImg(record.rectifyAttachmentList)"
-            />
-            <span v-if="record.rectifyAttachmentList.length" class="ing-mum">{{ record.rectifyAttachmentList.length }}</span>
+            <img v-if="record.rectifyAttachmentList.length" :src="getUrl(record.rectifyAttachmentList[0].attachmentPath)"
+              alt="" @click="openBigImg(record.rectifyAttachmentList)" />
+            <span v-if="record.rectifyAttachmentList.length" class="ing-mum">{{ record.rectifyAttachmentList.length
+            }}</span>
             <span v-else>--</span>
           </span>
         </a-table>
-        <SG-FooterPagination
-          v-if="item['table']['pagination']"
-          :pageLength="pagination.pageSize"
-          :totalCount="pagination.totalCount"
-          v-model="pagination.pageNum"
-          @change="handleChange"
-        />
+        <SG-FooterPagination v-if="item['table']['pagination']" :pageLength="pagination.pageSize"
+          :totalCount="pagination.totalCount" v-model="pagination.pageNum" @change="handleChange" />
         <!--特殊处理：权属信息展示的第两个Table-->
         <div v-if="item['table2']">
           <div style="color: #49505e; margin: 35px 0 15px; font-weight: bold">{{ item['table2']['tableTitle'] }}</div>
-          <a-table
-            :rowKey="item['table2']['rowKey']"
-            :columns="item['table2']['columns']"
-            :dataSource="table2Data"
-            :pagination="false"
-            class="custom-table td-pd10 table-border"
-          />
+          <a-table :rowKey="item['table2']['rowKey']" :columns="item['table2']['columns']" :dataSource="table2Data"
+            :pagination="false" class="custom-table td-pd10 table-border" />
         </div>
       </a-tab-pane>
       <a-tab-pane tab="运营信息" key="operationInformation">
-        <operationInformation :assetId="assetId" :transferOperationArea="transferOperationArea" :transferOperationTime="transferOperationTime" />
+        <operationInformation :assetId="assetId" :transferOperationArea="transferOperationArea"
+          :transferOperationTime="transferOperationTime" />
       </a-tab-pane>
     </a-tabs>
-    <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex="bigImg.imgIndex" :list="bigImg.list"></preview-images>
+    <preview-images v-if="bigImg.show" @closeImg="hideImg" :imgIndex="bigImg.imgIndex"
+      :list="bigImg.list"></preview-images>
   </div>
 </template>
 
@@ -70,8 +58,8 @@ import PreviewImages from 'components/PreviewImages.vue';
 import operationInformation from './operationInformation';
 let getUuid = (
   (uuid = 1) =>
-  () =>
-    ++uuid
+    () =>
+      ++uuid
 )();
 // let 2 收入，3费用
 let reportBillIdNameMap = {
@@ -264,7 +252,7 @@ export default {
         });
     },
     // 由于会出现多个接口查询
-    queryDetail2(type) {},
+    queryDetail2(type) { },
     handleChange(data) {
       this.pagination.pageNum = data.pageNo;
       this.pagination.pageSize = data.pageLength;
@@ -357,17 +345,20 @@ export default {
       }
     }
   }
+
   .img-icon {
     position: relative;
     display: inline-block;
     overflow: hidden;
     width: 60px;
     height: 40px;
+
     img {
       cursor: pointer;
       max-width: 60px;
       max-height: 40px;
     }
+
     .ing-mum {
       width: auto;
       height: 16px;
@@ -384,6 +375,7 @@ export default {
       padding: 0 3px;
     }
   }
+
   margin-bottom: 35px;
 }
 </style>

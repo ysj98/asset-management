@@ -6,7 +6,8 @@
     </div>
     <div class="content">
       <div class="base-info">
-        <SimpleAssetLandInfo :popupDataSource="popupDataSource" :assetId="assetId" :assetNameShow="false" style="padding: 0" />
+        <SimpleAssetLandInfo :popupDataSource="popupDataSource" :assetId="assetId" :assetNameShow="false"
+          style="padding: 0" />
       </div>
       <SG-Title style="margin-top: 10px; margin-bottom: 20px" title="业务信息" />
       <div class="wrapper">
@@ -156,6 +157,7 @@ export default {
   border-radius: 8px;
   max-height: 550px;
   position: relative;
+
   .title {
     height: 40px;
     width: 100%;
@@ -166,12 +168,14 @@ export default {
     border-radius: 8px 8px 0 0;
     border-bottom: 1px solid #dce1e6;
     z-index: 4;
+
     .close-icon {
       position: absolute;
       right: 15px;
       top: 12px;
     }
   }
+
   .content {
     height: 520px;
     overflow-x: hidden;
@@ -183,14 +187,17 @@ export default {
 .wrapper {
   padding: 0 14px;
 }
+
 .attr-block {
   border: 1px solid #dce1e6;
   border-radius: 4px;
+
   .item {
     height: 37px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     .attr-name {
       font-weight: bold;
       width: 125px;
@@ -200,6 +207,7 @@ export default {
       border-right: 1px solid #dce1e6;
       border-top: 1px solid #dce1e6;
     }
+
     .attr-value {
       flex: 1;
       height: 37px;
@@ -210,6 +218,7 @@ export default {
       font-size: 14px;
       color: #6d7585;
     }
+
     .attr-name-top-border,
     .attr-value-top-border {
       border-top: none;
