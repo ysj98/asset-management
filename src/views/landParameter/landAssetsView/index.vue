@@ -208,6 +208,7 @@ const columnsData = [
   { title: '缴纳土地出让金时间', dataIndex: 'payAssignmentTime', width: 150 },
   { title: '资产原始来源方', dataIndex: 'originSource', width: 150 },
   { title: '原始来源方式', dataIndex: 'oldSourceModeName', width: 150 },
+  { title: '资产标签', dataIndex: 'landLabel', width: 150 },
   { title: '土地备注', dataIndex: 'desc', width: 150, scopedSlots: { customRender: 'desc' } },
   { title: '操作', key: 'action', scopedSlots: { customRender: 'action' }, width: 90, fixed: 'right' },
 ];
@@ -460,10 +461,10 @@ export default {
         originSource: this.originSource, // 资产原始来源方
         sourceModes: this.alljudge(this.queryCondition.sourceModes),
         oldSourceModes: this.oldSourceModes.includes('all') ? [] : this.oldSourceModes,
-        label: this.label ? this.label.join('、') : '',
+        landLabel: this.label ? this.label.join('、') : '',
         ...obj,
       };
-      if (data.label === '全部资产标签' || !data.label) delete data.label;
+      if (data.landLabel === '全部资产标签' || !data.landLabel) delete data.landLabel;
       return data;
     },
     // 导出数据
